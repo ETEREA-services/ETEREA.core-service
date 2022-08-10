@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eterea.api.rest.model.ClienteMovimiento;
-import eterea.api.rest.repository.ClienteMovimientoNotFoundException;
+import eterea.api.rest.exception.ClienteMovimientoNotFoundException;
 import eterea.api.rest.repository.IClienteMovimientoRepository;
 
 /**
