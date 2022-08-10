@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eterea.api.rest.service;
+package eterea.api.rest.exception;
 
 /**
  * @author daniel
