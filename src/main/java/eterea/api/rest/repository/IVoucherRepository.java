@@ -24,4 +24,5 @@ public interface IVoucherRepository extends JpaRepository<Voucher, Long>{
 	public Optional<Voucher> findByReservaId(Long reservaId);
 
 	Optional<List<Voucher>> findAllByFechaServicio(OffsetDateTime fechaServicio);
+
 }
