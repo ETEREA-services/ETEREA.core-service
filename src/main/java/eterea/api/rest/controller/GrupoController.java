@@ -50,6 +50,7 @@ public class GrupoController {
     public ResponseEntity<List<Grupo>> findAllByFecha(@PathVariable String fecha) {
         try {
             return new ResponseEntity<List<Grupo>>(service.findAllByVoucherFechaServicio(fecha), HttpStatus.OK);
+            //return new ResponseEntity<List<Grupo>>(service.findByFechaServicio(fecha), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

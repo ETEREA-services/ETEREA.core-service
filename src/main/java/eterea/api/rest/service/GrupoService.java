@@ -9,6 +9,7 @@ import eterea.api.rest.model.GrupoProducto;
 import eterea.api.rest.model.Voucher;
 import eterea.api.rest.model.VoucherProducto;
 import eterea.api.rest.repository.IGrupoRepository;
+import eterea.api.rest.tool.ToolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -69,5 +70,15 @@ public class GrupoService {
         }
         return new ArrayList<>(gruposSet);
     }
+
+/*    public List<Grupo> findByFechaServicio(String fecha) {
+        List<Integer> lista = repository.findAllByFecha(ToolService.stringDDMMYYYY2OffsetDateTime(fecha));
+        System.out.println(lista.size());
+        List<Grupo> grupos = new ArrayList<>();
+        for (Integer element : lista) {
+            grupos.add(findById(element));
+        }
+        return grupos;
+    }*/
 }
 
