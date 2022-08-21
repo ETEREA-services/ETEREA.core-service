@@ -1,40 +1,38 @@
 /**
- * 
+ * Entidad Articulo vinculada a la tabla articulos, a us vez esta tabla esta relacionada con
+ * articulofecha, productoarticulo y articulomovimientoprevio
+ *
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
+import lombok.*;
+import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * @author daniel
  *
  */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "articulos")
-@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Articulo extends Auditable implements Serializable {
 	/**
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = 3993609223567470857L;
 
 	@Id
@@ -174,4 +172,16 @@ public class Articulo extends Auditable implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long autoNumericoId;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Articulo articulo = (Articulo) o;
+		return articuloId != null && Objects.equals(articuloId, articulo.articuloId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

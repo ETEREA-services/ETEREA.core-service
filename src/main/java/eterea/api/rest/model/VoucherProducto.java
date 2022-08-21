@@ -43,7 +43,7 @@ public class VoucherProducto extends Auditable implements Serializable{
     private Long voucherId;
     
     @Column(name = "VPr_Prd_ID")
-    private Long productoId;
+    private Integer productoId;
    
     @Column(name = "VPr_Paxs")
     private Integer cantidadPaxs;
