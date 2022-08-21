@@ -17,4 +17,8 @@ public class VoucherNotFoundException extends RuntimeException {
 		super("Cannot find Voucher (reserva) " + reservaId);
 	}
 
+	public VoucherNotFoundException(String fechaServicio) {
+		super("Cannot find Voucher (DateIn) " + fechaServicio);
+	}
+
 }

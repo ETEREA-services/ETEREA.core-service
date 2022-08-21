@@ -26,3 +26,8 @@
 /.nb-gradle/
 /build/
 /bin/
+src/main/resources/config/eterea.properties
+*.pdf
+/tmp/
+src/main/resources/application.yml
+src/main/resources/config/eterea.properties
