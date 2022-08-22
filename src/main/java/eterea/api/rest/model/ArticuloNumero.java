@@ -1,6 +1,6 @@
 /**
  * Entidad de la tabla articulonumero, sin registros en la BD y sin relaciones
- * REVISAR!
+ * REVISAR modelo y uso
  */
 package eterea.api.rest.model;
 
