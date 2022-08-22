@@ -1,42 +1,32 @@
 /**
- * 
+ * Entidad de la tabla articulofecha, en la que se guardan los precios de los articulos segun una fecha
+ * dada, para llevar un historico de precios en dolares y pesos; posee una FK a articulosId
+ * podria llamarse HistoricoArticuloPrecio
  */
 package eterea.api.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author daniel
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "articulofecha", uniqueConstraints = { @UniqueConstraint(columnNames = { "articulo_id", "fecha" }) })
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ArticuloFecha extends Auditable implements Serializable {
-	/**
-	 * 
-	 */
+	@Serial
 	private static final long serialVersionUID = 1545964556063591559L;
 
 	@Id
@@ -61,4 +51,16 @@ public class ArticuloFecha extends Auditable implements Serializable {
 	@NotNull
 	private BigDecimal precioArs = new BigDecimal(0);
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloFecha that = (ArticuloFecha) o;
+		return articulofechaId != null && Objects.equals(articulofechaId, that.articulofechaId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
