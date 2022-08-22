@@ -1,35 +1,31 @@
 /**
- * 
+ * Entidad de la tabla tmdetartic que registra los IP de los movimientos de articulos
+ * Nota Personal: se necesita mas análisis para entendimiento
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "tmdetartic")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ArticuloMovimientoTemporal extends Auditable implements Serializable {
-	/**
-	* 
-	*/
+	@Serial
 	private static final long serialVersionUID = 925755181492758323L;
 
 	@Column(name = "ipaddress")
@@ -77,4 +73,17 @@ public class ArticuloMovimientoTemporal extends Auditable implements Serializabl
 	@Id
 	@Column(name = "clave")
 	private Long articuloMovimientoTemporalId;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloMovimientoTemporal that = (ArticuloMovimientoTemporal) o;
+		return articuloMovimientoTemporalId != null && Objects.equals(articuloMovimientoTemporalId, that.articuloMovimientoTemporalId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
