@@ -1,42 +1,30 @@
 /**
- * 
+ * Entidad vinculada a la tabla detartic, y esta relacionada con la tabla articulomovimientoprevio
+ * REVISAR: tabla que posee registros con datos null,
  */
 package eterea.api.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author daniel
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "detartic")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ArticuloMovimiento extends Auditable implements Serializable {
-	/**
-	 * 
-	 */
+	@Serial
 	private static final long serialVersionUID = -4307496860129226498L;
 
 	@Id
@@ -133,4 +121,16 @@ public class ArticuloMovimiento extends Auditable implements Serializable {
 	@NotNull
 	private BigDecimal total = BigDecimal.ZERO;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloMovimiento that = (ArticuloMovimiento) o;
+		return articuloMovimientoId != null && Objects.equals(articuloMovimientoId, that.articuloMovimientoId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
