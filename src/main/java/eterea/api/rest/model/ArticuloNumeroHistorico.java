@@ -1,31 +1,27 @@
 /**
- * 
+ * Entidad relacionada a la tabla articulonumeroh sin registros y sin relaciones en la BD
+ * REVISAR modelo y uso
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "articulonumeroh")
-@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticuloNumeroHistorico extends Auditable implements Serializable {/**
@@ -52,5 +48,17 @@ public class ArticuloNumeroHistorico extends Auditable implements Serializable {
 	@Column(name = "anh_fecha")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
 	private OffsetDateTime fecha;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloNumeroHistorico that = (ArticuloNumeroHistorico) o;
+		return articuloNumeroHistoricoId != null && Objects.equals(articuloNumeroHistoricoId, that.articuloNumeroHistoricoId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
