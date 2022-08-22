@@ -3,6 +3,7 @@
  */
 package eterea.api.rest.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
@@ -19,20 +20,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * @author alma
- *
- */
  @Data
  @Entity
  @Table(name = "articulopolitica", uniqueConstraints = { @UniqueConstraint(columnNames = { "arp_art_id", "arp_pol_id" }) })
  @EqualsAndHashCode(callSuper = false)
  @NoArgsConstructor
  @AllArgsConstructor
-public class ArticuloPolitica extends Auditable implements Serializable {/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1375278222938563810L;
+public class ArticuloPolitica extends Auditable implements Serializable {
+
+	 @Serial
+	 private static final long serialVersionUID = 1375278222938563810L;
 	 
 	@Column(name = "arp_art_id")
 	private String articuloId;
