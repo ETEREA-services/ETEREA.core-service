@@ -1,39 +1,30 @@
 /**
- * 
+ * Entidad de la tabla articulomovimientoprevio,
+ * Relaciones con: FK con clientemovimientoprevio, articulo, detartic y plancta
+ * REVISAR: Tabla sin registros
  */
 package eterea.api.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "articulomovimientoprevio")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class ArticuloMovimientoPrevio extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class ArticuloMovimientoPrevio extends Auditable implements Serializable {
+	@Serial
 	private static final long serialVersionUID = -7042549651914768607L;
 
 	@Id
@@ -63,5 +54,17 @@ public class ArticuloMovimientoPrevio extends Auditable implements Serializable 
 	
 	@Column(name = "articulomovimiento_id")
 	private Long articuloMovimientoId;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloMovimientoPrevio that = (ArticuloMovimientoPrevio) o;
+		return articuloMovimientoPrevioId != null && Objects.equals(articuloMovimientoPrevioId, that.articuloMovimientoPrevioId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
