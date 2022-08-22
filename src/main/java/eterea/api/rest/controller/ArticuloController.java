@@ -16,10 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import eterea.api.rest.model.Articulo;
 import eterea.api.rest.service.ArticuloService;
 
-/**
- * @author daniel
- *
- */
 @RestController
 @RequestMapping("/articulo")
 public class ArticuloController {
