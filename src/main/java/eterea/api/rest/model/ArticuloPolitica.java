@@ -1,31 +1,27 @@
 /**
- * 
+ * Entidad de la tabla articulopolitica,
+ * Revisar integridad registros con campos NULL
+ * Nota Personal: se necesita mas análisis para entendimiento
  */
 package eterea.api.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
- @Data
- @Entity
- @Table(name = "articulopolitica", uniqueConstraints = { @UniqueConstraint(columnNames = { "arp_art_id", "arp_pol_id" }) })
- @EqualsAndHashCode(callSuper = false)
- @NoArgsConstructor
- @AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Entity
+@Table(name = "articulopolitica", uniqueConstraints = { @UniqueConstraint(columnNames = { "arp_art_id", "arp_pol_id" }) })
+@AllArgsConstructor
 public class ArticuloPolitica extends Auditable implements Serializable {
 
 	 @Serial
@@ -47,5 +43,17 @@ public class ArticuloPolitica extends Auditable implements Serializable {
 	@Id
 	@Column(name = "arp_id")
 	private Long articuloPoliticaId;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloPolitica that = (ArticuloPolitica) o;
+		return articuloPoliticaId != null && Objects.equals(articuloPoliticaId, that.articuloPoliticaId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
