@@ -19,7 +19,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "articulohabil", uniqueConstraints = { @UniqueConstraint(columnNames = { "aha_fecha", "aha_serie" , "aha_inicial" }) })
-@NoArgsConstructor
 @AllArgsConstructor
 public class ArticuloHabilitado extends Auditable implements Serializable {
 
