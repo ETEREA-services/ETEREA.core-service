@@ -1,34 +1,32 @@
 /**
- * 
+ * Entidad de la tabla tmbalance, que contiene los datos de un balance temporal
+ * se estima de uso constante del area contable, la tabla presenta inconsistencias
+ * en la clave primaria
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "tmbalance")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class BalanceTemporal extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class BalanceTemporal extends Auditable implements Serializable {
+
+	@Serial
 	private static final long serialVersionUID = 5812247741562102064L;
 
 	@Id
@@ -58,4 +56,17 @@ public class BalanceTemporal extends Auditable implements Serializable {/**
 	
 	@Column(name = "bal_grado")
 	private Integer grado;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		BalanceTemporal that = (BalanceTemporal) o;
+		return balanceTemporalId != null && Objects.equals(balanceTemporalId, that.balanceTemporalId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

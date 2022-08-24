@@ -1,33 +1,29 @@
 /**
- * 
+ * Entidad de la tabla centrosstock
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "centrosstock")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class CentroStock extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class CentroStock extends Auditable implements Serializable {
+
+	@Serial
 	private static final long serialVersionUID = 279145846728211613L;
 
 	@Id
@@ -47,5 +43,17 @@ public class CentroStock extends Auditable implements Serializable {/**
 	
 	@Column(name = "cst_tipo")
 	private Integer tipo;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		CentroStock that = (CentroStock) o;
+		return centroStockId != null && Objects.equals(centroStockId, that.centroStockId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

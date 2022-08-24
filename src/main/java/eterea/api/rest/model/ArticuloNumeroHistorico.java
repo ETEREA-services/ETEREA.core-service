@@ -22,7 +22,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "articulonumeroh")
-@NoArgsConstructor
 @AllArgsConstructor
 public class ArticuloNumeroHistorico extends Auditable implements Serializable {/**
 	 * 

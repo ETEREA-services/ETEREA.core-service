@@ -1,5 +1,6 @@
 /**
- * 
+ * Clase mappeada como SuperClass de la que heredan la mayoria de las entidades que utiliza la anotacion
+ * AuditingEntityListener para agregar los atributos de creacion y modificacion de tipo LocalDateTime
  */
 package eterea.api.rest.model;
 
@@ -17,10 +18,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author daniel
- *
- */
+
 @Getter(AccessLevel.PROTECTED)
 @Setter(AccessLevel.PROTECTED)
 @MappedSuperclass
@@ -33,5 +31,4 @@ public class Auditable {
 	@LastModifiedDate
 	@Column(name = "updated")
 	private LocalDateTime updated;
-
 }

@@ -1,38 +1,30 @@
 /**
- * 
+ * Entidad relacionada a la tabla articulossaldofecha
+ * REVISAR: ultimo registro 21-02-2013
  */
 package eterea.api.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
+//Revisar Nombre Tabla
 @Table(name = "articulosaldofecha", uniqueConstraints = { @UniqueConstraint(columnNames = { "asf_cst_id", "asf_art_id", "asf_fecha" }) })
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class ArticuloSaldoFecha extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class ArticuloSaldoFecha extends Auditable implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 8603287140671704061L;
 
 	@Column(name = "asf_cst_id")
@@ -52,4 +44,16 @@ public class ArticuloSaldoFecha extends Auditable implements Serializable {/**
 	@Column(name = "clave")
 	private Long articuloSaldoFechaId;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloSaldoFecha that = (ArticuloSaldoFecha) o;
+		return articuloSaldoFechaId != null && Objects.equals(articuloSaldoFechaId, that.articuloSaldoFechaId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
