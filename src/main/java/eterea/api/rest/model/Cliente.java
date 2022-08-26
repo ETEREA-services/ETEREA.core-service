@@ -1,5 +1,11 @@
 /**
- * Entidad de la tabla Cliente
+ * TO DO: Revisar la logica de negocio sobre todo en las relaciones y
+ * platearse una migracion completa de las tablas hacia un modelo relacional
+ * mas abstraido y funcional
+ *
+ * Entidad de la tabla Cliente, relacionada con las tablas
+ *  * clientegrupocupo, clienteinternet, clientemovimientoprevio,
+ *  * habitacion, productoclientecomision,
  **/
 package eterea.api.rest.model;
 
