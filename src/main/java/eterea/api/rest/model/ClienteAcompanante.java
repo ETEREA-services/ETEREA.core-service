@@ -1,36 +1,30 @@
 /**
- * 
+ * Entidad relacionada a la tabla clienteacomp, sin relacion a clientes
+ * TOD DO: pensar en la figura de PAX o pasajero para indicar que un cliente puede
+ * tener una lista de pasajeros que lo acompañan, sin llegarse a mezclar con los grupos
+ * un cliente que paga el servicio y su familia que lo acompaña, no llega a ser un grupo
  */
 package eterea.api.rest.model;
 
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "clienteacomp", uniqueConstraints = { @UniqueConstraint(columnNames = { "cliente_id", "nro_documento" }) })
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class ClienteAcompanante extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class ClienteAcompanante extends Auditable implements Serializable {
+
+	@Serial
 	private static final long serialVersionUID = -9052145349621042869L;
 
 	@Id
@@ -48,4 +42,17 @@ public class ClienteAcompanante extends Auditable implements Serializable {/**
 	
 	@Column(name = "auto_id")
 	private Long clienteAcompanateId;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ClienteAcompanante that = (ClienteAcompanante) o;
+		return clienteId != null && Objects.equals(clienteId, that.clienteId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
