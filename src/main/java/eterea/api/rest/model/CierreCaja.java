@@ -1,36 +1,29 @@
 /**
- * 
+ * Entidad de la tabla cierrecaja, relacionado con puntodeventa y con la tabla negocio
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "cierrecaja")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class CierreCaja extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class CierreCaja extends Auditable implements Serializable {
+
 	private static final long serialVersionUID = -3176171648818295644L;
 
 	@Id
@@ -67,4 +60,16 @@ public class CierreCaja extends Auditable implements Serializable {/**
 	@Column(name = "cic_enviado")
 	private Byte enviado;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		CierreCaja that = (CierreCaja) o;
+		return cierreCajaId != null && Objects.equals(cierreCajaId, that.cierreCajaId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
