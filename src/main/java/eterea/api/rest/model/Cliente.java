@@ -1,31 +1,38 @@
+/**
+ * TO DO: Revisar la logica de negocio sobre todo en las relaciones y
+ * platearse una migracion completa de las tablas hacia un modelo relacional
+ * mas abstraido y funcional
+ *
+ * Entidad de la tabla Cliente, relacionada con las tablas
+ *  * clientegrupocupo, clienteinternet, clientemovimientoprevio,
+ *  * habitacion, productoclientecomision,
+ **/
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "clientes")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class Cliente extends Auditable implements Serializable {
-	/**
-	 * 
-	 */
+
+	@Serial
 	private static final long serialVersionUID = 533560218390771492L;
 
 	@Id
@@ -95,4 +102,16 @@ public class Cliente extends Auditable implements Serializable {
 	private Byte bloqueado = 0;
 	private Byte discapacitado = 0;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Cliente cliente = (Cliente) o;
+		return clienteId != null && Objects.equals(clienteId, cliente.clienteId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

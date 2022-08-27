@@ -1,40 +1,34 @@
 /**
- * 
+ * REVISAR: Entidad de la tabla articulohabil...sin registros en la BD
  */
 package eterea.api.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "articulohabil", uniqueConstraints = { @UniqueConstraint(columnNames = { "aha_fecha", "aha_serie" , "aha_inicial" }) })
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class ArticuloHabilitado extends Auditable implements Serializable {/**
-	 * 
-	 */
-	private static final long serialVersionUID = -9089343259469839172L;
+public class ArticuloHabilitado extends Auditable implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 908939469839172L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column (name = "aha_id")
+	private Long articuloHabilitadoId;
 	
 	@Column(name = "aha_fecha")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
@@ -51,10 +45,17 @@ public class ArticuloHabilitado extends Auditable implements Serializable {/**
 	
 	@Column(name = "aha_art_id")
 	private String articuloId;
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column (name = "aha_id")
-	private Long articuloHabilitadoId;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloHabilitado that = (ArticuloHabilitado) o;
+		return articuloHabilitadoId != null && Objects.equals(articuloHabilitadoId, that.articuloHabilitadoId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

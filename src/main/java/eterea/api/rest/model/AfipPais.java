@@ -20,7 +20,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "paisafip")
-@NoArgsConstructor
 @AllArgsConstructor
 public class AfipPais extends Auditable implements Serializable {
 
