@@ -1,36 +1,29 @@
 /**
- * 
+ * To Do: Revisar Tabla sin registros
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "cierrerest")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class CierreRestaurant extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class CierreRestaurant extends Auditable implements Serializable {
+
 	private static final long serialVersionUID = -1751024413942491962L;
 
 	@Id
@@ -49,5 +42,17 @@ public class CierreRestaurant extends Auditable implements Serializable {/**
 	
 	@Column(name = "cir_nivel")
 	private Integer nivel;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		CierreRestaurant that = (CierreRestaurant) o;
+		return cierreRestaurantId != null && Objects.equals(cierreRestaurantId, that.cierreRestaurantId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

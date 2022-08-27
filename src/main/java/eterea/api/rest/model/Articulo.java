@@ -16,22 +16,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-/**
- * @author daniel
- *
- */
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "articulos")
-@NoArgsConstructor
 @AllArgsConstructor
 public class Articulo extends Auditable implements Serializable {
-	/**
-	 * 
-	 */
+
 	@Serial
 	private static final long serialVersionUID = 3993609223567470857L;
 

@@ -1,34 +1,27 @@
 /**
- * 
+ * Entidad de la tabla articulonumero, sin registros en la BD y sin relaciones
+ * REVISAR modelo y uso
  */
 package eterea.api.rest.model;
 
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "articulonumero", uniqueConstraints = { @UniqueConstraint(columnNames = { "arn_art_id", "arn_serie" , "arn_numero" }) })
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class ArticuloNumero extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class ArticuloNumero extends Auditable implements Serializable {
+
+	@Serial
 	private static final long serialVersionUID = 966736326600248438L;
 
 	@Column(name = "arn_art_id")
@@ -49,5 +42,17 @@ public class ArticuloNumero extends Auditable implements Serializable {/**
 	@Id
 	@Column(name = "arn_id")
 	private Long articuloNumeroId;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ArticuloNumero that = (ArticuloNumero) o;
+		return articuloNumeroId != null && Objects.equals(articuloNumeroId, that.articuloNumeroId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
