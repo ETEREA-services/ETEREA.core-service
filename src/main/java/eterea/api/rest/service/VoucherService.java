@@ -23,9 +23,6 @@ public class VoucherService {
 	@Autowired
 	private IVoucherRepository repository;
 
-	@Autowired
-	private VoucherProductoService voucherProductoService;
-
 	public List<Voucher> findAllByUserToday(String login) {
 		return repository.findAllByFechaVencimientoAndUsuario(ToolService.dateAbsoluteArgentina(), login);
 	}

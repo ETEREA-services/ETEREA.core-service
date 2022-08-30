@@ -5,6 +5,7 @@ package eterea.api.rest.controller.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +22,7 @@ public class VencimientoController {
 	@Autowired
 	VencimientoService service;
 
-	@RequestMapping("/notificaciondia")
+	@GetMapping("/notificaciondia")
 	@Scheduled(cron = "0 0 9 * * *")
 	private String notificaciondia() {
 		return service.notificaciondia();
