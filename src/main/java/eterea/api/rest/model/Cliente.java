@@ -26,9 +26,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Entity
 @Table(name = "clientes")
+@NoArgsConstructor
 @AllArgsConstructor
 public class Cliente extends Auditable implements Serializable {
 

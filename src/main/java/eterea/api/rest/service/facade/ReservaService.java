@@ -11,6 +11,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import eterea.api.rest.model.Articulo;
@@ -61,6 +62,13 @@ public class ReservaService {
 	@Autowired
 	private ConceptoFacturadoService conceptoFacturadoService;
 
+	public List<Reserva> findTopPendientes() {
+		return repository
+				.findTop100ByVerificadaAndFacturadaAndEliminadaAndPagaCacheutaAndFacturadoFueraAndAnuladaAndClienteIdGreaterThan(
+						(byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, 0L,
+						Sort.by("fechaToma").descending().and(Sort.by("clienteId")));
+	}
+
 	@Transactional
 	public void completeArticulos(Long clienteMovimientoId) {
 		ClienteMovimiento clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
@@ -81,7 +89,7 @@ public class ReservaService {
 				.findAllByReservaId(clienteMovimiento.getReservaId())) {
 			if (!reservaArticulo.getObservaciones().trim().equals(""))
 				reservaArticulo.setObservaciones(reservaArticulo.getObservaciones() + numeroVoucher);
-			addArticulo(clienteMovimiento, reservaArticulo, comprobante, ++item, reserva.getFacturarextranjero(),
+			addArticulo(clienteMovimiento, reservaArticulo, comprobante, ++item, reserva.getFacturarExtranjero(),
 					articuloMovs);
 		}
 	}
@@ -136,4 +144,5 @@ public class ReservaService {
 			}
 		}
 	}
+
 }
