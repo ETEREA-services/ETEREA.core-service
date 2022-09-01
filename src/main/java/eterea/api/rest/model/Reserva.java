@@ -4,6 +4,7 @@
 package eterea.api.rest.model;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,25 +12,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author daniel
  *
  */
-@Data
 @Entity
-@Table(name = "reserva")
 @EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reserva extends Auditable implements Serializable {
@@ -50,113 +55,92 @@ public class Reserva extends Auditable implements Serializable {
 	private Long clienteId;
 
 	@Column(name = "res_fecha")
-	private Date fechatoma;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	private OffsetDateTime fechaToma;
 
 	@Column(name = "res_in")
-	private Date fechainservicio;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	private OffsetDateTime fechaInServicio;
 
 	@Column(name = "res_out")
-	private Date fechaoutservicio;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	private OffsetDateTime fechaOutServicio;
 
 	@Column(name = "res_vto")
-	private Date fechavencimiento;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	private OffsetDateTime fechaVencimiento;
 
 	@Column(name = "res_horavto")
 	@Temporal(TemporalType.TIME)
-	private Date horavencimiento;
+	private Date horaVencimiento;
 
 	@Column(name = "res_avisomail")
-	@NotNull
-	private Byte avisomail = 0;
+	private Byte avisoMail = 0;
 
 	@Column(name = "res_pendiente")
-	@NotNull
 	private Byte pendiente = 0;
 
 	@Column(name = "res_confirmada")
-	@NotNull
 	private Byte confirmada = 0;
 
 	@Column(name = "res_facturada")
-	@NotNull
 	private Byte facturada = 0;
 
 	@Column(name = "res_anulada")
-	@NotNull
 	private Byte anulada = 0;
 
 	@Column(name = "res_eliminada")
-	@NotNull
 	private Byte eliminada = 0;
 
-	@Column(name = "verificada")
-	@NotNull
 	private Byte verificada = 0;
 
 	@Column(name = "res_nombrepax")
-	@NotNull
-	@Size(max = 250)
-	private String nombrepax = "";
+	private String nombrePax = "";
 
 	@Column(name = "res_paxs")
-	@NotNull
-	private Integer cantidadpaxs = 0;
+	private Integer cantidadPaxs = 0;
 
 	@Column(name = "res_observaciones")
-	@NotNull
-	@Size(max = 250)
 	private String observaciones = "";
 
 	@Column(name = "res_vou_id")
-	@NotNull
-	private Long voucherId = 0L;
+	private Long voucherId;
 
 	@Column(name = "res_pagacomision")
-	@NotNull
-	private Byte pagacomision = 0;
+	private Byte pagaComision = 0;
 
 	@Column(name = "res_obscomision")
-	@NotNull
-	@Size(max = 250)
-	private String observcomision = "";
+	private String observacionesComision = "";
 
 	@Column(name = "res_comisionpagada")
-	@NotNull
-	private Byte comisionpagada = 0;
+	private Byte comisionPagada = 0;
 
 	@Column(name = "res_pagacacheuta")
-	@NotNull
-	private Byte pagacacheuta = 0;
+	private Byte pagaCacheuta = 0;
 
 	@Column(name = "res_facturadofuera")
-	@NotNull
-	private Byte facturadofuera = 0;
+	private Byte facturadoFuera = 0;
 
 	@Column(name = "res_reservaarticulo")
-	@NotNull
-	@Size(max = 255)
-	private String reservaarticulos = "";
+	private String reservaArticulos = "";
 
 	@Column(name = "res_usuario")
-	@NotNull
-	@Size(max = 20)
 	private String usuario = "";
 
 	@Column(name = "res_cliente")
-	@NotNull
-	@Size(max = 50)
 	private String contacto = "";
 
 	@Column(name = "res_reo_ID")
-	@NotNull
-	private Integer reservaorigenId = 0;
+	private Integer reservaOrigenId;
 
 	@Column(name = "facturarextranjero")
-	@NotNull
-	private Byte facturarextranjero = 0;
+	private Byte facturarExtranjero = 0;
 
 	@Column(name = "fecha_abierta")
-	@NotNull
-	private Byte fechaabierta = 0;
+	private Byte fechaAbierta = 0;
+
+	@OneToOne
+	@JoinColumn(name = "res_cli_id", insertable = false, updatable = false)
+	private Cliente cliente;
 
 }
