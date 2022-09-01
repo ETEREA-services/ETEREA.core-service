@@ -1,39 +1,28 @@
 /**
- * 
+ * Entidad de la tabla clientegrupocupo
  */
 package eterea.api.rest.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
-/**
- * @author daniel
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "clientegrupocupo", uniqueConstraints = {
 		@UniqueConstraint(columnNames = { "cliente_id", "grupo_id", "dias" }) })
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ClienteGrupoCupo extends Auditable implements Serializable {
-	/**
-	 * 
-	 */
+
+	@Serial
 	private static final long serialVersionUID = -6836097066483666183L;
 
 	@Id
@@ -55,4 +44,16 @@ public class ClienteGrupoCupo extends Auditable implements Serializable {
 	@NotNull
 	private Integer cantidad = 0;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ClienteGrupoCupo that = (ClienteGrupoCupo) o;
+		return clientegrupocupoId != null && Objects.equals(clientegrupocupoId, that.clientegrupocupoId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
