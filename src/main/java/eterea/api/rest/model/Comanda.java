@@ -1,39 +1,35 @@
 /**
- * 
+ * Entidad de la tabla comanda, al momento no posee datos ni relacion alguna
+ * TODO: revisar el modelo y plantear la posibilidad de realcionarlo a un punto de venta o negocio
+ * TODO: negocios que hoy no realizan comanda en un futuro lo pueden hacer y la vinculacion podria ser necesaria
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "comanda")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
-public class Comanda extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class Comanda extends Auditable implements Serializable {
+
+	@Serial
 	private static final long serialVersionUID = 8063710300018825646L;
 
-	
 	@Id
 	@Column(name = "com_id")
 	private Long comandaId;
@@ -87,5 +83,17 @@ public class Comanda extends Auditable implements Serializable {/**
 	
 	@Column(name = "com_nivel")
 	private Integer nivel;
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Comanda comanda = (Comanda) o;
+		return comandaId != null && Objects.equals(comandaId, comanda.comandaId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
