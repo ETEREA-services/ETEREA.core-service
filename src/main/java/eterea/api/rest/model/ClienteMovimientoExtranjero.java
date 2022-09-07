@@ -1,34 +1,31 @@
 /**
- * 
+ * Entidad de la tabla movclieex, la que al momento no tiene registros
+ * al parecere se deberian registrar los movimientos de los clientes extranjeros,
+ * TODO: analizar el modelo y la relacion en busca de una clave de tipo nacionalidad, ó boolean extranjero
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author alma
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "movclieex")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ClienteMovimientoExtranjero extends Auditable implements Serializable {
-	/**
-	* 
-	*/
+
+	@Serial
 	private static final long serialVersionUID = -7019052783240902949L;
 
 	@Id
@@ -62,4 +59,16 @@ public class ClienteMovimientoExtranjero extends Auditable implements Serializab
 	@Column(name = "mce_observ")
 	private String observaciones;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ClienteMovimientoExtranjero that = (ClienteMovimientoExtranjero) o;
+		return clienteMovimientoExtranjeroId != null && Objects.equals(clienteMovimientoExtranjeroId, that.clienteMovimientoExtranjeroId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
