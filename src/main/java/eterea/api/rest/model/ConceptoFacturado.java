@@ -1,38 +1,29 @@
 /**
- * 
+ * Entidad relacionada a la tabla conceptosfact,
+ *
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
+import lombok.*;
+import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author daniel
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "conceptosfact")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ConceptoFacturado extends Auditable implements Serializable {
-	/**
-	 * 
-	 */
+
+	@Serial
 	private static final long serialVersionUID = 8264376062048795530L;
 
 	@Id
@@ -54,4 +45,16 @@ public class ConceptoFacturado extends Auditable implements Serializable {
 	@Column(name = "clavedetartic")
 	private Long articuloMovimientoId;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ConceptoFacturado that = (ConceptoFacturado) o;
+		return conceptoFacturadoId != null && Objects.equals(conceptoFacturadoId, that.conceptoFacturadoId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
