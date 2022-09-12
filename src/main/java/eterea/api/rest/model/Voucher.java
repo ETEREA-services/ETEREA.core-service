@@ -9,15 +9,13 @@ import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -76,7 +74,7 @@ public class Voucher extends Auditable implements Serializable {
 	private String productos;
 
 	@Column(name = "vou_voucher")
-	private Byte tienenVoucher;
+	private Byte tieneVoucher;
 
 	@Column(name = "vou_cli_id")
 	private Long clienteId;
@@ -110,7 +108,7 @@ public class Voucher extends Auditable implements Serializable {
 	@Column(name = "vou_nrovoucher")
 	private String numeroVoucher;
 
-	@Column(name = "vou_usuario", insertable = false, updatable = false)
+	@Column(name = "vou_usuario")
 	private String usuario;
 
 	@Column(name = "vou_fecharecepcion")
@@ -139,11 +137,27 @@ public class Voucher extends Auditable implements Serializable {
 	@Column(name = "vou_reo_id")
 	private Integer reservaOrigenId;
 
-	private Byte fechaAbierta;
+	private Byte fechaAbierta = 0;
+	private Byte ventaInternet = 0;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	@JoinColumn(name = "vou_usuario")
-	@JsonIgnore
+	@OneToOne
+	@JoinColumn(name = "vou_usuario", insertable = false, updatable = false)
 	private Usuario user;
+
+	@OneToOne
+	@JoinColumn(name = "vou_cli_id", insertable = false, updatable = false)
+	private Cliente cliente;
+
+	@OneToOne
+	@JoinColumn(name = "vou_hot_id", insertable = false, updatable = false)
+	private Hotel hotel;
+	
+	@OneToOne
+	@JoinColumn(name = "vou_pro_id", insertable = false, updatable = false)
+	private Proveedor proveedor;
+	
+	@OneToOne
+	@JoinColumn(name = "vou_res_id", insertable = false, updatable = false)
+	private Reserva reserva;
 
 }

@@ -11,18 +11,22 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author alma
  *
  */
-@Data
 @Entity
 @Table(name = "reservaorigen")
 @EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservaOrigen extends Auditable implements Serializable {/**

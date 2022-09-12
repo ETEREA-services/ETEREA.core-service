@@ -22,7 +22,7 @@ public class ClienteMovimientoService {
 
 	@Autowired
 	private IClienteMovimientoRepository repository;
-	
+
 	@Autowired
 	private ComprobanteService comprobanteService;
 
@@ -30,6 +30,14 @@ public class ClienteMovimientoService {
 		List<Integer> comprobanteIds = comprobanteService.findAllAsociables().stream()
 				.map(comprobante -> comprobante.getComprobanteId()).collect(Collectors.toList());
 		return repository.findAllByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
+	}
+
+	public List<ClienteMovimiento> findAllByReservaIds(List<Long> reservaIds) {
+		return repository.findAllByReservaIdIn(reservaIds);
+	}
+
+	public List<ClienteMovimiento> findAllByReservaId(Long reservaId) {
+		return repository.findAllByReservaId(reservaId);
 	}
 
 	public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {

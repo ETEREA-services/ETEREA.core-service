@@ -18,7 +18,7 @@ import eterea.api.rest.model.Hotel;
 @Repository
 public interface IHotelRepository extends JpaRepository<Hotel, Integer> {
 
-	public List<Hotel> findAllByParadatraslado(Byte paradatraslado, Sort sort);
+	public List<Hotel> findAllByParadaTraslado(Byte paradaTraslado, Sort sort);
 
-	public List<Hotel> findAllByPuntoencuentro(Byte puntoencuentro, Sort sort);
+	public List<Hotel> findAllByPuntoEncuentro(Byte puntoEncuentro, Sort sort);
 }

@@ -37,14 +37,18 @@ public class Proveedor extends Auditable implements Serializable {
 	@Column(name = "codigo")
 	private Integer proveedorId;
 	
-	private String razon;
+	@Column(name = "razon")
+	private String razonSocial;
 	
 	@Column(name = "prv_neg_id")
 	private Integer negocioId;
 	
 	private String cuit;
 	private String domicilio;
-	private String tel;
+	
+	@Column(name = "tel")
+	private String telefono;
+	
 	private String fax;
 	private String email;
 	private Integer posicion;
@@ -65,9 +69,6 @@ public class Proveedor extends Auditable implements Serializable {
 	@Column(name = "prv_rep_codigo")
 	private Integer reparticionId;
 	
-	@Column(name = "transporte")
 	private Byte transporte;
-	
-	private Long clave;
 
 }
