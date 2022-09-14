@@ -1,35 +1,31 @@
 /**
- * 
+ * Entidad de la tabla tiposcomprob, al momento presenta registros actuales
+ * TODO: Consultar uso, no se encuentra relacionada pero posee claves de otras tablas
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author daniel
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "tiposcomprob")
-@EqualsAndHashCode(callSuper=false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class Comprobante extends Auditable implements Serializable {
-	/**
-	 * 
-	 */
+
+	@Serial
 	private static final long serialVersionUID = 5004162435032433076L;
 
 	@Id
@@ -165,4 +161,16 @@ public class Comprobante extends Auditable implements Serializable {
 	
 	private Byte asociado = 0;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Comprobante that = (Comprobante) o;
+		return comprobanteId != null && Objects.equals(comprobanteId, that.comprobanteId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

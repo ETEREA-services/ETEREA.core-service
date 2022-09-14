@@ -1,34 +1,30 @@
 /**
- * 
+ * Entidad  de la tabla compafip
+ * TODO: revisar modelo y uso
  */
 package eterea.api.rest.model;
 
-import java.io.Serializable;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-/**
- * @author daniel
- *
- */
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
 @Table(name = "compafip")
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ComprobanteAfip extends Auditable implements Serializable {
-	/**
-	* 
-	*/
+
+	@Serial
 	private static final long serialVersionUID = -5540166718694408596L;
 
 	@Id
@@ -41,4 +37,16 @@ public class ComprobanteAfip extends Auditable implements Serializable {
 	@Column(name = "caf_label")
 	private String label;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		ComprobanteAfip that = (ComprobanteAfip) o;
+		return comprobanteAfipId != null && Objects.equals(comprobanteAfipId, that.comprobanteAfipId);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }
