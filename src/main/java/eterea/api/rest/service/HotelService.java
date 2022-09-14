@@ -27,11 +27,11 @@ public class HotelService {
 	}
 
 	public List<Hotel> findAllByParadaTraslado(Byte paradatraslado) {
-		return repository.findAllByParadatraslado(paradatraslado, Sort.by("nombre").ascending());
+		return repository.findAllByParadaTraslado(paradatraslado, Sort.by("nombre").ascending());
 	}
 
 	public List<Hotel> findAllByPuntoEncuentro(Byte puntoencuentro) {
-		return repository.findAllByPuntoencuentro(puntoencuentro, Sort.by("nombre").ascending());
+		return repository.findAllByPuntoEncuentro(puntoencuentro, Sort.by("nombre").ascending());
 	}
 
 	public Hotel findById(Integer hotelId) {
@@ -42,8 +42,8 @@ public class HotelService {
 		return repository.findById(hotelId).map(hotel -> {
 			hotel.setNombre(newhotel.getNombre());
 			hotel.setExtras(newhotel.getExtras());
-			hotel.setParadatraslado(newhotel.getParadatraslado());
-			hotel.setPuntoencuentro(newhotel.getPuntoencuentro());
+			hotel.setParadaTraslado(newhotel.getParadaTraslado());
+			hotel.setPuntoEncuentro(newhotel.getPuntoEncuentro());
 			return repository.save(hotel);
 		}).orElseThrow(() -> new HotelNotFoundException(hotelId));
 	}
