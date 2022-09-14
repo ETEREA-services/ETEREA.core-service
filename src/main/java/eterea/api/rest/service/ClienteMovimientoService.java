@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.model.ClienteMovimiento;
 import eterea.api.rest.exception.ClienteMovimientoNotFoundException;
+import eterea.api.rest.model.ClienteMovimiento;
 import eterea.api.rest.repository.IClienteMovimientoRepository;
 
 /**
@@ -22,7 +22,7 @@ public class ClienteMovimientoService {
 
 	@Autowired
 	private IClienteMovimientoRepository repository;
-	
+
 	@Autowired
 	private ComprobanteService comprobanteService;
 
@@ -30,6 +30,14 @@ public class ClienteMovimientoService {
 		List<Integer> comprobanteIds = comprobanteService.findAllAsociables().stream()
 				.map(comprobante -> comprobante.getComprobanteId()).collect(Collectors.toList());
 		return repository.findAllByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
+	}
+
+	public List<ClienteMovimiento> findAllByReservaIds(List<Long> reservaIds) {
+		return repository.findAllByReservaIdIn(reservaIds);
+	}
+
+	public List<ClienteMovimiento> findAllByReservaId(Long reservaId) {
+		return repository.findAllByReservaId(reservaId);
 	}
 
 	public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {

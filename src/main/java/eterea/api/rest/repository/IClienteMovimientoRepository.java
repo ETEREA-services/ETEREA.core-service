@@ -21,6 +21,10 @@ public interface IClienteMovimientoRepository extends JpaRepository<ClienteMovim
 	public List<ClienteMovimiento> findAllByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(Long clienteId,
 			List<Integer> comprobanteIds);
 
+	public List<ClienteMovimiento> findAllByReservaIdIn(List<Long> reservaIds);
+
+	public List<ClienteMovimiento> findAllByReservaId(Long reservaId);
+
 	public Optional<ClienteMovimiento> findByClienteMovimientoId(Long clienteMovimientoId);
 
 }
