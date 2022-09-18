@@ -1,8 +1,3 @@
-/**
- * Entidad de la tabla movclieex, la que al momento no tiene registros
- * al parecere se deberian registrar los movimientos de los clientes extranjeros,
- * TODO: analizar el modelo y la relacion en busca de una clave de tipo nacionalidad, ó boolean extranjero
- */
 package eterea.api.rest.model;
 
 import lombok.*;

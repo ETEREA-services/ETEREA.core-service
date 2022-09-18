@@ -1,7 +1,3 @@
-/**
- * Consolidado caja entidad relacionada a la tabla conscaja ultimo registro 28/04/2019
- * TODO: Revisar uso ern el modelo
- */
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

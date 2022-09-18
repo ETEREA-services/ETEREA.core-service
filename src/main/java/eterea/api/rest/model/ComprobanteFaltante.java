@@ -1,7 +1,3 @@
-/**
- * Entidad de la tabla comprobantefaltante al momento no restra dato
- * TODO: Revisar modelo y uso
- */
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -1,9 +1,3 @@
-/**
- * Entidad de la tabla clientemovimientoprevio, al momento no posee registros
- * se vizualiza en el digrama de ER como una tabla union entre clientes y movimientode cliente
- * TODO: revisar el modelo y planter la funcionalidad de la entidad ya que si sera solo una tabla union
- * TODO: ...debe ser resuelta mediante anotaciones en las claves, de las entidades que une
- */
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -1,8 +1,3 @@
-/**
- * Entidad de la tabla comanda, al momento no posee datos ni relacion alguna
- * TODO: revisar el modelo y plantear la posibilidad de realcionarlo a un punto de venta o negocio
- * TODO: negocios que hoy no realizan comanda en un futuro lo pueden hacer y la vinculacion podria ser necesaria
- */
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
