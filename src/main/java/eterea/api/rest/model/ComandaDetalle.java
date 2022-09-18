@@ -1,8 +1,3 @@
-/**
- * Entidad de la tabla comandadetalle, al momento no presenta registro ni relacion
- * se deberia relacionar con la tabla comanda
- * TODO: Revisar relacion y modelo para determinar el alcanze de cada entidad
- */
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

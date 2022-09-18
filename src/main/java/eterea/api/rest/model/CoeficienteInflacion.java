@@ -1,8 +1,3 @@
-/**
- * Entidad de la tabla coeficiente_inflacion, ultimo registro el 21/01/2020
- * TODO: cambiar el nombre del atributo "anho" por anio o en su defecto year
- * TODO: revisar su uso o implementacion en el modelo
- */
 package eterea.api.rest.model;
 
 import lombok.*;

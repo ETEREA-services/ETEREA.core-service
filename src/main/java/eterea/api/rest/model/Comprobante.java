@@ -1,7 +1,3 @@
-/**
- * Entidad de la tabla tiposcomprob, al momento presenta registros actuales
- * TODO: Consultar uso, no se encuentra relacionada pero posee claves de otras tablas
- */
 package eterea.api.rest.model;
 
 import lombok.*;

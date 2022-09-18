@@ -1,7 +1,3 @@
-/**
- * Entidad  de la tabla compafip
- * TODO: revisar modelo y uso
- */
 package eterea.api.rest.model;
 
 import lombok.*;
