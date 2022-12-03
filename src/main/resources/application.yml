@@ -1,6 +1,6 @@
 app:
   server: 10.147.20.25:3306
-  database: tsaagencia
+  database: ctlogistica
   user: root
   password: root
   add-properties: true
