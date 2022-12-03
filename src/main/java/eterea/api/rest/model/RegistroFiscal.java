@@ -6,9 +6,9 @@ package eterea.api.rest.model;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
