@@ -21,7 +21,7 @@ import eterea.api.rest.service.ClienteMovimientoService;
  *
  */
 @RestController
-@RequestMapping("/clientemovimiento")
+@RequestMapping("/clienteMovimiento")
 public class ClienteMovimientoController {
 
 	@Autowired
@@ -30,6 +30,12 @@ public class ClienteMovimientoController {
 	@GetMapping("/asociable/{clienteId}")
 	public ResponseEntity<List<ClienteMovimiento>> findAllAsociables(@PathVariable Long clienteId) {
 		return new ResponseEntity<List<ClienteMovimiento>>(service.findAllAsociables(clienteId), HttpStatus.OK);
+	}
+
+	@GetMapping("/last/{puntoVenta}/{letraComprobante}")
+	public ResponseEntity<Long> nextNumeroFactura(@PathVariable Integer puntoVenta,
+			@PathVariable String letraComprobante) {
+		return new ResponseEntity<Long>(service.nextNumeroFactura(puntoVenta, letraComprobante), HttpStatus.OK);
 	}
 
 	@GetMapping("/{clienteMovimientoId}")
