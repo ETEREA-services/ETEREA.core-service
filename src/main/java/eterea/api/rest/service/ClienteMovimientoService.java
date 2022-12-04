@@ -45,4 +45,11 @@ public class ClienteMovimientoService {
 				.orElseThrow(() -> new ClienteMovimientoNotFoundException(clienteMovimientoId));
 	}
 
+	public Long nextNumeroFactura(Integer puntoVenta, String letraComprobante) {
+		return repository.findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc(0, puntoVenta,
+				letraComprobante).map(clienteMovimiento -> {
+					return 1 + clienteMovimiento.getNumeroComprobante();
+				}).orElse(1L);
+	}
+
 }

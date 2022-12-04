@@ -5,34 +5,30 @@
 package eterea.api.rest.model;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
 @Entity
 @Table(name = "tmdetartic")
+@NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class ArticuloMovimientoTemporal extends Auditable implements Serializable {
-	@Serial
+	
 	private static final long serialVersionUID = 925755181492758323L;
 
 	@Column(name = "ipaddress")
 	private String ipAddress;
 
 	@Column(name = "dat_hwnd")
-	private Long hWnd;
+	private Long hwnd;
 
 	private Long item;
 	private Integer item2;
@@ -74,16 +70,4 @@ public class ArticuloMovimientoTemporal extends Auditable implements Serializabl
 	@Column(name = "clave")
 	private Long articuloMovimientoTemporalId;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		ArticuloMovimientoTemporal that = (ArticuloMovimientoTemporal) o;
-		return articuloMovimientoTemporalId != null && Objects.equals(articuloMovimientoTemporalId, that.articuloMovimientoTemporalId);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
 }

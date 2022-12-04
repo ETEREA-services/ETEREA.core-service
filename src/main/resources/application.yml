@@ -1,6 +1,6 @@
 app:
   server: 10.147.20.25:3306
-  database: ctlogistica
+  database: tsaalmacen
   user: root
   password: root
   add-properties: true
@@ -22,7 +22,7 @@ spring:
     password: ${app.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: ${app.open-in-view}
     hibernate:
       ddl-auto: none
