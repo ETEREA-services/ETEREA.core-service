@@ -26,10 +26,10 @@ public class ClienteMovimientoService {
 	@Autowired
 	private ComprobanteService comprobanteService;
 
-	public List<ClienteMovimiento> findAllAsociables(Long clienteId) {
+	public List<ClienteMovimiento> findTop200Asociables(Long clienteId) {
 		List<Integer> comprobanteIds = comprobanteService.findAllAsociables().stream()
 				.map(comprobante -> comprobante.getComprobanteId()).collect(Collectors.toList());
-		return repository.findAllByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
+		return repository.findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
 	}
 
 	public List<ClienteMovimiento> findAllByReservaIds(List<Long> reservaIds) {

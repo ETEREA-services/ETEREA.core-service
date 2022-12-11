@@ -6,6 +6,7 @@ package eterea.api.rest.service.facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eterea.api.rest.model.ClienteMovimiento;
 import eterea.api.rest.model.Comprobante;
 import eterea.api.rest.model.dto.ImpresionFiscalDTO;
 import eterea.api.rest.service.ArticuloMovimientoTemporalService;
@@ -32,13 +33,18 @@ public class ImpresionFiscalService {
 	@Autowired
 	private ArticuloMovimientoTemporalService articuloMovimientoTemporalService;
 
-	public ImpresionFiscalDTO getData(String ipAddress, Long hWnd, Long clienteId, Integer comprobanteId) {
+	public ImpresionFiscalDTO getData(String ipAddress, Long hWnd, Long clienteId, Integer comprobanteId,
+			Long comprobanteOrigenId) {
 		Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
+		ClienteMovimiento clienteMovimiento = null;
+		if (comprobanteOrigenId > 0) {
+			clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(comprobanteOrigenId);
+		}
 		return new ImpresionFiscalDTO(
 				clienteMovimientoService.nextNumeroFactura(comprobante.getPuntoVenta(),
 						comprobante.getLetraComprobante()),
 				clienteService.findByClienteId(clienteId), comprobante,
-				articuloMovimientoTemporalService.findAllByHwnd(ipAddress, hWnd, null));
+				articuloMovimientoTemporalService.findAllByHwnd(ipAddress, hWnd, null), clienteMovimiento);
 	}
 
 }
