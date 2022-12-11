@@ -10,6 +10,8 @@ pipeline {
                     echo "PATH = ${PATH}"
                     echo "M3_HOME = ${M3_HOME}"
                 '''
+            }
+        }
         stage('Build') {
             steps {
                 sh 'mvn clean package'
