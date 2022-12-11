@@ -28,8 +28,8 @@ public class ClienteMovimientoController {
 	private ClienteMovimientoService service;
 
 	@GetMapping("/asociable/{clienteId}")
-	public ResponseEntity<List<ClienteMovimiento>> findAllAsociables(@PathVariable Long clienteId) {
-		return new ResponseEntity<List<ClienteMovimiento>>(service.findAllAsociables(clienteId), HttpStatus.OK);
+	public ResponseEntity<List<ClienteMovimiento>> findTop200Asociables(@PathVariable Long clienteId) {
+		return new ResponseEntity<List<ClienteMovimiento>>(service.findTop200Asociables(clienteId), HttpStatus.OK);
 	}
 
 	@GetMapping("/last/{puntoVenta}/{letraComprobante}")

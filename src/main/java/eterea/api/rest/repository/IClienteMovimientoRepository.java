@@ -18,7 +18,7 @@ import eterea.api.rest.model.ClienteMovimiento;
 @Repository
 public interface IClienteMovimientoRepository extends JpaRepository<ClienteMovimiento, Long> {
 
-	public List<ClienteMovimiento> findAllByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(Long clienteId,
+	public List<ClienteMovimiento> findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(Long clienteId,
 			List<Integer> comprobanteIds);
 
 	public List<ClienteMovimiento> findAllByReservaIdIn(List<Long> reservaIds);

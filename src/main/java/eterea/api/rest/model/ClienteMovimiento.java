@@ -8,22 +8,19 @@ package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
 @Entity
 @Table(name = "movclie")
+@NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class ClienteMovimiento extends Auditable implements Serializable {
 
 	@Serial
@@ -143,17 +140,9 @@ public class ClienteMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "clavev")
 	private Long clienteMovimientoIdSlave;
+	
+	@OneToOne(optional = true)
+	@JoinColumn(name = "cgocomprob", insertable = false, updatable = false)
+	private Comprobante comprobante;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		ClienteMovimiento that = (ClienteMovimiento) o;
-		return clienteMovimientoId != null && Objects.equals(clienteMovimientoId, that.clienteMovimientoId);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
 }
