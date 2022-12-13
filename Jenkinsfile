@@ -10,8 +10,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                git branch: 'main', credentialsId: 'dqmdz',
-                url: 'git@github.com:TERMALIA/ETEREA.api.rest.git'
+                git branch: 'main', url: 'git@github.com:TERMALIA/ETEREA.api.rest.git'
 
                 // Run Maven on a Unix agent.
                 sh "mvn clean package"
