@@ -1,21 +1,25 @@
 pipeline {
     agent any
-    tools { 
-        M3 'Maven 3.8.6' 
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
     }
+
     stages {
-        stage('Initialize') {
-            steps {
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M3_HOME = ${M3_HOME}"
-                '''
-            }
-        }
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                // Get some code from a GitHub repository
+                git branch: 'main', credentialsId: 'dqmdz',
+                url: 'git@github.com:TERMALIA/ETEREA.api.rest.git'
+
+                // Run Maven on a Unix agent.
+                sh "mvn clean package"
+
+                // Build image
+                sh "docker build -t dqmdz/eterea.api:1.0.0:${BUILD_NUMBER}"
             }
+
         }
     }
 }
