@@ -49,6 +49,7 @@ spring:
 
 logging:
   level:
+    eterea.api.rest: DEBUG
     web: ${app.logging}
     org:
       hibernate:
