@@ -33,7 +33,7 @@ jobs:
       name: Build & push Docker image
       with:
         image: dqmdz/eterea.api
-        tags: 1.0.0, latest, ${{ github.ref#refs/heads/ }}.${{ github.sha }}
+        tags: 1.0.0, latest, "${GITHUB_REF#refs/heads/}.${GITHUB_SHA}"
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
