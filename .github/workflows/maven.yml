@@ -34,7 +34,7 @@ jobs:
       name: Build & push Docker image
       with:
         image: dqmdz/eterea.api
-        tags: 1.0.0, latest
+        tags: ${{ steps.meta.outputs.tags }}, 1.0.0, latest
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
