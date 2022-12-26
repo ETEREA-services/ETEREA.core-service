@@ -18,9 +18,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      GIT_HASH: $(git rev-parse --short "$GITHUB_SHA")
-    
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -36,7 +33,7 @@ jobs:
       name: Build & push Docker image
       with:
         image: dqmdz/eterea.api
-        tags: $GIT_HASH, latest
+        tags: ${{ github.sha }}, latest
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
