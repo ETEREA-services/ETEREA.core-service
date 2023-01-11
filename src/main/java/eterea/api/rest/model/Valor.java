@@ -40,51 +40,51 @@ public class Valor extends Auditable implements Serializable {/**
 	private Integer negocioId;
 	
 	@Column(name = "modulocompras")
-	private Byte compras;
+	private Byte compras = 0;
 	
 	@Column(name = "moduloventas")
-	private Byte ventas;
+	private Byte ventas = 0;
 	
-	private Byte numerable;
-	private Byte duplicados;
+	private Byte numerable = 0;
+	private Byte duplicados = 0;
 	
 	@Column(name = "fechaemi")
-	private Byte fechaEmision;
+	private Byte fechaEmision = 0;
 	
 	@Column(name = "fechavto")
-	private Byte fechaVencimiento;
+	private Byte fechaVencimiento = 0;
 	
 	@Column(name = "cgocontable")
-	private Long cuenta;
+	private Long numeroCuenta;
 	
-	private Byte titular;
-	private Byte banco;
+	private Byte titular = 0;
+	private Byte banco = 0;
 	
 	@Column(name = "chtercero")
-	private Byte chequeTercero;
+	private Byte chequeTercero = 0;
 	
 	@Column(name = "ctacte")
-	private Byte cuentaCorriente;
+	private Byte cuentaCorriente = 0;
 	
 	@Column(name = "retib")
-	private Byte retencionIngresosBrutos;
+	private Byte retencionIngresosBrutos = 0;
 	
 	@Column(name = "cva_retgcias")
-	private Byte retencionGanancias;
+	private Byte retencionGanancias = 0;
 	
 	@Column(name = "cva_retiva")
-	private Byte retencionIva;
+	private Byte retencionIva = 0;
 	
 	@Column(name = "cva_autonumerable")
-	private Byte autoNumerable;
+	private Byte autoNumerable = 0;
 	
 	@Column(name = "cva_mon_id")
 	private Integer monedaId;
 	
 	@Column(name = "cva_invisible")
-	private Byte invisible;
+	private Byte invisible = 0;
 	
-	private Byte restaurant;
-	private Byte tarjeta;
+	private Byte restaurant = 0;
+	private Byte tarjeta = 0;
 	
 }

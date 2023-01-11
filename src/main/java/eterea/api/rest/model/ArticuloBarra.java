@@ -6,49 +6,44 @@
  */
 package eterea.api.rest.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+import java.io.Serializable;
+
+@Data
 @Entity
 @Table(name = "articulosbarras")
+@NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class ArticuloBarra extends Auditable implements Serializable {
 
- 	@Serial
 	private static final long serialVersionUID = -4620826410596988827L;
 
 	@Id
 	@Column(name = "aba_codigo")
-	private String codigo;
+	private String codigoBarras;
 	
 	@Column(name = "clave")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long articuloBarraId;
 	
 	@Column(name = "aba_art_id")
 	private String articuloId;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		ArticuloBarra that = (ArticuloBarra) o;
-		return codigo != null && Objects.equals(codigo, that.codigo);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
+	@OneToOne(optional = true)
+	@JoinColumn(name = "aba_art_id", insertable = false, updatable = false)
+	private Articulo articulo;
+	
 }

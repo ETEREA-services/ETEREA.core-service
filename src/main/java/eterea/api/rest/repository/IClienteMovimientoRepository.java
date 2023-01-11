@@ -27,7 +27,10 @@ public interface IClienteMovimientoRepository extends JpaRepository<ClienteMovim
 
 	public Optional<ClienteMovimiento> findByClienteMovimientoId(Long clienteMovimientoId);
 
-	public Optional<ClienteMovimiento> findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc(Integer recibo,
-			Integer puntoVenta, String letraComprobante);
+	public Optional<ClienteMovimiento> findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc(
+			Byte recibo, Integer puntoVenta, String letraComprobante);
+
+	public Optional<ClienteMovimiento> findByComprobanteIdAndPuntoVentaAndNumeroComprobante(Integer comprobanteId,
+			Integer puntoVenta, Long numeroComprobante);
 
 }

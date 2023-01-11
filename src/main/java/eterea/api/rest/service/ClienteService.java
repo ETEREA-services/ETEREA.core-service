@@ -31,6 +31,10 @@ public class ClienteService {
 		return clienteSearchService.findAllBySearch(search);
 	}
 
+	public List<Cliente> findAll() {
+		return repository.findAll();
+	}
+
 	public Cliente findByClienteId(Long clienteId) {
 		return repository.findByClienteId(clienteId).orElseThrow(() -> new ClienteNotFoundException(clienteId));
 	}

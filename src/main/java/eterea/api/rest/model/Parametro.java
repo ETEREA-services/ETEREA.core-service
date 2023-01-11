@@ -39,45 +39,47 @@ public class Parametro extends Auditable implements Serializable {/**
 	private Integer negocioId; 
 	
 	@Column(name = "ctaprov")
-	private Long cuentaProveedor;
+	private Long numeroCuentaProveedor;
 	
 	@Column(name = "ctaiva21compras")
-	private Long cuentaIva21Compras;
+	private Long numeroCuentaIva21Compras;
 	
 	@Column(name = "ctaiva27compras")
-	private Long cuentaIva27Compras;
+	private Long numeroCuentaIva27Compras;
 	
 	@Column(name = "ctaiva105compras")
-	private Long cuentaIva205Compras;
+	private Long numeroCuentaIva105Compras;
 	
 	@Column(name = "ctaperivacompras")
-	private Long cuentaPercepcionIvaCompra;
+	private Long numeroCuentaPercepcionIvaCompras;
 	
 	@Column(name = "ctaperingbrutoscompras")
-	private Long cuentaPercepcionIngresosBrutosCompra;
+	private Long numeroCuentaPercepcionIngresosBrutosCompras;
 	
 	@Column(name = "ctagngcompras")
-	private Long cuentaGastosNoGravadosCompra;
+	private Long numeroCuentaGastosNoGravadosCompras;
 	
 	@Column(name = "ctaclientes")
-	private Long cuentaClientes;
+	private Long numeroCuentaClientes;
 	
 	@Column(name = "ctaivaventas")
-	private Long cuentaIvaVentas;
+	private Long numeroCuentaIvaVentas;
 	
 	@Column(name = "ctaivarniventas")
-	private Long cuentaIvaRniVentas;
+	private Long numeroCuentaIvaRniVentas;
 	
 	@Column(name = "ctaventas")
-	private Long cuentaVentas;
+	private Long numeroCuentaVentas;
 	
 	@Column(name = "ctacaja")
-	private Long cuentaCaja;
+	private Long numeroCuentaCaja;
 	
 	@Column(name = "ctaajuste")
-	private Long cuentaAjuste;
+	private Long numeroCuentaAjuste;
 	
-	private Long cuentaStockConfirmar;
+	@Column(name = "cuenta_stock_confirmar")
+	private Long numeroCuentaStockConfirmar;
+	
 	private BigDecimal iva1 = BigDecimal.ZERO;
 	private BigDecimal iva2 = BigDecimal.ZERO;
 	
@@ -85,7 +87,7 @@ public class Parametro extends Auditable implements Serializable {/**
 	private BigDecimal ivaCredito1 = BigDecimal.ZERO;
 	
 	@Column(name = "bloqueoivacompras")
-	private Byte bloqueIvaCompras;
+	private Byte bloqueIvaCompras = 0;
 	
 	@Column(name = "ivavta")
 	private BigDecimal ivaVenta = BigDecimal.ZERO;
@@ -97,6 +99,6 @@ public class Parametro extends Auditable implements Serializable {/**
 	private Integer  centroStockIdRestaurant;
 	
 	@Column(name = "par_feproduccion")
-	private Byte facturaElectronicaProduccion;
+	private Byte facturaElectronicaProduccion = 0;
 	
 }

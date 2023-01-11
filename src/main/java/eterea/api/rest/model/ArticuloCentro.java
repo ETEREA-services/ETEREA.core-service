@@ -4,52 +4,47 @@
  */
 package eterea.api.rest.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
 @Entity
-@Table(name = "articuloscentro", uniqueConstraints = { @UniqueConstraint(columnNames = { "arc_art_id", "arc_cst_id" }) })
+@Table(name = "articuloscentro", uniqueConstraints = {
+		@UniqueConstraint(columnNames = { "arc_art_id", "arc_cst_id" }) })
+@NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class ArticuloCentro extends Auditable implements Serializable {
-	@Serial
+
 	private static final long serialVersionUID = 71508028326850175L;
+
+	@Id
+	@Column(name = "arc_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long articuloCentroId;
 
 	@Column(name = "arc_art_id")
 	private String articuloId;
-	
+
 	@Column(name = "arc_cst_id")
 	private Integer centroStockId;
-	
+
 	@Column(name = "arc_saldo")
 	private BigDecimal saldo = BigDecimal.ZERO;
-	
-	@Column(name = "saldosf")
+
+	@Column(name = "arc_saldosf")
 	private BigDecimal saldoStockFicha = BigDecimal.ZERO;
-	
-	@Id
-	@Column(name = "arc_id")
-	private Long articuloCentroId;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		ArticuloCentro that = (ArticuloCentro) o;
-		return articuloCentroId != null && Objects.equals(articuloCentroId, that.articuloCentroId);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
 }
