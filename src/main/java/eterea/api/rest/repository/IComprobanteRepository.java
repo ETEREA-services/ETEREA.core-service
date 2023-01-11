@@ -33,6 +33,9 @@ public interface IComprobanteRepository extends JpaRepository<Comprobante, Integ
 
 	public List<Comprobante> findAllByModuloAndDebitaAndAsociado(Integer modulo, Byte debita, Byte asociado);
 
+	public List<Comprobante> findAllByModuloAndAplicaPendienteAndReciboAndLetraComprobanteAndNivelLessThanEqualAndInvisibleOrderByDescripcion(
+			Integer modulo, Byte aplicaPendiente, Byte recibo, String letraComprobante, Integer nivel, Byte invisible);
+
 	public Optional<Comprobante> findByComprobanteId(Integer comprobanteId);
 
 }

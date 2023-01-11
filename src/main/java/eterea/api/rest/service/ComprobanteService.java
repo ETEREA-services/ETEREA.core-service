@@ -4,6 +4,7 @@
 package eterea.api.rest.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import eterea.api.rest.repository.IComprobanteRepository;
  */
 @Service
 public class ComprobanteService {
+
+	private static final Integer moduloComprobanteVenta = 3;
 
 	@Autowired
 	private IComprobanteRepository repository;
@@ -43,6 +46,24 @@ public class ComprobanteService {
 		}
 //		debita = 2 && comprobanteId = 0
 		return repository.findAllByModuloAndTransferirAndInvisible(modulo, (byte) 0, (byte) 0);
+	}
+
+	public List<Comprobante> findAllByFiltroVenta(String letraComprobante, Integer nivel, Boolean filtrarPuntoVenta,
+			Integer puntoVenta, Boolean puntoExclusivo) {
+		List<Comprobante> comprobantesFull = repository
+				.findAllByModuloAndAplicaPendienteAndReciboAndLetraComprobanteAndNivelLessThanEqualAndInvisibleOrderByDescripcion(
+						moduloComprobanteVenta, (byte) 0, (byte) 0, letraComprobante, nivel, (byte) 0);
+		List<Comprobante> comprobantes = comprobantesFull.stream().collect(Collectors.toList());
+		if (puntoVenta > 0 && filtrarPuntoVenta) {
+			comprobantes = comprobantesFull.stream().filter(comprobante -> comprobante.getPuntoVenta() == puntoVenta)
+					.collect(Collectors.toList());
+			if (puntoExclusivo) {
+				comprobantes = comprobantesFull.stream().filter(
+						comprobante -> comprobante.getPuntoVenta() == puntoVenta || comprobante.getPuntoVenta() == 0)
+						.collect(Collectors.toList());
+			}
+		}
+		return comprobantes;
 	}
 
 	public Comprobante findByComprobanteId(Integer comprobanteId) {

@@ -4,26 +4,29 @@
  */
 package eterea.api.rest.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
 @Entity
 @Table(name = "conceptosfact")
+@NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class ConceptoFacturado extends Auditable implements Serializable {
 
-	@Serial
 	private static final long serialVersionUID = 8264376062048795530L;
 
 	@Id
@@ -38,23 +41,17 @@ public class ConceptoFacturado extends Auditable implements Serializable {
 	private Integer numeroLinea;
 
 	@Column(name = "concepto")
-	@NotNull
-	@Size(max = 240)
 	private String concepto = "";
 
 	@Column(name = "clavedetartic")
 	private Long articuloMovimientoId;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		ConceptoFacturado that = (ConceptoFacturado) o;
-		return conceptoFacturadoId != null && Objects.equals(conceptoFacturadoId, that.conceptoFacturadoId);
-	}
-
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
+	@OneToOne(optional = true)
+	@JoinColumn(name = "clavemovclie", insertable = false, updatable = false)
+	private ClienteMovimiento clienteMovimiento;
+	
+	@OneToOne(optional = true)
+	@JoinColumn(name = "clavedetartic", insertable = false, updatable = false)
+	private ArticuloMovimiento articuloMovimiento;
+	
 }

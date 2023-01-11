@@ -36,6 +36,11 @@ public class ClienteController {
 	public ResponseEntity<List<ClienteSearch>> findAllBySearch(@PathVariable String chain) {
 		return new ResponseEntity<List<ClienteSearch>>(service.findAllBySearch(chain), HttpStatus.OK);
 	}
+	
+	@GetMapping("/")
+	public ResponseEntity<List<Cliente>> findAll() {
+		return new ResponseEntity<List<Cliente>>(service.findAll(), HttpStatus.OK);
+	}
 
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> findByClienteId(@PathVariable Long clienteId) {

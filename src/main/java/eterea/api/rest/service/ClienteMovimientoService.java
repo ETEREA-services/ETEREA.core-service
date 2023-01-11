@@ -29,7 +29,8 @@ public class ClienteMovimientoService {
 	public List<ClienteMovimiento> findTop200Asociables(Long clienteId) {
 		List<Integer> comprobanteIds = comprobanteService.findAllAsociables().stream()
 				.map(comprobante -> comprobante.getComprobanteId()).collect(Collectors.toList());
-		return repository.findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
+		return repository.findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId,
+				comprobanteIds);
 	}
 
 	public List<ClienteMovimiento> findAllByReservaIds(List<Long> reservaIds) {
@@ -40,16 +41,23 @@ public class ClienteMovimientoService {
 		return repository.findAllByReservaId(reservaId);
 	}
 
+	public Long nextNumeroFactura(Integer puntoVenta, String letraComprobante) {
+		return repository.findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc((byte) 0,
+				puntoVenta, letraComprobante).map(clienteMovimiento -> {
+					return 1 + clienteMovimiento.getNumeroComprobante();
+				}).orElse(1L);
+	}
+
 	public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {
 		return repository.findByClienteMovimientoId(clienteMovimientoId)
 				.orElseThrow(() -> new ClienteMovimientoNotFoundException(clienteMovimientoId));
 	}
 
-	public Long nextNumeroFactura(Integer puntoVenta, String letraComprobante) {
-		return repository.findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc(0, puntoVenta,
-				letraComprobante).map(clienteMovimiento -> {
-					return 1 + clienteMovimiento.getNumeroComprobante();
-				}).orElse(1L);
+	public ClienteMovimiento findByComprobante(Integer comprobanteId, Integer puntoVenta, Long numeroComprobante) {
+		return repository
+				.findByComprobanteIdAndPuntoVentaAndNumeroComprobante(comprobanteId, puntoVenta, numeroComprobante)
+				.orElseThrow(
+						() -> new ClienteMovimientoNotFoundException(comprobanteId, puntoVenta, numeroComprobante));
 	}
 
 }

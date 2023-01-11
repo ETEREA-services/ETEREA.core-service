@@ -32,7 +32,7 @@ public class ClienteMovimientoController {
 		return new ResponseEntity<List<ClienteMovimiento>>(service.findTop200Asociables(clienteId), HttpStatus.OK);
 	}
 
-	@GetMapping("/last/{puntoVenta}/{letraComprobante}")
+	@GetMapping("/nextFactura/{puntoVenta}/{letraComprobante}")
 	public ResponseEntity<Long> nextNumeroFactura(@PathVariable Integer puntoVenta,
 			@PathVariable String letraComprobante) {
 		return new ResponseEntity<Long>(service.nextNumeroFactura(puntoVenta, letraComprobante), HttpStatus.OK);

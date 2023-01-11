@@ -106,39 +106,27 @@ public class ReservaService {
 		Integer factor = comprobante.getDebita() == 1 ? -1 : 1;
 
 		if (articulo.getCentroStockId() != 1 || facturaExtranjero == 0) {
-			ArticuloMovimiento articuloMovimiento = new ArticuloMovimiento();
-			articuloMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
-			articuloMovimiento.setComprobanteId(clienteMovimiento.getComprobanteId());
-			articuloMovimiento.setNegocioId(clienteMovimiento.getNegocioId());
-			articuloMovimiento.setItem(item);
-			articuloMovimiento.setFechaMovimiento(clienteMovimiento.getFechaComprobante());
-			articuloMovimiento.setFechaFactura(clienteMovimiento.getFechaComprobante());
-			articuloMovimiento.setCierreCajaId(clienteMovimiento.getCierreCajaId());
-			articuloMovimiento.setArticuloId(reservaArticulo.getArticuloId());
-			articuloMovimiento.setCentroStockId(articulo.getCentroStockId());
-			BigDecimal preciounitario = reservaArticulo.getPreciounitario();
-			articuloMovimiento.setPrecioUnitarioSinIva(preciounitario.divide(factorIva, 2, RoundingMode.HALF_UP));
-			preciounitario = articuloMovimiento.getPrecioUnitarioSinIva().multiply(factorIva);
-			preciounitario = preciounitario.setScale(2, RoundingMode.HALF_UP);
-			articuloMovimiento.setPrecioUnitarioConIva(preciounitario);
-			articuloMovimiento.setPrecioUnitario(articuloMovimiento.getPrecioUnitarioConIva());
-			articuloMovimiento.setCantidad(new BigDecimal(factor * reservaArticulo.getCantidad()));
-			articuloMovimiento.setTotal(
-					articuloMovimiento.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad())));
-			articuloMovimiento.setCuenta(articulo.getCuentaVentas());
-			articuloMovimiento.setIva105(articulo.getIva105());
-			articuloMovimiento.setExento(articulo.getExento());
+			BigDecimal precioUnitarioSinIva = reservaArticulo.getPreciounitario().divide(factorIva, 2,
+					RoundingMode.HALF_UP);
+			BigDecimal precioUnitarioConIva = precioUnitarioSinIva.multiply(factorIva).setScale(2,
+					RoundingMode.HALF_UP);
+			ArticuloMovimiento articuloMovimiento = new ArticuloMovimiento(null,
+					clienteMovimiento.getClienteMovimientoId(), null, null, null, clienteMovimiento.getComprobanteId(),
+					item, reservaArticulo.getArticuloId(), clienteMovimiento.getNegocioId(),
+					new BigDecimal(factor * reservaArticulo.getCantidad()), precioUnitarioConIva, precioUnitarioSinIva,
+					precioUnitarioConIva, articulo.getNumeroCuentaVentas(), articulo.getIva105(), articulo.getExento(),
+					clienteMovimiento.getFechaComprobante(), clienteMovimiento.getFechaComprobante(), 0, null, null,
+					BigDecimal.ZERO, BigDecimal.ZERO, null, BigDecimal.ZERO,
+					precioUnitarioConIva.multiply(new BigDecimal(reservaArticulo.getCantidad())), null, null, null);
 
 			articuloMovimiento = articuloMovimientoService.add(articuloMovimiento);
 
 			articuloMovs.add(articuloMovimiento);
 
 			if (!reservaArticulo.getObservaciones().trim().equals("")) {
-				ConceptoFacturado conceptoFacturado = new ConceptoFacturado();
-				conceptoFacturado.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
-				conceptoFacturado.setNumeroLinea(1);
-				conceptoFacturado.setConcepto(reservaArticulo.getObservaciones());
-				conceptoFacturado.setArticuloMovimientoId(articuloMovimiento.getArticuloMovimientoId());
+				ConceptoFacturado conceptoFacturado = new ConceptoFacturado(null,
+						clienteMovimiento.getClienteMovimientoId(), 1, reservaArticulo.getObservaciones(),
+						articuloMovimiento.getArticuloMovimientoId(), null, null);
 
 				conceptoFacturado = conceptoFacturadoService.add(conceptoFacturado);
 			}
