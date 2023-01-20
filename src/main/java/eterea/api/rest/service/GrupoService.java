@@ -3,7 +3,7 @@
  */
 package eterea.api.rest.service;
 
-import eterea.api.rest.exception.GrupoNotFoundException;
+import eterea.api.rest.exception.GrupoException;
 import eterea.api.rest.model.Grupo;
 import eterea.api.rest.model.GrupoProducto;
 import eterea.api.rest.model.Voucher;
@@ -38,7 +38,7 @@ public class GrupoService {
 	}
 
 	public Grupo findById(Integer grupoId) {
-		return repository.findById(grupoId).orElseThrow(() -> new GrupoNotFoundException(grupoId));
+		return repository.findById(grupoId).orElseThrow(() -> new GrupoException(grupoId));
 	}
 
 	public List<Grupo> findAllByVentaInternet(Byte habilitado) {
@@ -50,7 +50,7 @@ public class GrupoService {
 			grupo.setNombre(newgrupo.getNombre());
 			grupo.setVentainternet(newgrupo.getVentainternet());
 			return repository.save(grupo);
-		}).orElseThrow(() -> new GrupoNotFoundException(grupoId));
+		}).orElseThrow(() -> new GrupoException(grupoId));
 	}
 
 	public List<Grupo> findAllByVoucherFechaServicio(OffsetDateTime fechaServicio) {

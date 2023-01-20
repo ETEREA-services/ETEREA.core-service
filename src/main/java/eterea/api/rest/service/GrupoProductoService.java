@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.GrupoProductoNotFoundException;
+import eterea.api.rest.exception.GrupoProductoException;
 import eterea.api.rest.model.GrupoProducto;
 import eterea.api.rest.repository.IGrupoProductoRepository;
 
@@ -30,7 +30,7 @@ public class GrupoProductoService {
 	}
 
 	public GrupoProducto findByUnique(Integer grupoId, Integer productoId) {
-		return repository.findByUnique(grupoId, productoId).orElseThrow(() -> new GrupoProductoNotFoundException(grupoId, productoId));
+		return repository.findByUnique(grupoId, productoId).orElseThrow(() -> new GrupoProductoException(grupoId, productoId));
 	}
 
 	public GrupoProducto add(GrupoProducto grupoproducto) {
@@ -42,7 +42,7 @@ public class GrupoProductoService {
 		return repository.findByUnique(grupoId, productoId).map(grupoproducto -> {
 			grupoproducto.setCoeficiente(newgrupoproducto.getCoeficiente());
 			return repository.save(grupoproducto);
-		}).orElseThrow(() -> new GrupoProductoNotFoundException(grupoId, productoId));
+		}).orElseThrow(() -> new GrupoProductoException(grupoId, productoId));
 	}
 
 	public void deleteById(Long grupoproductoId) {

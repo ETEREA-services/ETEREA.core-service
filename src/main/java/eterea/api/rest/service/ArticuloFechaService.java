@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ArticuloFechaNotFoundException;
+import eterea.api.rest.exception.ArticuloFechaException;
 import eterea.api.rest.model.ArticuloFecha;
 import eterea.api.rest.repository.IArticuloFechaRepository;
 
@@ -24,7 +24,7 @@ public class ArticuloFechaService {
 
 	public ArticuloFecha findByUnique(String articuloId, OffsetDateTime fecha) {
 		return repository.findByArticuloIdAndFecha(articuloId, fecha)
-				.orElseThrow(() -> new ArticuloFechaNotFoundException(articuloId, fecha));
+				.orElseThrow(() -> new ArticuloFechaException(articuloId, fecha));
 	}
 
 	public ArticuloFecha add(ArticuloFecha articulofecha) {
@@ -38,6 +38,6 @@ public class ArticuloFechaService {
 					newarticulofecha.getFecha(), newarticulofecha.getPrecioUsd(), newarticulofecha.getPrecioArs());
 			repository.save(articulofecha);
 			return articulofecha;
-		}).orElseThrow(() -> new ArticuloFechaNotFoundException(articulofechaId));
+		}).orElseThrow(() -> new ArticuloFechaException(articulofechaId));
 	}
 }

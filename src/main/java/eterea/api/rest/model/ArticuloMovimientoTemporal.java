@@ -24,6 +24,10 @@ public class ArticuloMovimientoTemporal extends Auditable implements Serializabl
 	
 	private static final long serialVersionUID = 925755181492758323L;
 
+	@Id
+	@Column(name = "clave")
+	private Long articuloMovimientoTemporalId;
+
 	@Column(name = "ipaddress")
 	private String ipAddress;
 
@@ -65,9 +69,5 @@ public class ArticuloMovimientoTemporal extends Auditable implements Serializabl
 	private Byte iva105;
 	private Byte exento;
 	private BigDecimal comision = BigDecimal.ZERO;
-
-	@Id
-	@Column(name = "clave")
-	private Long articuloMovimientoTemporalId;
 
 }

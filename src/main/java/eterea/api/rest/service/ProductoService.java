@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ProductoNotFoundException;
+import eterea.api.rest.exception.ProductoException;
 import eterea.api.rest.model.Producto;
 import eterea.api.rest.repository.IProductoRepository;
 
@@ -31,7 +31,7 @@ public class ProductoService {
 	}
 
 	public Producto findById(Integer productoId) {
-		return repository.findById(productoId).orElseThrow(() -> new ProductoNotFoundException(productoId));
+		return repository.findById(productoId).orElseThrow(() -> new ProductoException(productoId));
 	}
 
 	public Producto add(Producto producto) {
@@ -49,6 +49,6 @@ public class ProductoService {
 			producto.setVentamostrador(newproducto.getVentamostrador());
 			producto.setVentainternet(newproducto.getVentainternet());
 			return repository.save(producto);
-		}).orElseThrow(() -> new ProductoNotFoundException(productoId));
+		}).orElseThrow(() -> new ProductoException(productoId));
 	}
 }

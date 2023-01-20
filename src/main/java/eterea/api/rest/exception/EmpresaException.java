@@ -7,7 +7,7 @@ package eterea.api.rest.exception;
  * @author daniel
  *
  */
-public class EmpresaNotFoundException extends RuntimeException {
+public class EmpresaException extends RuntimeException {
 	/**
 	 * 
 	 */

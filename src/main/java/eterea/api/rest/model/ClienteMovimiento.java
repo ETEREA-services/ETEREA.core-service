@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import jakarta.persistence.*;
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -23,7 +22,6 @@ import java.time.OffsetDateTime;
 @EqualsAndHashCode(callSuper=false)
 public class ClienteMovimiento extends Auditable implements Serializable {
 
-	@Serial
 	private static final long serialVersionUID = 1810250202563003951L;
 
 	@Id
@@ -144,5 +142,9 @@ public class ClienteMovimiento extends Auditable implements Serializable {
 	@OneToOne(optional = true)
 	@JoinColumn(name = "cgocomprob", insertable = false, updatable = false)
 	private Comprobante comprobante;
+
+	@OneToOne(optional = true)
+	@JoinColumn(name = "cgoclie", insertable = false, updatable = false)
+	private Cliente cliente;
 
 }

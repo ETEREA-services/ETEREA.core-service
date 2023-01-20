@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.LegajoRegistroNotFoundException;
+import eterea.api.rest.exception.LegajoRegistroException;
 import eterea.api.rest.model.LegajoRegistro;
 import eterea.api.rest.repository.ILegajoRegistroRepository;
 
@@ -28,10 +28,10 @@ public class LegajoRegistroService {
 	}
 
 	public LegajoRegistro findLastByLegajoId(Integer legajoId) {
-		return repository.findLastByLegajoId(legajoId).orElseThrow(() -> new LegajoRegistroNotFoundException(legajoId));
+		return repository.findLastByLegajoId(legajoId).orElseThrow(() -> new LegajoRegistroException(legajoId));
 	}
 
 	public LegajoRegistro findLastByLegajoIdAndFecha(Integer legajoId, Date fecha, Time hora) {
-		return repository.findLastByLegajoIdAndFecha(legajoId, fecha, hora).orElseThrow(() -> new LegajoRegistroNotFoundException(legajoId));
+		return repository.findLastByLegajoIdAndFecha(legajoId, fecha, hora).orElseThrow(() -> new LegajoRegistroException(legajoId));
 	}
 }

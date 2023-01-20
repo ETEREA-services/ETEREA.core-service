@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ComprobanteNotFoundException;
+import eterea.api.rest.exception.ComprobanteException;
 import eterea.api.rest.model.Comprobante;
 import eterea.api.rest.repository.IComprobanteRepository;
 
@@ -47,7 +47,7 @@ public class ComprobanteService {
 
 	public Comprobante findByComprobanteId(Integer comprobanteId) {
 		return repository.findByComprobanteId(comprobanteId)
-				.orElseThrow(() -> new ComprobanteNotFoundException(comprobanteId));
+				.orElseThrow(() -> new ComprobanteException(comprobanteId));
 	}
 
 }

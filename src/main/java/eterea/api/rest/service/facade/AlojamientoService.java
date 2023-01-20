@@ -8,8 +8,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.HabitacionNotFoundException;
-import eterea.api.rest.exception.HabitacionTarifaNotFoundException;
+import eterea.api.rest.exception.HabitacionException;
+import eterea.api.rest.exception.HabitacionTarifaException;
 import eterea.api.rest.model.Habitacion;
 import eterea.api.rest.model.HabitacionTarifa;
 import eterea.api.rest.service.HabitacionService;
@@ -37,7 +37,7 @@ public class AlojamientoService {
 				Habitacion habitacion = habitacionService.findByNumero(numero);
 				habitacion.setHabitacionTipoId(habitacionTipoId);
 				habitacion = habitacionService.update(habitacion, numero);
-			} catch (HabitacionNotFoundException e) {
+			} catch (HabitacionException e) {
 				log.debug("Habitacion {} NO Encontrada", numero);
 				return false;
 			}
@@ -48,7 +48,7 @@ public class AlojamientoService {
 		try {
 			habitacionTarifa = habitacionTarifaService.findByUnique(numero, paxs);
 			habitacionTarifaId = habitacionTarifa.getHabitacionTarifaId();
-		} catch (HabitacionTarifaNotFoundException e) {
+		} catch (HabitacionTarifaException e) {
 			log.debug("Tarifa NO Existe");
 		}
 		habitacionTarifa = new HabitacionTarifa(habitacionTarifaId, numero, paxs, habitacionTipoId);

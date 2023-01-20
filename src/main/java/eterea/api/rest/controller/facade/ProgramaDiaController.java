@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import eterea.api.rest.exception.ProgramaDiaNotFoundException;
+import eterea.api.rest.exception.ProgramaDiaException;
 import eterea.api.rest.model.dto.ProgramaDiaDTO;
 import eterea.api.rest.service.facade.ProgramaDiaService;
 
@@ -43,7 +43,7 @@ public class ProgramaDiaController {
 	public ResponseEntity<ProgramaDiaDTO> findByVoucherId(@PathVariable Long voucherId) {
 		try {
 			return new ResponseEntity<ProgramaDiaDTO>(service.findByVoucherId(voucherId), HttpStatus.OK);
-		} catch (ProgramaDiaNotFoundException e) {
+		} catch (ProgramaDiaException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}

@@ -6,7 +6,7 @@ package eterea.api.rest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ProveedorNotFoundException;
+import eterea.api.rest.exception.ProveedorException;
 import eterea.api.rest.model.Proveedor;
 import eterea.api.rest.repository.IProveedorRepository;
 
@@ -21,7 +21,7 @@ public class ProveedorService {
 	private IProveedorRepository repository;
 
 	public Proveedor findByProveedorId(Integer proveedorId) {
-		return repository.findByProveedorId(proveedorId).orElseThrow(() -> new ProveedorNotFoundException(proveedorId));
+		return repository.findByProveedorId(proveedorId).orElseThrow(() -> new ProveedorException(proveedorId));
 	}
 
 }
