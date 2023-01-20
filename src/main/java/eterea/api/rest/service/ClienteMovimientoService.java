@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ClienteMovimientoNotFoundException;
+import eterea.api.rest.exception.ClienteMovimientoException;
 import eterea.api.rest.model.ClienteMovimiento;
 import eterea.api.rest.repository.IClienteMovimientoRepository;
 
@@ -42,7 +42,7 @@ public class ClienteMovimientoService {
 
 	public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {
 		return repository.findByClienteMovimientoId(clienteMovimientoId)
-				.orElseThrow(() -> new ClienteMovimientoNotFoundException(clienteMovimientoId));
+				.orElseThrow(() -> new ClienteMovimientoException(clienteMovimientoId));
 	}
 
 	public Long nextNumeroFactura(Integer puntoVenta, String letraComprobante) {

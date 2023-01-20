@@ -9,21 +9,21 @@ import java.text.MessageFormat;
  * @author daniel
  *
  */
-public class ClienteNotFoundException extends RuntimeException {
+public class ClienteException extends RuntimeException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3569157004260674955L;
 
-	public ClienteNotFoundException(Long clienteId) {
+	public ClienteException(Long clienteId) {
 		super(MessageFormat.format("Cannot find Cliente {0}", clienteId));
 	}
 
-	public ClienteNotFoundException(String numeroDocumento) {
+	public ClienteException(String numeroDocumento) {
 		super(MessageFormat.format("Cannot find Cliente {0}", numeroDocumento));
 	}
 
-	public ClienteNotFoundException() {
+	public ClienteException() {
 		super("Cannot find Cliente");
 	}
 }

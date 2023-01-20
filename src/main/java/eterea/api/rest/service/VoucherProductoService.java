@@ -1,6 +1,6 @@
 package eterea.api.rest.service;
 
-import eterea.api.rest.exception.VoucherProductoNotFoundException;
+import eterea.api.rest.exception.VoucherProductoException;
 import eterea.api.rest.model.VoucherProducto;
 import eterea.api.rest.repository.IVoucherProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class VoucherProductoService {
     }
 
     public VoucherProducto findById(Long voucherProductoId) {
-        return repository.findById(voucherProductoId).orElseThrow(() -> new VoucherProductoNotFoundException(voucherProductoId));
+        return repository.findById(voucherProductoId).orElseThrow(() -> new VoucherProductoException(voucherProductoId));
     }
 
 }

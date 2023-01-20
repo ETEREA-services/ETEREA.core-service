@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.VoucherNotFoundException;
+import eterea.api.rest.exception.VoucherException;
 import eterea.api.rest.model.Voucher;
 import eterea.api.rest.repository.IVoucherRepository;
 import eterea.api.rest.tool.ToolService;
@@ -50,12 +50,12 @@ public class VoucherService {
 
 	public Voucher findByReservaId(Long reservaId) {
 		return repository.findByReservaId(reservaId)
-				.orElseThrow(() -> new VoucherNotFoundException(reservaId, "Reserva"));
+				.orElseThrow(() -> new VoucherException(reservaId, "Reserva"));
 	}
 
 	public Voucher findByVoucherId(Long voucherId) {
 		return repository.findByVoucherId(voucherId)
-				.orElseThrow(() -> new VoucherNotFoundException(voucherId, "Programa por el Día"));
+				.orElseThrow(() -> new VoucherException(voucherId, "Programa por el Día"));
 	}
 
 }

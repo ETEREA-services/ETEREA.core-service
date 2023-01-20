@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import eterea.api.rest.exception.ProveedorNotFoundException;
+import eterea.api.rest.exception.ProveedorException;
 import eterea.api.rest.model.Proveedor;
 import eterea.api.rest.service.ProveedorService;
 
@@ -31,7 +31,7 @@ public class ProveedorController {
 	public ResponseEntity<Proveedor> findByProveedorId(@PathVariable Integer proveedorId) {
 		try {
 			return new ResponseEntity<Proveedor>(service.findByProveedorId(proveedorId), HttpStatus.OK);
-		} catch (ProveedorNotFoundException e) {
+		} catch (ProveedorException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}

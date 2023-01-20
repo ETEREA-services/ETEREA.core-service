@@ -9,6 +9,7 @@ import java.util.List;
 import eterea.api.rest.model.ArticuloMovimientoTemporal;
 import eterea.api.rest.model.Cliente;
 import eterea.api.rest.model.ClienteMovimiento;
+import eterea.api.rest.model.ClienteMovimientoPrevio;
 import eterea.api.rest.model.Comprobante;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,5 +31,6 @@ public class ImpresionFiscalDTO implements Serializable {
 	private Comprobante comprobante;
 	private List<ArticuloMovimientoTemporal> articuloMovimientoTemporals;
 	private ClienteMovimiento comprobanteOrigen;
+	private ClienteMovimientoPrevio clienteMovimientoPrevio;
 
 }

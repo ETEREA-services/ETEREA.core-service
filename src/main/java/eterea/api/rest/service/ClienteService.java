@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ClienteNotFoundException;
+import eterea.api.rest.exception.ClienteException;
 import eterea.api.rest.model.Cliente;
 import eterea.api.rest.model.view.ClienteSearch;
 import eterea.api.rest.repository.IClienteRepository;
@@ -32,16 +32,16 @@ public class ClienteService {
 	}
 
 	public Cliente findByClienteId(Long clienteId) {
-		return repository.findByClienteId(clienteId).orElseThrow(() -> new ClienteNotFoundException(clienteId));
+		return repository.findByClienteId(clienteId).orElseThrow(() -> new ClienteException(clienteId));
 	}
 
 	public Cliente findByNumeroDocumento(String numeroDocumento) {
 		return repository.findTopByNumeroDocumento(numeroDocumento)
-				.orElseThrow(() -> new ClienteNotFoundException(numeroDocumento));
+				.orElseThrow(() -> new ClienteException(numeroDocumento));
 	}
 
 	public Cliente findLast() {
-		return repository.findTopByOrderByClienteIdDesc().orElseThrow(() -> new ClienteNotFoundException());
+		return repository.findTopByOrderByClienteIdDesc().orElseThrow(() -> new ClienteException());
 	}
 
 	public Cliente add(Cliente cliente) {

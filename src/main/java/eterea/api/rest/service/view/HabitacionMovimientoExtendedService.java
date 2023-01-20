@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.view.HabitacionMovimientoExtendedNotFoundException;
+import eterea.api.rest.exception.view.HabitacionMovimientoExtendedException;
 import eterea.api.rest.model.view.HabitacionMovimientoExtended;
 import eterea.api.rest.repository.view.IHabitacionMovimientoExtendedRepository;
 
@@ -46,7 +46,7 @@ public class HabitacionMovimientoExtendedService {
 
 	public HabitacionMovimientoExtended findByNumeroReserva(Long numeroReserva) {
 		return repository.findByNumeroReserva(numeroReserva)
-				.orElseThrow(() -> new HabitacionMovimientoExtendedNotFoundException(numeroReserva));
+				.orElseThrow(() -> new HabitacionMovimientoExtendedException(numeroReserva));
 	}
 
 }

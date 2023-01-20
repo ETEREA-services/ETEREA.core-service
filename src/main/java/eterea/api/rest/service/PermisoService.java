@@ -6,7 +6,7 @@ package eterea.api.rest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.PermisoNotFoundException;
+import eterea.api.rest.exception.PermisoException;
 import eterea.api.rest.model.Permiso;
 import eterea.api.rest.repository.IPermisoRepository;
 
@@ -22,7 +22,7 @@ public class PermisoService {
 
 	public Permiso findByPermiso(String usuario, String opcion) {
 		return repository.findByNombreAndOpcion(usuario, opcion)
-				.orElseThrow(() -> new PermisoNotFoundException(usuario, opcion));
+				.orElseThrow(() -> new PermisoException(usuario, opcion));
 	}
 
 }

@@ -7,13 +7,13 @@ package eterea.api.rest.exception;
  * @author daniel
  *
  */
-public class ClienteInternetNotFoundException extends RuntimeException {
+public class ClienteInternetException extends RuntimeException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8378505358801218295L;
 
-	public ClienteInternetNotFoundException(Long clienteId) {
+	public ClienteInternetException(Long clienteId) {
 		super("Cannot find ClienteInternet " + clienteId);
 	}
 }

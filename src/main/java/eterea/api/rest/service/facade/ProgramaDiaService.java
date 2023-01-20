@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ProgramaDiaNotFoundException;
-import eterea.api.rest.exception.VoucherNotFoundException;
+import eterea.api.rest.exception.ProgramaDiaException;
+import eterea.api.rest.exception.VoucherException;
 import eterea.api.rest.model.ClienteMovimiento;
 import eterea.api.rest.model.ReservaOrigen;
 import eterea.api.rest.model.Voucher;
@@ -50,8 +50,8 @@ public class ProgramaDiaService {
 		Voucher voucher = null;
 		try {
 			voucher = voucherService.findByVoucherId(voucherId);
-		} catch (VoucherNotFoundException e) {
-			throw new ProgramaDiaNotFoundException(voucherId);
+		} catch (VoucherException e) {
+			throw new ProgramaDiaException(voucherId);
 		}
 		List<Voucher> vouchers = new ArrayList<>();
 		vouchers.add(voucher);

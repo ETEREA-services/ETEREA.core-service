@@ -1,70 +1,59 @@
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import org.hibernate.Hibernate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.io.Serial;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Objects;
+import java.util.List;
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
 @Entity
 @Table(name = "clientemovimientoprevio")
+@NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class ClienteMovimientoPrevio extends Auditable implements Serializable {
 
-	@Serial
 	private static final long serialVersionUID = -4005223853384447248L;
 
 	@Id
 	@Column(name = "clientemovimientoprevio_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long clienteMovimientoPrevioId;
-	
-	@Column(name = "en_contruccion")
+
 	private Byte enConstruccion;
-	
-	@Column(name = "tiene_articulos")
-	private Byte articulos;
-	
-	@Column(name = "ticket_impreso")
+	private Byte tieneArticulos;
 	private Byte ticketImpreso;
-	
-	@Column(name = "cliente_id")
 	private Long clienteId;
-	
-	@Column(name = "punto_venta")
 	private Integer puntoVenta;
-	
-	@Column(name = "fecha")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
 	private OffsetDateTime fecha;
-	
-	@Column(name = "importe")
 	private BigDecimal importe = BigDecimal.ZERO;
-	
+
 	@Column(name = "clientemovimiento_id")
 	private Long clienteMovimientoId;
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-		ClienteMovimientoPrevio that = (ClienteMovimientoPrevio) o;
-		return clienteMovimientoPrevioId != null && Objects.equals(clienteMovimientoPrevioId, that.clienteMovimientoPrevioId);
-	}
+	@OneToOne(optional = true)
+	@JoinColumn(name = "clienteId", insertable = false, updatable = false)
+	private Cliente cliente;
 
-	@Override
-	public int hashCode() {
-		return getClass().hashCode();
-	}
+	@OneToMany()
+	@JoinColumn(name = "clientemovimientoprevio_id", insertable = false, updatable = false)
+	private List<ArticuloMovimientoPrevio> articuloMovimientoPrevios;
+
 }

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.HotelNotFoundException;
+import eterea.api.rest.exception.HotelException;
 import eterea.api.rest.model.Hotel;
 import eterea.api.rest.repository.IHotelRepository;
 
@@ -35,7 +35,7 @@ public class HotelService {
 	}
 
 	public Hotel findById(Integer hotelId) {
-		return repository.findById(hotelId).orElseThrow(() -> new HotelNotFoundException(hotelId));
+		return repository.findById(hotelId).orElseThrow(() -> new HotelException(hotelId));
 	}
 
 	public Hotel update(Hotel newhotel, Integer hotelId) {
@@ -45,6 +45,6 @@ public class HotelService {
 			hotel.setParadaTraslado(newhotel.getParadaTraslado());
 			hotel.setPuntoEncuentro(newhotel.getPuntoEncuentro());
 			return repository.save(hotel);
-		}).orElseThrow(() -> new HotelNotFoundException(hotelId));
+		}).orElseThrow(() -> new HotelException(hotelId));
 	}
 }

@@ -10,7 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ClienteGrupoCupoNotFoundException;
+import eterea.api.rest.exception.ClienteGrupoCupoException;
 import eterea.api.rest.model.ClienteGrupoCupo;
 import eterea.api.rest.repository.IClienteGrupoCupoRepository;
 
@@ -29,12 +29,12 @@ public class ClienteGrupoCupoService {
 
 	public ClienteGrupoCupo findByUnique(Long clienteId, Integer grupoId, Integer dias) {
 		return repository.findByClienteIdAndGrupoIdAndDias(clienteId, grupoId, dias)
-				.orElseThrow(() -> new ClienteGrupoCupoNotFoundException(clienteId, grupoId, dias));
+				.orElseThrow(() -> new ClienteGrupoCupoException(clienteId, grupoId, dias));
 	}
 
 	public ClienteGrupoCupo findByAutonumerico(Long clientegrupocupoId) {
 		return repository.findByClientegrupocupoId(clientegrupocupoId)
-				.orElseThrow(() -> new ClienteGrupoCupoNotFoundException(clientegrupocupoId));
+				.orElseThrow(() -> new ClienteGrupoCupoException(clientegrupocupoId));
 	}
 
 	public ClienteGrupoCupo add(ClienteGrupoCupo clientegrupocupo) {
@@ -47,7 +47,7 @@ public class ClienteGrupoCupoService {
 			clientegrupocupo.setCantidad(newclientegrupocupo.getCantidad());
 			repository.save(clientegrupocupo);
 			return clientegrupocupo;
-		}).orElseThrow(() -> new ClienteGrupoCupoNotFoundException(clientegrupocupoId));
+		}).orElseThrow(() -> new ClienteGrupoCupoException(clientegrupocupoId));
 	}
 
 	@Transactional

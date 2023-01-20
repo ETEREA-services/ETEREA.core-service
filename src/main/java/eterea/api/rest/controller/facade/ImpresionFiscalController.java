@@ -32,4 +32,11 @@ public class ImpresionFiscalController {
 				service.getData(ipAddress, hWnd, clienteId, comprobanteId, comprobanteOrigenId), HttpStatus.OK);
 	}
 
+	@GetMapping("/fiscalPrevio/{clienteMovimientoPrevioId}/{comprobanteId}/{comprobanteOrigenId}")
+	public ResponseEntity<ImpresionFiscalDTO> getDataPrevio(@PathVariable Long clienteMovimientoPrevioId,
+			@PathVariable Integer comprobanteId, @PathVariable Long comprobanteOrigenId) {
+		return new ResponseEntity<ImpresionFiscalDTO>(
+				service.getDataPrevio(clienteMovimientoPrevioId, comprobanteId, comprobanteOrigenId), HttpStatus.OK);
+	}
+
 }

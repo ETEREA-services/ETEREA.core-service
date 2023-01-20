@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.ClienteInternetNotFoundException;
+import eterea.api.rest.exception.ClienteInternetException;
 import eterea.api.rest.model.Authorities;
 import eterea.api.rest.model.ClienteInternet;
 import eterea.api.rest.repository.IAuthoritiesRepository;
@@ -27,7 +27,7 @@ public class ClienteInternetService {
 	private IAuthoritiesRepository authoritiesrepository;
 
 	public ClienteInternet findById(Long clienteId) {
-		return repository.findById(clienteId).orElseThrow(() -> new ClienteInternetNotFoundException(clienteId));
+		return repository.findById(clienteId).orElseThrow(() -> new ClienteInternetException(clienteId));
 	}
 
 	public ClienteInternet add(ClienteInternet clienteinternet) {

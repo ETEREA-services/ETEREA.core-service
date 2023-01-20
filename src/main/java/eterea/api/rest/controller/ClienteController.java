@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import eterea.api.rest.exception.ClienteNotFoundException;
+import eterea.api.rest.exception.ClienteException;
 import eterea.api.rest.model.Cliente;
 import eterea.api.rest.model.view.ClienteSearch;
 import eterea.api.rest.service.ClienteService;
@@ -41,7 +41,7 @@ public class ClienteController {
 	public ResponseEntity<Cliente> findByClienteId(@PathVariable Long clienteId) {
 		try {
 			return new ResponseEntity<Cliente>(service.findByClienteId(clienteId), HttpStatus.OK);
-		} catch (ClienteNotFoundException e) {
+		} catch (ClienteException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
@@ -50,7 +50,7 @@ public class ClienteController {
 	public ResponseEntity<Cliente> findByNumeroDocumento(@PathVariable String numeroDocumento) {
 		try {
 			return new ResponseEntity<Cliente>(service.findByNumeroDocumento(numeroDocumento), HttpStatus.OK);
-		} catch (ClienteNotFoundException e) {
+		} catch (ClienteException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
@@ -59,7 +59,7 @@ public class ClienteController {
 	public ResponseEntity<Cliente> findLast() {
 		try {
 			return new ResponseEntity<Cliente>(service.findLast(), HttpStatus.OK);
-		} catch (ClienteNotFoundException e) {
+		} catch (ClienteException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}

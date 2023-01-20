@@ -6,7 +6,7 @@ package eterea.api.rest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.api.rest.exception.HabitacionTarifaNotFoundException;
+import eterea.api.rest.exception.HabitacionTarifaException;
 import eterea.api.rest.model.HabitacionTarifa;
 import eterea.api.rest.repository.IHabitacionTarifaRepository;
 
@@ -22,7 +22,7 @@ public class HabitacionTarifaService {
 
 	public HabitacionTarifa findByUnique(Integer numero, Integer paxs) {
 		return repository.findByNumeroAndPaxs(numero, paxs)
-				.orElseThrow(() -> new HabitacionTarifaNotFoundException(numero, paxs));
+				.orElseThrow(() -> new HabitacionTarifaException(numero, paxs));
 	}
 
 	public HabitacionTarifa add(HabitacionTarifa habitacionTarifa) {
@@ -32,7 +32,7 @@ public class HabitacionTarifaService {
 
 	public HabitacionTarifa update(HabitacionTarifa habitacionTarifa, Long habitacionTarifaId) {
 		return repository.findByHabitacionTarifaId(habitacionTarifaId)
-				.orElseThrow(() -> new HabitacionTarifaNotFoundException(habitacionTarifaId));
+				.orElseThrow(() -> new HabitacionTarifaException(habitacionTarifaId));
 	}
 
 }
