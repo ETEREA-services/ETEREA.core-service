@@ -88,7 +88,7 @@ public class Voucher extends Auditable implements Serializable {
 	private Byte pagaCacheuta;
 
 	@Column(name = "vou_hot_id")
-	private Long hotelId;
+	private Integer hotelId;
 
 	@Column(name = "vou_cliente")
 	private String contacto;
@@ -140,23 +140,23 @@ public class Voucher extends Auditable implements Serializable {
 	private Byte fechaAbierta = 0;
 	private Byte ventaInternet = 0;
 
-	@OneToOne
+	@OneToOne(optional = true)
 	@JoinColumn(name = "vou_usuario", insertable = false, updatable = false)
 	private Usuario user;
 
-	@OneToOne
+	@OneToOne(optional = true)
 	@JoinColumn(name = "vou_cli_id", insertable = false, updatable = false)
 	private Cliente cliente;
 
-	@OneToOne
+	@OneToOne(optional = true)
 	@JoinColumn(name = "vou_hot_id", insertable = false, updatable = false)
 	private Hotel hotel;
 	
-	@OneToOne
+	@OneToOne(optional = true)
 	@JoinColumn(name = "vou_pro_id", insertable = false, updatable = false)
 	private Proveedor proveedor;
 	
-	@OneToOne
+	@OneToOne(optional = true)
 	@JoinColumn(name = "vou_res_id", insertable = false, updatable = false)
 	private Reserva reserva;
 
