@@ -7,19 +7,26 @@
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+
+import eterea.api.rest.util.OffsetDateTimeDeserializer;
 
 @Data
 @Entity
 @Table(name = "movclie")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class ClienteMovimiento extends Auditable implements Serializable {
 
 	private static final long serialVersionUID = 1810250202563003951L;
@@ -40,6 +47,7 @@ public class ClienteMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "fechacomprob")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaComprobante;
 
 	@Column(name = "cgoclie")
@@ -47,6 +55,7 @@ public class ClienteMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "mcl_fechavenc")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaVencimiento;
 
 	@Column(name = "mcl_neg_id")
@@ -73,6 +82,7 @@ public class ClienteMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "fechareg")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaContable;
 
 	@Column(name = "nrocompconta")
@@ -133,15 +143,15 @@ public class ClienteMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "mcl_cotiz")
 	private BigDecimal cotizacion = BigDecimal.ZERO;
-	
+
 	private String observaciones;
 
 	@OneToOne(optional = true)
 	@JoinColumn(name = "cgocomprob", insertable = false, updatable = false)
 	private Comprobante comprobante;
-	
+
 	@OneToOne(optional = true)
 	@JoinColumn(name = "cgoclie", insertable = false, updatable = false)
 	private Cliente cliente;
-	
+
 }

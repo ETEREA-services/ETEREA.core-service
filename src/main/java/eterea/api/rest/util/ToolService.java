@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eterea.api.rest.tool;
+package eterea.api.rest.util;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;

@@ -25,22 +25,25 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PuntoVenta extends Auditable implements Serializable {/**
-	 * 
-	 */
+public class PuntoVenta extends Auditable implements Serializable {
+	/**
+	* 
+	*/
 	private static final long serialVersionUID = 3845339345668494020L;
 
 	@Id
 	@Column(name = "pve_numero")
 	private Integer numero;
-	
+
 	@Column(name = "pve_tm300")
 	private Byte tm300;
-	
+
 	@Column(name = "pve_tm2000af")
 	private Byte tm2000af;
-	
+
 	@Column(name = "pve_tmu220af")
 	private Byte tmu220af;
-	
+
+	private Byte tmt900fa;
+
 }

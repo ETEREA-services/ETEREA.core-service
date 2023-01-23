@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import eterea.api.rest.exception.VoucherNotFoundException;
 import eterea.api.rest.model.Voucher;
 import eterea.api.rest.repository.IVoucherRepository;
-import eterea.api.rest.tool.ToolService;
+import eterea.api.rest.util.ToolService;
 
 /**
  * @author daniel

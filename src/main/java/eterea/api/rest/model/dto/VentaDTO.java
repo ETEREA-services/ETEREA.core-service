@@ -12,6 +12,8 @@ import eterea.api.rest.model.ClienteMovimiento;
 import eterea.api.rest.model.Comprobante;
 import eterea.api.rest.model.ConceptoFacturado;
 import eterea.api.rest.model.Parametro;
+import eterea.api.rest.model.PuntoVenta;
+import eterea.api.rest.model.RegistroFiscal;
 import eterea.api.rest.model.ValorMovimiento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,9 +34,13 @@ public class VentaDTO implements Serializable {
 	private Cliente cliente;
 	private Comprobante comprobante;
 	private Parametro parametro;
+	private PuntoVenta puntoVenta;
+	private Long nextNumeroFactura;
 	private List<ArticuloMovimiento> articuloMovimientos;
 	private List<ValorMovimiento> valorMovimientos;
 	private List<ConceptoFacturado> conceptoFacturados;
+	private List<RegistroFiscal> registroFiscals;
 	private Long clienteMovimientoIdAsociado;
+	private ClienteMovimiento clienteMovimientoAsociado;
 
 }

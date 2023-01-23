@@ -12,6 +12,9 @@ app:
   mail:
     username: reportes.termalia@gmail.com
     password: uulgftuqhgjdihgv
+  mongo:
+    server: 10.147.20.25
+    port: 9080
     
 spring:
   main:

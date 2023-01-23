@@ -15,7 +15,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import eterea.api.rest.util.OffsetDateTimeDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,10 +57,12 @@ public class ValorMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "fechaemi")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaEmision;
 
 	@Column(name = "fechavto")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaVencimiento;
 
 	@Column(name = "val_tco_id")
@@ -74,6 +78,7 @@ public class ValorMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "fechareg")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaContable;
 
 	@Column(name = "nrocompcontable")
@@ -94,6 +99,7 @@ public class ValorMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "fechaentrega")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaEntrega;
 
 	private Long tanda;

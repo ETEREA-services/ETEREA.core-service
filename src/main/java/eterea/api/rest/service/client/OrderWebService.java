@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import eterea.api.rest.model.client.OrderWeb;
+import eterea.api.rest.util.OffsetDateTimeDeserializer;
 
 /**
  * @author daniel

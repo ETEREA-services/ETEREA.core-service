@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import eterea.api.rest.model.view.UsuarioVencimiento;
 import eterea.api.rest.repository.view.IUsuarioVencimientoRepository;
-import eterea.api.rest.tool.ToolService;
+import eterea.api.rest.util.ToolService;
 import lombok.extern.slf4j.Slf4j;
 
 /**

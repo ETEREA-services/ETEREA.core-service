@@ -38,4 +38,13 @@ public class VentaController {
 		}
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<VentaDTO> findById(@PathVariable String id) {
+		try {
+			return new ResponseEntity<VentaDTO>(service.findById(id), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+	}
+
 }
