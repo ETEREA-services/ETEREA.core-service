@@ -5,7 +5,9 @@
 package eterea.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import eterea.api.rest.util.OffsetDateTimeDeserializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -84,10 +86,12 @@ public class ArticuloMovimiento extends Auditable implements Serializable {
 
 	@Column(name = "fecha")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaMovimiento;
 
 	@Column(name = "fechafac")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+	@JsonDeserialize(using = OffsetDateTimeDeserializer.class)
 	private OffsetDateTime fechaFactura;
 
 	@Column(name = "dea_nivel")
