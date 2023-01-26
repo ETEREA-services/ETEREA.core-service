@@ -4,6 +4,7 @@
 package eterea.api.rest.model.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import eterea.api.rest.model.ArticuloMovimiento;
@@ -29,7 +30,8 @@ import lombok.NoArgsConstructor;
 public class VentaDTO implements Serializable {
 
 	private static final long serialVersionUID = 4518134393180168637L;
-	
+
+	private String id;
 	private ClienteMovimiento clienteMovimiento;
 	private Cliente cliente;
 	private Comprobante comprobante;
@@ -42,5 +44,6 @@ public class VentaDTO implements Serializable {
 	private List<RegistroFiscal> registroFiscals;
 	private Long clienteMovimientoIdAsociado;
 	private ClienteMovimiento clienteMovimientoAsociado;
+	private Date created;
 
 }
