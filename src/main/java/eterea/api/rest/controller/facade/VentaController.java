@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,6 +45,24 @@ public class VentaController {
 	public ResponseEntity<VentaDTO> findById(@PathVariable String id) {
 		try {
 			return new ResponseEntity<VentaDTO>(service.findById(id), HttpStatus.OK);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+	}
+
+	@PostMapping("/")
+	public ResponseEntity<VentaDTO> create(@RequestBody VentaDTO venta) {
+		try {
+			return new ResponseEntity<VentaDTO>(service.create(venta), HttpStatus.CREATED);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<VentaDTO> update(@RequestBody VentaDTO venta, @PathVariable String id) {
+		try {
+			return new ResponseEntity<VentaDTO>(service.update(venta, id), HttpStatus.OK);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		}

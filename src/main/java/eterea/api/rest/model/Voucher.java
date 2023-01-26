@@ -18,21 +18,17 @@ import jakarta.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * @author daniel
  *
  */
+@Data
 @Entity
 @EqualsAndHashCode(callSuper = false)
-@Getter
-@Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Voucher extends Auditable implements Serializable {
@@ -88,7 +84,7 @@ public class Voucher extends Auditable implements Serializable {
 	private Byte pagaCacheuta;
 
 	@Column(name = "vou_hot_id")
-	private Long hotelId;
+	private Integer hotelId;
 
 	@Column(name = "vou_cliente")
 	private String contacto;
