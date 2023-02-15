@@ -12,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -39,6 +41,11 @@ public class CuentaMovimiento extends Auditable implements Serializable {
 	 */
 	private static final long serialVersionUID = -7784892219631852163L;
 
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long cuentaMovimientoId;
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
 	private OffsetDateTime fecha;
 	
@@ -51,7 +58,8 @@ public class CuentaMovimiento extends Auditable implements Serializable {
 	@Column(name = "mco_neg_id")
 	private Integer negocioId;
 	
-	private Long cuenta;
+	@Column(name = "cuenta")
+	private Long numeroCuenta;
 	
 	@Column(name = "cgotcomp")
 	private Integer comprobanteId;
@@ -85,10 +93,17 @@ public class CuentaMovimiento extends Auditable implements Serializable {
 	
 	private Integer ejercicioId;
 	private Byte inflacion;
+	
+	@OneToOne(optional = true)
+	@JoinColumn(name = "cuenta", insertable = false, updatable = false)
+	private Cuenta cuenta;
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long cuentaMovimientoId;
+	@OneToOne(optional = true)
+	@JoinColumn(name = "cgotcomp", insertable = false, updatable = false)
+	private Comprobante comprobante;
+
+	@OneToOne(optional = true)
+	@JoinColumn(name = "mco_neg_id", insertable = false, updatable = false)
+	private Negocio negocio;
 
 }
