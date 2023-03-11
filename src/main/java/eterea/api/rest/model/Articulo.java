@@ -16,12 +16,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
 @Entity
 @Table(name = "articulos")
+@NoArgsConstructor
 @AllArgsConstructor
 public class Articulo extends Auditable implements Serializable {
 
