@@ -37,6 +37,6 @@ jobs:
         image: dqmdz/eterea.api
         tags: ${VERSION}, latest, "${GITHUB_REF#refs/heads/}.$(git rev-parse --short ${GITHUB_SHA})"
         registry: docker.io
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.github
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
