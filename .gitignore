@@ -1,6 +1,7 @@
 /src/main/resources/application-prod.properties
 /target/
 /logs/
+/data/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
