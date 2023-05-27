@@ -1,6 +1,6 @@
 package eterea.core.api.rest.repository.view;
 
-import eterea.core.api.rest.model.view.AsientoView;
+import eterea.core.api.rest.kotlin.model.view.AsientoView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

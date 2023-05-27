@@ -60,43 +60,33 @@ public class Electronico extends Auditable implements Serializable {
 	private String cuit;
 
 	@Column(name = "rec_total")
-	@NotNull
 	private BigDecimal total = BigDecimal.ZERO;
 
 	@Column(name = "rec_exento")
-	@NotNull
 	private BigDecimal exento = BigDecimal.ZERO;
 
 	@Column(name = "rec_neto")
-	@NotNull
 	private BigDecimal neto21 = BigDecimal.ZERO;
 
 	@Column(name = "rec_neto105")
-	@NotNull
 	private BigDecimal neto105 = BigDecimal.ZERO;
 
 	@Column(name = "rec_iva")
-	@NotNull
 	private BigDecimal iva21 = BigDecimal.ZERO;
 
 	@Column(name = "rec_iva105")
-	@NotNull
 	private BigDecimal iva105 = BigDecimal.ZERO;
 
 	@Column(name = "rec_cae")
-	@NotNull
 	private String cae = "";
 
 	@Column(name = "rec_fecha")
-	@NotNull
 	private String fecha = "";
 
 	@Column(name = "rec_caevenc")
-	@NotNull
 	private String caeVencimiento = "";
 
 	@Column(name = "rec_barras")
-	@NotNull
 	private String codigoBarras = "";
 
 	@Column(name = "tipo_documento")

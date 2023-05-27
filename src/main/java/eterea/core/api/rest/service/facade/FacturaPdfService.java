@@ -4,6 +4,7 @@
 package eterea.core.api.rest.service.facade;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
@@ -15,11 +16,11 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
+import eterea.core.api.rest.kotlin.model.mapper.CodigoQR;
 import eterea.core.api.rest.model.*;
 import eterea.core.api.rest.service.*;
 import eterea.core.api.rest.tool.ToolService;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -109,22 +110,22 @@ public class FacturaPdfService {
 
         try {
             String url = "https://www.afip.gob.ar/fe/qr/?p=";
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("ver", 1);
-            jsonObject.put("fecha", DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    .format(ToolService.stringDDMMYYYY2OffsetDateTime(electronico.getFecha())));
-            jsonObject.put("cuit", Long.parseLong(empresa.getCuit().replaceAll("\\-", "")));
-            jsonObject.put("ptoVta", electronico.getPuntoVenta());
-            jsonObject.put("tipoCmp", electronico.getComprobanteId());
-            jsonObject.put("nroCmp", electronico.getNumeroComprobante());
-            jsonObject.put("importe", electronico.getTotal());
-            jsonObject.put("moneda", "PES");
-            jsonObject.put("ctz", 1);
-            jsonObject.put("tipoDocRec", electronico.getTipoDocumento());
-            jsonObject.put("nroDocRec", electronico.getNumeroDocumento());
-            jsonObject.put("tipoCodAut", "E");
-            jsonObject.put("codAut", new BigDecimal(electronico.getCae()));
-            String datos = new String(Base64.getEncoder().encode(jsonObject.toString().getBytes()));
+            CodigoQR codigoQR = new CodigoQR();
+            codigoQR.setVer(1);
+            codigoQR.setFecha(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(ToolService.stringDDMMYYYY2OffsetDateTime(electronico.getFecha())));
+            codigoQR.setCuit(empresa.getCuit().replaceAll("\\-", ""));
+            codigoQR.setPtoVta(electronico.getPuntoVenta());
+            codigoQR.setTipoCmp(electronico.getComprobanteId());
+            codigoQR.setNroCmp(electronico.getNumeroComprobante());
+            codigoQR.setImporte(electronico.getTotal());
+            codigoQR.setMoneda("PES");
+            codigoQR.setCtz(1);
+            codigoQR.setTipoDocRec(electronico.getTipoDocumento());
+            codigoQR.setNroDocRec(electronico.getNumeroDocumento());
+            codigoQR.setTipoCodAut("E");
+            codigoQR.setCodAut(electronico.getCae());
+            ObjectMapper objectMapper = new ObjectMapper();
+            String datos = new String(Base64.getEncoder().encode(objectMapper.writeValueAsString(codigoQR).getBytes()));
             imageQr = Image.getInstance(getQRCodeImage(url + datos, 25, 25));
 
         } catch (BadElementException e) {
