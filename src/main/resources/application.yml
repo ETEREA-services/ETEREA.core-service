@@ -14,8 +14,8 @@ app:
     password: uulgftuqhgjdihgv
     
 spring:
-  main:
-    allow-circular-references: true
+#  main:
+#    allow-circular-references: true
   datasource:
     url: jdbc:mysql://${app.server}/${app.database}?useSSL=false&serverTimezone=UTC
     username: ${app.user}
