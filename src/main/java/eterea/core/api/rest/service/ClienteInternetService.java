@@ -4,6 +4,7 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.ClienteInternetException;
+import eterea.core.api.rest.kotlin.model.Authorities;
 import eterea.core.api.rest.repository.IAuthoritiesRepository;
 import eterea.core.api.rest.repository.IClienteInternetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import eterea.core.api.rest.model.Authorities;
 import eterea.core.api.rest.model.ClienteInternet;
 
 /**
