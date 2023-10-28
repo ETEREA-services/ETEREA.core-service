@@ -1,0 +1,1 @@
+# ETEREA.core.api.rest
