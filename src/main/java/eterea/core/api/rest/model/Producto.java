@@ -3,6 +3,7 @@
  */
 package eterea.core.api.rest.model;
 
+import eterea.core.api.rest.kotlin.model.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,7 @@ import java.io.Serializable;
  */
 @Data
 @Entity
-@Table(name = "producto")
+@Table
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor

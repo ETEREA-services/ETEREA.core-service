@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
 
-    mysql:
+    eterea.mysql:
         image: dqmdz/mysql:5.7
         ports:
             - "3306:3306"
@@ -14,18 +14,49 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=root
             - TZ=America/Argentina/Mendoza
+        networks:
+            - eterea
 
-#    tsa.agencia:
-#        build: .
-#        ports:
-#            - 8080:8080
-#        environment:
-#            APP_SERVER: 127.0.0.1:3306
-#            APP_DATABASE: tsaagencia
-#            APP_USER: root
-#            APP_PASSWORD: root
-#            APP_ADD-PROPERTIES: "false"
-#            APP_LOGGING: "debug"
-#            APP_LIVERELOAD_ENABLED: "true"
-#            APP_LIVERELOAD_PORT: 35854
-#            APP_OPEN-IN-VIEW: "false"
+    eterea.cloudbeaver:
+        image: dbeaver/cloudbeaver:latest
+        depends_on:
+            - eterea.mysql
+        restart: always
+        ports:
+            - '28978:8978'
+        volumes:
+            - ./cloudbeaver:/opt/cloudbeaver/workspace
+        networks:
+            - eterea
+
+    tsa.agencia:
+        build: .
+        ports:
+            - "8080:8080"
+        develop:
+            watch:
+                - action: rebuild
+                  path: ./src
+        depends_on:
+            - eterea.mysql
+        restart: always
+        environment:
+            APP_SERVER: eterea.mysql:3306
+            APP_DATABASE: tsaagencia
+            APP_USER: root
+            APP_PASSWORD: root
+            APP_ADD-PROPERTIES: "false"
+            APP_LOGGING: "debug"
+            APP_LIVERELOAD_ENABLED: "true"
+            APP_LIVERELOAD_PORT: 35854
+            APP_OPEN-IN-VIEW: "false"
+        networks:
+            - eterea
+
+networks:
+    eterea:
+
+volumes:
+    eterea.mysql:
+    eterea.cloudbeaver:
+    

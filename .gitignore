@@ -2,6 +2,7 @@
 /target/
 /logs/
 /data/
+/cloudbeaver/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###

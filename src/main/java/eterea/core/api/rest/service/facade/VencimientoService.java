@@ -6,6 +6,7 @@ package eterea.core.api.rest.service.facade;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+import eterea.core.api.rest.kotlin.model.Voucher;
 import eterea.core.api.rest.service.view.UsuarioVencimientoService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -15,7 +16,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import eterea.core.api.rest.model.Voucher;
 import eterea.core.api.rest.model.view.UsuarioVencimiento;
 import eterea.core.api.rest.service.VoucherService;
 import lombok.extern.slf4j.Slf4j;

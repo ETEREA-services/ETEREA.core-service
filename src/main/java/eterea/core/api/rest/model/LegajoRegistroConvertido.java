@@ -6,6 +6,7 @@ package eterea.core.api.rest.model;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
+import eterea.core.api.rest.kotlin.model.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

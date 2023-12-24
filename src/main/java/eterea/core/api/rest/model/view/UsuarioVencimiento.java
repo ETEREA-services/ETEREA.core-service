@@ -6,6 +6,7 @@ package eterea.core.api.rest.model.view;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
+import eterea.core.api.rest.kotlin.model.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,7 +16,6 @@ import org.springframework.data.annotation.Immutable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import eterea.core.api.rest.model.Auditable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

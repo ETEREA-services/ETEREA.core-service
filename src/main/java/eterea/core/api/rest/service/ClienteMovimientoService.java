@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eterea.core.api.rest.exception.ClienteMovimientoException;
+import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
 import eterea.core.api.rest.repository.IClienteMovimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.ClienteMovimiento;
 
 /**
  * @author daniel

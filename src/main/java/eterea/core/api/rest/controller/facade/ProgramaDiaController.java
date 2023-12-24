@@ -1,10 +1,12 @@
 /**
- * 
+ *
  */
 package eterea.core.api.rest.controller.facade;
 
 import java.time.OffsetDateTime;
 
+import eterea.core.api.rest.kotlin.model.dto.ProgramaDiaDTO;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import eterea.core.api.rest.exception.ProgramaDiaException;
-import eterea.core.api.rest.model.dto.ProgramaDiaDTO;
 import eterea.core.api.rest.service.facade.ProgramaDiaService;
 
 /**
@@ -28,24 +29,33 @@ import eterea.core.api.rest.service.facade.ProgramaDiaService;
 @RequestMapping("/programaDia")
 public class ProgramaDiaController {
 
-	@Autowired
-	private ProgramaDiaService service;
+    @Autowired
+    private ProgramaDiaService service;
 
-	@GetMapping("/fechaServicio/{fechaServicio}/{soloConfirmados}/{porNombrePax}")
-	public ResponseEntity<ProgramaDiaDTO> findAllByFecha(
-			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaServicio,
-			@PathVariable Boolean soloConfirmados, @PathVariable Boolean porNombrePax) {
-		return new ResponseEntity<ProgramaDiaDTO>(
-				service.findAllByFechaServicio(fechaServicio, soloConfirmados, porNombrePax), HttpStatus.OK);
-	}
+    @GetMapping("/fechaServicio/{fechaServicio}/{soloConfirmados}/{porNombrePax}")
+    public ResponseEntity<ProgramaDiaDTO> findAllByFecha(
+            @PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaServicio,
+            @PathVariable Boolean soloConfirmados, @PathVariable Boolean porNombrePax) {
+        return new ResponseEntity<ProgramaDiaDTO>(
+                service.findAllByFechaServicio(fechaServicio, soloConfirmados, porNombrePax), HttpStatus.OK);
+    }
 
-	@GetMapping("/voucher/{voucherId}")
-	public ResponseEntity<ProgramaDiaDTO> findByVoucherId(@PathVariable Long voucherId) {
-		try {
-			return new ResponseEntity<ProgramaDiaDTO>(service.findByVoucherId(voucherId), HttpStatus.OK);
-		} catch (ProgramaDiaException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
-	}
+    @GetMapping("/voucher/{voucherId}")
+    public ResponseEntity<ProgramaDiaDTO> findByVoucherId(@PathVariable Long voucherId) {
+        try {
+            return new ResponseEntity<>(service.findByVoucherId(voucherId), HttpStatus.OK);
+        } catch (ProgramaDiaException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/importFromWeb/{orderNumberId}")
+    public ResponseEntity<ProgramaDiaDTO> importFromWeb(@PathVariable Long orderNumberId) {
+        try {
+            return new ResponseEntity<>(service.importFromWeb(orderNumberId), HttpStatus.OK);
+        } catch (ProgramaDiaException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 
 }

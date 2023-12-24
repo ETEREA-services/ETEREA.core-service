@@ -1,5 +1,6 @@
 package eterea.core.api.rest.model;
 
+import eterea.core.api.rest.kotlin.model.Auditable;
 import eterea.core.api.rest.kotlin.model.Cuenta;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

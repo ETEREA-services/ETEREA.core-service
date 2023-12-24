@@ -5,7 +5,7 @@ package eterea.core.api.rest.model.dto;
 
 import java.io.Serializable;
 
-import eterea.core.api.rest.model.ClienteMovimiento;
+import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

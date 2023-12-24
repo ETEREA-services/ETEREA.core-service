@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eterea.core.api.rest.exception.VoucherException;
+import eterea.core.api.rest.kotlin.model.Voucher;
 import eterea.core.api.rest.repository.IVoucherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import eterea.core.api.rest.model.Voucher;
 import eterea.core.api.rest.tool.ToolService;
 
 /**

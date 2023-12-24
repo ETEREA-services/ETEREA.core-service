@@ -7,10 +7,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import eterea.core.api.rest.kotlin.model.Voucher;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import eterea.core.api.rest.model.Voucher;
 import org.springframework.stereotype.Repository;
 
 /**

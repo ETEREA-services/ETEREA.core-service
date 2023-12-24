@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import eterea.core.api.rest.kotlin.model.Auditable;
 import eterea.core.api.rest.kotlin.model.Cuenta;
+import eterea.core.api.rest.kotlin.model.Negocio;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

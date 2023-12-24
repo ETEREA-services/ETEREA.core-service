@@ -6,12 +6,12 @@ package eterea.core.api.rest.service;
 import java.util.List;
 
 import eterea.core.api.rest.exception.ClienteException;
+import eterea.core.api.rest.kotlin.model.Cliente;
 import eterea.core.api.rest.repository.IClienteRepository;
 import eterea.core.api.rest.service.view.ClienteSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.core.api.rest.model.Cliente;
 import eterea.core.api.rest.model.view.ClienteSearch;
 
 /**
@@ -21,11 +21,15 @@ import eterea.core.api.rest.model.view.ClienteSearch;
 @Service
 public class ClienteService {
 
-	@Autowired
-	private IClienteRepository repository;
+	private final IClienteRepository repository;
+
+	private final ClienteSearchService clienteSearchService;
 
 	@Autowired
-	private ClienteSearchService clienteSearchService;
+	public ClienteService(IClienteRepository repository, ClienteSearchService clienteSearchService) {
+		this.repository = repository;
+		this.clienteSearchService = clienteSearchService;
+	}
 
 	public List<ClienteSearch> findAllBySearch(String search) {
 		return clienteSearchService.findAllBySearch(search);
@@ -41,12 +45,11 @@ public class ClienteService {
 	}
 
 	public Cliente findLast() {
-		return repository.findTopByOrderByClienteIdDesc().orElseThrow(() -> new ClienteException());
+		return repository.findTopByOrderByClienteIdDesc().orElseThrow(ClienteException::new);
 	}
 
 	public Cliente add(Cliente cliente) {
-		cliente = repository.save(cliente);
-		return cliente;
+		return repository.save(cliente);
 	}
 
 }
