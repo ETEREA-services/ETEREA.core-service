@@ -6,9 +6,9 @@ package eterea.core.api.rest.model.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import eterea.core.api.rest.kotlin.model.Cliente;
+import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
 import eterea.core.api.rest.model.ArticuloMovimientoTemporal;
-import eterea.core.api.rest.model.Cliente;
-import eterea.core.api.rest.model.ClienteMovimiento;
 import eterea.core.api.rest.model.ClienteMovimientoPrevio;
 import eterea.core.api.rest.model.Comprobante;
 import lombok.AllArgsConstructor;

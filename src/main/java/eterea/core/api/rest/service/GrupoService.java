@@ -4,9 +4,9 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.GrupoException;
+import eterea.core.api.rest.kotlin.model.Voucher;
 import eterea.core.api.rest.model.Grupo;
 import eterea.core.api.rest.model.GrupoProducto;
-import eterea.core.api.rest.model.Voucher;
 import eterea.core.api.rest.model.VoucherProducto;
 import eterea.core.api.rest.repository.IGrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;

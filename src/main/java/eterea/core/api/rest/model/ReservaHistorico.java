@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.time.OffsetDateTime;
 
+import eterea.core.api.rest.kotlin.model.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

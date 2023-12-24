@@ -10,8 +10,8 @@ import java.time.OffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import eterea.core.api.rest.kotlin.model.Cuenta;
+import eterea.core.api.rest.kotlin.model.Negocio;
 import eterea.core.api.rest.model.Comprobante;
-import eterea.core.api.rest.model.Negocio;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

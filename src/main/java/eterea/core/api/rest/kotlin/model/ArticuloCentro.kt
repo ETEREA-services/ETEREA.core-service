@@ -1,6 +1,5 @@
 package eterea.core.api.rest.kotlin.model
 
-import eterea.core.api.rest.model.Auditable
 import jakarta.persistence.*
 import java.math.BigDecimal
 

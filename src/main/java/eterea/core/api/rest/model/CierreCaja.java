@@ -4,6 +4,7 @@
 package eterea.core.api.rest.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import eterea.core.api.rest.kotlin.model.Auditable;
 import lombok.*;
 import org.hibernate.Hibernate;
 

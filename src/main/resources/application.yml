@@ -1,6 +1,6 @@
 app:
   server: 127.0.0.1:3306
-  database: tsaagencia
+  database: tsamatriz
   user: root
   password: root
   add-properties: true
@@ -12,6 +12,8 @@ app:
   mail:
     username: reportes.termalia@gmail.com
     password: uulgftuqhgjdihgv
+  venta-web-server: 127.0.0.1
+  venta-web-port: 8280
     
 spring:
 #  main:

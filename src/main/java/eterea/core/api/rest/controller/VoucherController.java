@@ -6,6 +6,7 @@ package eterea.core.api.rest.controller;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import eterea.core.api.rest.kotlin.model.Voucher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.api.rest.model.Voucher;
 import eterea.core.api.rest.service.VoucherService;
 
 /**
@@ -32,7 +32,7 @@ public class VoucherController {
 
 	@GetMapping("/today/{user}")
 	public ResponseEntity<List<Voucher>> findAllByUserToday(@PathVariable String user) {
-		return new ResponseEntity<List<Voucher>>(service.findAllByUserToday(user), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllByUserToday(user), HttpStatus.OK);
 	}
 
 	@GetMapping("/fechaServicio/{fechaServicio}/{soloConfirmados}/{porNombrePax}")
