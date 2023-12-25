@@ -15,11 +15,11 @@ import eterea.core.api.rest.model.dto.CuentaMovimientoDTO;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author daniel
- *
  */
 @Service
 public class CuentaMovimientoService {
@@ -29,8 +29,7 @@ public class CuentaMovimientoService {
     private final CuentaMovimientoAperturaService cuentaMovimientoAperturaService;
 
     @Autowired
-    public CuentaMovimientoService(ICuentaMovimientoRepository repository, CuentaMovimientoAperturaService cuentaMovimientoAperturaService)
-    {
+    public CuentaMovimientoService(ICuentaMovimientoRepository repository, CuentaMovimientoAperturaService cuentaMovimientoAperturaService) {
         this.repository = repository;
         this.cuentaMovimientoAperturaService = cuentaMovimientoAperturaService;
     }
@@ -55,9 +54,9 @@ public class CuentaMovimientoService {
 
     public BigDecimal totalDebeEntreFechas(Long numeroCuenta, OffsetDateTime desde, OffsetDateTime hasta, Boolean incluyeApertura, Boolean incluyeInflacion) {
         BigDecimal total = BigDecimal.ZERO;
-		if (incluyeApertura) {
-			total = total.add(cuentaMovimientoAperturaService.calculateTotalDebeEntreFechas(numeroCuenta, desde, hasta));
-		}
+        if (incluyeApertura) {
+            total = total.add(cuentaMovimientoAperturaService.calculateTotalDebeEntreFechas(numeroCuenta, desde, hasta));
+        }
         total = total.add(repository.calculateTotalByNumeroCuentaAndDebitaAndIncluyeInflacionAndFechaBetween(numeroCuenta, 1, incluyeInflacion, desde, hasta));
         return total;
     }
@@ -71,4 +70,12 @@ public class CuentaMovimientoService {
         return total;
     }
 
+    public List<BigDecimal> totalesEntreFechas(Long numeroCuenta, OffsetDateTime desde, OffsetDateTime hasta, Boolean incluyeApertura, Boolean incluyeInflacion) {
+        List<BigDecimal> totales = new ArrayList<>();
+        // debe
+        totales.add(this.totalDebeEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion));
+        // haber
+        totales.add(this.totalHaberEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion));
+        return totales;
+    }
 }
