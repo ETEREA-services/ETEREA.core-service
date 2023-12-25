@@ -16,7 +16,7 @@ import eterea.core.api.rest.model.CuentaMovimiento;
  *
  */
 @Repository
-public interface ICuentaMovimientoRepository extends JpaRepository<CuentaMovimiento, Long> {
+public interface ICuentaMovimientoRepository extends JpaRepository<CuentaMovimiento, Long>, ICuentaMovimientoRepositoryCustom {
 
 	public Optional<CuentaMovimiento> findByCuentaMovimientoId(Long cuentaMovimientoId);
 
