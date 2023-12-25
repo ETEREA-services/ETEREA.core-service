@@ -27,7 +27,7 @@ public class ICuentaMovimientoRepositoryCustomImpl implements ICuentaMovimientoR
         CriteriaQuery<BigDecimal> criteriaQuery = criteriaBuilder.createQuery(BigDecimal.class);
         Root<CuentaMovimiento> root = criteriaQuery.from(CuentaMovimiento.class);
 
-        Expression<BigDecimal> sumImporte = criteriaBuilder.sum(root.get("importe"));
+        Expression<BigDecimal> sumImporte = criteriaBuilder.coalesce(criteriaBuilder.sum(root.get("importe")), BigDecimal.ZERO);
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(criteriaBuilder.equal(root.get("numeroCuenta"), numeroCuenta));
