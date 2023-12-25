@@ -1,7 +1,7 @@
 package eterea.core.api.rest.service.view;
 
+import eterea.core.api.rest.kotlin.model.CuentaMovimiento;
 import eterea.core.api.rest.kotlin.model.view.AsientoView;
-import eterea.core.api.rest.model.CuentaMovimiento;
 import eterea.core.api.rest.model.dto.CuentaMovimientoDTO;
 import eterea.core.api.rest.service.CuentaMovimientoService;
 import lombok.extern.slf4j.Slf4j;

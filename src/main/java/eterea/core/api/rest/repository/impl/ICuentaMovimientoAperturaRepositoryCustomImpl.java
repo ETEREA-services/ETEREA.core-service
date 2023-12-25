@@ -1,7 +1,7 @@
 package eterea.core.api.rest.repository.impl;
 
-import eterea.core.api.rest.kotlin.model.CuentaMovimiento;
-import eterea.core.api.rest.repository.ICuentaMovimientoRepositoryCustom;
+import eterea.core.api.rest.kotlin.model.CuentaMovimientoApertura;
+import eterea.core.api.rest.repository.ICuentaMovimientoAperturaRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,21 +11,21 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ICuentaMovimientoRepositoryCustomImpl implements ICuentaMovimientoRepositoryCustom {
+public class ICuentaMovimientoAperturaRepositoryCustomImpl implements ICuentaMovimientoAperturaRepositoryCustom {
 
     private final EntityManager entityManager;
 
     @Autowired
-    public ICuentaMovimientoRepositoryCustomImpl(EntityManager entityManager) {
+    public ICuentaMovimientoAperturaRepositoryCustomImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
-    public BigDecimal calculateTotalByNumeroCuentaAndDebitaAndIncluyeInflacionAndFechaBetween(Long numeroCuenta, Integer debita, Boolean incluyeInflacion, OffsetDateTime desde, OffsetDateTime hasta) {
+    public BigDecimal calculateTotalByNumeroCuentaAndDebitaAndFechaBetween(Long numeroCuenta, Integer debita, OffsetDateTime desde, OffsetDateTime hasta) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<BigDecimal> criteriaQuery = criteriaBuilder.createQuery(BigDecimal.class);
-        Root<CuentaMovimiento> root = criteriaQuery.from(CuentaMovimiento.class);
+        Root<CuentaMovimientoApertura> root = criteriaQuery.from(CuentaMovimientoApertura.class);
 
         Expression<BigDecimal> sumImporte = criteriaBuilder.coalesce(criteriaBuilder.sum(root.get("importe")), BigDecimal.ZERO);
 
@@ -33,13 +33,10 @@ public class ICuentaMovimientoRepositoryCustomImpl implements ICuentaMovimientoR
         predicates.add(criteriaBuilder.equal(root.get("numeroCuenta"), numeroCuenta));
         predicates.add(criteriaBuilder.equal(root.get("debita"), debita));
         predicates.add(criteriaBuilder.between(root.get("fecha"), desde, hasta));
-        if (!incluyeInflacion) {
-            predicates.add(criteriaBuilder.equal(root.get("inflacion"), 0));
-        }
 
         criteriaQuery.select(sumImporte).where(predicates.toArray(new Predicate[predicates.size()]));
 
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
-
 }
+
