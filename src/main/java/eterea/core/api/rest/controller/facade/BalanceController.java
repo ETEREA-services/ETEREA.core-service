@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/balance")
@@ -43,6 +44,12 @@ public class BalanceController {
     public ResponseEntity<BigDecimal> totalHaberEntreFechas(@PathVariable Long numeroCuenta, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
                                                             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta, @PathVariable Boolean incluyeApertura, @PathVariable Boolean incluyeInflacion) {
         return new ResponseEntity<>(cuentaMovimientoService.totalHaberEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
+    }
+
+    @GetMapping("/totalesEntreFechas/{numeroCuenta}/{desde}/{hasta}/{incluyeApertura}/{incluyeInflacion}")
+    public ResponseEntity<List<BigDecimal>> totalesEntreFechas(@PathVariable Long numeroCuenta, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
+                                                               @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta, @PathVariable Boolean incluyeApertura, @PathVariable Boolean incluyeInflacion) {
+        return new ResponseEntity<>(cuentaMovimientoService.totalesEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
     }
 
 }
