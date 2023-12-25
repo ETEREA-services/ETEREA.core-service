@@ -1,7 +1,7 @@
 package eterea.core.api.rest.controller.facade;
 
+import eterea.core.api.rest.service.CuentaMovimientoService;
 import eterea.core.api.rest.service.view.BalanceService;
-import eterea.core.api.rest.service.view.CuentaMovimientoDiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -20,12 +20,12 @@ public class BalanceController {
 
     private final BalanceService service;
 
-    private final CuentaMovimientoDiaService cuentaMovimientoDiaService;
+    private final CuentaMovimientoService cuentaMovimientoService;
 
     @Autowired
-    public BalanceController(BalanceService service, CuentaMovimientoDiaService cuentaMovimientoDiaService) {
+    public BalanceController(BalanceService service, CuentaMovimientoService cuentaMovimientoService) {
         this.service = service;
-        this.cuentaMovimientoDiaService = cuentaMovimientoDiaService;
+        this.cuentaMovimientoService = cuentaMovimientoService;
     }
 
     @GetMapping("/cuadraAgencia")
@@ -36,13 +36,13 @@ public class BalanceController {
     @GetMapping("/totalDebeEntreFechas/{numeroCuenta}/{desde}/{hasta}/{incluyeApertura}/{incluyeInflacion}")
     public ResponseEntity<BigDecimal> totalDebeEntreFechas(@PathVariable Long numeroCuenta, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
                                                            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta, @PathVariable Boolean incluyeApertura, @PathVariable Boolean incluyeInflacion) {
-        return new ResponseEntity<>(cuentaMovimientoDiaService.totalDebeEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
+        return new ResponseEntity<>(cuentaMovimientoService.totalDebeEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
     }
 
     @GetMapping("/totalHaberEntreFechas/{numeroCuenta}/{desde}/{hasta}/{incluyeApertura}/{incluyeInflacion}")
     public ResponseEntity<BigDecimal> totalHaberEntreFechas(@PathVariable Long numeroCuenta, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
                                                             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta, @PathVariable Boolean incluyeApertura, @PathVariable Boolean incluyeInflacion) {
-        return new ResponseEntity<>(cuentaMovimientoDiaService.totalHaberEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
+        return new ResponseEntity<>(cuentaMovimientoService.totalHaberEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
     }
 
 }
