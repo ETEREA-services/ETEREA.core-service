@@ -16,7 +16,7 @@
     <description>API - Eterea - Servicios REST</description>
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.9.21</kotlin.version>
+        <kotlin.version>1.9.22</kotlin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.3.34</version>
+            <version>1.3.35</version>
         </dependency>
         <!-- ZXING BarCode and QRCode-->
         <dependency>
@@ -87,6 +87,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
+            <version>8.2.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
