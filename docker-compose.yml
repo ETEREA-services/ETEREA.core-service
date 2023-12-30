@@ -29,29 +29,29 @@ services:
         networks:
             - eterea
 
-    tsa.agencia:
-        build: .
-        ports:
-            - "8080:8080"
-        develop:
-            watch:
-                - action: rebuild
-                  path: ./src
-        depends_on:
-            - eterea.mysql
-        restart: always
-        environment:
-            APP_SERVER: eterea.mysql:3306
-            APP_DATABASE: tsaagencia
-            APP_USER: root
-            APP_PASSWORD: root
-            APP_ADD-PROPERTIES: "false"
-            APP_LOGGING: "debug"
-            APP_LIVERELOAD_ENABLED: "true"
-            APP_LIVERELOAD_PORT: 35854
-            APP_OPEN-IN-VIEW: "false"
-        networks:
-            - eterea
+#    tsa.agencia:
+#        build: .
+#        ports:
+#            - "8080:8080"
+#        develop:
+#            watch:
+#                - action: rebuild
+#                  path: ./src
+#        depends_on:
+#            - eterea.mysql
+#        restart: always
+#        environment:
+#            APP_SERVER: eterea.mysql:3306
+#            APP_DATABASE: tsaagencia
+#            APP_USER: root
+#            APP_PASSWORD: root
+#            APP_ADD-PROPERTIES: "false"
+#            APP_LOGGING: "debug"
+#            APP_LIVERELOAD_ENABLED: "true"
+#            APP_LIVERELOAD_PORT: 35854
+#            APP_OPEN-IN-VIEW: "false"
+#        networks:
+#            - eterea
 
 networks:
     eterea:
