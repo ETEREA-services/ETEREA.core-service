@@ -1,6 +1,6 @@
 app:
   server: 127.0.0.1:3306
-  database: tsamatriz
+  database: ctlogistica
   user: root
   password: root
   add-properties: true
@@ -24,7 +24,7 @@ spring:
     password: ${app.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
+#    database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: ${app.open-in-view}
     hibernate:
       ddl-auto: none
@@ -51,7 +51,7 @@ spring:
 
 logging:
   level:
-    eterea.api.rest: DEBUG
+    eterea.core.api.rest: DEBUG
     web: ${app.logging}
     org:
       hibernate:

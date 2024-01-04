@@ -8,9 +8,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
-import eterea.core.api.rest.kotlin.model.Reserva;
-import eterea.core.api.rest.kotlin.model.Voucher;
+import eterea.core.api.rest.kotlin.model.*;
 import eterea.core.api.rest.repository.IReservaRepository;
 import jakarta.transaction.Transactional;
 
@@ -19,9 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import eterea.core.api.rest.model.Articulo;
-import eterea.core.api.rest.model.ArticuloMovimiento;
 import eterea.core.api.rest.model.Comprobante;
-import eterea.core.api.rest.model.ConceptoFacturado;
 import eterea.core.api.rest.model.ReservaArticulo;
 import eterea.core.api.rest.service.ArticuloMovimientoService;
 import eterea.core.api.rest.service.ArticuloService;
@@ -38,29 +34,33 @@ import eterea.core.api.rest.service.VoucherService;
 @Service
 public class ReservaService {
 
-	@Autowired
-	private IReservaRepository repository;
+	private final IReservaRepository repository;
+
+	private final ClienteMovimientoService clienteMovimientoService;
+
+	private final VoucherService voucherService;
+
+	private final ComprobanteService comprobanteService;
+
+	private final ReservaArticuloService reservaArticuloService;
+
+	private final ArticuloService articuloService;
+
+	private final ArticuloMovimientoService articuloMovimientoService;
+
+	private final ConceptoFacturadoService conceptoFacturadoService;
 
 	@Autowired
-	private ClienteMovimientoService clienteMovimientoService;
-
-	@Autowired
-	private VoucherService voucherService;
-
-	@Autowired
-	private ComprobanteService comprobanteService;
-
-	@Autowired
-	private ReservaArticuloService reservaArticuloService;
-
-	@Autowired
-	private ArticuloService articuloService;
-
-	@Autowired
-	private ArticuloMovimientoService articuloMovimientoService;
-
-	@Autowired
-	private ConceptoFacturadoService conceptoFacturadoService;
+	public ReservaService(IReservaRepository repository, ClienteMovimientoService clienteMovimientoService, VoucherService voucherService, ComprobanteService comprobanteService, ReservaArticuloService reservaArticuloService, ArticuloService articuloService, ArticuloMovimientoService articuloMovimientoService, ConceptoFacturadoService conceptoFacturadoService) {
+		this.repository = repository;
+		this.clienteMovimientoService = clienteMovimientoService;
+		this.voucherService = voucherService;
+		this.comprobanteService = comprobanteService;
+		this.reservaArticuloService = reservaArticuloService;
+		this.articuloService = articuloService;
+		this.articuloMovimientoService = articuloMovimientoService;
+		this.conceptoFacturadoService = conceptoFacturadoService;
+	}
 
 	public List<Reserva> findTopPendientes() {
 		return repository
@@ -78,16 +78,16 @@ public class ReservaService {
 		Voucher voucher = voucherService.findByReservaId(clienteMovimiento.getReservaId());
 		Reserva reserva = repository.findByReservaId(clienteMovimiento.getReservaId()).get();
 		Comprobante comprobante = comprobanteService.findByComprobanteId(clienteMovimiento.getComprobanteId());
-		Integer item = 0;
-		List<ArticuloMovimiento> articuloMovs = new ArrayList<ArticuloMovimiento>();
+		int item = 0;
+		List<ArticuloMovimiento> articuloMovs = new ArrayList<>();
 
 		String numeroVoucher = "";
-		if (!voucher.getNumeroVoucher().trim().equals(""))
+		if (!voucher.getNumeroVoucher().trim().isEmpty())
 			numeroVoucher = " - No.Voucher: " + voucher.getNumeroVoucher();
 
 		for (ReservaArticulo reservaArticulo : reservaArticuloService
 				.findAllByReservaId(clienteMovimiento.getReservaId())) {
-			if (!reservaArticulo.getObservaciones().trim().equals(""))
+			if (!reservaArticulo.getObservaciones().trim().isEmpty())
 				reservaArticulo.setObservaciones(reservaArticulo.getObservaciones() + numeroVoucher);
 			addArticulo(clienteMovimiento, reservaArticulo, comprobante, ++item, reserva.getFacturarExtranjero(),
 					articuloMovs);
@@ -95,14 +95,14 @@ public class ReservaService {
 	}
 
 	@Transactional
-	private void addArticulo(ClienteMovimiento clienteMovimiento, ReservaArticulo reservaArticulo,
-			Comprobante comprobante, Integer item, Byte facturaExtranjero, List<ArticuloMovimiento> articuloMovs) {
+	protected void addArticulo(ClienteMovimiento clienteMovimiento, ReservaArticulo reservaArticulo,
+							   Comprobante comprobante, Integer item, Byte facturaExtranjero, List<ArticuloMovimiento> articuloMovs) {
 		Articulo articulo = articuloService.findByArticuloId(reservaArticulo.getArticuloId());
-		BigDecimal factorIva = new BigDecimal(1.21);
+		BigDecimal factorIva = new BigDecimal("1.21");
 		if (articulo.getIva105() == 1)
-			factorIva = new BigDecimal(1.105);
+			factorIva = new BigDecimal("1.105");
 		if (articulo.getExento() == 1)
-			factorIva = new BigDecimal(1.0);
+			factorIva = new BigDecimal("1.0");
 		Integer factor = comprobante.getDebita() == 1 ? -1 : 1;
 
 		if (articulo.getCentroStockId() != 1 || facturaExtranjero == 0) {
@@ -133,7 +133,7 @@ public class ReservaService {
 
 			articuloMovs.add(articuloMovimiento);
 
-			if (!reservaArticulo.getObservaciones().trim().equals("")) {
+			if (!reservaArticulo.getObservaciones().trim().isEmpty()) {
 				ConceptoFacturado conceptoFacturado = new ConceptoFacturado();
 				conceptoFacturado.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
 				conceptoFacturado.setNumeroLinea(1);
