@@ -130,6 +130,10 @@ data class ClienteMovimiento(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cgoclie", insertable = false, updatable = false)
-    var cliente: Cliente? = null
+    var cliente: Cliente? = null,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "mcl_mon_id", insertable = false, updatable = false)
+    var moneda: Moneda? = null
 
 ) : Auditable()

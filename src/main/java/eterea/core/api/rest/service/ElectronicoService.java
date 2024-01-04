@@ -4,11 +4,10 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.ElectronicoException;
+import eterea.core.api.rest.kotlin.model.Electronico;
 import eterea.core.api.rest.repository.IElectronicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Electronico;
 
 /**
  * @author daniel

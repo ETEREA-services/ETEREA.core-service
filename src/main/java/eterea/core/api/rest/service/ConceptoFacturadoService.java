@@ -3,11 +3,11 @@
  */
 package eterea.core.api.rest.service;
 
-import eterea.core.api.rest.repository.IConceptoFacturadoRepository;
+import eterea.core.api.rest.kotlin.exception.ConceptoFacturadoException;
+import eterea.core.api.rest.kotlin.model.ConceptoFacturado;
+import eterea.core.api.rest.kotlin.repository.IConceptoFacturadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.ConceptoFacturado;
 
 /**
  * @author daniel
@@ -16,12 +16,19 @@ import eterea.core.api.rest.model.ConceptoFacturado;
 @Service
 public class ConceptoFacturadoService {
 
+	private final IConceptoFacturadoRepository repository;
+
 	@Autowired
-	private IConceptoFacturadoRepository repository;
+	public ConceptoFacturadoService(IConceptoFacturadoRepository repository) {
+		this.repository = repository;
+	}
+
+	public ConceptoFacturado findByArticuloMovimientoId(Long articuloMovimientoId) {
+		return repository.findByArticuloMovimientoId(articuloMovimientoId).orElseThrow(() -> new ConceptoFacturadoException(articuloMovimientoId));
+	}
 
 	public ConceptoFacturado add(ConceptoFacturado conceptoFacturado) {
-		conceptoFacturado = repository.save(conceptoFacturado);
-		return conceptoFacturado;
+		return repository.save(conceptoFacturado);
 	}
 
 }

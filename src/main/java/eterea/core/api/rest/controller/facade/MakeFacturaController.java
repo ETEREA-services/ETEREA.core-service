@@ -28,8 +28,12 @@ import eterea.core.api.rest.service.facade.FacturaPdfService;
 @RequestMapping("/makefactura")
 public class MakeFacturaController {
 
+	private final FacturaPdfService facturaPdfService;
+
 	@Autowired
-	private FacturaPdfService facturaPdfService;
+	public MakeFacturaController(FacturaPdfService facturaPdfService) {
+		this.facturaPdfService = facturaPdfService;
+	}
 
 	@GetMapping("/pdf/{clientemovimientoId}")
 	public ResponseEntity<Resource> makePdf(@PathVariable Long clientemovimientoId) throws FileNotFoundException {

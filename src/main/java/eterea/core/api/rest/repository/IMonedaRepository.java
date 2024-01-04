@@ -5,9 +5,8 @@ package eterea.core.api.rest.repository;
 
 import java.util.Optional;
 
+import eterea.core.api.rest.kotlin.model.Moneda;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import eterea.core.api.rest.model.Moneda;
 
 /**
  * @author daniel

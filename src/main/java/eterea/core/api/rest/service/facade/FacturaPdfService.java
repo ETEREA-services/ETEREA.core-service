@@ -16,9 +16,8 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
-import eterea.core.api.rest.kotlin.model.Cliente;
-import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
-import eterea.core.api.rest.kotlin.model.Empresa;
+import eterea.core.api.rest.kotlin.exception.ConceptoFacturadoException;
+import eterea.core.api.rest.kotlin.model.*;
 import eterea.core.api.rest.kotlin.model.mapper.CodigoQR;
 import eterea.core.api.rest.model.*;
 import eterea.core.api.rest.service.*;
@@ -48,35 +47,42 @@ import static com.google.zxing.client.j2se.MatrixToImageConfig.WHITE;
 @Slf4j
 public class FacturaPdfService {
 
-    @Autowired
-    private Environment env;
+    private final Environment environment;
+
+    private final EmpresaService empresaService;
+
+    private final ClienteMovimientoService clienteMovimientoService;
+
+    private final ElectronicoService electronicoService;
+
+    private final ComprobanteService comprobanteService;
+
+    private final ComprobanteAfipService comprobanteAfipService;
+
+    private final ArticuloMovimientoService articuloMovimientoService;
+
+    private final ArticuloService articuloService;
+
+    private final ClienteService clienteService;
+
+    private final MonedaService monedaService;
+
+    private final ConceptoFacturadoService conceptoFacturadoService;
 
     @Autowired
-    private EmpresaService empresaService;
-
-    @Autowired
-    private ClienteMovimientoService clienteMovimientoService;
-
-    @Autowired
-    private ElectronicoService electronicoService;
-
-    @Autowired
-    private ComprobanteService comprobanteService;
-
-    @Autowired
-    private ComprobanteAfipService comprobanteAfipService;
-
-    @Autowired
-    private ArticuloMovimientoService articuloMovimientoService;
-
-    @Autowired
-    private ArticuloService articuloService;
-
-    @Autowired
-    private ClienteService clienteService;
-
-    @Autowired
-    private MonedaService monedaService;
+    public FacturaPdfService(Environment environment, EmpresaService empresaService, ClienteMovimientoService clienteMovimientoService, ElectronicoService electronicoService, ComprobanteService comprobanteService, ComprobanteAfipService comprobanteAfipService, ArticuloMovimientoService articuloMovimientoService, ArticuloService articuloService, ClienteService clienteService, MonedaService monedaService, ConceptoFacturadoService conceptoFacturadoService) {
+        this.environment = environment;
+        this.empresaService = empresaService;
+        this.clienteMovimientoService = clienteMovimientoService;
+        this.electronicoService = electronicoService;
+        this.comprobanteService = comprobanteService;
+        this.comprobanteAfipService = comprobanteAfipService;
+        this.articuloMovimientoService = articuloMovimientoService;
+        this.articuloService = articuloService;
+        this.clienteService = clienteService;
+        this.monedaService = monedaService;
+        this.conceptoFacturadoService = conceptoFacturadoService;
+    }
 
     private static byte[] getQRCodeImage(String text, int width, int height) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -95,8 +101,16 @@ public class FacturaPdfService {
         Empresa empresa = empresaService.findTop();
         ClienteMovimiento clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
         Cliente cliente = clienteService.findByClienteId(clienteMovimiento.getClienteId());
+        // Cambia los null del tipo de documento y numero de documento
         Electronico electronico = electronicoService.findByUnique(clienteMovimiento.getComprobanteId(),
                 clienteMovimiento.getPuntoVenta(), clienteMovimiento.getNumeroComprobante());
+        if (electronico.getTipoDocumento() == null) {
+            electronico.setTipoDocumento(99);
+        }
+        if (electronico.getNumeroDocumento() == null) {
+            electronico.setNumeroDocumento(BigDecimal.ZERO);
+        }
+        //
         Moneda moneda = monedaService.findByMonedaId(clienteMovimiento.getMonedaId());
 
         ClienteMovimiento clienteMovimientoAsociado = null;
@@ -139,7 +153,7 @@ public class FacturaPdfService {
 
         Comprobante comprobante = comprobanteService.findByComprobanteId(electronico.getComprobanteId());
         Boolean discrimina = false;
-        Integer copias = 2;
+        int copias = 2;
         List<String> discriminados = Arrays.asList("A", "M");
         if (discriminados.contains(comprobante.getLetraComprobante())) {
             discrimina = true;
@@ -150,7 +164,7 @@ public class FacturaPdfService {
 
         String[] titulo_copias = {"ORIGINAL", "DUPLICADO", "TRIPLICADO"};
 
-        String path = env.getProperty("path.facturas");
+        String path = environment.getProperty("path.facturas");
 
         String filename = "";
         List<String> filenames = new ArrayList<>();
@@ -163,23 +177,21 @@ public class FacturaPdfService {
 
         try {
             mergePdf(filename = path + clienteMovimientoId + ".pdf", filenames);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (DocumentException | IOException e) {
+            log.debug(e.getMessage());
         }
 
         return filename;
     }
 
     private void mergePdf(String filename, List<String> filenames) throws DocumentException, IOException {
-        OutputStream outputStream = new FileOutputStream(new File(filename));
+        OutputStream outputStream = new FileOutputStream(filename);
         Document document = new Document();
         PdfWriter pdfWriter = PdfWriter.getInstance(document, outputStream);
         document.open();
         PdfContentByte pdfContentByte = pdfWriter.getDirectContent();
         for (String name : filenames) {
-            PdfReader pdfReader = new PdfReader(new FileInputStream(new File(name)));
+            PdfReader pdfReader = new PdfReader(new FileInputStream(name));
             for (int pagina = 0; pagina < pdfReader.getNumberOfPages(); ) {
                 document.newPage();
                 PdfImportedPage page = pdfWriter.getImportedPage(pdfReader, ++pagina);
@@ -327,6 +339,9 @@ public class FacturaPdfService {
             table = new PdfPTable(5);
             table.setWidthPercentage(100);
             table.setWidths(new int[]{10, 45, 15, 15, 15});
+            // Títulos
+            boolean isMonedaEmpty = clienteMovimiento.getMoneda() == null;
+            String monedaSimbolo = isMonedaEmpty ? "" : (char) 10 + clienteMovimiento.getMoneda().getSimbolo();
             cell = new PdfPCell();
             paragraph = new Paragraph("Código", new Font(Font.HELVETICA, 8, Font.BOLD));
             paragraph.setAlignment(Element.ALIGN_CENTER);
@@ -343,18 +358,19 @@ public class FacturaPdfService {
             cell.addElement(paragraph);
             table.addCell(cell);
             cell = new PdfPCell();
-            paragraph = new Paragraph("Precio Unitario", new Font(Font.HELVETICA, 8, Font.BOLD));
+            paragraph = new Paragraph("Precio Unitario" + monedaSimbolo, new Font(Font.HELVETICA, 8, Font.BOLD));
             paragraph.setAlignment(Element.ALIGN_RIGHT);
             cell.addElement(paragraph);
             table.addCell(cell);
             cell = new PdfPCell();
-            paragraph = new Paragraph("Subtotal", new Font(Font.HELVETICA, 8, Font.BOLD));
+            paragraph = new Paragraph("Subtotal" + monedaSimbolo, new Font(Font.HELVETICA, 8, Font.BOLD));
             paragraph.setAlignment(Element.ALIGN_RIGHT);
             cell.addElement(paragraph);
             table.addCell(cell);
+            //
             document.add(table);
 
-            Integer lineas = 25;
+            int lineas = 24;
 
             for (ArticuloMovimiento articuloMovimiento : articuloMovimientoService
                     .findAllByClienteMovimientoId(clienteMovimiento.getClienteMovimientoId())) {
@@ -372,13 +388,20 @@ public class FacturaPdfService {
                 cell = new PdfPCell();
                 cell.setBorder(Rectangle.NO_BORDER);
                 Articulo articulo = articuloService.findByArticuloId(articuloMovimiento.getArticuloId());
-                paragraph = new Paragraph(articulo.getDescripcion(), new Font(Font.HELVETICA, 8, Font.NORMAL));
+                String asociado = "";
+                try {
+                    asociado = (char) 10 + conceptoFacturadoService.findByArticuloMovimientoId(articuloMovimiento.getArticuloMovimientoId()).getConcepto();
+                    lineas--;
+                } catch (ConceptoFacturadoException e) {
+                    asociado = "";
+                }
+                paragraph = new Paragraph(articulo.getDescripcion() + asociado, new Font(Font.HELVETICA, 8, Font.NORMAL));
                 paragraph.setAlignment(Element.ALIGN_LEFT);
                 cell.addElement(paragraph);
                 table.addCell(cell);
                 cell = new PdfPCell();
                 cell.setBorder(Rectangle.NO_BORDER);
-                paragraph = new Paragraph(String.valueOf(Math.abs(articuloMovimiento.getCantidad().intValue())),
+                paragraph = new Paragraph(new DecimalFormat("#,##0.00").format(Math.abs(articuloMovimiento.getCantidad().doubleValue())),
                         new Font(Font.HELVETICA, 8, Font.NORMAL));
                 paragraph.setAlignment(Element.ALIGN_RIGHT);
                 cell.addElement(paragraph);
@@ -386,7 +409,7 @@ public class FacturaPdfService {
                 cell = new PdfPCell();
                 cell.setBorder(Rectangle.NO_BORDER);
                 paragraph = new Paragraph(
-                        new DecimalFormat("#.00").format(discriminar ? articuloMovimiento.getPrecioUnitarioSinIva()
+                        new DecimalFormat("#,##0.00").format(discriminar ? articuloMovimiento.getPrecioUnitarioSinIva()
                                 : articuloMovimiento.getPrecioUnitarioConIva()),
                         new Font(Font.HELVETICA, 8, Font.NORMAL));
                 paragraph.setAlignment(Element.ALIGN_RIGHT);
@@ -395,7 +418,7 @@ public class FacturaPdfService {
                 cell = new PdfPCell();
                 cell.setBorder(Rectangle.NO_BORDER);
                 paragraph = new Paragraph(
-                        new DecimalFormat("#.00").format(Math.abs(articuloMovimiento.getCantidad()
+                        new DecimalFormat("#,##0.00").format(Math.abs(articuloMovimiento.getCantidad()
                                 .multiply((discriminar ? articuloMovimiento.getPrecioUnitarioSinIva()
                                         : articuloMovimiento.getPrecioUnitarioConIva()))
                                 .doubleValue())),
@@ -418,6 +441,7 @@ public class FacturaPdfService {
 
             table = new PdfPTable(1);
             table.setWidthPercentage(100);
+            // Agregando Observaciones
             paragraph = new Paragraph(new Phrase("Observaciones: ", new Font(Font.COURIER, 10, Font.BOLD)));
             String observaciones = "";
             if (electronico.getClienteMovimientoIdAsociado() != null) {
@@ -436,6 +460,14 @@ public class FacturaPdfService {
             cell = new PdfPCell();
             cell.addElement(paragraph);
             table.addCell(cell);
+            // Agregando Son Pesos
+            paragraph = new Paragraph(new Phrase("Son pesos: ", new Font(Font.COURIER, 8, Font.BOLD)));
+            paragraph.add(new Phrase(clienteMovimiento.getLetras(), new Font(Font.HELVETICA, 8, Font.NORMAL)));
+            paragraph.setAlignment(Element.ALIGN_LEFT);
+            cell = new PdfPCell();
+            cell.addElement(paragraph);
+            table.addCell(cell);
+            //
             document.add(table);
 
             table = new PdfPTable(1);
@@ -444,35 +476,35 @@ public class FacturaPdfService {
             if (discriminar) {
                 paragraph = new Paragraph(new Phrase("Importe Neto: " + moneda.getSimbolo() + " ",
                         new Font(Font.COURIER, 9, Font.NORMAL)));
-                paragraph.add(new Phrase(new DecimalFormat("#.00").format(clienteMovimiento.getNeto().abs()),
+                paragraph.add(new Phrase(new DecimalFormat("#,##0.00").format(clienteMovimiento.getNeto().abs()),
                         new Font(Font.HELVETICA, 9, Font.BOLD)));
                 paragraph.setAlignment(Element.ALIGN_RIGHT);
                 cell.addElement(paragraph);
 
                 paragraph = new Paragraph(new Phrase("Importe Exento: " + moneda.getSimbolo() + " ",
                         new Font(Font.COURIER, 9, Font.NORMAL)));
-                paragraph.add(new Phrase(new DecimalFormat("#.00").format(clienteMovimiento.getMontoExento().abs()),
+                paragraph.add(new Phrase(new DecimalFormat("#,##0.00").format(clienteMovimiento.getMontoExento().abs()),
                         new Font(Font.HELVETICA, 9, Font.BOLD)));
                 paragraph.setAlignment(Element.ALIGN_RIGHT);
                 cell.addElement(paragraph);
 
                 paragraph = new Paragraph(new Phrase("Importe IVA 21%: " + moneda.getSimbolo() + " ",
                         new Font(Font.COURIER, 9, Font.NORMAL)));
-                paragraph.add(new Phrase(new DecimalFormat("#.00").format(clienteMovimiento.getMontoIva().abs()),
+                paragraph.add(new Phrase(new DecimalFormat("#,##0.00").format(clienteMovimiento.getMontoIva().abs()),
                         new Font(Font.HELVETICA, 9, Font.BOLD)));
                 paragraph.setAlignment(Element.ALIGN_RIGHT);
                 cell.addElement(paragraph);
 
                 paragraph = new Paragraph(new Phrase("Importe IVA 10.5%: " + moneda.getSimbolo() + " ",
                         new Font(Font.COURIER, 9, Font.NORMAL)));
-                paragraph.add(new Phrase(new DecimalFormat("#.00").format(clienteMovimiento.getMontoIvaRni().abs()),
+                paragraph.add(new Phrase(new DecimalFormat("#,##0.00").format(clienteMovimiento.getMontoIvaRni().abs()),
                         new Font(Font.HELVETICA, 9, Font.BOLD)));
                 paragraph.setAlignment(Element.ALIGN_RIGHT);
                 cell.addElement(paragraph);
 
             }
             paragraph = new Paragraph(new Phrase("Importe Total: $ ", new Font(Font.COURIER, 10, Font.BOLD)));
-            paragraph.add(new Phrase(new DecimalFormat("#.00").format(clienteMovimiento.getImporte().abs()),
+            paragraph.add(new Phrase(new DecimalFormat("#,##0.00").format(clienteMovimiento.getImporte().abs()),
                     new Font(Font.HELVETICA, 10, Font.BOLD)));
             paragraph.setAlignment(Element.ALIGN_RIGHT);
             cell.addElement(paragraph);
@@ -514,7 +546,7 @@ public class FacturaPdfService {
 
             document.close();
         } catch (Exception ex) {
-            log.debug(ex.getMessage().toString());
+            log.debug(ex.getMessage());
         }
 
     }

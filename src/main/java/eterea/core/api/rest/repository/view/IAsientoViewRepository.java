@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
-public interface AsientoViewRepository extends JpaRepository<AsientoView, String> {
+public interface IAsientoViewRepository extends JpaRepository<AsientoView, String> {
 
     public List<AsientoView> findAllByFechaBetween(OffsetDateTime desde, OffsetDateTime hasta);
 
