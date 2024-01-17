@@ -3,14 +3,16 @@
  */
 package eterea.core.api.rest.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eterea.core.api.rest.exception.ArticuloException;
-import eterea.core.api.rest.repository.IArticuloRepository;
+import eterea.core.api.rest.kotlin.model.Articulo;
+import eterea.core.api.rest.kotlin.model.ProductoArticulo;
+import eterea.core.api.rest.kotlin.model.VoucherProducto;
+import eterea.core.api.rest.kotlin.repository.ArticuloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Articulo;
 
 /**
  * @author daniel
@@ -19,8 +21,15 @@ import eterea.core.api.rest.model.Articulo;
 @Service
 public class ArticuloService {
 
+	private final ArticuloRepository repository;
+
+	private final ProductoArticuloService productoArticuloService;
+
 	@Autowired
-	private IArticuloRepository repository;
+	public ArticuloService(ArticuloRepository repository, ProductoArticuloService productoArticuloService) {
+		this.repository = repository;
+		this.productoArticuloService = productoArticuloService;
+	}
 
 	public List<Articulo> findAll() {
 		return repository.findAll();
@@ -39,4 +48,13 @@ public class ArticuloService {
 				.orElseThrow(() -> new ArticuloException(autoNumericoId));
 	}
 
+    public List<Articulo> findAllByVoucher(List<VoucherProducto> voucherProductos) {
+		var articulos = new ArrayList<Articulo>();
+		for (VoucherProducto voucherProducto : voucherProductos) {
+			for (ProductoArticulo productoArticulo : productoArticuloService.findAllByProductoId(voucherProducto.getProductoId())) {
+				articulos.add(productoArticulo.getArticulo());
+			}
+		}
+		return articulos;
+    }
 }

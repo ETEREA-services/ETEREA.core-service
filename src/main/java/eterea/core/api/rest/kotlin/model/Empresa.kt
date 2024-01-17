@@ -60,4 +60,4 @@ data class Empresa(
     @Column(name = "certificado")
     var certificado: String? = null
 
-    ) : Auditable()
+) : Auditable()

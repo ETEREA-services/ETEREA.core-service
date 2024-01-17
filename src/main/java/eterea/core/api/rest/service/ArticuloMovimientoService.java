@@ -7,7 +7,7 @@ import java.util.List;
 
 import eterea.core.api.rest.kotlin.exception.ArticuloMovimientoException;
 import eterea.core.api.rest.kotlin.model.ArticuloMovimiento;
-import eterea.core.api.rest.kotlin.repository.IArticuloMovimientoRepository;
+import eterea.core.api.rest.kotlin.repository.ArticuloMovimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ArticuloMovimientoService {
 
-	private final IArticuloMovimientoRepository repository;
+	private final ArticuloMovimientoRepository repository;
 
 	@Autowired
-	public ArticuloMovimientoService(IArticuloMovimientoRepository repository) {
+	public ArticuloMovimientoService(ArticuloMovimientoRepository repository) {
 		this.repository = repository;
 	}
 

@@ -30,7 +30,7 @@ data class Voucher(
     var fechaVencimiento: OffsetDateTime? = null,
 
     @Column(name = "vou_horavto")
-    var horaVencimiento: Time? = null,
+    var horaVencimiento: Time? = Time.valueOf("00:00:00"),
 
     @Column(name = "vou_nombrepax")
     var nombrePax: String? = null,
@@ -39,7 +39,7 @@ data class Voucher(
     var paxs: Int? = null,
 
     @Column(name = "vou_subeen")
-    var subeEn: String? = null,
+    var subeEn: String = "",
 
     @Column(name = "vou_productos")
     var productos: String? = null,
@@ -62,7 +62,7 @@ data class Voucher(
     var hotelId: Int? = null,
 
     @Column(name = "vou_cliente")
-    var contacto: String? = null,
+    var contacto: String = "",
 
     @Column(name = "vou_paxsreales")
     var paxsReales: Int? = null,
@@ -71,7 +71,7 @@ data class Voucher(
     var proveedorId: Int? = null,
 
     @Column(name = "vou_planilla")
-    var planilla: String? = null,
+    var planilla: String = "",
 
     @Column(name = "vou_res_id")
     var reservaId: Long? = null,
@@ -131,4 +131,91 @@ data class Voucher(
     @JoinColumn(name = "vou_res_id", insertable = false, updatable = false)
     var reserva: Reserva? = null
 
-) : Auditable()
+) {
+    data class Builder(
+        var voucherId: Long? = null,
+        var fechaToma: OffsetDateTime? = null,
+        var fechaServicio: OffsetDateTime? = null,
+        var fechaVencimiento: OffsetDateTime? = null,
+        var horaVencimiento: Time? = Time.valueOf("00:00:00"),
+        var nombrePax: String? = null,
+        var paxs: Int? = null,
+        var subeEn: String = "",
+        var productos: String? = null,
+        var tieneVoucher: Byte? = null,
+        var clienteId: Long? = null,
+        var observaciones: String? = null,
+        var confirmado: Byte? = null,
+        var pagaCacheuta: Byte? = null,
+        var hotelId: Int? = null,
+        var contacto: String = "",
+        var paxsReales: Int? = null,
+        var proveedorId: Int? = null,
+        var planilla: String = "",
+        var reservaId: Long? = null,
+        var numeroVoucher: String? = null,
+        var usuario: String? = null,
+        var fechaRecepcion: OffsetDateTime? = null,
+        var fechaEmision: OffsetDateTime? = null,
+        var numero: String? = null,
+        var cantidadPax: Int? = null,
+        var nombre: String? = null,
+        var conTraslado: Byte? = null,
+        var paxsNoShow: Int? = null,
+        var reservaOrigenId: Int? = null,
+        var fechaAbierta: Byte = 0,
+        var ventaInternet: Byte = 0,
+        var user: Usuario? = null,
+        var cliente: Cliente? = null,
+        var hotel: Hotel? = null,
+        var proveedor: Proveedor? = null,
+        var reserva: Reserva? = null
+    ) {
+        fun voucherId(voucherId: Long?) = apply { this.voucherId = voucherId }
+        fun fechaToma(fechaToma: OffsetDateTime?) = apply { this.fechaToma = fechaToma }
+        fun fechaServicio(fechaServicio: OffsetDateTime?) = apply { this.fechaServicio = fechaServicio }
+        fun fechaVencimiento(fechaVencimiento: OffsetDateTime?) = apply { this.fechaVencimiento = fechaVencimiento }
+        fun horaVencimiento(horaVencimiento: Time?) = apply { this.horaVencimiento = horaVencimiento }
+        fun nombrePax(nombrePax: String?) = apply { this.nombrePax = nombrePax }
+        fun paxs(paxs: Int?) = apply { this.paxs = paxs }
+        fun subeEn(subeEn: String) = apply { this.subeEn = subeEn }
+        fun productos(productos: String?) = apply { this.productos = productos }
+        fun tieneVoucher(tieneVoucher: Byte?) = apply { this.tieneVoucher = tieneVoucher }
+        fun clienteId(clienteId: Long?) = apply { this.clienteId = clienteId }
+        fun observaciones(observaciones: String?) = apply { this.observaciones = observaciones }
+        fun confirmado(confirmado: Byte?) = apply { this.confirmado = confirmado }
+        fun pagaCacheuta(pagaCacheuta: Byte?) = apply { this.pagaCacheuta = pagaCacheuta }
+        fun hotelId(hotelId: Int?) = apply { this.hotelId = hotelId }
+        fun contacto(contacto: String) = apply { this.contacto = contacto }
+        fun paxsReales(paxsReales: Int?) = apply { this.paxsReales = paxsReales }
+        fun proveedorId(proveedorId: Int?) = apply { this.proveedorId = proveedorId }
+        fun planilla(planilla: String) = apply { this.planilla = planilla }
+        fun reservaId(reservaId: Long?) = apply { this.reservaId = reservaId }
+        fun numeroVoucher(numeroVoucher: String?) = apply { this.numeroVoucher = numeroVoucher }
+        fun usuario(usuario: String?) = apply { this.usuario = usuario }
+        fun fechaRecepcion(fechaRecepcion: OffsetDateTime?) = apply { this.fechaRecepcion = fechaRecepcion }
+        fun fechaEmision(fechaEmision: OffsetDateTime?) = apply { this.fechaEmision = fechaEmision }
+        fun numero(numero: String?) = apply { this.numero = numero }
+        fun cantidadPax(cantidadPax: Int?) = apply { this.cantidadPax = cantidadPax }
+        fun nombre(nombre: String?) = apply { this.nombre = nombre }
+        fun conTraslado(conTraslado: Byte?) = apply { this.conTraslado = conTraslado }
+        fun paxsNoShow(paxsNoShow: Int?) = apply { this.paxsNoShow = paxsNoShow }
+        fun reservaOrigenId(reservaOrigenId: Int?) = apply { this.reservaOrigenId = reservaOrigenId }
+        fun fechaAbierta(fechaAbierta: Byte) = apply { this.fechaAbierta = fechaAbierta }
+        fun ventaInternet(ventaInternet: Byte) = apply { this.ventaInternet = ventaInternet }
+        fun user(user: Usuario?) = apply { this.user = user }
+        fun cliente(cliente: Cliente?) = apply { this.cliente = cliente }
+        fun hotel(hotel: Hotel?) = apply { this.hotel = hotel }
+        fun proveedor(proveedor: Proveedor?) = apply { this.proveedor = proveedor }
+        fun reserva(reserva: Reserva?) = apply { this.reserva = reserva }
+
+        fun build() = Voucher(
+            voucherId, fechaToma, fechaServicio, fechaVencimiento, horaVencimiento, nombrePax, paxs, subeEn,
+            productos, tieneVoucher, clienteId, observaciones, confirmado, pagaCacheuta, hotelId, contacto,
+            paxsReales, proveedorId, planilla, reservaId, numeroVoucher, usuario, fechaRecepcion, fechaEmision,
+            numero, cantidadPax, nombre, conTraslado, paxsNoShow, reservaOrigenId, fechaAbierta, ventaInternet,
+            user, cliente, hotel, proveedor, reserva
+        )
+    }
+}
+

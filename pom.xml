@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
-            <version>1.3.35</version>
+            <version>1.3.37</version>
         </dependency>
         <!-- ZXING BarCode and QRCode-->
         <dependency>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.2.0</version>
+            <version>8.3.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 import java.util.Optional
 
 @Repository
-interface IConceptoFacturadoRepository : JpaRepository<ConceptoFacturado?, Long?> {
+interface ConceptoFacturadoRepository : JpaRepository<ConceptoFacturado?, Long?> {
 
     fun findByArticuloMovimientoId(articuloMovimientoId: Long): Optional<ConceptoFacturado?>?
 
