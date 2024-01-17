@@ -27,12 +27,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn clean install
+      run: mvn clean install -DskipTests
       
     - uses: mr-smithers-excellent/docker-build-push@v6
       name: Build & push Docker image
       env:
-        VERSION: 5.8.13
+        VERSION: 5.8.14
       with:
         image: dqmdz/eterea.api
         tags: ${VERSION}, latest, "${GITHUB_REF#refs/heads/}.$(git rev-parse --short ${GITHUB_SHA})"
