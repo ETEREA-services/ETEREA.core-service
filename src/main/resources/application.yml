@@ -1,8 +1,15 @@
 app:
   server: 127.0.0.1:3306
-  database: ctlogistica
+  database: tsaagencia
   user: root
   password: root
+#  venta-web-server: 127.0.0.1
+#  server: 10.147.17.149:3306
+#  database: tsaagencia
+#  user: agencia
+#  password: cacheuta
+  venta-web-server: 10.147.17.149
+  venta-web-port: 8280
   add-properties: true
   logging: debug
   livereload:
@@ -12,9 +19,7 @@ app:
   mail:
     username: reportes.termalia@gmail.com
     password: uulgftuqhgjdihgv
-  venta-web-server: 127.0.0.1
-  venta-web-port: 8280
-    
+
 spring:
 #  main:
 #    allow-circular-references: true

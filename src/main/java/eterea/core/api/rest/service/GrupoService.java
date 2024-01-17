@@ -5,9 +5,9 @@ package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.GrupoException;
 import eterea.core.api.rest.kotlin.model.Voucher;
+import eterea.core.api.rest.kotlin.model.VoucherProducto;
 import eterea.core.api.rest.model.Grupo;
 import eterea.core.api.rest.model.GrupoProducto;
-import eterea.core.api.rest.model.VoucherProducto;
 import eterea.core.api.rest.repository.IGrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -24,6 +24,7 @@ import java.util.Set;
  */
 @Service
 public class GrupoService {
+
 	@Autowired
 	private IGrupoRepository repository;
 	@Autowired
@@ -58,7 +59,7 @@ public class GrupoService {
 		List<Voucher> vouchers = voucherService.findAllByFechaServicio(fechaServicio, false, false);
 		List<VoucherProducto> vp = new ArrayList<>();
 		for (Voucher v : vouchers) {
-			vp.addAll(voucherProductoService.findByVoucherId(v.getVoucherId()));
+			vp.addAll(voucherProductoService.findAllByVoucherId(v.getVoucherId()));
 		}
 		List<GrupoProducto> grupos = new ArrayList<>();
 		for (VoucherProducto element : vp) {

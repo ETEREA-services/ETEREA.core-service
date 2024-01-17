@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.api.rest.service.facade.ReservaService;
+import eterea.core.api.rest.service.ReservaService;
 
 /**
  * @author daniel

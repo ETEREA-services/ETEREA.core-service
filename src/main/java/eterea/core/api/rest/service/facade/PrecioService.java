@@ -8,12 +8,12 @@ import java.time.OffsetDateTime;
 
 import eterea.core.api.rest.exception.ArticuloException;
 import eterea.core.api.rest.exception.ArticuloFechaException;
+import eterea.core.api.rest.kotlin.model.Articulo;
+import eterea.core.api.rest.kotlin.model.ProductoArticulo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.core.api.rest.model.Articulo;
 import eterea.core.api.rest.model.ArticuloFecha;
-import eterea.core.api.rest.model.ProductoArticulo;
 import eterea.core.api.rest.service.ArticuloFechaService;
 import eterea.core.api.rest.service.ArticuloService;
 import eterea.core.api.rest.service.ProductoArticuloService;

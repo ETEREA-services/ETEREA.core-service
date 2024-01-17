@@ -5,7 +5,7 @@ package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.kotlin.exception.ConceptoFacturadoException;
 import eterea.core.api.rest.kotlin.model.ConceptoFacturado;
-import eterea.core.api.rest.kotlin.repository.IConceptoFacturadoRepository;
+import eterea.core.api.rest.kotlin.repository.ConceptoFacturadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConceptoFacturadoService {
 
-	private final IConceptoFacturadoRepository repository;
+	private final ConceptoFacturadoRepository repository;
 
 	@Autowired
-	public ConceptoFacturadoService(IConceptoFacturadoRepository repository) {
+	public ConceptoFacturadoService(ConceptoFacturadoRepository repository) {
 		this.repository = repository;
 	}
 

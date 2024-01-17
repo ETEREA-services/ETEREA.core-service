@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class OrderNoteService {
@@ -26,6 +28,27 @@ public class OrderNoteService {
         String ventaWebServer = environment.getProperty("app.venta-web-server");
         String ventaWebPort = environment.getProperty("app.venta-web-port");
         return "http://" + ventaWebServer + ":" + ventaWebPort + "/orderNote";
+    }
+
+    public List<OrderNote> findAllCompletedByLastTwoDays() {
+        String url = this.getUrl() + "/lastTwoDays";
+
+        String username = "admin";
+        String password = "admin";
+        String authHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, authHeader);
+
+        WebClient webClient = WebClient.builder()
+                .defaultHeaders(header -> header.putAll(headers))
+                .build();
+
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToFlux(OrderNote.class)
+                .collectList()
+                .block();
     }
 
     public OrderNote findByOrderNumberId(Long orderNumberId) {
