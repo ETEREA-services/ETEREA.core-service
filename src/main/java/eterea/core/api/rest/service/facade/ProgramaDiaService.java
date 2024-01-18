@@ -164,13 +164,27 @@ public class ProgramaDiaService {
                     .build();
         }
         // Verifica cliente
+        String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
         Cliente cliente = null;
         try {
             cliente = clienteService.findByNumeroDocumento(orderNote.getBillingDniPasaporte());
         } catch (ClienteException e) {
             Long clienteId = 1 + clienteService.findLast().getClienteId();
-            cliente = new Cliente(clienteId, orderNote.getBillingFullName(), negocio.getNegocioId(), "", "", "", null, 0, 0, orderNote.getBillingAddress(), orderNote.getBillingPhone(), "", orderNote.getBillingEmail(), orderNote.getBillingPhone(), 3, 0, 0, "", orderNote.getBillingDniPasaporte(), BigDecimal.ZERO, orderNote.getBillingCountry(), 0, "", (byte) 0, (byte) 0, (byte) 0);
-            cliente = clienteService.add(cliente);
+            cliente = clienteService.add(new Cliente.Builder()
+                    .clienteId(clienteId)
+                    .nombre(fullName)
+                    .negocioId(negocio.getNegocioId())
+                    .razonSocial(fullName)
+                    .nombreFantasia(fullName)
+                    .domicilio(orderNote.getBillingAddress())
+                    .telefono(orderNote.getBillingPhone())
+                    .email(orderNote.getBillingEmail())
+                    .numeroMovil(orderNote.getBillingPhone())
+                    .posicionIva(3)
+                    .numeroDocumento(orderNote.getBillingDniPasaporte())
+                    .nacionalidad(orderNote.getBillingCountry())
+                    .clienteCategoriaId(0)
+                    .build());
         }
         OffsetDateTime fechaServicio = product.getBookingStart();
         byte lunes = 0;
@@ -256,7 +270,7 @@ public class ProgramaDiaService {
                 .fechaToma(orderNote.getCompletedDate())
                 .fechaServicio(fechaServicio)
                 .fechaVencimiento(product.getBookingStart())
-                .nombrePax(orderNote.getBillingFullName())
+                .nombrePax(fullName)
                 .contacto(orderNote.getBillingPhone())
                 .paxs(paxs)
                 .productos(cadenaResumen(voucherProductos))
@@ -329,7 +343,7 @@ public class ProgramaDiaService {
             }
             cadena.append(voucherProducto.getProducto().getNombre()).append(" x ").append(voucherProducto.getCantidadPaxs());
 
-            primero  = false;
+            primero = false;
         }
         return cadena.toString();
     }
