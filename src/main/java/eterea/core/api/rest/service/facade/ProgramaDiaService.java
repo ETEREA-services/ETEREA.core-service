@@ -60,6 +60,10 @@ public class ProgramaDiaService {
 
     private final ReservaService reservaService;
 
+    private record PersonType(int cantidad, String descripcion) {
+
+    }
+
     @Autowired
     public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, OrderNoteService orderNoteService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService) {
         this.voucherService = voucherService;
@@ -244,11 +248,14 @@ public class ProgramaDiaService {
         int paxs = product.getBookingPersons();
         int paxsMenor = 0;
         int paxsMayor = 0;
-        List<Integer> differentPaxs = extractPaxs(product.getPersonTypes());
-        paxsMayor = differentPaxs.getFirst();
-        if (differentPaxs.size() == 2) {
-            paxsMenor = differentPaxs.getFirst();
-            paxsMayor = differentPaxs.getLast();
+        for (PersonType personType : extractPaxs(product.getPersonTypes())) {
+            log.debug("personType={}", personType);
+            if (personType.descripcion().contains("Niño")) {
+                paxsMenor = personType.cantidad();
+            }
+            if (personType.descripcion().contains("Adulto")) {
+                paxsMayor = personType.cantidad();
+            }
         }
         var voucherProductos = new ArrayList<VoucherProducto>();
         if (paxsMayor > 0) {
@@ -348,13 +355,13 @@ public class ProgramaDiaService {
         return cadena.toString();
     }
 
-    private List<Integer> extractPaxs(String personTypes) {
-        var types = new ArrayList<Integer>();
-        Pattern pattern = Pattern.compile("\\((\\d+)\\)");
+    private List<PersonType> extractPaxs(String personTypes) {
+        var types = new ArrayList<PersonType>();
+        Pattern pattern = Pattern.compile("\\((\\d+)\\)\\s+([^()]+)");
         Matcher matcher = pattern.matcher(personTypes);
 
         while (matcher.find()) {
-            types.add(Integer.parseInt(matcher.group(1)));
+            types.add(new PersonType(Integer.parseInt(matcher.group(1)), matcher.group(2).trim()));
         }
         return types;
     }
