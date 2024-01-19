@@ -25,14 +25,18 @@ import java.util.Set;
 @Service
 public class GrupoService {
 
+	private final IGrupoRepository repository;
+	private final GrupoProductoService grupoProductoService;
+	private final VoucherService voucherService;
+	private final VoucherProductoService voucherProductoService;
+
 	@Autowired
-	private IGrupoRepository repository;
-	@Autowired
-	private GrupoProductoService grupoProductoService;
-	@Autowired
-	private VoucherService voucherService;
-	@Autowired
-	private VoucherProductoService voucherProductoService;
+	public GrupoService(IGrupoRepository repository, GrupoProductoService grupoProductoService, VoucherService voucherService, VoucherProductoService voucherProductoService) {
+		this.repository = repository;
+		this.grupoProductoService = grupoProductoService;
+		this.voucherService = voucherService;
+		this.voucherProductoService = voucherProductoService;
+	}
 
 	public List<Grupo> findAll() {
 		return repository.findAll(Sort.by("nombre").ascending());

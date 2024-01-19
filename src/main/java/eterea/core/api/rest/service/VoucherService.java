@@ -65,7 +65,7 @@ public class VoucherService {
     }
 
     public Voucher findByNumeroVoucher(String numeroVoucher) {
-        return repository.findByNumeroVoucherContains(numeroVoucher).orElseThrow(() -> new VoucherException(numeroVoucher));
+        return repository.findTopByNumeroVoucherContains(numeroVoucher).orElseThrow(() -> new VoucherException(numeroVoucher));
     }
 
     public Voucher save(Voucher voucher) {
