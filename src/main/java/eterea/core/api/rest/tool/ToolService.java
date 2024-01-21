@@ -8,6 +8,8 @@ import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author daniel
@@ -60,6 +62,25 @@ public class ToolService {
 
 	public static OffsetDateTime dateToOffsetDateTime(Date date) {
 		return date.toInstant().atOffset(ZoneOffset.UTC);
+	}
+
+	public static String onlyNumbers(String input) {
+		// Define a regular expression to match digits
+		Pattern pattern = Pattern.compile("\\d+");
+
+		// Create a matcher with the input string
+		Matcher matcher = pattern.matcher(input);
+
+		// Initialize a StringBuilder to store the extracted numbers
+		StringBuilder result = new StringBuilder();
+
+		// Iterate through the matches and append them to the result
+		while (matcher.find()) {
+			result.append(matcher.group());
+		}
+
+		// Return the extracted numbers as a string
+		return result.toString();
 	}
 
 }

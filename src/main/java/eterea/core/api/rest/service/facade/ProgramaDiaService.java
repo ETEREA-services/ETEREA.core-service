@@ -245,7 +245,7 @@ public class ProgramaDiaService {
                     .build();
         }
         // Determina paxs
-        int paxs = product.getBookingPersons();
+        int paxs = 0;
         int paxsMenor = 0;
         int paxsMayor = 0;
         for (PersonType personType : extractPaxs(product.getPersonTypes())) {
@@ -264,6 +264,7 @@ public class ProgramaDiaService {
                     .cantidadPaxs(paxsMayor)
                     .producto(productoPaxMayor)
                     .build());
+            paxs += paxsMayor;
         }
         if (paxsMenor > 0) {
             voucherProductos.add(new VoucherProducto.Builder()
@@ -271,6 +272,7 @@ public class ProgramaDiaService {
                     .cantidadPaxs(paxsMenor)
                     .producto(productoPaxMenor)
                     .build());
+            paxs += paxsMenor;
         }
         //
         Voucher voucher = new Voucher.Builder()

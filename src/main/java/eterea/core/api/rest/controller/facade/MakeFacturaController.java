@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import eterea.core.api.rest.service.facade.MakeFacturaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -28,10 +29,13 @@ import eterea.core.api.rest.service.facade.FacturaPdfService;
 @RequestMapping("/makefactura")
 public class MakeFacturaController {
 
+	private final MakeFacturaService service;
+
 	private final FacturaPdfService facturaPdfService;
 
 	@Autowired
-	public MakeFacturaController(FacturaPdfService facturaPdfService) {
+	public MakeFacturaController(MakeFacturaService service, FacturaPdfService facturaPdfService) {
+		this.service = service;
 		this.facturaPdfService = facturaPdfService;
 	}
 
@@ -47,6 +51,12 @@ public class MakeFacturaController {
 		headers.add("Expires", "0");
 		return ResponseEntity.ok().headers(headers).contentLength(file.length())
 				.contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+	}
+
+	@GetMapping("/facturaReserva/{reservaId}/{comprobanteId}")
+	public ResponseEntity<?> facturaReserva(@PathVariable Long reservaId, @PathVariable Integer comprobanteId) {
+		service.facturaReserva(reservaId, comprobanteId);
+		return (ResponseEntity<?>) ResponseEntity.ok();
 	}
 
 }
