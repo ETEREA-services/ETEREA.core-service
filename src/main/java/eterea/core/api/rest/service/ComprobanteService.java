@@ -6,11 +6,10 @@ package eterea.core.api.rest.service;
 import java.util.List;
 
 import eterea.core.api.rest.exception.ComprobanteException;
-import eterea.core.api.rest.repository.IComprobanteRepository;
+import eterea.core.api.rest.kotlin.model.Comprobante;
+import eterea.core.api.rest.kotlin.repository.ComprobanteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Comprobante;
 
 /**
  * @author daniel
@@ -19,8 +18,12 @@ import eterea.core.api.rest.model.Comprobante;
 @Service
 public class ComprobanteService {
 
+	private final ComprobanteRepository repository;
+
 	@Autowired
-	private IComprobanteRepository repository;
+	public ComprobanteService(ComprobanteRepository repository) {
+		this.repository = repository;
+	}
 
 	public List<Comprobante> findAllAsociables() {
 		return repository.findAllByModuloAndDebitaAndAsociado(3, (byte) 1, (byte) 0);

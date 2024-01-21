@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.api.rest.kotlin.exception.ReservaException;
 import eterea.core.api.rest.kotlin.model.*;
 import eterea.core.api.rest.kotlin.repository.ReservaRepository;
 import eterea.core.api.rest.service.*;
@@ -22,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Comprobante;
 
 /**
  * @author daniel
@@ -71,6 +70,10 @@ public class ReservaService {
                 .findTop100ByVerificadaAndFacturadaAndEliminadaAndPagaCacheutaAndFacturadoFueraAndAnuladaAndClienteIdGreaterThan(
                         (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, 0L,
                         Sort.by("fechaToma").descending().and(Sort.by("clienteId")));
+    }
+
+    public Reserva findByReservaId(Long reservaId) {
+        return repository.findByReservaId(reservaId).orElseThrow(() -> new ReservaException(reservaId));
     }
 
     @Transactional

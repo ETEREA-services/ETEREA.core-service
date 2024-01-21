@@ -1,7 +1,6 @@
 package eterea.core.api.rest.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import eterea.core.api.rest.model.Comprobante
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.OffsetDateTime

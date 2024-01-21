@@ -4,6 +4,7 @@
 package eterea.core.api.rest.service.facade;
 
 import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
+import eterea.core.api.rest.kotlin.model.Comprobante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import eterea.core.api.rest.model.ClienteMovimientoPrevio;
-import eterea.core.api.rest.model.Comprobante;
 import eterea.core.api.rest.model.dto.ImpresionFiscalDTO;
 import eterea.core.api.rest.service.ArticuloMovimientoTemporalService;
 import eterea.core.api.rest.service.ClienteMovimientoPrevioService;
