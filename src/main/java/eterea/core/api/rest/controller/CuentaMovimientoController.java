@@ -24,13 +24,17 @@ import eterea.core.api.rest.service.CuentaMovimientoService;
 @RequestMapping("/cuentaMovimiento")
 public class CuentaMovimientoController {
 
+	private final CuentaMovimientoService service;
+
 	@Autowired
-	private CuentaMovimientoService service;
+	public CuentaMovimientoController(CuentaMovimientoService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/{cuentaMovimientoId}")
 	public ResponseEntity<CuentaMovimientoDTO> findByCuentaMovimientoId(@PathVariable Long cuentaMovimientoId) {
 		try {
-			return new ResponseEntity<CuentaMovimientoDTO>(service.findByCuentaMovimientoId(cuentaMovimientoId),
+			return new ResponseEntity<>(service.findByCuentaMovimientoId(cuentaMovimientoId),
 					HttpStatus.OK);
 		} catch (CuentaMovimientoException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

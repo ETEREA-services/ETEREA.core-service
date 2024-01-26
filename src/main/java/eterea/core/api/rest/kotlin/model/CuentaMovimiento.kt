@@ -39,28 +39,28 @@ data class CuentaMovimiento(
     var subrubroId: Long? = null,
 
     @Column(name = "cgoprov")
-    var proveedorId: Long? = null,
+    var proveedorId: Long = 0,
 
     @Column(name = "cgoclie")
     var clienteId: Long? = null,
 
     @Column(name = "mco_cic_id")
-    var cierreCajaId: Long? = null,
+    var cierreCajaId: Long = 0,
 
     @Column(name = "mco_nivel")
-    var nivel: Int? = null,
+    var nivel: Int = 0,
 
     @Column(name = "mco_mcf_firma")
-    var firma: Long? = null,
+    var firma: Long = 0,
 
     @Column(name = "mco_tas_id")
-    var tipoAsientoId: Int? = null,
+    var tipoAsientoId: Int = 0,
 
     @Column(name = "articulomovimiento_id")
-    var articuloMovimientoId: Long? = null,
+    var articuloMovimientoId: Long = 0,
 
     var ejercicioId: Int? = null,
-    var inflacion: Byte? = null,
+    var inflacion: Byte = 0,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cuenta", insertable = false, updatable = false)
@@ -74,4 +74,63 @@ data class CuentaMovimiento(
     @JoinColumn(name = "mco_neg_id", insertable = false, updatable = false)
     var negocio: Negocio? = null
 
-) : Auditable()
+) : Auditable() {
+    data class Builder(
+        var cuentaMovimientoId: Long? = null,
+        var fecha: OffsetDateTime? = null,
+        var orden: Int? = null,
+        var item: Int? = null,
+        var debita: Byte = 0,
+        var negocioId: Int? = null,
+        var numeroCuenta: Long? = null,
+        var comprobanteId: Int? = null,
+        var concepto: String? = null,
+        var importe: BigDecimal = BigDecimal.ZERO,
+        var subrubroId: Long? = null,
+        var proveedorId: Long = 0,
+        var clienteId: Long? = null,
+        var cierreCajaId: Long = 0,
+        var nivel: Int = 0,
+        var firma: Long = 0,
+        var tipoAsientoId: Int = 0,
+        var articuloMovimientoId: Long = 0,
+        var ejercicioId: Int? = null,
+        var inflacion: Byte = 0,
+        var cuenta: Cuenta? = null,
+        var comprobante: Comprobante? = null,
+        var negocio: Negocio? = null
+    ) {
+        fun cuentaMovimientoId(cuentaMovimientoId: Long?) = apply { this.cuentaMovimientoId = cuentaMovimientoId }
+        fun fecha(fecha: OffsetDateTime?) = apply { this.fecha = fecha }
+        fun orden(orden: Int?) = apply { this.orden = orden }
+        fun item(item: Int?) = apply { this.item = item }
+        fun debita(debita: Byte) = apply { this.debita = debita }
+        fun negocioId(negocioId: Int?) = apply { this.negocioId = negocioId }
+        fun numeroCuenta(numeroCuenta: Long?) = apply { this.numeroCuenta = numeroCuenta }
+        fun comprobanteId(comprobanteId: Int?) = apply { this.comprobanteId = comprobanteId }
+        fun concepto(concepto: String?) = apply { this.concepto = concepto }
+        fun importe(importe: BigDecimal) = apply { this.importe = importe }
+        fun subrubroId(subrubroId: Long?) = apply { this.subrubroId = subrubroId }
+        fun proveedorId(proveedorId: Long) = apply { this.proveedorId = proveedorId }
+        fun clienteId(clienteId: Long?) = apply { this.clienteId = clienteId }
+        fun cierreCajaId(cierreCajaId: Long) = apply { this.cierreCajaId = cierreCajaId }
+        fun nivel(nivel: Int) = apply { this.nivel = nivel }
+        fun firma(firma: Long) = apply { this.firma = firma }
+        fun tipoAsientoId(tipoAsientoId: Int) = apply { this.tipoAsientoId = tipoAsientoId }
+        fun articuloMovimientoId(articuloMovimientoId: Long) =
+            apply { this.articuloMovimientoId = articuloMovimientoId }
+
+        fun ejercicioId(ejercicioId: Int?) = apply { this.ejercicioId = ejercicioId }
+        fun inflacion(inflacion: Byte) = apply { this.inflacion = inflacion }
+        fun cuenta(cuenta: Cuenta?) = apply { this.cuenta = cuenta }
+        fun comprobante(comprobante: Comprobante?) = apply { this.comprobante = comprobante }
+        fun negocio(negocio: Negocio?) = apply { this.negocio = negocio }
+
+        fun build() = CuentaMovimiento(
+            cuentaMovimientoId, fecha, orden, item, debita, negocioId, numeroCuenta,
+            comprobanteId, concepto, importe, subrubroId, proveedorId, clienteId,
+            cierreCajaId, nivel, firma, tipoAsientoId, articuloMovimientoId,
+            ejercicioId, inflacion, cuenta, comprobante, negocio
+        )
+    }
+}

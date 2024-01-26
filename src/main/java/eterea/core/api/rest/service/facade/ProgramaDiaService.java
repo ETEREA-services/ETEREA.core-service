@@ -60,12 +60,14 @@ public class ProgramaDiaService {
 
     private final ReservaService reservaService;
 
+    private final MakeFacturaService makeFacturaService;
+
     private record PersonType(int cantidad, String descripcion) {
 
     }
 
     @Autowired
-    public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, OrderNoteService orderNoteService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService) {
+    public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, OrderNoteService orderNoteService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService, MakeFacturaService makeFacturaService) {
         this.voucherService = voucherService;
         this.reservaOrigenService = reservaOrigenService;
         this.clienteMovimientoService = clienteMovimientoService;
@@ -77,6 +79,7 @@ public class ProgramaDiaService {
         this.productoSkuService = productoSkuService;
         this.voucherProductoService = voucherProductoService;
         this.reservaService = reservaService;
+        this.makeFacturaService = makeFacturaService;
     }
 
     public ProgramaDiaDTO findAllByFechaServicio(OffsetDateTime fechaServicio, Boolean soloConfirmados,
@@ -121,6 +124,13 @@ public class ProgramaDiaService {
                 log.info("imported result={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(programaDiaDTO));
             } catch (JsonProcessingException e) {
                 log.debug("something went wrong with order_note={}", orderNote.getOrderNumberId());
+            }
+            if (programaDiaDTO.getVouchers() != null) {
+                Voucher voucher = programaDiaDTO.getVouchers().getFirst();
+                boolean isFacturado = makeFacturaService.facturaReserva(voucher.getReservaId(), 853);
+                if (!isFacturado) {
+                    log.debug("error facturando reserva={}", voucher.getReservaId());
+                }
             }
         }
     }
@@ -184,7 +194,7 @@ public class ProgramaDiaService {
                     .telefono(orderNote.getBillingPhone())
                     .email(orderNote.getBillingEmail())
                     .numeroMovil(orderNote.getBillingPhone())
-                    .posicionIva(3)
+                    .posicionIva(2)
                     .numeroDocumento(orderNote.getBillingDniPasaporte())
                     .nacionalidad(orderNote.getBillingCountry())
                     .clienteCategoriaId(0)

@@ -38,4 +38,8 @@ public class ArticuloMovimientoService {
 		return articuloMovimiento;
 	}
 
+    public List<ArticuloMovimiento> saveAll(List<ArticuloMovimiento> articuloMovimientos) {
+		return repository.saveAll(articuloMovimientos);
+    }
+
 }

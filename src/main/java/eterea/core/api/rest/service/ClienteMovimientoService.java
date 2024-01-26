@@ -44,6 +44,58 @@ public class ClienteMovimientoService {
 				.orElseThrow(() -> new ClienteMovimientoException(clienteMovimientoId));
 	}
 
+	public ClienteMovimiento add(ClienteMovimiento clienteMovimiento) {
+		return repository.save(clienteMovimiento);
+	}
+
+	public ClienteMovimiento update(ClienteMovimiento newClienteMovimiento, Long clienteMovimientoId) {
+		return repository.findByClienteMovimientoId(clienteMovimientoId).map(clienteMovimiento -> {
+			clienteMovimiento = new ClienteMovimiento.Builder()
+					.clienteMovimientoId(clienteMovimientoId)
+					.comprobanteId(newClienteMovimiento.getComprobanteId())
+					.puntoVenta(newClienteMovimiento.getPuntoVenta())
+					.numeroComprobante(newClienteMovimiento.getNumeroComprobante())
+					.fechaComprobante(newClienteMovimiento.getFechaComprobante())
+					.clienteId(newClienteMovimiento.getClienteId())
+					.fechaVencimiento(newClienteMovimiento.getFechaVencimiento())
+					.negocioId(newClienteMovimiento.getNegocioId())
+					.empresaId(newClienteMovimiento.getEmpresaId())
+					.importe(newClienteMovimiento.getImporte())
+					.cancelado(newClienteMovimiento.getCancelado())
+					.neto(newClienteMovimiento.getNeto())
+					.netoCancelado(newClienteMovimiento.getNetoCancelado())
+					.montoIva(newClienteMovimiento.getMontoIva())
+					.montoIvaRni(newClienteMovimiento.getMontoIvaRni())
+					.reintegroTurista(newClienteMovimiento.getReintegroTurista())
+					.fechaContable(newClienteMovimiento.getFechaContable())
+					.ordenContable(newClienteMovimiento.getOrdenContable())
+					.recibo(newClienteMovimiento.getRecibo())
+					.asignado(newClienteMovimiento.getAsignado())
+					.anulada(newClienteMovimiento.getAnulada())
+					.decreto104316(newClienteMovimiento.getDecreto104316())
+					.letraComprobante(newClienteMovimiento.getLetraComprobante())
+					.montoExento(newClienteMovimiento.getMontoExento())
+					.reservaId(newClienteMovimiento.getReservaId())
+					.montoCuentaCorriente(newClienteMovimiento.getMontoCuentaCorriente())
+					.cierreCajaId(newClienteMovimiento.getCierreCajaId())
+					.cierreRestaurantId(newClienteMovimiento.getCierreRestaurantId())
+					.nivel(newClienteMovimiento.getNivel())
+					.eliminar(newClienteMovimiento.getEliminar())
+					.cuentaCorriente(newClienteMovimiento.getCuentaCorriente())
+					.letras(newClienteMovimiento.getLetras())
+					.cae(newClienteMovimiento.getCae())
+					.caeVencimiento(newClienteMovimiento.getCaeVencimiento())
+					.codigoBarras(newClienteMovimiento.getCodigoBarras())
+					.participacion(newClienteMovimiento.getParticipacion())
+					.monedaId(newClienteMovimiento.getMonedaId())
+					.cotizacion(newClienteMovimiento.getCotizacion())
+					.observaciones(newClienteMovimiento.getObservaciones())
+					.clienteMovimientoIdSlave(newClienteMovimiento.getClienteMovimientoIdSlave())
+					.build();
+			return repository.save(clienteMovimiento);
+		}).orElseThrow(() -> new ClienteMovimientoException(clienteMovimientoId));
+	}
+
 	public Long nextNumeroFactura(Integer puntoVenta, String letraComprobante) {
 		return repository.findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc(0, puntoVenta,
 				letraComprobante).map(clienteMovimiento -> {

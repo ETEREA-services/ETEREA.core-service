@@ -132,7 +132,7 @@ public class ReservaService {
             articuloMovimiento.setCantidad(new BigDecimal(factor * reservaArticulo.getCantidad()));
             articuloMovimiento.setTotal(
                     articuloMovimiento.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad())));
-            articuloMovimiento.setCuenta(articulo.getCuentaVentas());
+            articuloMovimiento.setNumeroCuenta(articulo.getCuentaVentas());
             articuloMovimiento.setIva105(articulo.getIva105());
             articuloMovimiento.setExento(articulo.getExento());
 
@@ -170,6 +170,44 @@ public class ReservaService {
 
     public Reserva add(Reserva reserva) {
         return repository.save(reserva);
+    }
+
+    public Reserva update(Reserva newReserva, Long reservaId) {
+        return repository.findByReservaId(reservaId).map(reserva -> {
+            reserva = new Reserva.Builder()
+                    .reservaId(reservaId)
+                    .negocioId(newReserva.getNegocioId())
+                    .clienteId(newReserva.getClienteId())
+                    .fechaToma(newReserva.getFechaToma())
+                    .fechaInServicio(newReserva.getFechaInServicio())
+                    .fechaOutServicio(newReserva.getFechaOutServicio())
+                    .fechaVencimiento(newReserva.getFechaVencimiento())
+                    .horaVencimiento(newReserva.getHoraVencimiento())
+                    .avisoMail(newReserva.getAvisoMail())
+                    .pendiente(newReserva.getPendiente())
+                    .confirmada(newReserva.getConfirmada())
+                    .facturada(newReserva.getFacturada())
+                    .anulada(newReserva.getAnulada())
+                    .eliminada(newReserva.getEliminada())
+                    .verificada(newReserva.getVerificada())
+                    .nombrePax(newReserva.getNombrePax())
+                    .cantidadPaxs(newReserva.getCantidadPaxs())
+                    .observaciones(newReserva.getObservaciones())
+                    .voucherId(newReserva.getVoucherId())
+                    .pagaComision(newReserva.getPagaComision())
+                    .observacionesComision(newReserva.getObservacionesComision())
+                    .comisionPagada(newReserva.getComisionPagada())
+                    .pagaCacheuta(newReserva.getPagaCacheuta())
+                    .facturadoFuera(newReserva.getFacturadoFuera())
+                    .reservaArticulos(newReserva.getReservaArticulos())
+                    .usuario(newReserva.getUsuario())
+                    .contacto(newReserva.getContacto())
+                    .reservaOrigenId(newReserva.getReservaOrigenId())
+                    .facturarExtranjero(newReserva.getFacturarExtranjero())
+                    .fechaAbierta(newReserva.getFechaAbierta())
+                    .build();
+            return repository.save(reserva);
+        }).orElseThrow(() -> new ReservaException(reservaId));
     }
 
     @Transactional

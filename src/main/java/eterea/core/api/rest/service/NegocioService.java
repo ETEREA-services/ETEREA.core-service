@@ -5,7 +5,7 @@ package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.NegocioException;
 import eterea.core.api.rest.kotlin.model.Negocio;
-import eterea.core.api.rest.repository.INegocioRepository;
+import eterea.core.api.rest.kotlin.repository.NegocioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class NegocioService {
 
 	@Autowired
-	private INegocioRepository repository;
+	private NegocioRepository repository;
 
 	public Negocio findByNegocioId(Integer negocioId) {
 		return repository.findByNegocioId(negocioId).orElseThrow(() -> new NegocioException(negocioId));
