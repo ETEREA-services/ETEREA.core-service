@@ -295,6 +295,7 @@ public class MakeFacturaService {
         };
         Valor valor = valorService.findByValorId(valorId);
 
+        String observaciones = "Pedido web #" + orderNote.getOrderNumberId() + " - Reserva #" + reserva.getReservaId();
         // Registra clienteMovimiento
         ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
                 .negocioId(empresa.getNegocioId())
@@ -318,6 +319,7 @@ public class MakeFacturaService {
                 .monedaId(1)
                 .cotizacion(BigDecimal.ONE)
                 .letras(ToolService.number_2_text(facturacionDTO.getTotal()))
+                .observaciones(observaciones)
                 .build();
         clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
 
@@ -340,7 +342,7 @@ public class MakeFacturaService {
                 .receptor("")
                 .estadoId(0)
                 .cierreCajaId(0L)
-                .observaciones("")
+                .observaciones(observaciones)
                 .valorMovimientoIdSlave(0L)
                 .build();
         valorMovimiento = valorMovimientoService.add(valorMovimiento);

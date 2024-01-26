@@ -441,9 +441,9 @@ public class FacturaPdfService {
             table.setWidthPercentage(100);
             // Agregando Observaciones
             paragraph = new Paragraph(new Phrase("Observaciones: ", new Font(Font.COURIER, 10, Font.BOLD)));
-            String observaciones = "";
+            String observaciones = clienteMovimiento.getObservaciones();
             if (registroCae.getClienteMovimientoIdAsociado() != null) {
-                observaciones += "Asoc: ";
+                observaciones += " Asoc: ";
                 if (comprobanteAfipAsociado != null) {
                     observaciones += comprobanteAfipAsociado.getLabel();
                 }
