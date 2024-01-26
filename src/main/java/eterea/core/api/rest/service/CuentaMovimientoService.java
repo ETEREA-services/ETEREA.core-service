@@ -5,8 +5,9 @@ package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.CuentaMovimientoException;
 import eterea.core.api.rest.kotlin.model.CuentaMovimiento;
-import eterea.core.api.rest.repository.ICuentaMovimientoRepository;
+import eterea.core.api.rest.kotlin.repository.CuentaMovimientoRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,15 @@ import java.util.List;
  * @author daniel
  */
 @Service
+@Slf4j
 public class CuentaMovimientoService {
 
-    private final ICuentaMovimientoRepository repository;
+    private final CuentaMovimientoRepository repository;
 
     private final CuentaMovimientoAperturaService cuentaMovimientoAperturaService;
 
     @Autowired
-    public CuentaMovimientoService(ICuentaMovimientoRepository repository, CuentaMovimientoAperturaService cuentaMovimientoAperturaService) {
+    public CuentaMovimientoService(CuentaMovimientoRepository repository, CuentaMovimientoAperturaService cuentaMovimientoAperturaService) {
         this.repository = repository;
         this.cuentaMovimientoAperturaService = cuentaMovimientoAperturaService;
     }
@@ -45,6 +47,10 @@ public class CuentaMovimientoService {
         CuentaMovimiento cuentaMovimiento = repository.findFirstByFechaAndOrdenOrderByItemDesc(fecha, orden).orElseThrow(() -> new CuentaMovimientoException(fecha, orden));
         ModelMapper mapper = new ModelMapper();
         return mapper.map(cuentaMovimiento, CuentaMovimientoDTO.class);
+    }
+
+    private CuentaMovimiento findLastByFecha(OffsetDateTime fecha) {
+        return repository.findFirstByFechaOrderByOrdenDesc(fecha).orElseThrow(() -> new CuentaMovimientoException(fecha));
     }
 
     @Transactional
@@ -78,4 +84,15 @@ public class CuentaMovimientoService {
         totales.add(this.totalHaberEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion));
         return totales;
     }
+
+    public int nextOrdenContable(OffsetDateTime fechaContable) {
+
+        try {
+            return 1 + findLastByFecha(fechaContable).getOrden();
+        } catch (CuentaMovimientoException e) {
+            log.debug("sin asientos");
+        }
+        return 1;
+    }
+
 }

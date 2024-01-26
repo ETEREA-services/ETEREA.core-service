@@ -34,7 +34,9 @@ data class Negocio(
     @Column(name = "neg_transfvalor")
     var transferenciaValor: Byte = 0,
 
-    var backendServer: String? = null,
-    var backendPort: String? = null
+    var backendServer: String = "",
+    var backendPort: String = "",
+    var facturaServer: String = "",
+    var facturaPort: String = ""
 
 ) : Auditable()

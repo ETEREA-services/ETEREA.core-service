@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository
 import java.util.Optional
 
 @Repository
-interface ArticuloMovimientoRepository : JpaRepository<ArticuloMovimiento?, Long?> {
-    fun findAllByClienteMovimientoId(clienteMovimientoId: Long?): List<ArticuloMovimiento?>?
+interface ArticuloMovimientoRepository : JpaRepository<ArticuloMovimiento, Long> {
+    fun findAllByClienteMovimientoId(clienteMovimientoId: Long): List<ArticuloMovimiento?>?
 
     fun findByArticuloMovimientoId(articuloMovimientoId: Long): Optional<ArticuloMovimiento?>?
 

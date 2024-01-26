@@ -53,7 +53,7 @@ public class FacturaPdfService {
 
     private final ClienteMovimientoService clienteMovimientoService;
 
-    private final ElectronicoService electronicoService;
+    private final RegistroCaeService registroCaeService;
 
     private final ComprobanteService comprobanteService;
 
@@ -70,11 +70,11 @@ public class FacturaPdfService {
     private final ConceptoFacturadoService conceptoFacturadoService;
 
     @Autowired
-    public FacturaPdfService(Environment environment, EmpresaService empresaService, ClienteMovimientoService clienteMovimientoService, ElectronicoService electronicoService, ComprobanteService comprobanteService, ComprobanteAfipService comprobanteAfipService, ArticuloMovimientoService articuloMovimientoService, ArticuloService articuloService, ClienteService clienteService, MonedaService monedaService, ConceptoFacturadoService conceptoFacturadoService) {
+    public FacturaPdfService(Environment environment, EmpresaService empresaService, ClienteMovimientoService clienteMovimientoService, RegistroCaeService registroCaeService, ComprobanteService comprobanteService, ComprobanteAfipService comprobanteAfipService, ArticuloMovimientoService articuloMovimientoService, ArticuloService articuloService, ClienteService clienteService, MonedaService monedaService, ConceptoFacturadoService conceptoFacturadoService) {
         this.environment = environment;
         this.empresaService = empresaService;
         this.clienteMovimientoService = clienteMovimientoService;
-        this.electronicoService = electronicoService;
+        this.registroCaeService = registroCaeService;
         this.comprobanteService = comprobanteService;
         this.comprobanteAfipService = comprobanteAfipService;
         this.articuloMovimientoService = articuloMovimientoService;
@@ -101,23 +101,21 @@ public class FacturaPdfService {
         Empresa empresa = empresaService.findTop();
         ClienteMovimiento clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
         Cliente cliente = clienteService.findByClienteId(clienteMovimiento.getClienteId());
+
         // Cambia los null del tipo de documento y numero de documento
-        Electronico electronico = electronicoService.findByUnique(clienteMovimiento.getComprobanteId(),
+        RegistroCae registroCae = registroCaeService.findByUnique(clienteMovimiento.getComprobanteId(),
                 clienteMovimiento.getPuntoVenta(), clienteMovimiento.getNumeroComprobante());
-        if (electronico.getTipoDocumento() == null) {
-            electronico.setTipoDocumento(99);
+        if (registroCae.getTipoDocumento() == null) {
+            registroCae.setTipoDocumento(99);
         }
-        if (electronico.getNumeroDocumento() == null) {
-            electronico.setNumeroDocumento(BigDecimal.ZERO);
-        }
-        //
+
         Moneda moneda = monedaService.findByMonedaId(clienteMovimiento.getMonedaId());
 
         ClienteMovimiento clienteMovimientoAsociado = null;
         ComprobanteAfip comprobanteAfipAsociado = null;
-        if (electronico.getClienteMovimientoIdAsociado() != null) {
+        if (registroCae.getClienteMovimientoIdAsociado() != null) {
             clienteMovimientoAsociado = clienteMovimientoService
-                    .findByClienteMovimientoId(electronico.getClienteMovimientoIdAsociado());
+                    .findByClienteMovimientoId(registroCae.getClienteMovimientoIdAsociado());
             log.debug("ClienteMovimientoAsociado -> {}", clienteMovimientoAsociado);
             Comprobante comprobante = comprobanteService
                     .findByComprobanteId(clienteMovimientoAsociado.getComprobanteId());
@@ -129,18 +127,18 @@ public class FacturaPdfService {
             String url = "https://www.afip.gob.ar/fe/qr/?p=";
             CodigoQR codigoQR = new CodigoQR();
             codigoQR.setVer(1);
-            codigoQR.setFecha(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(ToolService.stringDDMMYYYY2OffsetDateTime(electronico.getFecha())));
+            codigoQR.setFecha(DateTimeFormatter.ofPattern("yyyy-MM-dd").format(ToolService.stringDDMMYYYY2OffsetDateTime(registroCae.getFecha())));
             codigoQR.setCuit(empresa.getCuit().replaceAll("\\-", ""));
-            codigoQR.setPtoVta(electronico.getPuntoVenta());
-            codigoQR.setTipoCmp(electronico.getComprobanteId());
-            codigoQR.setNroCmp(electronico.getNumeroComprobante());
-            codigoQR.setImporte(electronico.getTotal());
+            codigoQR.setPtoVta(registroCae.getPuntoVenta());
+            codigoQR.setTipoCmp(registroCae.getComprobanteId());
+            codigoQR.setNroCmp(registroCae.getNumeroComprobante());
+            codigoQR.setImporte(registroCae.getTotal());
             codigoQR.setMoneda("PES");
             codigoQR.setCtz(1);
-            codigoQR.setTipoDocRec(electronico.getTipoDocumento());
-            codigoQR.setNroDocRec(electronico.getNumeroDocumento());
+            codigoQR.setTipoDocRec(registroCae.getTipoDocumento());
+            codigoQR.setNroDocRec(registroCae.getNumeroDocumento());
             codigoQR.setTipoCodAut("E");
-            codigoQR.setCodAut(electronico.getCae());
+            codigoQR.setCodAut(registroCae.getCae());
             ObjectMapper objectMapper = new ObjectMapper();
             String datos = new String(Base64.getEncoder().encode(objectMapper.writeValueAsString(codigoQR).getBytes()));
             imageQr = Image.getInstance(getQRCodeImage(url + datos, 25, 25));
@@ -151,7 +149,7 @@ public class FacturaPdfService {
             throw new RuntimeException(e);
         }
 
-        Comprobante comprobante = comprobanteService.findByComprobanteId(electronico.getComprobanteId());
+        Comprobante comprobante = comprobanteService.findByComprobanteId(registroCae.getComprobanteId());
         Boolean discrimina = false;
         int copias = 2;
         List<String> discriminados = Arrays.asList("A", "M");
@@ -171,7 +169,7 @@ public class FacturaPdfService {
         for (int copia = 0; copia < copias; copia++) {
             filenames.add(filename = path + clienteMovimientoId + "." + titulo_copias[copia].toLowerCase() + ".pdf");
 
-            makePage(filename, titulo_copias[copia], empresa, comprobante, comprobanteAfip, electronico, cliente,
+            makePage(filename, titulo_copias[copia], empresa, comprobante, comprobanteAfip, registroCae, cliente,
                     clienteMovimiento, moneda, discrimina, imageQr, clienteMovimientoAsociado, comprobanteAfipAsociado);
         }
 
@@ -204,7 +202,7 @@ public class FacturaPdfService {
     }
 
     private void makePage(String filename, String titulo, Empresa empresa, Comprobante comprobante,
-                          ComprobanteAfip comprobanteAfip, Electronico electronico, Cliente cliente,
+                          ComprobanteAfip comprobanteAfip, RegistroCae registroCae, Cliente cliente,
                           ClienteMovimiento clienteMovimiento, Moneda moneda, Boolean discriminar, Image imageQr,
                           ClienteMovimiento clienteMovimientoAsociado, ComprobanteAfip comprobanteAfipAsociado) {
         PdfPTable table = null;
@@ -269,16 +267,16 @@ public class FacturaPdfService {
             paragraph.setIndentationLeft(20);
             cell.addElement(paragraph);
             paragraph = new Paragraph(new Phrase("Punto de Venta: ", new Font(Font.HELVETICA, 8, Font.NORMAL)));
-            paragraph.add(new Phrase(new DecimalFormat("0000").format(electronico.getPuntoVenta()),
+            paragraph.add(new Phrase(new DecimalFormat("0000").format(registroCae.getPuntoVenta()),
                     new Font(Font.HELVETICA, 8, Font.BOLD)));
             paragraph.add(new Phrase("          Comprobante Nro: ", new Font(Font.HELVETICA, 8, Font.NORMAL)));
-            paragraph.add(new Phrase(new DecimalFormat("00000000").format(electronico.getNumeroComprobante()),
+            paragraph.add(new Phrase(new DecimalFormat("00000000").format(registroCae.getNumeroComprobante()),
                     new Font(Font.HELVETICA, 8, Font.BOLD)));
             paragraph.setAlignment(Element.ALIGN_LEFT);
             paragraph.setIndentationLeft(20);
             cell.addElement(paragraph);
             paragraph = new Paragraph(new Phrase("Fecha de Emisión: ", new Font(Font.HELVETICA, 8, Font.NORMAL)));
-            paragraph.add(new Phrase(ToolService.stringDDMMYYYY2OffsetDateTime(electronico.getFecha())
+            paragraph.add(new Phrase(ToolService.stringDDMMYYYY2OffsetDateTime(registroCae.getFecha())
                     .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), new Font(Font.HELVETICA, 8, Font.BOLD)));
             paragraph.setAlignment(Element.ALIGN_LEFT);
             paragraph.setIndentationLeft(20);
@@ -444,7 +442,7 @@ public class FacturaPdfService {
             // Agregando Observaciones
             paragraph = new Paragraph(new Phrase("Observaciones: ", new Font(Font.COURIER, 10, Font.BOLD)));
             String observaciones = "";
-            if (electronico.getClienteMovimientoIdAsociado() != null) {
+            if (registroCae.getClienteMovimientoIdAsociado() != null) {
                 observaciones += "Asoc: ";
                 if (comprobanteAfipAsociado != null) {
                     observaciones += comprobanteAfipAsociado.getLabel();
@@ -514,7 +512,7 @@ public class FacturaPdfService {
             table = new PdfPTable(1);
             table.setWidthPercentage(100);
             paragraph = new Paragraph(new Phrase("CAE Nro: ", new Font(Font.COURIER, 10, Font.NORMAL)));
-            paragraph.add(new Phrase(electronico.getCae(), new Font(Font.HELVETICA, 10, Font.BOLD)));
+            paragraph.add(new Phrase(registroCae.getCae(), new Font(Font.HELVETICA, 10, Font.BOLD)));
             paragraph.setAlignment(Element.ALIGN_RIGHT);
             cell = new PdfPCell();
             cell.setBorder(Rectangle.NO_BORDER);
@@ -536,7 +534,7 @@ public class FacturaPdfService {
             table.addCell(cell);
             // Agrega Vencimiento
             paragraph = new Paragraph(new Phrase("Vencimiento CAE: ", new Font(Font.COURIER, 10, Font.NORMAL)));
-            paragraph.add(new Phrase(electronico.getCaeVencimiento(), new Font(Font.HELVETICA, 10, Font.BOLD)));
+            paragraph.add(new Phrase(registroCae.getCaeVencimiento(), new Font(Font.HELVETICA, 10, Font.BOLD)));
             paragraph.setAlignment(Element.ALIGN_RIGHT);
             cell = new PdfPCell();
             cell.setBorder(Rectangle.NO_BORDER);
