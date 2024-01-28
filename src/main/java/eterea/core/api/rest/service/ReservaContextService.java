@@ -32,7 +32,10 @@ public class ReservaContextService {
                     .voucherId(newReservaContext.getVoucherId())
                     .clienteMovimientoId(newReservaContext.getClienteMovimientoId())
                     .orderNumberId(newReservaContext.getOrderNumberId())
-                    .envioFacturaPendiente(newReservaContext.getEnvioFacturaPendiente())
+                    .facturaPendiente(newReservaContext.getFacturaPendiente())
+                    .facturaTries(newReservaContext.getFacturaTries())
+                    .envioPendiente(newReservaContext.getEnvioPendiente())
+                    .envioTries(newReservaContext.getEnvioTries())
                     .build();
             return repository.save(reservaContext);
         }).orElseThrow(() -> new ReservaContextException(reservaContextId));
