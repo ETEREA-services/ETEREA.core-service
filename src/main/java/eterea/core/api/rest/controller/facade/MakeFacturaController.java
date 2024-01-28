@@ -40,11 +40,6 @@ public class MakeFacturaController {
         this.facturaPdfService = facturaPdfService;
     }
 
-    @GetMapping("/facturaReserva/{reservaId}/{comprobanteId}")
-    public ResponseEntity<Boolean> facturaReserva(@PathVariable Long reservaId, @PathVariable Integer comprobanteId) {
-        return new ResponseEntity<>(service.facturaReserva(reservaId, comprobanteId), HttpStatus.OK);
-    }
-
     @GetMapping("/pdf/{clienteMovimientoId}")
     public ResponseEntity<Resource> makePdf(@PathVariable Long clienteMovimientoId) throws FileNotFoundException {
         String filename = facturaPdfService.generatePdf(clienteMovimientoId);
