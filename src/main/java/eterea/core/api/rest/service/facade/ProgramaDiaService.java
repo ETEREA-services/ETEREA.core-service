@@ -62,12 +62,14 @@ public class ProgramaDiaService {
 
     private final MakeFacturaService makeFacturaService;
 
+    private final ReservaContextService reservaContextService;
+
     private record PersonType(int cantidad, String descripcion) {
 
     }
 
     @Autowired
-    public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, OrderNoteService orderNoteService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService, MakeFacturaService makeFacturaService) {
+    public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, OrderNoteService orderNoteService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService, MakeFacturaService makeFacturaService, ReservaContextService reservaContextService) {
         this.voucherService = voucherService;
         this.reservaOrigenService = reservaOrigenService;
         this.clienteMovimientoService = clienteMovimientoService;
@@ -80,6 +82,7 @@ public class ProgramaDiaService {
         this.voucherProductoService = voucherProductoService;
         this.reservaService = reservaService;
         this.makeFacturaService = makeFacturaService;
+        this.reservaContextService = reservaContextService;
     }
 
     public ProgramaDiaDTO findAllByFechaServicio(OffsetDateTime fechaServicio, Boolean soloConfirmados,
@@ -325,7 +328,17 @@ public class ProgramaDiaService {
 
         if (voucher.getReservaId() == null) {
             Reserva reserva = generarReserva(voucher, voucherProductos);
+            voucher.setReservaId(reserva.getReservaId());
         }
+
+        ReservaContext reservaContext = new ReservaContext.Builder()
+                .reservaId(voucher.getReservaId())
+                .voucherId(voucher.getVoucherId())
+                .orderNumberId(Long.valueOf(voucher.getNumeroVoucher()))
+                .facturaPendiente((byte) 1)
+                .envioPendiente((byte) 1)
+                .build();
+        reservaContextService.add(reservaContext);
 
         return voucher;
     }

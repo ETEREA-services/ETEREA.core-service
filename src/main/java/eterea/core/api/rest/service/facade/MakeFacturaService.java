@@ -22,7 +22,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
@@ -70,8 +69,10 @@ public class MakeFacturaService {
 
     private final ArticuloService articuloService;
 
+    private final ReservaContextService reservaContextService;
+
     @Autowired
-    public MakeFacturaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService, ReservaArticuloService reservaArticuloService, ParametroService parametroService, FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService, VoucherService voucherService, OrderNoteService orderNoteService, ClienteMovimientoService clienteMovimientoService, ValorService valorService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, RegistroCaeService registroCaeService, FacturaPdfService facturaPdfService, ClienteService clienteService, JavaMailSender javaMailSender, ArticuloService articuloService) {
+    public MakeFacturaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService, ReservaArticuloService reservaArticuloService, ParametroService parametroService, FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService, VoucherService voucherService, OrderNoteService orderNoteService, ClienteMovimientoService clienteMovimientoService, ValorService valorService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, RegistroCaeService registroCaeService, FacturaPdfService facturaPdfService, ClienteService clienteService, JavaMailSender javaMailSender, ArticuloService articuloService, ReservaContextService reservaContextService) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;
@@ -90,6 +91,7 @@ public class MakeFacturaService {
         this.javaMailSender = javaMailSender;
         this.clienteService = clienteService;
         this.articuloService = articuloService;
+        this.reservaContextService = reservaContextService;
     }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId) {
@@ -173,6 +175,10 @@ public class MakeFacturaService {
             }
         }
 
+        // actualiza reserva_context
+        ReservaContext reservaContext = reservaContextService.findByVoucherId(reserva.getVoucherId());
+        reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
+
         BigDecimal coeficienteIva1 = (parametro.getIva1().add(new BigDecimal(100))).divide(new BigDecimal(100));
         BigDecimal neto21 = total21.divide(coeficienteIva1, RoundingMode.HALF_UP);
         BigDecimal coeficienteIva2 = (parametro.getIva2().add(new BigDecimal(100))).divide(new BigDecimal(100));
@@ -203,20 +209,22 @@ public class MakeFacturaService {
 
         try {
             facturacionDTO = facturacionElectronicaService.facturar(facturacionDTO, empresa.getNegocioId());
+            try {
+                log.debug("facturacionDTO (after)={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDTO));
+            } catch (JsonProcessingException e) {
+                log.debug("facturacionDTO=null");
+            }
         } catch (WebClientResponseException e) {
             log.debug("Servicio de Facturación NO disponible");
+            reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
             return false;
-        }
-
-        try {
-            log.debug("facturacionDTO (after)={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDTO));
-        } catch (JsonProcessingException e) {
-            log.debug("facturacionDTO=null");
         }
 
         if (!facturacionDTO.getResultado().equals("A")) {
+            reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
             return false;
         }
+        reservaContext.setFacturaPendiente((byte) 0);
         // Convierte fechas
         SimpleDateFormat formatoInDate = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat formatoOutDate = new SimpleDateFormat("ddMMyyyy");
@@ -252,14 +260,23 @@ public class MakeFacturaService {
             log.debug("registroCae=null");
         }
 
-        // Llama a la transacción que genera todos los datos de la factura
-        ClienteMovimiento clienteMovimiento = registraTransaccionFactura(reserva, facturacionDTO, comprobante, empresa, cliente, parametro);
+        ClienteMovimiento clienteMovimiento = registraTransaccionFactura(reserva, facturacionDTO, comprobante, empresa, cliente, parametro, reservaContext);
 
         if (clienteMovimiento.getClienteMovimientoId() != null) {
             try {
+                log.debug("reservaContext={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
+            } catch (JsonProcessingException e) {
+                log.debug("reservaContext=null");
+            }
+
+            try {
+                reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
                 log.debug("envío correo={}", send(clienteMovimiento.getClienteMovimientoId()));
+                reservaContext.setEnvioPendiente((byte) 0);
+                reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
                 return true;
             } catch (MessagingException e) {
+                reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
             }
         }
 
@@ -268,7 +285,7 @@ public class MakeFacturaService {
     }
 
     @Transactional
-    protected ClienteMovimiento registraTransaccionFactura(Reserva reserva, FacturacionDTO facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro) {
+    protected ClienteMovimiento registraTransaccionFactura(Reserva reserva, FacturacionDTO facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext) {
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
         try {
             log.debug("voucher={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
@@ -322,6 +339,10 @@ public class MakeFacturaService {
                 .observaciones(observaciones)
                 .build();
         clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
+
+        // Registra reservaContext
+        reservaContext.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
+        reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
 
         // Registra valorMovimiento
         ValorMovimiento valorMovimiento = new ValorMovimiento.Builder()
