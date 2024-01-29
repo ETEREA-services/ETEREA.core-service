@@ -3,7 +3,6 @@
  */
 package eterea.core.api.rest.service.facade;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
