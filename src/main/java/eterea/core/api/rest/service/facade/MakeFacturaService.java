@@ -503,6 +503,8 @@ public class MakeFacturaService {
         data = data + (char) 10;
         data = data + "Le enviamos como archivo adjunto su factura." + (char) 10;
         data = data + (char) 10;
+        data = data + "Le agradecemos habernos elegido." + (char) 10;
+        data = data + (char) 10;
         data = data + "Atentamente." + (char) 10;
         data = data + (char) 10;
         data = data + (char) 10
