@@ -512,16 +512,18 @@ public class MakeFacturaService {
         // Envia correo
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        List<String> addresses = new ArrayList<String>();
+        var addresses = new ArrayList<String>();
+        var addresses_bcc = new ArrayList<String>();
 
-//        if (!clienteMovimiento.getCliente().getEmail().equals("")) {
-//            addresses.add(clienteMovimiento.getCliente().getEmail());
-//        }
-        addresses.add("romina.martinez@termaliasa.com");
+        if (!clienteMovimiento.getCliente().getEmail().isEmpty()) {
+            addresses.add(clienteMovimiento.getCliente().getEmail());
+        }
+        addresses_bcc.add("romina.martinez@termaliasa.com");
+        addresses_bcc.add("daniel.quinterospinto@gmail.com");
 
         try {
-            helper.setTo(addresses.toArray(new String[addresses.size()]));
-            helper.setBcc("daniel.quinterospinto@gmail.com");
+            helper.setTo(addresses.toArray(new String[0]));
+            helper.setBcc(addresses_bcc.toArray(new String[0]));
             helper.setText(data);
             helper.setReplyTo("no-reply@um.edu.ar");
             helper.setSubject("Envío Automático de Factura -> " + filenameFactura);

@@ -120,6 +120,10 @@ public class ProgramaDiaService {
     }
 
     public void importManyCompletedFromWeb() {
+        // Si el negocio no es agencia no hago nada
+        if (empresaService.findTop().getNegocioId() != 54) {
+            return;
+        }
         for (OrderNote orderNote : orderNoteService.findAllCompletedByLastTwoDays()) {
             log.debug("importing order_note={}", orderNote.getOrderNumberId());
             ProgramaDiaDTO programaDiaDTO = importOneFromWeb(orderNote.getOrderNumberId());
