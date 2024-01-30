@@ -179,13 +179,13 @@ public class MakeFacturaService {
         ReservaContext reservaContext = reservaContextService.findByVoucherId(reserva.getVoucherId());
         reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
 
-        BigDecimal coeficienteIva1 = (parametro.getIva1().add(new BigDecimal(100))).divide(new BigDecimal(100));
+        BigDecimal coeficienteIva1 = (parametro.getIva1().add(new BigDecimal(100))).divide(new BigDecimal(100), RoundingMode.HALF_UP);
         BigDecimal neto21 = total21.divide(coeficienteIva1, RoundingMode.HALF_UP);
-        BigDecimal coeficienteIva2 = (parametro.getIva2().add(new BigDecimal(100))).divide(new BigDecimal(100));
+        BigDecimal coeficienteIva2 = (parametro.getIva2().add(new BigDecimal(100))).divide(new BigDecimal(100), RoundingMode.HALF_UP);
         BigDecimal neto105 = total105.divide(coeficienteIva2, RoundingMode.HALF_UP);
         BigDecimal neto = neto21.add(neto105);
-        BigDecimal iva21 = neto21.multiply(parametro.getIva1()).divide(new BigDecimal(100));
-        BigDecimal iva105 = neto105.multiply(parametro.getIva2()).divide(new BigDecimal(100));
+        BigDecimal iva21 = neto21.multiply(parametro.getIva1()).divide(new BigDecimal(100), RoundingMode.HALF_UP);
+        BigDecimal iva105 = neto105.multiply(parametro.getIva2()).divide(new BigDecimal(100), RoundingMode.HALF_UP);
         BigDecimal iva = iva21.add(iva105);
 
         FacturacionDTO facturacionDTO = new FacturacionDTO.Builder()
