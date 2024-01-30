@@ -147,7 +147,7 @@ public class MakeFacturaService {
                 documento = ToolService.onlyNumbers(cliente.getNumeroDocumento());
             }
 
-            if (Integer.parseInt(documento) == 0) {
+            if (Long.parseLong(documento) == 0) {
                 tipoDocumento = 99;
                 documento = "0";
             }
