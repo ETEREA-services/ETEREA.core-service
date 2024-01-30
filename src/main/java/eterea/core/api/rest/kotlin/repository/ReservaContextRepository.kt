@@ -8,6 +8,8 @@ interface ReservaContextRepository : JpaRepository<ReservaContext, Long> {
 
     fun findByReservaContextId(reservaContextId: Long): Optional<ReservaContext?>?
 
+    fun findAllByFacturaPendiente(facturaPendiente: Byte): List<ReservaContext>
+
     fun findByVoucherId(voucherId: Long): Optional<ReservaContext?>?
 
 }
