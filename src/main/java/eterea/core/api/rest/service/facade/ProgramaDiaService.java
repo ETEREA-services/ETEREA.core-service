@@ -123,6 +123,7 @@ public class ProgramaDiaService {
         if (empresaService.findTop().getNegocioId() != 54) {
             return;
         }
+        // Importa las reservas web e intenta facturarlas
         for (OrderNote orderNote : orderNoteService.findAllCompletedByLastTwoDays()) {
             log.debug("importing order_note={}", orderNote.getOrderNumberId());
             ProgramaDiaDTO programaDiaDTO = importOneFromWeb(orderNote.getOrderNumberId());
@@ -137,6 +138,13 @@ public class ProgramaDiaService {
                 if (!isFacturado) {
                     log.debug("error facturando reserva={}", voucher.getReservaId());
                 }
+            }
+        }
+        // Intenta facturar las reservas que quedaron sin facturar
+        for (ReservaContext reservaContext : reservaContextService.findAllByFacturacionPendiente()) {
+            boolean isFacturado = makeFacturaService.facturaReserva(reservaContext.getReservaId(), 853);
+            if (!isFacturado) {
+                log.debug("error facturando reserva={}", reservaContext.getReservaId());
             }
         }
     }
