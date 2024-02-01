@@ -520,7 +520,7 @@ public class MakeFacturaService {
         if (!clienteMovimiento.getCliente().getEmail().isEmpty()) {
             addresses.add(clienteMovimiento.getCliente().getEmail());
         }
-        addresses_bcc.add("romina.martinez@termaliasa.com");
+        addresses_bcc.add("facturacion@termaliasa.com");
         addresses_bcc.add("daniel.quinterospinto@gmail.com");
 
         try {
