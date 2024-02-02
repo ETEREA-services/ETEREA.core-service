@@ -124,6 +124,7 @@ public class MakeFacturaService {
             log.debug("reserva=null");
         }
         if (reserva.getFacturada() == (byte) 1) {
+            log.debug("reserva facturada={}", reserva.getReservaId());
             return false;
         }
         Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
