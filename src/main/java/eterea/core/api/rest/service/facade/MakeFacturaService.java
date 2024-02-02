@@ -125,6 +125,16 @@ public class MakeFacturaService {
         }
         if (reserva.getFacturada() == (byte) 1) {
             log.debug("reserva facturada={}", reserva.getReservaId());
+            var reservaContext = reservaContextService.findByReservaId(reservaId);
+            reservaContext.setFacturadoFuera((byte) 1);
+            reservaContext.setFacturaPendiente((byte) 0);
+            reservaContext.setEnvioPendiente((byte) 0);
+            reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+            try {
+                log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
+            } catch (JsonProcessingException e) {
+                log.debug("reserva_context=null");
+            }
             return false;
         }
         Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());

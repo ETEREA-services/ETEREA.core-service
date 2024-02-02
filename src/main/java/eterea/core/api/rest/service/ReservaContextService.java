@@ -26,6 +26,10 @@ public class ReservaContextService {
         return repository.findByVoucherId(voucherId).orElseThrow(() -> new ReservaContextException("voucher", voucherId));
     }
 
+    public ReservaContext findByReservaId(Long reservaId) {
+        return repository.findByReservaId(reservaId).orElseThrow(() -> new ReservaContextException("reserva", reservaId));
+    }
+
     public ReservaContext add(ReservaContext reservaContext) {
         return repository.save(reservaContext);
     }
@@ -38,6 +42,7 @@ public class ReservaContextService {
                     .voucherId(newReservaContext.getVoucherId())
                     .clienteMovimientoId(newReservaContext.getClienteMovimientoId())
                     .orderNumberId(newReservaContext.getOrderNumberId())
+                    .facturadoFuera(newReservaContext.getFacturadoFuera())
                     .facturaPendiente(newReservaContext.getFacturaPendiente())
                     .facturaTries(newReservaContext.getFacturaTries())
                     .envioPendiente(newReservaContext.getEnvioPendiente())

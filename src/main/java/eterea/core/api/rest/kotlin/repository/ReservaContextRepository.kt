@@ -12,4 +12,6 @@ interface ReservaContextRepository : JpaRepository<ReservaContext, Long> {
 
     fun findByVoucherId(voucherId: Long): Optional<ReservaContext?>?
 
+    fun findByReservaId(reservaId: Long): Optional<ReservaContext>
+
 }
