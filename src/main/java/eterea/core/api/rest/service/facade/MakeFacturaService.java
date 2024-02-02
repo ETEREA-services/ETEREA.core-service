@@ -135,21 +135,26 @@ public class MakeFacturaService {
 
         int tipoDocumento = 80;
         String documento = cliente.getCuit().replace("-", "").trim();
+        log.debug("tipo_documento={} - numero_documento={} (1)", tipoDocumento, documento);
         if (documento.isEmpty()) {
             documento = "0";
         }
+        log.debug("tipo_documento={} - numero_documento={} (2)", tipoDocumento, documento);
         if (cliente.getTipoDocumento().trim().toUpperCase().startsWith("PAS")) {
             tipoDocumento = 94;
             documento = ToolService.onlyNumbers(cliente.getNumeroDocumento());
+            log.debug("tipo_documento={} - numero_documento={} (3)", tipoDocumento, documento);
         } else {
             if (Long.parseLong(documento) == 0) {
                 tipoDocumento = 96;
                 documento = ToolService.onlyNumbers(cliente.getNumeroDocumento());
+                log.debug("tipo_documento={} - numero_documento={} (4)", tipoDocumento, documento);
             }
 
             if (Long.parseLong(documento) == 0) {
                 tipoDocumento = 99;
                 documento = "0";
+                log.debug("tipo_documento={} - numero_documento={} (5)", tipoDocumento, documento);
             }
         }
 

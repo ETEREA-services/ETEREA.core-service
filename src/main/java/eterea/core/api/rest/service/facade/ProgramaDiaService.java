@@ -142,6 +142,11 @@ public class ProgramaDiaService {
         }
         // Intenta facturar las reservas que quedaron sin facturar
         for (ReservaContext reservaContext : reservaContextService.findAllByFacturacionPendiente()) {
+            try {
+                log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
+            } catch (JsonProcessingException e) {
+                log.debug("reserva_context=null");
+            }
             boolean isFacturado = makeFacturaService.facturaReserva(reservaContext.getReservaId(), 853);
             if (!isFacturado) {
                 log.debug("error facturando reserva={}", reservaContext.getReservaId());
