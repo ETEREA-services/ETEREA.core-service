@@ -15,6 +15,7 @@ data class ReservaContext(
     var voucherId: Long? = null,
     var clienteMovimientoId: Long? = null,
     var orderNumberId: Long? = null,
+    var facturadoFuera: Byte = 0,
     var facturaPendiente: Byte = 0,
     var facturaTries: Int = 0,
     var envioPendiente: Byte = 0,
@@ -28,6 +29,7 @@ data class ReservaContext(
         var voucherId: Long? = null
         var clienteMovimientoId: Long? = null
         var orderNumberId: Long? = null
+        var facturadoFuera: Byte = 0
         var facturaPendiente: Byte = 0
         var facturaTries: Int = 0
         var envioPendiente: Byte = 0
@@ -38,6 +40,7 @@ data class ReservaContext(
         fun voucherId(voucherId: Long?) = apply { this.voucherId = voucherId }
         fun clienteMovimientoId(clienteMovimientoId: Long?) = apply { this.clienteMovimientoId = clienteMovimientoId }
         fun orderNumberId(orderNumberId: Long?) = apply { this.orderNumberId = orderNumberId }
+        fun facturadoFuera(facturadoFuera: Byte) = apply { this.facturadoFuera = facturadoFuera }
         fun facturaPendiente(facturaPendiente: Byte) = apply { this.facturaPendiente = facturaPendiente }
         fun facturaTries(facturaTries: Int) = apply { this.facturaTries = facturaTries }
         fun envioPendiente(envioPendiente: Byte) = apply { this.envioPendiente = envioPendiente }
@@ -49,6 +52,7 @@ data class ReservaContext(
             voucherId,
             clienteMovimientoId,
             orderNumberId,
+            facturadoFuera,
             facturaPendiente,
             facturaTries,
             envioPendiente,
