@@ -1,6 +1,5 @@
 package eterea.core.api.rest.kotlin.model
 
-import eterea.core.api.rest.model.Producto
 import jakarta.persistence.*
 
 @Entity
