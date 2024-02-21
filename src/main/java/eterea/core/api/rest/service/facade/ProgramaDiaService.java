@@ -22,7 +22,6 @@ import eterea.core.api.rest.kotlin.extern.OrderNote;
 import eterea.core.api.rest.kotlin.extern.Product;
 import eterea.core.api.rest.kotlin.model.*;
 import eterea.core.api.rest.kotlin.model.dto.ProgramaDiaDTO;
-import eterea.core.api.rest.model.Producto;
 import eterea.core.api.rest.service.*;
 import eterea.core.api.rest.service.extern.OrderNoteService;
 import jakarta.transaction.Transactional;

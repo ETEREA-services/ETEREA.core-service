@@ -1,13 +1,14 @@
 package eterea.core.api.rest.kotlin.model
 
-import eterea.core.api.rest.model.Producto
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "productoarticulo", uniqueConstraints = [UniqueConstraint(columnNames = ["par_prd_id", "par_art_id"])])
 data class ProductoArticulo(
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "par_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "par_id")
     var productoarticuloId: Long? = null,
 
     @Column(name = "par_neg_id")

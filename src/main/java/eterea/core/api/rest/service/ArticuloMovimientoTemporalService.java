@@ -5,12 +5,11 @@ package eterea.core.api.rest.service;
 
 import java.util.List;
 
+import eterea.core.api.rest.kotlin.model.ArticuloMovimientoTemporal;
 import eterea.core.api.rest.repository.IArticuloMovimientoTemporalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.ArticuloMovimientoTemporal;
 
 /**
  * @author daniel

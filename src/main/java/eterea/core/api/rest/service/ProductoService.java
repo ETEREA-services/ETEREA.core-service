@@ -6,12 +6,11 @@ package eterea.core.api.rest.service;
 import java.util.List;
 
 import eterea.core.api.rest.exception.ProductoException;
+import eterea.core.api.rest.kotlin.model.Producto;
 import eterea.core.api.rest.repository.IProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Producto;
 
 /**
  * @author daniel
@@ -19,6 +18,7 @@ import eterea.core.api.rest.model.Producto;
  */
 @Service
 public class ProductoService {
+
 	@Autowired
 	private IProductoRepository repository;
 
@@ -40,14 +40,14 @@ public class ProductoService {
 	}
 
 	public Producto update(Producto newproducto, Integer productoId) {
-		return repository.findById(productoId).map(producto -> {
+		return repository.findByProductoId(productoId).map(producto -> {
 			producto.setNombre(newproducto.getNombre());
 			producto.setObservaciones(newproducto.getObservaciones());
 			producto.setDeshabilitado(newproducto.getDeshabilitado());
 			producto.setTraslado(newproducto.getTraslado());
-			producto.setPuntoencuentro(newproducto.getPuntoencuentro());
-			producto.setVentamostrador(newproducto.getVentamostrador());
-			producto.setVentainternet(newproducto.getVentainternet());
+			producto.setPuntoEncuentro(newproducto.getPuntoEncuentro());
+			producto.setVentaMostrador(newproducto.getVentaMostrador());
+			producto.setVentaInternet(newproducto.getVentaInternet());
 			return repository.save(producto);
 		}).orElseThrow(() -> new ProductoException(productoId));
 	}

@@ -6,11 +6,10 @@ package eterea.core.api.rest.service;
 import java.time.OffsetDateTime;
 
 import eterea.core.api.rest.exception.ArticuloFechaException;
-import eterea.core.api.rest.repository.IArticuloFechaRepository;
+import eterea.core.api.rest.kotlin.model.ArticuloFecha;
+import eterea.core.api.rest.kotlin.repository.ArticuloFechaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.ArticuloFecha;
 
 /**
  * @author daniel
@@ -19,8 +18,12 @@ import eterea.core.api.rest.model.ArticuloFecha;
 @Service
 public class ArticuloFechaService {
 
+	private final ArticuloFechaRepository repository;
+
 	@Autowired
-	private IArticuloFechaRepository repository;
+	public ArticuloFechaService(ArticuloFechaRepository repository) {
+		this.repository = repository;
+	}
 
 	public ArticuloFecha findByUnique(String articuloId, OffsetDateTime fecha) {
 		return repository.findByArticuloIdAndFecha(articuloId, fecha)
@@ -32,12 +35,13 @@ public class ArticuloFechaService {
 		return articulofecha;
 	}
 
-	public ArticuloFecha update(ArticuloFecha newarticulofecha, Long articulofechaId) {
-		return repository.findByArticulofechaId(articulofechaId).map(articulofecha -> {
-			articulofecha = new ArticuloFecha(articulofechaId, newarticulofecha.getArticuloId(),
+	public ArticuloFecha update(ArticuloFecha newarticulofecha, Long articuloFechaId) {
+		return repository.findByArticuloFechaId(articuloFechaId).map(articulofecha -> {
+			articulofecha = new ArticuloFecha(articuloFechaId, newarticulofecha.getArticuloId(),
 					newarticulofecha.getFecha(), newarticulofecha.getPrecioUsd(), newarticulofecha.getPrecioArs());
 			repository.save(articulofecha);
 			return articulofecha;
-		}).orElseThrow(() -> new ArticuloFechaException(articulofechaId));
+		}).orElseThrow(() -> new ArticuloFechaException(articuloFechaId));
 	}
+
 }

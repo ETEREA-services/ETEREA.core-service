@@ -28,7 +28,20 @@ data class FacturacionDTO(
     var vencimientoCae: String = "",
 
     @JsonProperty(value = "numero_comprobante")
-    var numeroComprobante: Long = 0
+    var numeroComprobante: Long = 0,
+
+    // Comprobante Asociado
+    @JsonProperty(value = "asociado_tipo_afip")
+    var asociadoTipoAfip: Int? = null,
+
+    @JsonProperty(value = "asociado_punto_venta")
+    var asociadoPuntoVenta: Int? = null,
+
+    @JsonProperty(value = "asociado_numero_comprobante")
+    var asociadoNumeroComprobante: Long? = null,
+
+    @JsonProperty(value = "asociado_fecha_comprobante")
+    var asociadoFechaComprobante: String? = null
 
 ) {
     data class Builder(
@@ -45,7 +58,11 @@ data class FacturacionDTO(
         var resultado: String = "",
         var cae: String = "",
         var vencimientoCae: String = "",
-        var numeroComprobante: Long = 0
+        var numeroComprobante: Long = 0,
+        var asociadoTipoAfip: Int? = null,
+        var asociadoPuntoVenta: Int? = null,
+        var asociadoNumeroComprobante: Long? = null,
+        var asociadoFechaComprobante: String? = null,
     ) {
         fun tipoDocumento(tipoDocumento: Int) = apply { this.tipoDocumento = tipoDocumento }
         fun documento(documento: String) = apply { this.documento = documento }
@@ -60,11 +77,34 @@ data class FacturacionDTO(
         fun resultado(resultado: String) = apply { this.resultado = resultado }
         fun cae(cae: String) = apply { this.cae = cae }
         fun vencimientoCae(vencimientoCae: String) = apply { this.vencimientoCae = vencimientoCae }
-        fun numeroComprobate(numeroComprobante: Long) = apply {this.numeroComprobante = numeroComprobante}
+        fun numeroComprobate(numeroComprobante: Long) = apply { this.numeroComprobante = numeroComprobante }
+        fun asociadoTipoAfip(asociadoTipoAfip: Int?) = apply { this.asociadoTipoAfip = asociadoTipoAfip }
+        fun asociadoPuntoVenta(asociadoPuntoVenta: Int?) = apply { this.asociadoPuntoVenta = asociadoPuntoVenta }
+        fun asociadoNumeroComprobante(asociadoNumeroComprobante: Long?) =
+            apply { this.asociadoNumeroComprobante = asociadoNumeroComprobante }
+
+        fun asociadoFechaComprobante(asociadoFechaComprobante: String?) =
+            apply { this.asociadoFechaComprobante = asociadoFechaComprobante }
 
         fun build() = FacturacionDTO(
-            tipoDocumento, documento, tipoAfip, puntoVenta, total, exento,
-            neto, neto105, iva, iva105, resultado, cae, vencimientoCae, numeroComprobante
+            tipoDocumento,
+            documento,
+            tipoAfip,
+            puntoVenta,
+            total,
+            exento,
+            neto,
+            neto105,
+            iva,
+            iva105,
+            resultado,
+            cae,
+            vencimientoCae,
+            numeroComprobante,
+            asociadoTipoAfip,
+            asociadoPuntoVenta,
+            asociadoNumeroComprobante,
+            asociadoFechaComprobante
         )
     }
 }
