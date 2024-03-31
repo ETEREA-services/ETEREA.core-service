@@ -21,17 +21,17 @@ services:
         networks:
             - eterea
 
-    eterea.cloudbeaver:
-        image: dbeaver/cloudbeaver:latest
-        depends_on:
-            - eterea.mysql
-        restart: always
-        ports:
-            - '28978:8978'
-        volumes:
-            - ./cloudbeaver:/opt/cloudbeaver/workspace
-        networks:
-            - eterea
+#    eterea.cloudbeaver:
+#        image: dbeaver/cloudbeaver:latest
+#        depends_on:
+#            - eterea.mysql
+#        restart: always
+#        ports:
+#            - '28978:8978'
+#        volumes:
+#            - ./cloudbeaver:/opt/cloudbeaver/workspace
+#        networks:
+#            - eterea
 
 #    tsa.agencia:
 #        build: .
@@ -62,5 +62,5 @@ networks:
 
 volumes:
     eterea.mysql:
-    eterea.cloudbeaver:
+#    eterea.cloudbeaver:
     

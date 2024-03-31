@@ -43,7 +43,6 @@ public class ViolacionLimite extends Auditable implements Serializable {
 	private OffsetDateTime fecha;
 
 	@Column(name = "violacionlimite_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long violacionLimiteId;
 	
 }
