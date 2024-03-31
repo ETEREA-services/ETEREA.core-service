@@ -1,6 +1,6 @@
 app:
   server: 127.0.0.1:3306
-  database: tsaagencia
+  database: tsahotel
   user: root
   password: root
 #  venta-web-server: 127.0.0.1
@@ -8,7 +8,7 @@ app:
 #  database: tsaagencia
 #  user: agencia
 #  password: cacheuta
-  venta-web-server: 10.147.17.149
+  venta-web-server: 127.0.0.1
   venta-web-port: 8280
   add-properties: true
   logging: debug

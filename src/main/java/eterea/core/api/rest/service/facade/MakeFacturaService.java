@@ -159,6 +159,7 @@ public class MakeFacturaService {
             if (Long.parseLong(documento) == 0) {
                 tipoDocumento = 96;
                 documento = ToolService.onlyNumbers(cliente.getNumeroDocumento());
+                documento = documento.substring(0, Math.min(documento.length(), 8));
                 log.debug("tipo_documento={} - numero_documento={} (4)", tipoDocumento, documento);
             }
 
