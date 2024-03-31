@@ -7,7 +7,8 @@ import java.math.BigDecimal
 @Table(name = "articulos")
 data class Articulo(
 
-    @Id @Column(name = "codigo")
+    @Id
+    @Column(name = "codigo")
     var articuloId: String? = null,
 
     @Column(name = "art_neg_id")
@@ -107,7 +108,6 @@ data class Articulo(
     var prestadorId: Int? = null,
 
     @Column(name = "clave")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var autoNumericoId: Long? = null
 
 ) : Auditable()

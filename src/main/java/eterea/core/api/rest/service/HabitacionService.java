@@ -26,7 +26,7 @@ public class HabitacionService {
 
 	public Habitacion update(Habitacion newHabitacion, Integer numero) {
 		return repository.findByNumero(numero).map(habitacion -> {
-			habitacion = new Habitacion(numero, newHabitacion.getHabitacionTipoId(), newHabitacion.getClienteId(), newHabitacion.getHabitacionId());
+			habitacion = new Habitacion(numero, newHabitacion.getHabitacionTipoId(), newHabitacion.getClienteId());
 			habitacion = repository.save(habitacion);
 			return habitacion;
 		}).orElseThrow(() -> new HabitacionException(numero));

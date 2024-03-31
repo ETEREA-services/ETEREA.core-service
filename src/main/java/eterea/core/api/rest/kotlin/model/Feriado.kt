@@ -15,8 +15,4 @@ data class Feriado(
     @Column(name = "fer_nombre")
     var nombre: String? = null,
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "clave")
-    var feriadoId: Long? = null
-
 ) : Auditable()
