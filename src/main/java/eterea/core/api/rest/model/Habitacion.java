@@ -44,7 +44,4 @@ public class Habitacion extends Auditable implements Serializable {
 	@Column(name = "hab_cli_id")
 	private Long clienteId;
 	
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long habitacionId;
-	
 }
