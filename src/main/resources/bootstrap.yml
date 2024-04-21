@@ -8,6 +8,7 @@ app:
 #  database: tsaagencia
 #  user: agencia
 #  password: cacheuta
+  eureka: 8761
   venta-web-server: 10.147.17.149
   venta-web-port: 8280
   add-properties: true
@@ -29,7 +30,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://eureka:@eureka-service:8761/eureka
+      defaultZone: http://eureka:@eureka-service:${app.eureka}/eureka
 
 spring:
   application:
