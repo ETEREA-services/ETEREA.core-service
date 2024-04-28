@@ -1,6 +1,6 @@
 app:
   server: 10.147.20.25:3306
-  database: tsamatriz
+  database: tsaagencia
   user: root
   password: root
 #  venta-web-server: 127.0.0.1
@@ -66,9 +66,9 @@ spring:
 
 logging:
   level:
-    eterea.core.api.rest: DEBUG
+    eterea.core.api.rest: ${app.logging}
     web: ${app.logging}
     org:
       hibernate:
         SQL: ${app.logging}
-      springframework.cloud.config: DEBUG
+      springframework.cloud.config: ${app.logging}
