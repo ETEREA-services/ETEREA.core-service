@@ -49,8 +49,6 @@ public class MakeFacturaService {
 
     private final VoucherService voucherService;
 
-    private final OrderNoteService orderNoteService;
-
     private final ClienteMovimientoService clienteMovimientoService;
 
     private final ValorService valorService;
@@ -71,8 +69,10 @@ public class MakeFacturaService {
 
     private final ReservaContextService reservaContextService;
 
+    private final OrderNoteService orderNoteService;
+
     @Autowired
-    public MakeFacturaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService, ReservaArticuloService reservaArticuloService, ParametroService parametroService, FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService, VoucherService voucherService, OrderNoteService orderNoteService, ClienteMovimientoService clienteMovimientoService, ValorService valorService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, RegistroCaeService registroCaeService, FacturaPdfService facturaPdfService, ClienteService clienteService, JavaMailSender javaMailSender, ArticuloService articuloService, ReservaContextService reservaContextService) {
+    public MakeFacturaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService, ReservaArticuloService reservaArticuloService, ParametroService parametroService, FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService, VoucherService voucherService, ClienteMovimientoService clienteMovimientoService, ValorService valorService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, RegistroCaeService registroCaeService, FacturaPdfService facturaPdfService, ClienteService clienteService, JavaMailSender javaMailSender, ArticuloService articuloService, ReservaContextService reservaContextService, OrderNoteService orderNoteService) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;
@@ -81,7 +81,6 @@ public class MakeFacturaService {
         this.facturacionElectronicaService = facturacionElectronicaService;
         this.cuentaMovimientoService = cuentaMovimientoService;
         this.voucherService = voucherService;
-        this.orderNoteService = orderNoteService;
         this.clienteMovimientoService = clienteMovimientoService;
         this.valorService = valorService;
         this.valorMovimientoService = valorMovimientoService;
@@ -92,6 +91,7 @@ public class MakeFacturaService {
         this.clienteService = clienteService;
         this.articuloService = articuloService;
         this.reservaContextService = reservaContextService;
+        this.orderNoteService = orderNoteService;
     }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId) {

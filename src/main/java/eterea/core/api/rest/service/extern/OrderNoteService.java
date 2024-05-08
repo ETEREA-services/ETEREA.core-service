@@ -1,76 +1,29 @@
 package eterea.core.api.rest.service.extern;
 
-import eterea.core.api.rest.exception.OrderNoteException;
+import eterea.core.api.rest.client.OrderNoteClient;
 import eterea.core.api.rest.kotlin.extern.OrderNote;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Service
-@Slf4j
 public class OrderNoteService {
 
-    private final Environment environment;
+    private final OrderNoteClient orderNoteClient;
 
     @Autowired
-    public OrderNoteService(Environment environment) {
-        this.environment = environment;
+    public OrderNoteService(OrderNoteClient orderNoteClient) {
+        this.orderNoteClient = orderNoteClient;
     }
 
-    private String getUrl() {
-        String ventaWebServer = environment.getProperty("app.venta-web-server");
-        String ventaWebPort = environment.getProperty("app.venta-web-port");
-        return "http://" + ventaWebServer + ":" + ventaWebPort + "/orderNote";
+    public OrderNote findByOrderNumberId(@PathVariable Long orderNumberId) {
+        return orderNoteClient.findByOrderNumberId(orderNumberId);
     }
 
     public List<OrderNote> findAllCompletedByLastTwoDays() {
-        String url = this.getUrl() + "/lastTwoDays";
-
-        String username = "admin";
-        String password = "admin";
-        String authHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, authHeader);
-
-        WebClient webClient = WebClient.builder()
-                .defaultHeaders(header -> header.putAll(headers))
-                .build();
-
-        return webClient.get()
-                .uri(url)
-                .retrieve()
-                .bodyToFlux(OrderNote.class)
-                .collectList()
-                .block();
-    }
-
-    public OrderNote findByOrderNumberId(Long orderNumberId) {
-        String url = this.getUrl() + "/" + orderNumberId;
-
-        String username = "admin";
-        String password = "admin";
-        String authHeader = "Basic " + java.util.Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, authHeader);
-
-        WebClient webClient = WebClient.builder()
-                .defaultHeaders(header -> header.putAll(headers))
-                .build();
-
-        return webClient.get()
-                .uri(url)
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(OrderNote.class)
-                        .flatMap(error -> Mono.error(new OrderNoteException(orderNumberId))))
-                .bodyToMono(OrderNote.class)
-                .block();
+        return orderNoteClient.findAllCompletedByLastTwoDays();
     }
 
 }

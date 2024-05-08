@@ -42,8 +42,6 @@ public class ProgramaDiaService {
 
     private final ClienteMovimientoService clienteMovimientoService;
 
-    private final OrderNoteService orderNoteService;
-
     private final ClienteService clienteService;
 
     private final EmpresaService empresaService;
@@ -62,16 +60,17 @@ public class ProgramaDiaService {
 
     private final ReservaContextService reservaContextService;
 
+    private final OrderNoteService orderNoteService;
+
     private record PersonType(int cantidad, String descripcion) {
 
     }
 
     @Autowired
-    public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, OrderNoteService orderNoteService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService, MakeFacturaService makeFacturaService, ReservaContextService reservaContextService) {
+    public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService, MakeFacturaService makeFacturaService, ReservaContextService reservaContextService, OrderNoteService orderNoteService) {
         this.voucherService = voucherService;
         this.reservaOrigenService = reservaOrigenService;
         this.clienteMovimientoService = clienteMovimientoService;
-        this.orderNoteService = orderNoteService;
         this.clienteService = clienteService;
         this.empresaService = empresaService;
         this.negocioService = negocioService;
@@ -81,6 +80,7 @@ public class ProgramaDiaService {
         this.reservaService = reservaService;
         this.makeFacturaService = makeFacturaService;
         this.reservaContextService = reservaContextService;
+        this.orderNoteService = orderNoteService;
     }
 
     public ProgramaDiaDTO findAllByFechaServicio(OffsetDateTime fechaServicio, Boolean soloConfirmados,
