@@ -18,6 +18,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -230,7 +231,7 @@ public class MakeFacturaService {
             } catch (JsonProcessingException e) {
                 log.debug("facturacionDTO=null");
             }
-        } catch (Exception e) {
+        } catch (WebClientResponseException e) {
             log.debug("Servicio de Facturación NO disponible");
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
             return false;
