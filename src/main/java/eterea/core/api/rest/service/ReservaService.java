@@ -79,32 +79,60 @@ public class ReservaService {
     @Transactional
     public void completeArticulos(Long clienteMovimientoId) {
         ClienteMovimiento clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
+        try {
+            log.debug("ClienteMovimiento = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(clienteMovimiento));
+        } catch (JsonProcessingException e) {
+            log.debug("ClienteMovimiento error = {}", e.getMessage());
+        }
 
         if (clienteMovimiento.getReservaId() == 0)
             return;
-        Voucher voucher = voucherService.findByReservaId(clienteMovimiento.getReservaId());
         Reserva reserva = repository.findByReservaId(clienteMovimiento.getReservaId()).get();
+        try {
+            log.debug("Reserva = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reserva));
+        } catch (JsonProcessingException e) {
+            log.debug("Reserva error = {}", e.getMessage());
+        }
         Comprobante comprobante = comprobanteService.findByComprobanteId(clienteMovimiento.getComprobanteId());
+        try {
+            log.debug("Comprobante = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
+        } catch (JsonProcessingException e) {
+            log.debug("Comprobante error = {}", e.getMessage());
+        }
+        String numeroVoucher = "";
+        Voucher voucher = null;
+        if (reserva.getVoucherId() != null && reserva.getVoucherId() > 0) {
+            voucher = voucherService.findByReservaId(clienteMovimiento.getReservaId());
+            if (!voucher.getNumeroVoucher().trim().isEmpty())
+                numeroVoucher = " - No.Voucher: " + voucher.getNumeroVoucher();
+        }
         int item = 0;
         List<ArticuloMovimiento> articuloMovs = new ArrayList<>();
 
-        String numeroVoucher = "";
-        if (!voucher.getNumeroVoucher().trim().isEmpty())
-            numeroVoucher = " - No.Voucher: " + voucher.getNumeroVoucher();
-
         for (ReservaArticulo reservaArticulo : reservaArticuloService
                 .findAllByReservaId(clienteMovimiento.getReservaId())) {
+            try {
+                log.debug("ReservaArticulo = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
+            } catch (JsonProcessingException e) {
+                log.debug("ReservaArticulo error = {}", e.getMessage());
+            }
             if (!reservaArticulo.getObservaciones().trim().isEmpty())
                 reservaArticulo.setObservaciones(reservaArticulo.getObservaciones() + numeroVoucher);
             addArticulo(clienteMovimiento, reservaArticulo, comprobante, ++item, reserva.getFacturarExtranjero(),
                     articuloMovs);
         }
+        log.debug("Fin proceso de completar articulos");
     }
 
     @Transactional
     protected void addArticulo(ClienteMovimiento clienteMovimiento, ReservaArticulo reservaArticulo,
                                Comprobante comprobante, Integer item, Byte facturaExtranjero, List<ArticuloMovimiento> articuloMovs) {
         Articulo articulo = articuloService.findByArticuloId(reservaArticulo.getArticuloId());
+        try {
+            log.debug("Articulo = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articulo));
+        } catch (JsonProcessingException e) {
+            log.debug("Articulo error = {}", e.getMessage());
+        }
         BigDecimal factorIva = new BigDecimal("1.21");
         if (articulo.getIva105() == 1)
             factorIva = new BigDecimal("1.105");
@@ -113,30 +141,41 @@ public class ReservaService {
         Integer factor = comprobante.getDebita() == 1 ? -1 : 1;
 
         if (articulo.getCentroStockId() != 1 || facturaExtranjero == 0) {
-            ArticuloMovimiento articuloMovimiento = new ArticuloMovimiento();
-            articuloMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
-            articuloMovimiento.setComprobanteId(clienteMovimiento.getComprobanteId());
-            articuloMovimiento.setNegocioId(clienteMovimiento.getNegocioId());
-            articuloMovimiento.setItem(item);
-            articuloMovimiento.setFechaMovimiento(clienteMovimiento.getFechaComprobante());
-            articuloMovimiento.setFechaFactura(clienteMovimiento.getFechaComprobante());
-            articuloMovimiento.setCierreCajaId(clienteMovimiento.getCierreCajaId());
-            articuloMovimiento.setArticuloId(reservaArticulo.getArticuloId());
-            articuloMovimiento.setCentroStockId(articulo.getCentroStockId());
-            BigDecimal preciounitario = reservaArticulo.getPrecioUnitario();
-            articuloMovimiento.setPrecioUnitarioSinIva(preciounitario.divide(factorIva, 2, RoundingMode.HALF_UP));
-            preciounitario = articuloMovimiento.getPrecioUnitarioSinIva().multiply(factorIva);
-            preciounitario = preciounitario.setScale(2, RoundingMode.HALF_UP);
-            articuloMovimiento.setPrecioUnitarioConIva(preciounitario);
-            articuloMovimiento.setPrecioUnitario(articuloMovimiento.getPrecioUnitarioConIva());
-            articuloMovimiento.setCantidad(new BigDecimal(factor * reservaArticulo.getCantidad()));
-            articuloMovimiento.setTotal(
-                    articuloMovimiento.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad())));
-            articuloMovimiento.setNumeroCuenta(articulo.getCuentaVentas());
-            articuloMovimiento.setIva105(articulo.getIva105());
-            articuloMovimiento.setExento(articulo.getExento());
+            BigDecimal precioUnitarioSinIva = reservaArticulo.getPrecioUnitario().divide(factorIva, 2, RoundingMode.HALF_UP);
+            BigDecimal precioUnitarioConIva = precioUnitarioSinIva.multiply(factorIva);
+            ArticuloMovimiento articuloMovimiento = new ArticuloMovimiento.Builder()
+                    .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
+                    .comprobanteId(clienteMovimiento.getComprobanteId())
+                    .negocioId(clienteMovimiento.getNegocioId())
+                    .item(item)
+                    .fechaMovimiento(clienteMovimiento.getFechaComprobante())
+                    .fechaFactura(clienteMovimiento.getFechaComprobante())
+                    .cierreCajaId(clienteMovimiento.getCierreCajaId())
+                    .articuloId(reservaArticulo.getArticuloId())
+                    .centroStockId(articulo.getCentroStockId())
+                    .precioUnitarioSinIva(precioUnitarioSinIva)
+                    .precioUnitarioConIva(precioUnitarioConIva)
+                    .precioUnitario(precioUnitarioConIva)
+                    .cantidad(new BigDecimal(factor * reservaArticulo.getCantidad()))
+                    .total(precioUnitarioConIva.multiply(new BigDecimal(reservaArticulo.getCantidad())))
+                    .numeroCuenta(articulo.getCuentaVentas())
+                    .iva105(articulo.getIva105())
+                    .exento(articulo.getExento())
+                    .build();
+
+            try {
+                log.debug("ArticuloMovimiento before = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
+            } catch (JsonProcessingException e) {
+                log.debug("ArticuloMovimiento before error = {}", e.getMessage());
+            }
 
             articuloMovimiento = articuloMovimientoService.add(articuloMovimiento);
+
+            try {
+                log.debug("ArticuloMovimiento after = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
+            } catch (JsonProcessingException e) {
+                log.debug("ArticuloMovimiento after error = {}", e.getMessage());
+            }
 
             articuloMovs.add(articuloMovimiento);
 
@@ -147,7 +186,20 @@ public class ReservaService {
                 conceptoFacturado.setConcepto(reservaArticulo.getObservaciones());
                 conceptoFacturado.setArticuloMovimientoId(articuloMovimiento.getArticuloMovimientoId());
 
+                try {
+                    log.debug("ConceptoFacturado before = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(conceptoFacturado));
+                } catch (JsonProcessingException e) {
+                    log.debug("ConceptoFacturado before error = {}", e.getMessage());
+                }
+
                 conceptoFacturado = conceptoFacturadoService.add(conceptoFacturado);
+
+                try {
+                    log.debug("ConceptoFacturado after = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(conceptoFacturado));
+                } catch (JsonProcessingException e) {
+                    log.debug("ConceptoFacturado after error = {}", e.getMessage());
+                }
+
             }
         }
     }
