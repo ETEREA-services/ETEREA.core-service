@@ -26,6 +26,6 @@ public class ReservaFacadeController {
 	@GetMapping("/articulos/{clientemovimientoId}")
 	public ResponseEntity<Void> completeArticulos(@PathVariable Long clientemovimientoId) {
 		service.completeArticulos(clientemovimientoId);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
