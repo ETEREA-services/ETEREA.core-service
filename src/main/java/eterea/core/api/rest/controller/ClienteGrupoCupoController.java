@@ -25,7 +25,7 @@ import eterea.core.api.rest.service.ClienteGrupoCupoService;
  *
  */
 @RestController
-@RequestMapping("/clientegrupocupo")
+@RequestMapping("/api/core/clientegrupocupo")
 public class ClienteGrupoCupoController {
 	@Autowired
 	private ClienteGrupoCupoService service;

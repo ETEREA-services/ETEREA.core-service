@@ -4,11 +4,9 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.ComprobanteAfipException;
+import eterea.core.api.rest.kotlin.model.ComprobanteAfip;
 import eterea.core.api.rest.repository.IComprobanteAfipRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.ComprobanteAfip;
 
 /**
  * @author daniel
@@ -17,8 +15,11 @@ import eterea.core.api.rest.model.ComprobanteAfip;
 @Service
 public class ComprobanteAfipService {
 
-	@Autowired
-	private IComprobanteAfipRepository repository;
+	private final IComprobanteAfipRepository repository;
+
+	public ComprobanteAfipService(IComprobanteAfipRepository repository) {
+		this.repository = repository;
+	}
 
 	public ComprobanteAfip findByComprobanteAfipId(Integer comprobanteAfipId) {
 		return repository.findByComprobanteAfipId(comprobanteAfipId)

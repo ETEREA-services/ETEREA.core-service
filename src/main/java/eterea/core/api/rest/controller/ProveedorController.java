@@ -21,7 +21,7 @@ import eterea.core.api.rest.service.ProveedorService;
  *
  */
 @RestController
-@RequestMapping("/proveedor")
+@RequestMapping("/api/core/proveedor")
 public class ProveedorController {
 
 	@Autowired

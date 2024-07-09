@@ -26,7 +26,7 @@ import eterea.core.api.rest.service.ArticuloFechaService;
  *
  */
 @RestController
-@RequestMapping("/articulofecha")
+@RequestMapping("/api/core/articulofecha")
 public class ArticuloFechaController {
 
 	private final ArticuloFechaService service;
