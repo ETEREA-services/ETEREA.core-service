@@ -2,6 +2,7 @@ package eterea.core.api.rest.service.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.api.rest.client.MakeFacturaReportClient;
 import eterea.core.api.rest.kotlin.extern.OrderNote;
 import eterea.core.api.rest.kotlin.model.*;
 import eterea.core.api.rest.kotlin.model.dto.FacturacionDTO;
@@ -10,13 +11,8 @@ import eterea.core.api.rest.service.extern.FacturacionElectronicaService;
 import eterea.core.api.rest.service.extern.OrderNoteService;
 import eterea.core.api.rest.tool.ToolService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -34,45 +30,31 @@ import java.util.List;
 public class MakeFacturaService {
 
     private final ComprobanteService comprobanteService;
-
     private final ReservaService reservaService;
-
     private final EmpresaService empresaService;
-
     private final ReservaArticuloService reservaArticuloService;
-
     private final ParametroService parametroService;
-
     private final FacturacionElectronicaService facturacionElectronicaService;
-
     private final CuentaMovimientoService cuentaMovimientoService;
-
     private final VoucherService voucherService;
-
     private final ClienteMovimientoService clienteMovimientoService;
-
     private final ValorService valorService;
-
     private final ValorMovimientoService valorMovimientoService;
-
     private final ArticuloMovimientoService articuloMovimientoService;
-
     private final RegistroCaeService registroCaeService;
-
-    private final FacturaPdfService facturaPdfService;
-
     private final ClienteService clienteService;
-
-    private final JavaMailSender javaMailSender;
-
     private final ArticuloService articuloService;
-
     private final ReservaContextService reservaContextService;
-
     private final OrderNoteService orderNoteService;
+    private final MakeFacturaReportClient makeFacturaReportClient;
 
-    @Autowired
-    public MakeFacturaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService, ReservaArticuloService reservaArticuloService, ParametroService parametroService, FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService, VoucherService voucherService, ClienteMovimientoService clienteMovimientoService, ValorService valorService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, RegistroCaeService registroCaeService, FacturaPdfService facturaPdfService, ClienteService clienteService, JavaMailSender javaMailSender, ArticuloService articuloService, ReservaContextService reservaContextService, OrderNoteService orderNoteService) {
+    public MakeFacturaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService,
+                              ReservaArticuloService reservaArticuloService, ParametroService parametroService,
+                              FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService,
+                              VoucherService voucherService, ClienteMovimientoService clienteMovimientoService, ValorService valorService,
+                              ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService,
+                              RegistroCaeService registroCaeService, ClienteService clienteService, ArticuloService articuloService,
+                              ReservaContextService reservaContextService, OrderNoteService orderNoteService, MakeFacturaReportClient makeFacturaReportClient) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;
@@ -86,12 +68,11 @@ public class MakeFacturaService {
         this.valorMovimientoService = valorMovimientoService;
         this.articuloMovimientoService = articuloMovimientoService;
         this.registroCaeService = registroCaeService;
-        this.facturaPdfService = facturaPdfService;
-        this.javaMailSender = javaMailSender;
         this.clienteService = clienteService;
         this.articuloService = articuloService;
         this.reservaContextService = reservaContextService;
         this.orderNoteService = orderNoteService;
+        this.makeFacturaReportClient = makeFacturaReportClient;
     }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId) {
@@ -288,7 +269,7 @@ public class MakeFacturaService {
 
             try {
                 reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
-                log.debug("envío correo={}", send(clienteMovimiento.getClienteMovimientoId()));
+                log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), ""));
                 reservaContext.setEnvioPendiente((byte) 0);
                 reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
                 return true;
@@ -502,59 +483,6 @@ public class MakeFacturaService {
         cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);
 
         return cuentaMovimientos;
-    }
-
-    public String send(Long clienteMovimientoId) throws MessagingException {
-        // Genera PDF
-        String filenameFactura = facturaPdfService.generatePdf(clienteMovimientoId);
-        log.info("filenameFactura -> " + filenameFactura);
-        if (filenameFactura.isEmpty()) {
-            return "ERROR: Sin Factura para ENVIAR";
-        }
-
-        String data = "";
-
-        ClienteMovimiento clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
-
-        data = "Estimad@ cliente:" + (char) 10;
-        data = data + (char) 10;
-        data = data + "Le enviamos como archivo adjunto su factura." + (char) 10;
-        data = data + (char) 10;
-        data = data + "Le agradecemos habernos elegido." + (char) 10;
-        data = data + (char) 10;
-        data = data + "Atentamente." + (char) 10;
-        data = data + (char) 10;
-        data = data + (char) 10
-                + "Por favor no responda este mail, fue generado automáticamente. Su respuesta no será leída."
-                + (char) 10;
-
-        // Envia correo
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        var addresses = new ArrayList<String>();
-        var addresses_bcc = new ArrayList<String>();
-
-        if (!clienteMovimiento.getCliente().getEmail().isEmpty()) {
-            addresses.add(clienteMovimiento.getCliente().getEmail());
-        }
-        addresses_bcc.add("facturacion@termaliasa.com");
-        addresses_bcc.add("daniel.quinterospinto@gmail.com");
-
-        try {
-            helper.setTo(addresses.toArray(new String[0]));
-            helper.setBcc(addresses_bcc.toArray(new String[0]));
-            helper.setText(data);
-            helper.setReplyTo("no-reply@um.edu.ar");
-            helper.setSubject("Envío Automático de Factura -> " + filenameFactura);
-
-            FileSystemResource fileRecibo = new FileSystemResource(filenameFactura);
-            helper.addAttachment(filenameFactura, fileRecibo);
-
-        } catch (MessagingException e) {
-            return "Error envío";
-        }
-        javaMailSender.send(message);
-        return "Envío de correo Ok";
     }
 
 }

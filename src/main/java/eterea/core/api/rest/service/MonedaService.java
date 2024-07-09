@@ -16,8 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class MonedaService {
 
+	private final IMonedaRepository repository;
+
 	@Autowired
-	private IMonedaRepository repository;
+	public MonedaService(IMonedaRepository repository) {
+		this.repository = repository;
+	}
 
 	public Moneda findByMonedaId(Integer monedaId) {
 		return repository.findByMonedaId(monedaId).orElseThrow(() -> new MonedaException(monedaId));

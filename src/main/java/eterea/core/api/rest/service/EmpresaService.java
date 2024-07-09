@@ -21,7 +21,7 @@ public class EmpresaService {
 
 	public Empresa findTop() {
 		return repository.findTopByOrderByEmpresaIdDesc()
-				.orElseThrow(() -> new EmpresaException());
+				.orElseThrow(EmpresaException::new);
 	}
 
 }

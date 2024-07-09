@@ -21,7 +21,7 @@ import eterea.core.api.rest.service.facade.PrecioService;
  *
  */
 @RestController
-@RequestMapping("/precio")
+@RequestMapping("/api/core/precio")
 public class PrecioController {
 
 	@Autowired

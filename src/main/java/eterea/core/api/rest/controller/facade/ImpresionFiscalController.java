@@ -19,7 +19,7 @@ import eterea.core.api.rest.service.facade.ImpresionFiscalService;
  *
  */
 @RestController
-@RequestMapping("/impresionFiscal")
+@RequestMapping("/api/core/impresionFiscal")
 public class ImpresionFiscalController {
 
 	@Autowired

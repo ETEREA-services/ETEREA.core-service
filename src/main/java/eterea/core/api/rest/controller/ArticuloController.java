@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import eterea.core.api.rest.service.ArticuloService;
 
 @RestController
-@RequestMapping("/articulo")
+@RequestMapping("/api/core/articulo")
 public class ArticuloController {
 
-	@Autowired
-	private ArticuloService service;
+	private final ArticuloService service;
+
+	public ArticuloController(ArticuloService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/")
 	public ResponseEntity<List<Articulo>> findAll() {
@@ -34,7 +37,7 @@ public class ArticuloController {
 	}
 
 	@GetMapping("/{articuloId}")
-	public ResponseEntity<Articulo> findById(@PathVariable String articuloId) {
+	public ResponseEntity<Articulo> findByArticuloId(@PathVariable String articuloId) {
 		return new ResponseEntity<>(service.findByArticuloId(articuloId), HttpStatus.OK);
 	}
 
