@@ -6,7 +6,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
-@Table
 data class Empresa(
 
     @Id @Column(name = "emp_id")

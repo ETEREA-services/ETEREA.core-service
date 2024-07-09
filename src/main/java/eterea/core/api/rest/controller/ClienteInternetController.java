@@ -24,7 +24,7 @@ import eterea.core.api.rest.service.ClienteInternetService;
  *
  */
 @RestController
-@RequestMapping("/clienteinternet")
+@RequestMapping("/api/core/clienteinternet")
 public class ClienteInternetController {
 	@Autowired
 	private ClienteInternetService service;

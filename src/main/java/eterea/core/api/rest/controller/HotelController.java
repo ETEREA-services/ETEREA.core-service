@@ -24,7 +24,7 @@ import eterea.core.api.rest.service.HotelService;
  *
  */
 @RestController
-@RequestMapping("/hotel")
+@RequestMapping("/api/core/hotel")
 public class HotelController {
 	@Autowired
 	private HotelService service;

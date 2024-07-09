@@ -9,7 +9,8 @@ import jakarta.persistence.Table
 @Table
 data class Moneda(
 
-    @Id @Column(name = "mon_id")
+    @Id
+    @Column(name = "mon_id")
     var monedaId: Int? = null,
 
     @Column(name = "mon_nombre")

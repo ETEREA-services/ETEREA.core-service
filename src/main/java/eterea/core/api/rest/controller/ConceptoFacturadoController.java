@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/conceptoFacturado")
+@RequestMapping("/api/core/conceptoFacturado")
 public class ConceptoFacturadoController {
 
     private final ConceptoFacturadoService service;

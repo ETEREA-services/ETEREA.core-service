@@ -20,7 +20,7 @@ import eterea.core.api.rest.service.LegajoService;
  *
  */
 @RestController
-@RequestMapping("/legajo")
+@RequestMapping("/api/core/legajo")
 public class LegajoController {
 	
 	@Autowired

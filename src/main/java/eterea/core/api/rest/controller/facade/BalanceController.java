@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/balance")
+@RequestMapping("/api/core/balance")
 public class BalanceController {
 
     private final BalanceService service;

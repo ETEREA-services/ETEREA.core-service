@@ -7,12 +7,11 @@ import java.util.List;
 
 import eterea.core.api.rest.exception.ClienteException;
 import eterea.core.api.rest.kotlin.model.Cliente;
+import eterea.core.api.rest.kotlin.model.view.ClienteSearch;
 import eterea.core.api.rest.repository.IClienteRepository;
 import eterea.core.api.rest.service.view.ClienteSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.view.ClienteSearch;
 
 /**
  * @author daniel

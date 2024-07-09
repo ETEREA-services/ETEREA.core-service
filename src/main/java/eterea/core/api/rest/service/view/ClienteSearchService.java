@@ -5,11 +5,10 @@ package eterea.core.api.rest.service.view;
 
 import java.util.List;
 
+import eterea.core.api.rest.kotlin.model.view.ClienteSearch;
 import eterea.core.api.rest.repository.view.IClienteSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.view.ClienteSearch;
 
 /**
  * @author daniel

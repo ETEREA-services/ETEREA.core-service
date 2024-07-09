@@ -21,7 +21,7 @@ import eterea.core.api.rest.service.ClienteMovimientoService;
  *
  */
 @RestController
-@RequestMapping("/clienteMovimiento")
+@RequestMapping("/api/core/clienteMovimiento")
 public class ClienteMovimientoController {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class ClienteMovimientoController {
 	}
 
 	@GetMapping("/{clienteMovimientoId}")
-	public ResponseEntity<ClienteMovimiento> findByClientemovimientoId(@PathVariable Long clienteMovimientoId) {
+	public ResponseEntity<ClienteMovimiento> findByClienteMovimientoId(@PathVariable Long clienteMovimientoId) {
 		return new ResponseEntity<>(service.findByClienteMovimientoId(clienteMovimientoId),
 				HttpStatus.OK);
 	}

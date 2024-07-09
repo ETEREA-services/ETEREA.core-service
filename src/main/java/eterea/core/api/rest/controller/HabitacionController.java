@@ -19,7 +19,7 @@ import eterea.core.api.rest.service.HabitacionService;
  *
  */
 @RestController
-@RequestMapping("/habitacion")
+@RequestMapping("/api/core/habitacion")
 public class HabitacionController {
 
 	@Autowired

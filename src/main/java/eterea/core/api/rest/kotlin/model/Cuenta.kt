@@ -10,7 +10,8 @@ import java.math.BigDecimal
 @Table(name = "plancta")
 data class Cuenta(
 
-    @Id @Column(name = "cuenta")
+    @Id
+    @Column(name = "cuenta")
     var numeroCuenta: Long? = null,
 
     var nombre: String? = null,

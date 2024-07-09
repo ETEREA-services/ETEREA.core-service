@@ -21,7 +21,7 @@ import eterea.core.api.rest.service.CuentaMovimientoService;
  *
  */
 @RestController
-@RequestMapping("/cuentaMovimiento")
+@RequestMapping("/api/core/cuentaMovimiento")
 public class CuentaMovimientoController {
 
 	private final CuentaMovimientoService service;

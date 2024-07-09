@@ -21,11 +21,15 @@ import eterea.core.api.rest.service.ComprobanteService;
  *
  */
 @RestController
-@RequestMapping("/comprobante")
+@RequestMapping("/api/core/comprobante")
 public class ComprobanteController {
 
+	private final ComprobanteService service;
+
 	@Autowired
-	private ComprobanteService service;
+	public ComprobanteController(ComprobanteService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/modulo/{modulo}/{debita}/{comprobanteId}")
 	public ResponseEntity<List<Comprobante>> findAllByModulo(@PathVariable Integer modulo, @PathVariable Byte debita,
