@@ -19,7 +19,7 @@ import java.util.List;
  * @author daniel
  */
 @RestController
-@RequestMapping("/grupo")
+@RequestMapping("/api/core/grupo")
 public class GrupoController {
 
 	@Autowired

@@ -24,7 +24,7 @@ import eterea.core.api.rest.service.view.HabitacionMovimientoExtendedService;
  *
  */
 @RestController
-@RequestMapping("/habitacionmovimientoextended")
+@RequestMapping("/api/core/habitacionmovimientoextended")
 public class HabitacionMovimientoExtendedController {
 
 	@Autowired

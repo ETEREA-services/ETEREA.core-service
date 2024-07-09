@@ -20,7 +20,7 @@ import eterea.core.api.rest.service.view.UsuarioVencimientoService;
  *
  */
 @RestController
-@RequestMapping("/usuarioVencimiento")
+@RequestMapping("/api/core/usuarioVencimiento")
 public class UsuarioVencimientoController {
 
 	@Autowired

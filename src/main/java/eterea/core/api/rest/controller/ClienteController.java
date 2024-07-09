@@ -6,6 +6,7 @@ package eterea.core.api.rest.controller;
 import java.util.List;
 
 import eterea.core.api.rest.kotlin.model.Cliente;
+import eterea.core.api.rest.kotlin.model.view.ClienteSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import eterea.core.api.rest.exception.ClienteException;
-import eterea.core.api.rest.model.view.ClienteSearch;
 import eterea.core.api.rest.service.ClienteService;
 
 /**
@@ -26,7 +26,7 @@ import eterea.core.api.rest.service.ClienteService;
  *
  */
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/api/core/cliente")
 public class ClienteController {
 
 	@Autowired

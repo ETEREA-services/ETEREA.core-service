@@ -26,7 +26,7 @@ import eterea.core.api.rest.service.facade.ProgramaDiaService;
  *
  */
 @RestController
-@RequestMapping("/programaDia")
+@RequestMapping("/api/core/programaDia")
 public class ProgramaDiaController {
 
     private final ProgramaDiaService service;

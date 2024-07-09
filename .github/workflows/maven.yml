@@ -34,7 +34,7 @@ jobs:
       env:
         VERSION: 11.18.35
       with:
-        image: dqmdz/eterea.core-service
+        image: dqmdz/eterea.core-service-v2
         tags: ${VERSION}, latest, "${GITHUB_REF#refs/heads/}.$(git rev-parse --short ${GITHUB_SHA})"
         registry: docker.io
         dockerfile: Dockerfile

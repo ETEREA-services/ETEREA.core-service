@@ -24,5 +24,4 @@ public class RegistroCaeService {
         return repository.save(registroCae);
     }
 
-
 }

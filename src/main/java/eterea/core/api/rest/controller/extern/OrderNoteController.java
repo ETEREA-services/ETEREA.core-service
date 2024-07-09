@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/orderNote")
+@RequestMapping("/api/core/orderNote")
 public class OrderNoteController {
 
     private final OrderNoteService service;

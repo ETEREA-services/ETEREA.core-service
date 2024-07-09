@@ -27,7 +27,7 @@ import eterea.core.api.rest.service.LegajoRegistroService;
  *
  */
 @RestController
-@RequestMapping("/legajoregistro")
+@RequestMapping("/api/core/legajoregistro")
 public class LegajoRegistroController {
 
 	@Autowired

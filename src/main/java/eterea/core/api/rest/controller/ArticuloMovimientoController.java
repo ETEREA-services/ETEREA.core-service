@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/articuloMovimiento")
+@RequestMapping("/api/core/articuloMovimiento")
 public class ArticuloMovimientoController {
 
     private final ArticuloMovimientoService service;
@@ -19,6 +21,11 @@ public class ArticuloMovimientoController {
     @Autowired
     public ArticuloMovimientoController(ArticuloMovimientoService service) {
         this.service = service;
+    }
+
+    @GetMapping("/clienteMovimiento/{clienteMovimientoId}")
+    public ResponseEntity<List<ArticuloMovimiento>> findAllByClienteMovimientoId(@PathVariable Long clienteMovimientoId) {
+        return ResponseEntity.ok(service.findAllByClienteMovimientoId(clienteMovimientoId));
     }
 
     @GetMapping("/{articuloMovimientoId}")
