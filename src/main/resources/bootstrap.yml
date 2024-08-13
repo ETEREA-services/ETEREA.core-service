@@ -1,4 +1,7 @@
 app:
+  port: 8080
+  logging: debug
+  eureka: 8761
   server: 10.147.20.25:3306
   database: tsaagencia
   user: root
@@ -8,20 +11,14 @@ app:
 #  database: tsaagencia
 #  user: agencia
 #  password: cacheuta
-  eureka: 8761
   venta-web-server: 10.147.17.149
   venta-web-port: 8280
-  add-properties: true
-  logging: debug
-  livereload:
-    enabled: true
-    port: 35780
   mail:
     username: reportes.termalia@gmail.com
     password: uulgftuqhgjdihgv
 
 server:
-  port: 8080
+  port: ${app.port}
 
 eureka:
   instance:
@@ -43,11 +40,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-  devtools:
-    livereload:
-      enabled: ${app.livereload.enabled}
-      port: ${app.livereload.port}
-    add-properties: ${app.add-properties}
   mail:
     host: smtp.gmail.com
     port: 587

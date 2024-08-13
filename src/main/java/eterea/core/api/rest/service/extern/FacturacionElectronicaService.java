@@ -1,10 +1,9 @@
 package eterea.core.api.rest.service.extern;
 
 import eterea.core.api.rest.kotlin.model.Negocio;
-import eterea.core.api.rest.kotlin.model.dto.FacturacionDTO;
+import eterea.core.api.rest.kotlin.model.dto.FacturacionDto;
 import eterea.core.api.rest.service.NegocioService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,7 +16,6 @@ public class FacturacionElectronicaService {
 
     private final NegocioService negocioService;
 
-    @Autowired
     public FacturacionElectronicaService(NegocioService negocioService) {
         this.negocioService = negocioService;
     }
@@ -27,7 +25,7 @@ public class FacturacionElectronicaService {
         return "http://" + negocio.getFacturaServer() + ":" + negocio.getFacturaPort() + "/facturacionService";
     }
 
-    public FacturacionDTO facturar(FacturacionDTO facturacionDTO, Integer negocioId) {
+    public FacturacionDto makeFactura(FacturacionDto facturacionDTO, Integer negocioId) {
         WebClient webClient = WebClient.create(getUrl(negocioId));
         facturacionDTO = webClient.post()
                 .body(BodyInserters.fromValue(facturacionDTO))
@@ -45,7 +43,7 @@ public class FacturacionElectronicaService {
                             });
                         }
                 )
-                .bodyToMono(FacturacionDTO.class)
+                .bodyToMono(FacturacionDto.class)
                 .block();
         return facturacionDTO;
     }
