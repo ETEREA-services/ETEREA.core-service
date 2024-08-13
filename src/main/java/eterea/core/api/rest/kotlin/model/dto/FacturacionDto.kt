@@ -3,7 +3,7 @@ package eterea.core.api.rest.kotlin.model.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 
-data class FacturacionDTO(
+data class FacturacionDto(
 
     @JsonProperty(value = "tipo_documento")
     var tipoDocumento: Int = 0,
@@ -86,7 +86,7 @@ data class FacturacionDTO(
         fun asociadoFechaComprobante(asociadoFechaComprobante: String?) =
             apply { this.asociadoFechaComprobante = asociadoFechaComprobante }
 
-        fun build() = FacturacionDTO(
+        fun build() = FacturacionDto(
             tipoDocumento,
             documento,
             tipoAfip,

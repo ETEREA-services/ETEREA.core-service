@@ -5,8 +5,7 @@ package eterea.core.api.rest.controller.facade;
 
 import java.time.OffsetDateTime;
 
-import eterea.core.api.rest.kotlin.model.dto.ProgramaDiaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import eterea.core.api.rest.kotlin.model.dto.ProgramaDiaDto;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -31,13 +30,12 @@ public class ProgramaDiaController {
 
     private final ProgramaDiaService service;
 
-    @Autowired
     public ProgramaDiaController(ProgramaDiaService service) {
         this.service = service;
     }
 
     @GetMapping("/fechaServicio/{fechaServicio}/{soloConfirmados}/{porNombrePax}")
-    public ResponseEntity<ProgramaDiaDTO> findAllByFecha(
+    public ResponseEntity<ProgramaDiaDto> findAllByFecha(
             @PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaServicio,
             @PathVariable Boolean soloConfirmados, @PathVariable Boolean porNombrePax) {
         return new ResponseEntity<>(
@@ -45,7 +43,7 @@ public class ProgramaDiaController {
     }
 
     @GetMapping("/voucher/{voucherId}")
-    public ResponseEntity<ProgramaDiaDTO> findByVoucherId(@PathVariable Long voucherId) {
+    public ResponseEntity<ProgramaDiaDto> findByVoucherId(@PathVariable Long voucherId) {
         try {
             return new ResponseEntity<>(service.findByVoucherId(voucherId), HttpStatus.OK);
         } catch (ProgramaDiaException e) {
@@ -54,7 +52,7 @@ public class ProgramaDiaController {
     }
 
     @GetMapping("/importOneFromWeb/{orderNumberId}")
-    public ResponseEntity<ProgramaDiaDTO> importOneFromWeb(@PathVariable Long orderNumberId) {
+    public ResponseEntity<ProgramaDiaDto> importOneFromWeb(@PathVariable Long orderNumberId) {
         try {
             return new ResponseEntity<>(service.importOneFromWeb(orderNumberId), HttpStatus.OK);
         } catch (ProgramaDiaException e) {
