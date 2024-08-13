@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.api.rest.client.MakeFacturaReportClient;
 import eterea.core.api.rest.kotlin.extern.OrderNote;
 import eterea.core.api.rest.kotlin.model.*;
-import eterea.core.api.rest.kotlin.model.dto.FacturacionDTO;
+import eterea.core.api.rest.kotlin.model.dto.FacturacionDto;
 import eterea.core.api.rest.service.*;
 import eterea.core.api.rest.service.extern.FacturacionElectronicaService;
 import eterea.core.api.rest.service.extern.OrderNoteService;
@@ -186,7 +186,7 @@ public class MakeFacturaService {
         BigDecimal iva105 = neto105.multiply(parametro.getIva2()).divide(new BigDecimal(100), RoundingMode.HALF_UP);
         BigDecimal iva = iva21.add(iva105);
 
-        FacturacionDTO facturacionDTO = new FacturacionDTO.Builder()
+        FacturacionDto facturacionDto = new FacturacionDto.Builder()
                 .tipoDocumento(tipoDocumento)
                 .documento(documento)
                 .tipoAfip(comprobante.getComprobanteAfipId())
@@ -200,17 +200,17 @@ public class MakeFacturaService {
                 .build();
 
         try {
-            log.debug("facturacionDTO={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDTO));
+            log.debug("facturacionDto={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDto));
         } catch (JsonProcessingException e) {
-            log.debug("facturacionDTO=null");
+            log.debug("facturacionDto=null");
         }
 
         try {
-            facturacionDTO = facturacionElectronicaService.facturar(facturacionDTO, empresa.getNegocioId());
+            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto, empresa.getNegocioId());
             try {
-                log.debug("facturacionDTO (after)={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDTO));
+                log.debug("facturacionDto (after)={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDto));
             } catch (JsonProcessingException e) {
-                log.debug("facturacionDTO=null");
+                log.debug("facturacionDto=null");
             }
         } catch (WebClientResponseException e) {
             log.debug("Servicio de Facturación NO disponible");
@@ -218,7 +218,7 @@ public class MakeFacturaService {
             return false;
         }
 
-        if (!facturacionDTO.getResultado().equals("A")) {
+        if (!facturacionDto.getResultado().equals("A")) {
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
             return false;
         }
@@ -228,28 +228,28 @@ public class MakeFacturaService {
         SimpleDateFormat formatoOutDate = new SimpleDateFormat("ddMMyyyy");
         Date vencimientoCae = null;
         try {
-            vencimientoCae = formatoInDate.parse(facturacionDTO.getVencimientoCae());
+            vencimientoCae = formatoInDate.parse(facturacionDto.getVencimientoCae());
         } catch (ParseException e) {
         }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");
         // Registra el resultado de la AFIP
         RegistroCae registroCae = new RegistroCae.Builder()
                 .comprobanteId(comprobanteId)
-                .puntoVenta(facturacionDTO.getPuntoVenta())
-                .numeroComprobante(facturacionDTO.getNumeroComprobante())
+                .puntoVenta(facturacionDto.getPuntoVenta())
+                .numeroComprobante(facturacionDto.getNumeroComprobante())
                 .clienteId(cliente.getClienteId())
                 .cuit("")
-                .total(facturacionDTO.getTotal())
-                .exento(facturacionDTO.getExento())
-                .neto(facturacionDTO.getNeto())
-                .neto105(facturacionDTO.getNeto105())
-                .iva(facturacionDTO.getIva())
-                .iva105(facturacionDTO.getIva105())
-                .cae(facturacionDTO.getCae())
+                .total(facturacionDto.getTotal())
+                .exento(facturacionDto.getExento())
+                .neto(facturacionDto.getNeto())
+                .neto105(facturacionDto.getNeto105())
+                .iva(facturacionDto.getIva())
+                .iva105(facturacionDto.getIva105())
+                .cae(facturacionDto.getCae())
                 .fecha(ToolService.dateAbsoluteArgentina().format(dateTimeFormatter))
                 .caeVencimiento(formatoOutDate.format(vencimientoCae))
-                .tipoDocumento(facturacionDTO.getTipoDocumento())
-                .numeroDocumento(new BigDecimal(facturacionDTO.getDocumento()))
+                .tipoDocumento(facturacionDto.getTipoDocumento())
+                .numeroDocumento(new BigDecimal(facturacionDto.getDocumento()))
                 .build();
         registroCae = registroCaeService.add(registroCae);
         try {
@@ -258,7 +258,7 @@ public class MakeFacturaService {
             log.debug("registroCae=null");
         }
 
-        ClienteMovimiento clienteMovimiento = registraTransaccionFactura(reserva, facturacionDTO, comprobante, empresa, cliente, parametro, reservaContext);
+        ClienteMovimiento clienteMovimiento = registraTransaccionFactura(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext);
 
         if (clienteMovimiento.getClienteMovimientoId() != null) {
             try {
@@ -283,7 +283,7 @@ public class MakeFacturaService {
     }
 
     @Transactional
-    protected ClienteMovimiento registraTransaccionFactura(Reserva reserva, FacturacionDTO facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext) {
+    protected ClienteMovimiento registraTransaccionFactura(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext) {
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
         try {
             log.debug("voucher={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
@@ -403,7 +403,7 @@ public class MakeFacturaService {
     }
 
     @Transactional
-    protected List<CuentaMovimiento> registraContabilidad(ClienteMovimiento clienteMovimiento, ValorMovimiento valorMovimiento, Valor valor, List<ArticuloMovimiento> articuloMovimientos, FacturacionDTO facturacionDTO, Comprobante comprobante, Parametro parametro) {
+    protected List<CuentaMovimiento> registraContabilidad(ClienteMovimiento clienteMovimiento, ValorMovimiento valorMovimiento, Valor valor, List<ArticuloMovimiento> articuloMovimientos, FacturacionDto facturacionDTO, Comprobante comprobante, Parametro parametro) {
         List<CuentaMovimiento> cuentaMovimientos = new ArrayList<>();
         int ordenContable = cuentaMovimientoService.nextOrdenContable(clienteMovimiento.getFechaComprobante());
         // Agrego asiento contable a clienteMovimiento

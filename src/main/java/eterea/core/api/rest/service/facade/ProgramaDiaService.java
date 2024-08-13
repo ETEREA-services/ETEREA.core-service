@@ -21,12 +21,11 @@ import eterea.core.api.rest.kotlin.exception.VoucherException;
 import eterea.core.api.rest.kotlin.extern.OrderNote;
 import eterea.core.api.rest.kotlin.extern.Product;
 import eterea.core.api.rest.kotlin.model.*;
-import eterea.core.api.rest.kotlin.model.dto.ProgramaDiaDTO;
+import eterea.core.api.rest.kotlin.model.dto.ProgramaDiaDto;
 import eterea.core.api.rest.service.*;
 import eterea.core.api.rest.service.extern.OrderNoteService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -66,7 +65,6 @@ public class ProgramaDiaService {
 
     }
 
-    @Autowired
     public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService, MakeFacturaService makeFacturaService, ReservaContextService reservaContextService, OrderNoteService orderNoteService) {
         this.voucherService = voucherService;
         this.reservaOrigenService = reservaOrigenService;
@@ -83,20 +81,20 @@ public class ProgramaDiaService {
         this.orderNoteService = orderNoteService;
     }
 
-    public ProgramaDiaDTO findAllByFechaServicio(OffsetDateTime fechaServicio, Boolean soloConfirmados,
+    public ProgramaDiaDto findAllByFechaServicio(OffsetDateTime fechaServicio, Boolean soloConfirmados,
                                                  Boolean porNombrePax) {
         List<Voucher> vouchers = voucherService.findAllByFechaServicio(fechaServicio, soloConfirmados, porNombrePax);
         List<Long> reservaIds = vouchers.stream().map(Voucher::getReservaId)
                 .filter(reservaId -> reservaId > 0).collect(Collectors.toList());
         List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findAllByReservaIds(reservaIds);
-        return new ProgramaDiaDTO.Builder()
+        return new ProgramaDiaDto.Builder()
                 .vouchers(vouchers)
                 .reservaOrigens(reservaOrigenService.findAll())
                 .clienteMovimientos(clienteMovimientos)
                 .build();
     }
 
-    public ProgramaDiaDTO findByVoucherId(Long voucherId) {
+    public ProgramaDiaDto findByVoucherId(Long voucherId) {
         Voucher voucher = null;
         try {
             voucher = voucherService.findByVoucherId(voucherId);
@@ -110,7 +108,7 @@ public class ProgramaDiaService {
         reservaOrigens.add(reservaOrigen);
         List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService
                 .findAllByReservaId(voucher.getReservaId());
-        return new ProgramaDiaDTO.Builder()
+        return new ProgramaDiaDto.Builder()
                 .vouchers(vouchers)
                 .reservaOrigens(reservaOrigens)
                 .clienteMovimientos(clienteMovimientos)
@@ -125,7 +123,7 @@ public class ProgramaDiaService {
         // Importa las reservas web e intenta facturarlas
         for (OrderNote orderNote : orderNoteService.findAllCompletedByLastTwoDays()) {
             log.debug("importing order_note={}", orderNote.getOrderNumberId());
-            ProgramaDiaDTO programaDiaDTO = importOneFromWeb(orderNote.getOrderNumberId());
+            ProgramaDiaDto programaDiaDTO = importOneFromWeb(orderNote.getOrderNumberId());
             try {
                 log.info("imported result={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(programaDiaDTO));
             } catch (JsonProcessingException e) {
@@ -154,12 +152,12 @@ public class ProgramaDiaService {
     }
 
     @Transactional
-    public ProgramaDiaDTO importOneFromWeb(Long orderNumberId) {
+    public ProgramaDiaDto importOneFromWeb(Long orderNumberId) {
         Empresa empresa = empresaService.findTop();
         Negocio negocio = negocioService.findByNegocioId(empresa.getNegocioId());
         OrderNote orderNote = orderNoteService.findByOrderNumberId(orderNumberId);
         if (!orderNote.getOrderStatus().equals("Completado")) {
-            return new ProgramaDiaDTO.Builder()
+            return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: Order Note pendiente de PAGO")
                     .build();
         }
@@ -171,7 +169,7 @@ public class ProgramaDiaService {
         // Verifica si ya hay un programa por el día registrado para esta orderNote
         try {
             voucherService.findByNumeroVoucher(String.valueOf(orderNumberId));
-            return new ProgramaDiaDTO.Builder()
+            return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: Programa por el Día YA registrado")
                     .build();
         } catch (VoucherException e) {
@@ -179,19 +177,19 @@ public class ProgramaDiaService {
         }
         // Verifica por las dudas que no tenga productos
         if (orderNote.getProducts().isEmpty()) {
-            return new ProgramaDiaDTO.Builder()
+            return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: reserva sin productos")
                     .build();
         }
         // Verifica  (por ahora) que sea sólo un sku=parque_termal
         if (orderNote.getProducts().size() > 1) {
-            return new ProgramaDiaDTO.Builder()
+            return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: más de un producto en la reserva")
                     .build();
         }
         Product product = orderNote.getProducts().getFirst();
         if (!product.getSku().equals("parque_termal")) {
-            return new ProgramaDiaDTO.Builder()
+            return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: producto no corresponde a parque_termal")
                     .build();
         }
@@ -268,7 +266,7 @@ public class ProgramaDiaService {
             productoPaxMayor = productoSku.getProductoPaxMayor();
             productoPaxMenor = productoSku.getProductoPaxMenor();
         } catch (ProductoSkuException e) {
-            return new ProgramaDiaDTO.Builder()
+            return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: SKU sin asociación de Productos")
                     .build();
         }
@@ -328,7 +326,7 @@ public class ProgramaDiaService {
 
         voucher = registrarVoucher(voucher, voucherProductos);
 
-        return new ProgramaDiaDTO.Builder()
+        return new ProgramaDiaDto.Builder()
                 .vouchers(Collections.singletonList(voucher))
                 .errorMessage("")
                 .build();
