@@ -4,7 +4,7 @@ import eterea.core.api.rest.kotlin.model.ClienteMovimiento
 import eterea.core.api.rest.kotlin.model.ReservaOrigen
 import eterea.core.api.rest.kotlin.model.Voucher
 
-data class ProgramaDiaDTO(
+data class ProgramaDiaDto(
     var vouchers: List<Voucher?>? = null,
     var reservaOrigens: List<ReservaOrigen?>? = null,
     var clienteMovimientos: List<ClienteMovimiento?>? = null,
@@ -23,6 +23,6 @@ data class ProgramaDiaDTO(
 
         fun errorMessage(errorMessage: String) = apply { this.errorMessage = errorMessage }
 
-        fun build() = ProgramaDiaDTO(vouchers, reservaOrigens, clienteMovimientos, errorMessage)
+        fun build() = ProgramaDiaDto(vouchers, reservaOrigens, clienteMovimientos, errorMessage)
     }
 }
