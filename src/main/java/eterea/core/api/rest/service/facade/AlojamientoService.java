@@ -5,13 +5,13 @@ package eterea.core.api.rest.service.facade;
 
 import eterea.core.api.rest.exception.HabitacionException;
 import eterea.core.api.rest.exception.HabitacionTarifaException;
+import eterea.core.api.rest.kotlin.model.Habitacion;
+import eterea.core.api.rest.kotlin.model.HabitacionTarifa;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eterea.core.api.rest.model.Habitacion;
-import eterea.core.api.rest.model.HabitacionTarifa;
 import eterea.core.api.rest.service.HabitacionService;
 import eterea.core.api.rest.service.HabitacionTarifaService;
 import lombok.extern.slf4j.Slf4j;

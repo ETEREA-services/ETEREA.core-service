@@ -3,6 +3,7 @@
  */
 package eterea.core.api.rest.controller;
 
+import eterea.core.api.rest.kotlin.model.ClienteInternet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.api.rest.model.ClienteInternet;
 import eterea.core.api.rest.service.ClienteInternetService;
 
 /**
@@ -31,12 +31,12 @@ public class ClienteInternetController {
 	
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<ClienteInternet> findById(@PathVariable Long clienteId) {
-		return new ResponseEntity<ClienteInternet>(service.findById(clienteId), HttpStatus.OK);
+		return new ResponseEntity<>(service.findById(clienteId), HttpStatus.OK);
 	}
 	
 	@PostMapping("/")
 	public ResponseEntity<ClienteInternet> add(@RequestBody ClienteInternet clienteinternet) {
-		return new ResponseEntity<ClienteInternet>(service.add(clienteinternet), HttpStatus.OK);
+		return new ResponseEntity<>(service.add(clienteinternet), HttpStatus.OK);
 	}
 	@GetMapping("/add")
 	public ResponseEntity<ClienteInternet> addByGet(@RequestParam("clienteID") Long clienteId, @RequestParam String password) {
@@ -45,7 +45,7 @@ public class ClienteInternetController {
 	
 	@PutMapping("/{clienteId}")
 	public ResponseEntity<ClienteInternet> update(@RequestBody ClienteInternet clienteinternet, @PathVariable Long clienteId) {
-		return new ResponseEntity<ClienteInternet>(service.update(clienteinternet, clienteId), HttpStatus.OK);
+		return new ResponseEntity<>(service.update(clienteinternet, clienteId), HttpStatus.OK);
 	}
 	@GetMapping("/update")
 	public ResponseEntity<ClienteInternet> updateByGet(@RequestParam("clienteID") Long clienteId, @RequestParam String password) {
@@ -55,6 +55,6 @@ public class ClienteInternetController {
 	@DeleteMapping("/{clienteId}")
 	public ResponseEntity<Void> delete(@PathVariable Long clienteId) {
 		service.delete(clienteId);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

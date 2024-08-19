@@ -4,6 +4,7 @@
 package eterea.core.api.rest.service.facade;
 
 import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
+import eterea.core.api.rest.kotlin.model.ClienteMovimientoPrevio;
 import eterea.core.api.rest.kotlin.model.Comprobante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-import eterea.core.api.rest.model.ClienteMovimientoPrevio;
-import eterea.core.api.rest.model.dto.ImpresionFiscalDTO;
+import eterea.core.api.rest.model.dto.ImpresionFiscalDto;
 import eterea.core.api.rest.service.ArticuloMovimientoTemporalService;
 import eterea.core.api.rest.service.ClienteMovimientoPrevioService;
 import eterea.core.api.rest.service.ClienteMovimientoService;
@@ -43,14 +43,14 @@ public class ImpresionFiscalService {
 	@Autowired
 	private ArticuloMovimientoTemporalService articuloMovimientoTemporalService;
 
-	public ImpresionFiscalDTO getData(String ipAddress, Long hWnd, Long clienteId, Integer comprobanteId,
-			Long comprobanteOrigenId) {
+	public ImpresionFiscalDto getData(String ipAddress, Long hWnd, Long clienteId, Integer comprobanteId,
+                                      Long comprobanteOrigenId) {
 		Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
 		ClienteMovimiento clienteMovimiento = null;
 		if (comprobanteOrigenId > 0) {
 			clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(comprobanteOrigenId);
 		}
-		ImpresionFiscalDTO impresionFiscal = new ImpresionFiscalDTO(
+		ImpresionFiscalDto impresionFiscal = new ImpresionFiscalDto(
 				clienteMovimientoService.nextNumeroFactura(comprobante.getPuntoVenta(),
 						comprobante.getLetraComprobante()),
 				clienteService.findByClienteId(clienteId), comprobante,
@@ -64,8 +64,8 @@ public class ImpresionFiscalService {
 		return impresionFiscal;
 	}
 
-	public ImpresionFiscalDTO getDataPrevio(Long clienteMovimientoPrevioId, Integer comprobanteId,
-			Long comprobanteOrigenId) {
+	public ImpresionFiscalDto getDataPrevio(Long clienteMovimientoPrevioId, Integer comprobanteId,
+                                            Long comprobanteOrigenId) {
 		Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
 		ClienteMovimiento clienteMovimiento = null;
 		if (comprobanteOrigenId > 0) {
@@ -73,7 +73,7 @@ public class ImpresionFiscalService {
 		}
 		ClienteMovimientoPrevio clienteMovimientoPrevio = clienteMovimientoPrevioService
 				.findByClienteMovimientoPrevioId(clienteMovimientoPrevioId);
-		ImpresionFiscalDTO impresionFiscal = new ImpresionFiscalDTO(
+		ImpresionFiscalDto impresionFiscal = new ImpresionFiscalDto(
 				clienteMovimientoService.nextNumeroFactura(comprobante.getPuntoVenta(),
 						comprobante.getLetraComprobante()),
 				clienteMovimientoPrevio.getCliente(), comprobante, null, clienteMovimiento, clienteMovimientoPrevio);

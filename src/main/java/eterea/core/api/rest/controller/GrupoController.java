@@ -3,7 +3,7 @@
  */
 package eterea.core.api.rest.controller;
 
-import eterea.core.api.rest.model.Grupo;
+import eterea.core.api.rest.kotlin.model.Grupo;
 import eterea.core.api.rest.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,22 +27,22 @@ public class GrupoController {
 
 	@GetMapping("/")
 	public ResponseEntity<List<Grupo>> findAll() {
-		return new ResponseEntity<List<Grupo>>(service.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{grupoId}")
 	public ResponseEntity<Grupo> findById(@PathVariable Integer grupoId) {
-		return new ResponseEntity<Grupo>(service.findById(grupoId), HttpStatus.OK);
+		return new ResponseEntity<>(service.findById(grupoId), HttpStatus.OK);
 	}
 
 	@GetMapping("/ventainternet/{habilitado}")
 	public ResponseEntity<List<Grupo>> findAllByVentaInternet(@PathVariable Byte habilitado) {
-		return new ResponseEntity<List<Grupo>>(service.findAllByVentaInternet(habilitado), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllByVentaInternet(habilitado), HttpStatus.OK);
 	}
 
 	@PutMapping("/{grupoId}")
 	public ResponseEntity<Grupo> update(@RequestBody Grupo grupo, @PathVariable Integer grupoId) {
-		return new ResponseEntity<Grupo>(service.update(grupo, grupoId), HttpStatus.OK);
+		return new ResponseEntity<>(service.update(grupo, grupoId), HttpStatus.OK);
 	}
 
 	@GetMapping("/update")
@@ -54,6 +54,6 @@ public class GrupoController {
 	@GetMapping("/fecha/{fecha}")
 	public ResponseEntity<List<Grupo>> findAllByFecha(
 			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fecha) {
-		return new ResponseEntity<List<Grupo>>(service.findAllByVoucherFechaServicio(fecha), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllByVoucherFechaServicio(fecha), HttpStatus.OK);
 	}
 }

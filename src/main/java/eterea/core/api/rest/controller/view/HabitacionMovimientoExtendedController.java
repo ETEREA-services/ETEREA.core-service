@@ -27,20 +27,23 @@ import eterea.core.api.rest.service.view.HabitacionMovimientoExtendedService;
 @RequestMapping("/api/core/habitacionmovimientoextended")
 public class HabitacionMovimientoExtendedController {
 
-	@Autowired
-	private HabitacionMovimientoExtendedService service;
+	private final HabitacionMovimientoExtendedService service;
+
+	public HabitacionMovimientoExtendedController(HabitacionMovimientoExtendedService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/periodo/{desde}/{hasta}")
 	public ResponseEntity<List<HabitacionMovimientoExtended>> findAllByPeriodo(
 			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime desde,
 			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime hasta) {
-		return new ResponseEntity<List<HabitacionMovimientoExtended>>(service.findAllByPeriodo(desde, hasta),
+		return new ResponseEntity<>(service.findAllByPeriodo(desde, hasta),
 				HttpStatus.OK);
 	}
 
 	@GetMapping("/reserva/{numeroReserva}")
 	public ResponseEntity<HabitacionMovimientoExtended> findByNumeroReserva(@PathVariable Long numeroReserva) {
-		return new ResponseEntity<HabitacionMovimientoExtended>(service.findByNumeroReserva(numeroReserva),
+		return new ResponseEntity<>(service.findByNumeroReserva(numeroReserva),
 				HttpStatus.OK);
 	}
 

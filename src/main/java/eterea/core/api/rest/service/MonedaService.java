@@ -5,7 +5,7 @@ package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.MonedaException;
 import eterea.core.api.rest.kotlin.model.Moneda;
-import eterea.core.api.rest.repository.IMonedaRepository;
+import eterea.core.api.rest.repository.MonedaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MonedaService {
 
-	private final IMonedaRepository repository;
+	private final MonedaRepository repository;
 
 	@Autowired
-	public MonedaService(IMonedaRepository repository) {
+	public MonedaService(MonedaRepository repository) {
 		this.repository = repository;
 	}
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.api.rest.model.dto.ImpresionFiscalDTO;
+import eterea.core.api.rest.model.dto.ImpresionFiscalDto;
 import eterea.core.api.rest.service.facade.ImpresionFiscalService;
 
 /**
@@ -26,16 +26,16 @@ public class ImpresionFiscalController {
 	private ImpresionFiscalService service;
 
 	@GetMapping("/fiscal/{ipAddress}/{hWnd}/{clienteId}/{comprobanteId}/{comprobanteOrigenId}")
-	public ResponseEntity<ImpresionFiscalDTO> getData(@PathVariable String ipAddress, @PathVariable Long hWnd,
-			@PathVariable Long clienteId, @PathVariable Integer comprobanteId, @PathVariable Long comprobanteOrigenId) {
-		return new ResponseEntity<ImpresionFiscalDTO>(
+	public ResponseEntity<ImpresionFiscalDto> getData(@PathVariable String ipAddress, @PathVariable Long hWnd,
+                                                      @PathVariable Long clienteId, @PathVariable Integer comprobanteId, @PathVariable Long comprobanteOrigenId) {
+		return new ResponseEntity<ImpresionFiscalDto>(
 				service.getData(ipAddress, hWnd, clienteId, comprobanteId, comprobanteOrigenId), HttpStatus.OK);
 	}
 
 	@GetMapping("/fiscalPrevio/{clienteMovimientoPrevioId}/{comprobanteId}/{comprobanteOrigenId}")
-	public ResponseEntity<ImpresionFiscalDTO> getDataPrevio(@PathVariable Long clienteMovimientoPrevioId,
-			@PathVariable Integer comprobanteId, @PathVariable Long comprobanteOrigenId) {
-		return new ResponseEntity<ImpresionFiscalDTO>(
+	public ResponseEntity<ImpresionFiscalDto> getDataPrevio(@PathVariable Long clienteMovimientoPrevioId,
+                                                            @PathVariable Integer comprobanteId, @PathVariable Long comprobanteOrigenId) {
+		return new ResponseEntity<ImpresionFiscalDto>(
 				service.getDataPrevio(clienteMovimientoPrevioId, comprobanteId, comprobanteOrigenId), HttpStatus.OK);
 	}
 

@@ -5,14 +5,13 @@ package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.ClienteInternetException;
 import eterea.core.api.rest.kotlin.model.Authorities;
-import eterea.core.api.rest.repository.IAuthoritiesRepository;
-import eterea.core.api.rest.repository.IClienteInternetRepository;
+import eterea.core.api.rest.kotlin.model.ClienteInternet;
+import eterea.core.api.rest.repository.AuthoritiesRepository;
+import eterea.core.api.rest.repository.ClienteInternetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.ClienteInternet;
 
 /**
  * @author daniel
@@ -21,10 +20,10 @@ import eterea.core.api.rest.model.ClienteInternet;
 @Service
 public class ClienteInternetService {
 	@Autowired
-	private IClienteInternetRepository repository;
+	private ClienteInternetRepository repository;
 
 	@Autowired
-	private IAuthoritiesRepository authoritiesrepository;
+	private AuthoritiesRepository authoritiesrepository;
 
 	public ClienteInternet findById(Long clienteId) {
 		return repository.findById(clienteId).orElseThrow(() -> new ClienteInternetException(clienteId));

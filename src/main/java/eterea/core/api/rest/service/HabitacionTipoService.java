@@ -5,11 +5,10 @@ package eterea.core.api.rest.service;
 
 import java.util.List;
 
-import eterea.core.api.rest.repository.IHabitacionTipoRepository;
+import eterea.core.api.rest.kotlin.model.HabitacionTipo;
+import eterea.core.api.rest.repository.HabitacionTipoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.HabitacionTipo;
 
 /**
  * @author daniel
@@ -19,7 +18,7 @@ import eterea.core.api.rest.model.HabitacionTipo;
 public class HabitacionTipoService {
 
 	@Autowired
-	private IHabitacionTipoRepository repository;
+	private HabitacionTipoRepository repository;
 
 	public List<HabitacionTipo> findAll() {
 		return repository.findAll();

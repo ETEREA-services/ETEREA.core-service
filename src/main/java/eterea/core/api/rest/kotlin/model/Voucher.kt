@@ -1,9 +1,6 @@
 package eterea.core.api.rest.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import eterea.core.api.rest.model.Hotel
-import eterea.core.api.rest.model.Proveedor
-import eterea.core.api.rest.model.Usuario
 import jakarta.persistence.*
 import java.sql.Time
 import java.time.OffsetDateTime

@@ -7,6 +7,7 @@ import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
+import eterea.core.api.rest.kotlin.model.LegajoRegistro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import eterea.core.api.rest.exception.LegajoRegistroException;
-import eterea.core.api.rest.model.LegajoRegistro;
 import eterea.core.api.rest.service.LegajoRegistroService;
 
 /**
@@ -35,13 +35,13 @@ public class LegajoRegistroController {
 
 	@GetMapping("/legajo/{legajoId}")
 	public ResponseEntity<List<LegajoRegistro>> findAllByLegajoId(@PathVariable Integer legajoId) {
-		return new ResponseEntity<List<LegajoRegistro>>(service.findAllByLegajoId(legajoId), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllByLegajoId(legajoId), HttpStatus.OK);
 	}
 
 	@GetMapping("/last/{legajoId}")
 	public ResponseEntity<LegajoRegistro> findLastByLegajoId(@PathVariable Integer legajoId) {
 		try {
-			return new ResponseEntity<LegajoRegistro>(service.findLastByLegajoId(legajoId), HttpStatus.OK);
+			return new ResponseEntity<>(service.findLastByLegajoId(legajoId), HttpStatus.OK);
 		} catch (LegajoRegistroException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -51,7 +51,7 @@ public class LegajoRegistroController {
 	public ResponseEntity<LegajoRegistro> findLastByLegajoIdAndFecha(@PathVariable Integer legajoId,
 			@PathVariable @DateTimeFormat(iso = ISO.DATE) Date fecha, @PathVariable Time hora) {
 		try {
-			return new ResponseEntity<LegajoRegistro>(service.findLastByLegajoIdAndFecha(legajoId, fecha, hora),
+			return new ResponseEntity<>(service.findLastByLegajoIdAndFecha(legajoId, fecha, hora),
 					HttpStatus.OK);
 		} catch (LegajoRegistroException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

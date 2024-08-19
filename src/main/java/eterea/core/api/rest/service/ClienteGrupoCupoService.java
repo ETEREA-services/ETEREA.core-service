@@ -6,13 +6,12 @@ package eterea.core.api.rest.service;
 import java.util.List;
 
 import eterea.core.api.rest.exception.ClienteGrupoCupoException;
-import eterea.core.api.rest.repository.IClienteGrupoCupoRepository;
+import eterea.core.api.rest.kotlin.model.ClienteGrupoCupo;
+import eterea.core.api.rest.repository.ClienteGrupoCupoRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.ClienteGrupoCupo;
 
 /**
  * @author daniel
@@ -21,7 +20,7 @@ import eterea.core.api.rest.model.ClienteGrupoCupo;
 @Service
 public class ClienteGrupoCupoService {
 	@Autowired
-	private IClienteGrupoCupoRepository repository;
+	private ClienteGrupoCupoRepository repository;
 
 	public List<ClienteGrupoCupo> findByClienteIdAndGrupoId(Long clienteId, Integer grupoId) {
 		return repository.findByClienteIdAndGrupoId(clienteId, grupoId);
