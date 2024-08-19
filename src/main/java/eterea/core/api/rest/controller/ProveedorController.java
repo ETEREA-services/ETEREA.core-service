@@ -3,6 +3,7 @@
  */
 package eterea.core.api.rest.controller;
 
+import eterea.core.api.rest.kotlin.model.Proveedor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import eterea.core.api.rest.exception.ProveedorException;
-import eterea.core.api.rest.model.Proveedor;
 import eterea.core.api.rest.service.ProveedorService;
 
 /**

@@ -6,11 +6,10 @@ package eterea.core.api.rest.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import eterea.core.api.rest.repository.ITarifaHabitacionRepository;
+import eterea.core.api.rest.kotlin.model.TarifaHabitacion;
+import eterea.core.api.rest.repository.TarifaHabitacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.TarifaHabitacion;
 
 /**
  * @author daniel
@@ -20,7 +19,7 @@ import eterea.core.api.rest.model.TarifaHabitacion;
 public class TarifaHabitacionService {
 
 	@Autowired
-	private ITarifaHabitacionRepository repository;
+	private TarifaHabitacionRepository repository;
 
 	public List<TarifaHabitacion> findAllSinBloqueo(Boolean bloqueoEspecial) {
 		if (!bloqueoEspecial) {

@@ -8,7 +8,7 @@ import java.util.List;
 import eterea.core.api.rest.exception.ClienteException;
 import eterea.core.api.rest.kotlin.model.Cliente;
 import eterea.core.api.rest.kotlin.model.view.ClienteSearch;
-import eterea.core.api.rest.repository.IClienteRepository;
+import eterea.core.api.rest.repository.ClienteRepository;
 import eterea.core.api.rest.service.view.ClienteSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteService {
 
-	private final IClienteRepository repository;
+	private final ClienteRepository repository;
 
 	private final ClienteSearchService clienteSearchService;
 
 	@Autowired
-	public ClienteService(IClienteRepository repository, ClienteSearchService clienteSearchService) {
+	public ClienteService(ClienteRepository repository, ClienteSearchService clienteSearchService) {
 		this.repository = repository;
 		this.clienteSearchService = clienteSearchService;
 	}

@@ -4,11 +4,10 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.HabitacionException;
-import eterea.core.api.rest.repository.IHabitacionRepository;
+import eterea.core.api.rest.kotlin.model.Habitacion;
+import eterea.core.api.rest.repository.HabitacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Habitacion;
 
 /**
  * @author daniel
@@ -18,7 +17,7 @@ import eterea.core.api.rest.model.Habitacion;
 public class HabitacionService {
 
 	@Autowired
-	private IHabitacionRepository repository;
+	private HabitacionRepository repository;
 
 	public Habitacion findByNumero(Integer numero) {
 		return repository.findByNumero(numero).orElseThrow(() -> new HabitacionException(numero));

@@ -4,11 +4,11 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.GrupoException;
+import eterea.core.api.rest.kotlin.model.Grupo;
+import eterea.core.api.rest.kotlin.model.GrupoProducto;
 import eterea.core.api.rest.kotlin.model.Voucher;
 import eterea.core.api.rest.kotlin.model.VoucherProducto;
-import eterea.core.api.rest.model.Grupo;
-import eterea.core.api.rest.model.GrupoProducto;
-import eterea.core.api.rest.repository.IGrupoRepository;
+import eterea.core.api.rest.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,13 @@ import java.util.Set;
 @Service
 public class GrupoService {
 
-	private final IGrupoRepository repository;
+	private final GrupoRepository repository;
 	private final GrupoProductoService grupoProductoService;
 	private final VoucherService voucherService;
 	private final VoucherProductoService voucherProductoService;
 
 	@Autowired
-	public GrupoService(IGrupoRepository repository, GrupoProductoService grupoProductoService, VoucherService voucherService, VoucherProductoService voucherProductoService) {
+	public GrupoService(GrupoRepository repository, GrupoProductoService grupoProductoService, VoucherService voucherService, VoucherProductoService voucherProductoService) {
 		this.repository = repository;
 		this.grupoProductoService = grupoProductoService;
 		this.voucherService = voucherService;
@@ -47,13 +47,13 @@ public class GrupoService {
 	}
 
 	public List<Grupo> findAllByVentaInternet(Byte habilitado) {
-		return repository.findAllByVentainternet(habilitado, Sort.by("nombre").ascending());
+		return repository.findAllByVentaInternet(habilitado, Sort.by("nombre").ascending());
 	}
 
-	public Grupo update(Grupo newgrupo, Integer grupoId) {
+	public Grupo update(Grupo newGrupo, Integer grupoId) {
 		return repository.findById(grupoId).map(grupo -> {
-			grupo.setNombre(newgrupo.getNombre());
-			grupo.setVentainternet(newgrupo.getVentainternet());
+			grupo.setNombre(newGrupo.getNombre());
+			grupo.setVentaInternet(newGrupo.getVentaInternet());
 			return repository.save(grupo);
 		}).orElseThrow(() -> new GrupoException(grupoId));
 	}

@@ -4,11 +4,10 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.PermisoException;
-import eterea.core.api.rest.repository.IPermisoRepository;
+import eterea.core.api.rest.kotlin.model.Permiso;
+import eterea.core.api.rest.repository.PermisoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Permiso;
 
 /**
  * @author daniel
@@ -18,7 +17,7 @@ import eterea.core.api.rest.model.Permiso;
 public class PermisoService {
 
 	@Autowired
-	private IPermisoRepository repository;
+	private PermisoRepository repository;
 
 	public Permiso findByPermiso(String usuario, String opcion) {
 		return repository.findByNombreAndOpcion(usuario, opcion)

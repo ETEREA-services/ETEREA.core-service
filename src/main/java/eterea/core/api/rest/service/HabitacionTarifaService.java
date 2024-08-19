@@ -4,11 +4,10 @@
 package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.HabitacionTarifaException;
-import eterea.core.api.rest.repository.IHabitacionTarifaRepository;
+import eterea.core.api.rest.kotlin.model.HabitacionTarifa;
+import eterea.core.api.rest.repository.HabitacionTarifaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.HabitacionTarifa;
 
 /**
  * @author daniel
@@ -18,7 +17,7 @@ import eterea.core.api.rest.model.HabitacionTarifa;
 public class HabitacionTarifaService {
 
 	@Autowired
-	private IHabitacionTarifaRepository repository;
+	private HabitacionTarifaRepository repository;
 
 	public HabitacionTarifa findByUnique(Integer numero, Integer paxs) {
 		return repository.findByNumeroAndPaxs(numero, paxs)
