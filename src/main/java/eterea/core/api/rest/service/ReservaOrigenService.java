@@ -7,8 +7,7 @@ import java.util.List;
 
 import eterea.core.api.rest.exception.ReservaOrigenException;
 import eterea.core.api.rest.kotlin.model.ReservaOrigen;
-import eterea.core.api.rest.repository.IReservaOrigenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import eterea.core.api.rest.repository.ReservaOrigenRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,8 +17,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReservaOrigenService {
 
-	@Autowired
-	private IReservaOrigenRepository repository;
+	private final ReservaOrigenRepository repository;
+
+	public ReservaOrigenService(ReservaOrigenRepository repository) {
+		this.repository = repository;
+	}
 
 	public List<ReservaOrigen> findAll() {
 		return repository.findAll();

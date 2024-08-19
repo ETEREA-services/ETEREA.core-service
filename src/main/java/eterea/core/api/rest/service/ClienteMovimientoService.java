@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import eterea.core.api.rest.exception.ClienteMovimientoException;
 import eterea.core.api.rest.kotlin.model.ClienteMovimiento;
-import eterea.core.api.rest.repository.IClienteMovimientoRepository;
+import eterea.core.api.rest.repository.ClienteMovimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class ClienteMovimientoService {
 
 	@Autowired
-	private IClienteMovimientoRepository repository;
+	private ClienteMovimientoRepository repository;
 
 	@Autowired
 	private ComprobanteService comprobanteService;

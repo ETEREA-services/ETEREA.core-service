@@ -5,11 +5,10 @@ package eterea.core.api.rest.service;
 
 import java.util.List;
 
-import eterea.core.api.rest.repository.ILegajoRepository;
+import eterea.core.api.rest.kotlin.model.Legajo;
+import eterea.core.api.rest.repository.LegajoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Legajo;
 
 /**
  * @author daniel
@@ -19,7 +18,7 @@ import eterea.core.api.rest.model.Legajo;
 public class LegajoService {
 	
 	@Autowired
-	private ILegajoRepository repository;
+	private LegajoRepository repository;
 
 	public List<Legajo> findAll() {
 		return repository.findAll();

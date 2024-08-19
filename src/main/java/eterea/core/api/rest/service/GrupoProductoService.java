@@ -6,11 +6,10 @@ package eterea.core.api.rest.service;
 import java.util.List;
 
 import eterea.core.api.rest.exception.GrupoProductoException;
-import eterea.core.api.rest.repository.IGrupoProductoRepository;
+import eterea.core.api.rest.kotlin.model.GrupoProducto;
+import eterea.core.api.rest.repository.GrupoProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.GrupoProducto;
 
 /**
  * @author daniel
@@ -19,7 +18,7 @@ import eterea.core.api.rest.model.GrupoProducto;
 @Service
 public class GrupoProductoService {
 	@Autowired
-	private IGrupoProductoRepository repository;
+	private GrupoProductoRepository repository;
 
 	public List<GrupoProducto> findAll() {
 		return repository.findAll();
@@ -38,9 +37,9 @@ public class GrupoProductoService {
 		return grupoproducto;
 	}
 
-	public GrupoProducto update(GrupoProducto newgrupoproducto, Integer grupoId, Integer productoId) {
+	public GrupoProducto update(GrupoProducto newGrupoProducto, Integer grupoId, Integer productoId) {
 		return repository.findByUnique(grupoId, productoId).map(grupoproducto -> {
-			grupoproducto.setCoeficiente(newgrupoproducto.getCoeficiente());
+			grupoproducto.setCoeficiente(newGrupoProducto.getCoeficiente());
 			return repository.save(grupoproducto);
 		}).orElseThrow(() -> new GrupoProductoException(grupoId, productoId));
 	}

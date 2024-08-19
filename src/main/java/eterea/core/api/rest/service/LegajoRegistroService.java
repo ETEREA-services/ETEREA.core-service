@@ -8,11 +8,10 @@ import java.util.Date;
 import java.util.List;
 
 import eterea.core.api.rest.exception.LegajoRegistroException;
-import eterea.core.api.rest.repository.ILegajoRegistroRepository;
+import eterea.core.api.rest.kotlin.model.LegajoRegistro;
+import eterea.core.api.rest.repository.LegajoRegistroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.LegajoRegistro;
 
 /**
  * @author daniel
@@ -21,7 +20,7 @@ import eterea.core.api.rest.model.LegajoRegistro;
 @Service
 public class LegajoRegistroService {
 	@Autowired
-	private ILegajoRegistroRepository repository;
+	private LegajoRegistroRepository repository;
 
 	public List<LegajoRegistro> findAllByLegajoId(Integer legajoId) {
 		return repository.findAllByLegajoId(legajoId);

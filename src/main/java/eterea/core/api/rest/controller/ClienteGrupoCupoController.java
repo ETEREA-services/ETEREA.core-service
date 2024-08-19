@@ -5,6 +5,7 @@ package eterea.core.api.rest.controller;
 
 import java.util.List;
 
+import eterea.core.api.rest.kotlin.model.ClienteGrupoCupo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.api.rest.model.ClienteGrupoCupo;
 import eterea.core.api.rest.service.ClienteGrupoCupoService;
 
 /**
@@ -32,31 +32,31 @@ public class ClienteGrupoCupoController {
 
 	@GetMapping("/clientegrupo/{clienteId}/{grupoId}")
 	public ResponseEntity<List<ClienteGrupoCupo>> findByClienteIdAndGrupoId(@PathVariable Long clienteId,
-			@PathVariable Integer grupoId) {
-		return new ResponseEntity<List<ClienteGrupoCupo>>(service.findByClienteIdAndGrupoId(clienteId, grupoId),
+																			@PathVariable Integer grupoId) {
+		return new ResponseEntity<>(service.findByClienteIdAndGrupoId(clienteId, grupoId),
 				HttpStatus.OK);
 	}
 
 	@GetMapping("/unique/{clienteId}/{grupoId}/{dias}")
 	public ResponseEntity<ClienteGrupoCupo> findByUnique(@PathVariable Long clienteId, @PathVariable Integer grupoId,
 			@PathVariable Integer dias) {
-		return new ResponseEntity<ClienteGrupoCupo>(service.findByUnique(clienteId, grupoId, dias), HttpStatus.OK);
+		return new ResponseEntity<>(service.findByUnique(clienteId, grupoId, dias), HttpStatus.OK);
 	}
 
 	@GetMapping("/autonumerico/{clientegrupocupoId}")
 	public ResponseEntity<ClienteGrupoCupo> findByAutonumerico(@PathVariable Long clientegrupocupoId) {
-		return new ResponseEntity<ClienteGrupoCupo>(service.findByAutonumerico(clientegrupocupoId), HttpStatus.OK);
+		return new ResponseEntity<>(service.findByAutonumerico(clientegrupocupoId), HttpStatus.OK);
 	}
 
 	@PostMapping("/")
 	public ResponseEntity<ClienteGrupoCupo> add(@RequestBody ClienteGrupoCupo clientegrupocupo) {
-		return new ResponseEntity<ClienteGrupoCupo>(service.add(clientegrupocupo), HttpStatus.OK);
+		return new ResponseEntity<>(service.add(clientegrupocupo), HttpStatus.OK);
 	}
 
 	@PutMapping("/{clientegrupocupoId}")
 	public ResponseEntity<ClienteGrupoCupo> update(@RequestBody ClienteGrupoCupo clientegrupocupo,
 			@PathVariable Long clientegrupocupoId) {
-		return new ResponseEntity<ClienteGrupoCupo>(service.update(clientegrupocupo, clientegrupocupoId),
+		return new ResponseEntity<>(service.update(clientegrupocupo, clientegrupocupoId),
 				HttpStatus.OK);
 	}
 

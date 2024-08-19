@@ -5,6 +5,7 @@ package eterea.core.api.rest.controller;
 
 import java.util.List;
 
+import eterea.core.api.rest.kotlin.model.Hotel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.api.rest.model.Hotel;
 import eterea.core.api.rest.service.HotelService;
 
 /**
@@ -31,27 +31,27 @@ public class HotelController {
 	
 	@GetMapping("/")
 	public ResponseEntity<List<Hotel>> findAll() {
-		return new ResponseEntity<List<Hotel>>(service.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 	
-	@GetMapping("/{hotelID}")
-	public ResponseEntity<Hotel> findById(@PathVariable("hotelID") Integer hotelId) {
-		return new ResponseEntity<Hotel>(service.findById(hotelId), HttpStatus.OK);
+	@GetMapping("/{hotelId}")
+	public ResponseEntity<Hotel> findById(@PathVariable Integer hotelId) {
+		return new ResponseEntity<>(service.findById(hotelId), HttpStatus.OK);
 	}
 
 	@GetMapping("/paradatraslado/{paradatraslado}")
 	public ResponseEntity<List<Hotel>> findAllByParadaTraslado(@PathVariable Byte paradatraslado) {
-		return new ResponseEntity<List<Hotel>>(service.findAllByParadaTraslado(paradatraslado), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllByParadaTraslado(paradatraslado), HttpStatus.OK);
 	}
 
 	@GetMapping("/puntoencuentro/{puntoencuentro}")
 	public ResponseEntity<List<Hotel>> findAllByPuntoEncuentro(@PathVariable Byte puntoencuentro) {
-		return new ResponseEntity<List<Hotel>>(service.findAllByPuntoEncuentro(puntoencuentro), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllByPuntoEncuentro(puntoencuentro), HttpStatus.OK);
 	}
 	
-	@PutMapping("/{hotelID}")
-	public ResponseEntity<Hotel> update(@RequestBody Hotel hotel, @PathVariable("hotelID") Integer hotelId) {
-		return new ResponseEntity<Hotel>(service.update(hotel, hotelId), HttpStatus.OK);
+	@PutMapping("/{hotelId}")
+	public ResponseEntity<Hotel> update(@RequestBody Hotel hotel, @PathVariable Integer hotelId) {
+		return new ResponseEntity<>(service.update(hotel, hotelId), HttpStatus.OK);
 	}
 	
 	@GetMapping("/update")
