@@ -3,6 +3,7 @@
  */
 package eterea.core.api.rest.controller;
 
+import eterea.core.api.rest.kotlin.model.CuentaMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import eterea.core.api.rest.exception.CuentaMovimientoException;
-import eterea.core.api.rest.model.dto.CuentaMovimientoDTO;
 import eterea.core.api.rest.service.CuentaMovimientoService;
 
 /**
@@ -32,7 +32,7 @@ public class CuentaMovimientoController {
 	}
 
 	@GetMapping("/{cuentaMovimientoId}")
-	public ResponseEntity<CuentaMovimientoDTO> findByCuentaMovimientoId(@PathVariable Long cuentaMovimientoId) {
+	public ResponseEntity<CuentaMovimiento> findByCuentaMovimientoId(@PathVariable Long cuentaMovimientoId) {
 		try {
 			return new ResponseEntity<>(service.findByCuentaMovimientoId(cuentaMovimientoId),
 					HttpStatus.OK);

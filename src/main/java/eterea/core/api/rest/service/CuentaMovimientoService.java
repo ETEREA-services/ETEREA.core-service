@@ -8,11 +8,8 @@ import eterea.core.api.rest.kotlin.model.CuentaMovimiento;
 import eterea.core.api.rest.kotlin.repository.CuentaMovimientoRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.dto.CuentaMovimientoDTO;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -27,26 +24,20 @@ import java.util.List;
 public class CuentaMovimientoService {
 
     private final CuentaMovimientoRepository repository;
-
     private final CuentaMovimientoAperturaService cuentaMovimientoAperturaService;
 
-    @Autowired
     public CuentaMovimientoService(CuentaMovimientoRepository repository, CuentaMovimientoAperturaService cuentaMovimientoAperturaService) {
         this.repository = repository;
         this.cuentaMovimientoAperturaService = cuentaMovimientoAperturaService;
     }
 
-    public CuentaMovimientoDTO findByCuentaMovimientoId(Long cuentaMovimientoId) {
-        CuentaMovimiento cuentaMovimiento = repository.findByCuentaMovimientoId(cuentaMovimientoId)
+    public CuentaMovimiento findByCuentaMovimientoId(Long cuentaMovimientoId) {
+        return repository.findByCuentaMovimientoId(cuentaMovimientoId)
                 .orElseThrow(() -> new CuentaMovimientoException(cuentaMovimientoId));
-        ModelMapper mapper = new ModelMapper();
-        return mapper.map(cuentaMovimiento, CuentaMovimientoDTO.class);
     }
 
-    public CuentaMovimientoDTO findLastByAsiento(OffsetDateTime fecha, Integer orden) {
-        CuentaMovimiento cuentaMovimiento = repository.findFirstByFechaAndOrdenOrderByItemDesc(fecha, orden).orElseThrow(() -> new CuentaMovimientoException(fecha, orden));
-        ModelMapper mapper = new ModelMapper();
-        return mapper.map(cuentaMovimiento, CuentaMovimientoDTO.class);
+    public CuentaMovimiento findLastByAsiento(OffsetDateTime fecha, Integer orden) {
+        return repository.findFirstByFechaAndOrdenOrderByItemDesc(fecha, orden).orElseThrow(() -> new CuentaMovimientoException(fecha, orden));
     }
 
     private CuentaMovimiento findLastByFecha(OffsetDateTime fecha) {
@@ -63,7 +54,7 @@ public class CuentaMovimientoService {
         if (incluyeApertura) {
             total = total.add(cuentaMovimientoAperturaService.calculateTotalDebeEntreFechas(numeroCuenta, desde, hasta));
         }
-        total = total.add(repository.calculateTotalByNumeroCuentaAndDebitaAndIncluyeInflacionAndFechaBetween(numeroCuenta, 1, incluyeInflacion, desde, hasta));
+        total = total.add(calculateTotalByNumeroCuentaAndDebitaAndIncluyeInflacionAndFechaBetween(numeroCuenta, 1, incluyeInflacion, desde, hasta));
         return total;
     }
 
@@ -72,8 +63,15 @@ public class CuentaMovimientoService {
         if (incluyeApertura) {
             total = total.add(cuentaMovimientoAperturaService.calculateTotalHaberEntreFechas(numeroCuenta, desde, hasta));
         }
-        total = total.add(repository.calculateTotalByNumeroCuentaAndDebitaAndIncluyeInflacionAndFechaBetween(numeroCuenta, 0, incluyeInflacion, desde, hasta));
+        total = total.add(calculateTotalByNumeroCuentaAndDebitaAndIncluyeInflacionAndFechaBetween(numeroCuenta, 0, incluyeInflacion, desde, hasta));
         return total;
+    }
+
+    private BigDecimal calculateTotalByNumeroCuentaAndDebitaAndIncluyeInflacionAndFechaBetween(Long numeroCuenta, Integer debita, Boolean incluyeInflacion, OffsetDateTime desde, OffsetDateTime hasta) {
+        if (incluyeInflacion) {
+            return repository.calculateTotalByNumeroCuentaAndDebitaAndFechaBetween(numeroCuenta, debita, desde, hasta);
+        }
+        return repository.calculateTotalByNumeroCuentaAndDebitaAndInflacionAndFechaBetween(numeroCuenta, debita, 0, desde, hasta);
     }
 
     public List<BigDecimal> totalesEntreFechas(Long numeroCuenta, OffsetDateTime desde, OffsetDateTime hasta, Boolean incluyeApertura, Boolean incluyeInflacion) {

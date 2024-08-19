@@ -6,12 +6,11 @@ package eterea.core.api.rest.service;
 import java.util.List;
 
 import eterea.core.api.rest.exception.HotelException;
-import eterea.core.api.rest.repository.IHotelRepository;
+import eterea.core.api.rest.kotlin.model.Hotel;
+import eterea.core.api.rest.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import eterea.core.api.rest.model.Hotel;
 
 /**
  * @author daniel
@@ -20,7 +19,7 @@ import eterea.core.api.rest.model.Hotel;
 @Service
 public class HotelService {
 	@Autowired
-	private IHotelRepository repository;
+	private HotelRepository repository;
 
 	public List<Hotel> findAll() {
 		return repository.findAll();

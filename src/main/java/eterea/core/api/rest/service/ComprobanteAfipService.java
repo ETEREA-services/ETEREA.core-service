@@ -5,7 +5,7 @@ package eterea.core.api.rest.service;
 
 import eterea.core.api.rest.exception.ComprobanteAfipException;
 import eterea.core.api.rest.kotlin.model.ComprobanteAfip;
-import eterea.core.api.rest.repository.IComprobanteAfipRepository;
+import eterea.core.api.rest.repository.ComprobanteAfipRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ComprobanteAfipService {
 
-	private final IComprobanteAfipRepository repository;
+	private final ComprobanteAfipRepository repository;
 
-	public ComprobanteAfipService(IComprobanteAfipRepository repository) {
+	public ComprobanteAfipService(ComprobanteAfipRepository repository) {
 		this.repository = repository;
 	}
 

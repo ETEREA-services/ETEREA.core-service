@@ -1,21 +1,16 @@
 app:
   port: 8080
-  logging: debug
   eureka: 8761
-  server: 10.147.20.25:3306
+  logging: debug
+  server: 10.147.20.20:3306
   database: tsaagencia
   user: root
   password: root
-#  venta-web-server: 127.0.0.1
-#  server: 10.147.17.149:3306
-#  database: tsaagencia
-#  user: agencia
-#  password: cacheuta
-  venta-web-server: 10.147.17.149
+  venta-web-server: 10.147.20.20
   venta-web-port: 8280
   mail:
-    username: reportes.termalia@gmail.com
-    password: uulgftuqhgjdihgv
+    username: uid
+    password: pwd
 
 server:
   port: ${app.port}

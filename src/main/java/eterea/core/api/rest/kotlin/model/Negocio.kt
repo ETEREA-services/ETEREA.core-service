@@ -3,10 +3,8 @@ package eterea.core.api.rest.kotlin.model
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.Table
 
 @Entity
-@Table
 data class Negocio(
 
     @Id
@@ -14,13 +12,15 @@ data class Negocio(
     var negocioId: Int? = null,
 
     @Column(name = "neg_nombre")
-    var nombre: String? = null,
+    var nombre: String = "",
 
     @Column(name = "neg_id_real")
-    var negocioIdReal: Int? = null,
+    var negocioIdReal: Int = 0,
 
     @Column(name = "neg_ip")
-    var ipAddress: String? = null,
+    var databaseIpVpn: String = "",
+
+    var databaseIpLan: String = "",
 
     @Column(name = "neg_db")
     var database: String? = null,
@@ -34,9 +34,13 @@ data class Negocio(
     @Column(name = "neg_transfvalor")
     var transferenciaValor: Byte = 0,
 
-    var backendServer: String = "",
+    @Column(name = "backend_server")
+    var backendIpVpn: String = "",
+
+    var backendIpLan: String = "",
     var backendPort: String = "",
     var facturaServer: String = "",
-    var facturaPort: String = ""
+    var facturaPort: String = "",
+    var hasGateway: Byte = 0
 
 ) : Auditable()
