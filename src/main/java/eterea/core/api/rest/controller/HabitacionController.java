@@ -4,7 +4,6 @@
 package eterea.core.api.rest.controller;
 
 import eterea.core.api.rest.kotlin.model.Habitacion;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +18,14 @@ import eterea.core.api.rest.service.HabitacionService;
  *
  */
 @RestController
-@RequestMapping("/api/core/habitacion")
+@RequestMapping({"/api/core/habitacion", "/habitacion"})
 public class HabitacionController {
 
-	@Autowired
-	private HabitacionService service;
+	private final HabitacionService service;
+
+	public HabitacionController(HabitacionService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/{numero}")
 	public ResponseEntity<Habitacion> findByNumero(@PathVariable Integer numero) {

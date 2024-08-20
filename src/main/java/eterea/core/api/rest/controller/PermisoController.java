@@ -19,7 +19,7 @@ import eterea.core.api.rest.service.PermisoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/permiso")
+@RequestMapping({"/api/core/permiso", "/permiso"})
 public class PermisoController {
 
 	@Autowired

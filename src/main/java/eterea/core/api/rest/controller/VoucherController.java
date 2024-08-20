@@ -26,7 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
  *
  */
 @RestController
-@RequestMapping("/api/core/voucher")
+@RequestMapping({"/api/core/voucher", "/voucher"})
 public class VoucherController {
 
 	private final VoucherService service;

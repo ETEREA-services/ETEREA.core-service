@@ -20,15 +20,18 @@ import eterea.core.api.rest.service.view.UsuarioVencimientoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/usuarioVencimiento")
+@RequestMapping({"/api/core/usuarioVencimiento", "/usuarioVencimiento"})
 public class UsuarioVencimientoController {
 
-	@Autowired
-	private UsuarioVencimientoService service;
+	private final UsuarioVencimientoService service;
+
+	public UsuarioVencimientoController(UsuarioVencimientoService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/today")
 	public ResponseEntity<List<UsuarioVencimiento>> findAllToday() {
-		return new ResponseEntity<List<UsuarioVencimiento>>(service.findAllToday(), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllToday(), HttpStatus.OK);
 	}
 
 }

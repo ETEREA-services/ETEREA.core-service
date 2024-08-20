@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping("/api/core/registroCae")
+@RequestMapping({"/api/core/registroCae", "/registroCae"})
 public class RegistroCaeController {
 
     private final RegistroCaeService service;
