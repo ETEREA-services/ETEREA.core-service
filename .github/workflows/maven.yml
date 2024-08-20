@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: ETEREA.core-service-v2 CI
+name: ETEREA.core-service CI
 
 on:
   push:

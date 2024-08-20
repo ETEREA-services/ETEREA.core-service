@@ -16,7 +16,7 @@ import eterea.core.api.rest.service.facade.VencimientoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/vencimiento")
+@RequestMapping({"/api/core/vencimiento", "/vencimiento"})
 public class VencimientoController {
 
 	@Autowired

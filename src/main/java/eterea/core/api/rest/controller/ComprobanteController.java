@@ -21,7 +21,7 @@ import eterea.core.api.rest.service.ComprobanteService;
  *
  */
 @RestController
-@RequestMapping("/api/core/comprobante")
+@RequestMapping({"/api/core/comprobante", "/comprobante"})
 public class ComprobanteController {
 
 	private final ComprobanteService service;

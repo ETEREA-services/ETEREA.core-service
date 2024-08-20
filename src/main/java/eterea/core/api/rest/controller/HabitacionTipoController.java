@@ -6,7 +6,6 @@ package eterea.core.api.rest.controller;
 import java.util.List;
 
 import eterea.core.api.rest.kotlin.model.HabitacionTipo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,14 @@ import eterea.core.api.rest.service.HabitacionTipoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/habitaciontipo")
+@RequestMapping({"/api/core/habitaciontipo", "/habitaciontipo"})
 public class HabitacionTipoController {
 
-	@Autowired
-	private HabitacionTipoService service;
+	private final HabitacionTipoService service;
+
+	public HabitacionTipoController(HabitacionTipoService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/")
 	public ResponseEntity<List<HabitacionTipo>> findAll() {

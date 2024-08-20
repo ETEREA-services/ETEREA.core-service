@@ -26,7 +26,7 @@ import eterea.core.api.rest.service.ClienteService;
  *
  */
 @RestController
-@RequestMapping("/api/core/cliente")
+@RequestMapping({"/api/core/cliente", "/cliente"})
 public class ClienteController {
 
 	@Autowired
