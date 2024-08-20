@@ -24,7 +24,7 @@ import eterea.core.api.rest.service.GrupoProductoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/grupoproducto")
+@RequestMapping({"/api/core/grupoproducto", "/grupoproducto"})
 public class GrupoProductoController {
 
 	@Autowired

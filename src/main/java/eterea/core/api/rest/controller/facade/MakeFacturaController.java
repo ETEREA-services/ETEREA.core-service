@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/core/makeFactura")
+@RequestMapping({"/api/core/makeFactura", "/makeFactura"})
 public class MakeFacturaController {
 
     private final FacturacionElectronicaService facturacionElectronicaService;

@@ -22,7 +22,7 @@ import eterea.core.api.rest.service.NegocioService;
  *
  */
 @RestController
-@RequestMapping("/api/core/negocio")
+@RequestMapping({"/api/core/negocio", "/negocio"})
 @Slf4j
 public class NegocioController {
 	

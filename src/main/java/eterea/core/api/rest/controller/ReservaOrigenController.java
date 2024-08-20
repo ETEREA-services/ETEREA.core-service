@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/core/reservaorigen")
+@RequestMapping({"/api/core/reservaorigen", "/reservaorigen"})
 public class ReservaOrigenController {
 
     private final ReservaOrigenService service;

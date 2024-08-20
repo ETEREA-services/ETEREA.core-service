@@ -18,7 +18,7 @@ import eterea.core.api.rest.service.ReservaService;
  *
  */
 @RestController
-@RequestMapping("/api/core/reservafacade")
+@RequestMapping({"/api/core/reservafacade", "/reservafacade"})
 public class ReservaFacadeController {
 	@Autowired
 	private ReservaService service;

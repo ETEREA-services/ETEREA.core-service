@@ -21,7 +21,7 @@ import eterea.core.api.rest.service.ClienteMovimientoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/clienteMovimiento")
+@RequestMapping({"/api/core/clienteMovimiento", "/clienteMovimiento"})
 public class ClienteMovimientoController {
 
 	@Autowired
