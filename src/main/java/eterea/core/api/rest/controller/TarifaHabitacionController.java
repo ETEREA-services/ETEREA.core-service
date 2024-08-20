@@ -21,7 +21,7 @@ import eterea.core.api.rest.service.TarifaHabitacionService;
  *
  */
 @RestController
-@RequestMapping("/api/core/tarifahabitacion")
+@RequestMapping({"/api/core/tarifahabitacion", "/tarifahabitacion"})
 public class TarifaHabitacionController {
 
 	@Autowired

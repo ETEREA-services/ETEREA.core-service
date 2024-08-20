@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/core/comprobanteAfip")
+@RequestMapping({"/api/core/comprobanteAfip", "/comprobanteAfip"})
 public class ComprobanteAfipController {
 
     private final ComprobanteAfipService service;

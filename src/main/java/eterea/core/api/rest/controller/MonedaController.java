@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/core/moneda")
+@RequestMapping({"/api/core/moneda", "/moneda"})
 public class MonedaController {
 
     private final MonedaService service;

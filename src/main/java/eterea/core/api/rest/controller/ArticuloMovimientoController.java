@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/core/articuloMovimiento")
+@RequestMapping({"/api/core/articuloMovimiento", "/articuloMovimiento"})
 public class ArticuloMovimientoController {
 
     private final ArticuloMovimientoService service;

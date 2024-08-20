@@ -6,7 +6,6 @@ package eterea.core.api.rest.controller;
 import java.util.List;
 
 import eterea.core.api.rest.kotlin.model.Legajo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,14 @@ import eterea.core.api.rest.service.LegajoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/legajo")
+@RequestMapping({"/api/core/legajo", "/legajo"})
 public class LegajoController {
 	
-	@Autowired
-	private LegajoService service;
+	private final LegajoService service;
+
+	public LegajoController(LegajoService service) {
+		this.service = service;
+	}
 	
 	@GetMapping("/")
 	public ResponseEntity<List<Legajo>> findAll() {

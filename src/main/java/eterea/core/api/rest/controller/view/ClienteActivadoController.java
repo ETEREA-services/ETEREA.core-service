@@ -20,7 +20,7 @@ import eterea.core.api.rest.service.view.ClienteActivadoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/clienteactivado")
+@RequestMapping({"/api/core/clienteactivado", "/clienteactivado"})
 public class ClienteActivadoController {
 	@Autowired
 	private ClienteActivadoService service;

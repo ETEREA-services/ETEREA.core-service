@@ -18,7 +18,7 @@ import eterea.core.api.rest.service.facade.AlojamientoService;
  *
  */
 @RestController
-@RequestMapping("/api/core/alojamiento")
+@RequestMapping({"/api/core/alojamiento", "/alojamiento"})
 public class AlojamientoController {
 
 	@Autowired

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/core/empresa")
+@RequestMapping({"/api/core/empresa", "/empresa"})
 public class EmpresaController {
 
     private final EmpresaService service;
