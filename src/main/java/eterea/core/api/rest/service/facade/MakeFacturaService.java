@@ -269,7 +269,7 @@ public class MakeFacturaService {
 
             try {
                 reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
-                log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), ""));
+                log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), "daniel.quinterospinto@gmail.com"));
                 reservaContext.setEnvioPendiente((byte) 0);
                 reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
                 return true;
