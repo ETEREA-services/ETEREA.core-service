@@ -30,7 +30,7 @@ data class Proveedor(
     var posicion: Int = 0,
     var celular: String = "",
 
-    @Column(name = "NroInscIB")
+    @Column(name = "nroinscib")
     var numeroInscripcionIngresosBrutos: String = "",
 
     @Column(name = "ibcontribuyente_id")
@@ -42,7 +42,7 @@ data class Proveedor(
     @Column(name = "ibcategoria_id")
     var inressosBrutosCategoriaId: Int? = null,
 
-    @Column(name = "Prv_Rep_Codigo")
+    @Column(name = "prv_rep_codigo")
     var reparticionId: Int? = null,
 
     var transporte: Byte = 0,
