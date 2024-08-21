@@ -8,16 +8,16 @@ data class VoucherProducto(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "VPr_ID")
+    @Column(name = "vpr_id")
     var voucherProductoId: Long? = null,
 
-    @Column(name = "VPr_Vou_ID")
+    @Column(name = "vpr_vou_id")
     var voucherId: Long? = null,
 
-    @Column(name = "VPr_Prd_ID")
+    @Column(name = "vpr_prd_id")
     var productoId: Int? = null,
 
-    @Column(name = "VPr_Paxs")
+    @Column(name = "vpr_paxs")
     var cantidadPaxs: Int? = null,
 
     @OneToOne(optional = true)
