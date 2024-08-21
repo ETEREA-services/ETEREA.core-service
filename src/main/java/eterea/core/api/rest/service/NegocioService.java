@@ -20,7 +20,10 @@ public class NegocioService {
 	private NegocioRepository repository;
 
 	public Negocio findByNegocioId(Integer negocioId) {
-		return repository.findByNegocioId(negocioId).orElseThrow(() -> new NegocioException(negocioId));
+		var negocio = repository.findByNegocioId(negocioId).orElseThrow(() -> new NegocioException(negocioId));
+		negocio.setIpAddress(negocio.getDatabaseIpVpn());
+		negocio.setBackendServer(negocio.getBackendIpVpn());
+		return negocio;
 	}
 
 }

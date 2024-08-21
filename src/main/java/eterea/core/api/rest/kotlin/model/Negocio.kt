@@ -41,6 +41,12 @@ data class Negocio(
     var backendPort: String = "",
     var facturaServer: String = "",
     var facturaPort: String = "",
-    var hasGateway: Byte = 0
+    var hasGateway: Byte = 0,
+
+    @Transient
+    var ipAddress: String? = null,
+
+    @Transient
+    var backendServer: String? = null
 
 ) : Auditable()
