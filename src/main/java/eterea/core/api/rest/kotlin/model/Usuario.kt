@@ -13,25 +13,25 @@ data class Usuario(
     @Column(name = "nombre")
     var login: String? = null,
 
-    @Column(name = "Usu_Descripcion")
+    @Column(name = "usu_descripcion")
     var descripcion: String? = null,
 
-    @Column(name = "Usu_Password")
+    @Column(name = "usu_password")
     var password: String? = null,
 
-    @Column(name = "Usu_Correo")
+    @Column(name = "usu_correo")
     var email: String? = null,
 
-    @Column(name = "Usu_Nivel")
+    @Column(name = "usu_nivel")
     var nivel: Int = 0,
 
-    @Column(name = "Usu_PIN")
+    @Column(name = "usu_pin")
     var pin: String? = null,
 
-    @Column(name = "Usu_CierRecType")
+    @Column(name = "usu_cierrectype")
     var cierreRecipientType: String? = null,
 
-    @Column(name = "Usu_ConsRecType")
+    @Column(name = "usu_consrectype")
     var consolidadoRecipientType: String? = null,
 
     @Column(name = "clave")
