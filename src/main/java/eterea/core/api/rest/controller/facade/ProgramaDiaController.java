@@ -60,7 +60,7 @@ public class ProgramaDiaController {
         }
     }
 
-    @Scheduled(cron = "0 30 * * * *")
+//    @Scheduled(cron = "0 30 * * * *")
     @GetMapping("/importManyCompletedFromWeb")
     public ResponseEntity<Void> importManyCompletedFromWeb() {
         service.importManyCompletedFromWeb();
