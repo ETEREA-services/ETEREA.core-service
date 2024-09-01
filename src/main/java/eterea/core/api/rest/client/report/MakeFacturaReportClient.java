@@ -1,4 +1,4 @@
-package eterea.core.api.rest.client;
+package eterea.core.api.rest.client.report;
 
 import jakarta.mail.MessagingException;
 import org.springframework.cloud.openfeign.FeignClient;
