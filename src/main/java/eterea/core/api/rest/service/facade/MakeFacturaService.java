@@ -2,7 +2,7 @@ package eterea.core.api.rest.service.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import eterea.core.api.rest.client.MakeFacturaReportClient;
+import eterea.core.api.rest.client.report.MakeFacturaReportClient;
 import eterea.core.api.rest.kotlin.extern.OrderNote;
 import eterea.core.api.rest.kotlin.model.*;
 import eterea.core.api.rest.kotlin.model.dto.FacturacionDto;
@@ -206,7 +206,7 @@ public class MakeFacturaService {
         }
 
         try {
-            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto, empresa.getNegocioId());
+            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto);
             try {
                 log.debug("facturacionDto (after)={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDto));
             } catch (JsonProcessingException e) {
