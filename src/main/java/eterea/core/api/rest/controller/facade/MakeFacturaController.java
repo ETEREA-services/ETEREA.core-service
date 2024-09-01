@@ -16,9 +16,9 @@ public class MakeFacturaController {
         this.facturacionElectronicaService = facturacionElectronicaService;
     }
 
-    @PostMapping("/afip/make/{negocioId}")
-    public ResponseEntity<FacturacionDto> makeFactura(@RequestBody FacturacionDto facturacionDto, @PathVariable Integer negocioId) {
-        return new ResponseEntity<>(facturacionElectronicaService.makeFactura(facturacionDto, negocioId), HttpStatus.OK);
+    @PostMapping("/afip/make")
+    public ResponseEntity<FacturacionDto> makeFactura(@RequestBody FacturacionDto facturacionDto) {
+        return new ResponseEntity<>(facturacionElectronicaService.makeFactura(facturacionDto), HttpStatus.OK);
     }
 
 }
