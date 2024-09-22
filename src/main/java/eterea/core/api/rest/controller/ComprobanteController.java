@@ -6,7 +6,6 @@ package eterea.core.api.rest.controller;
 import java.util.List;
 
 import eterea.core.api.rest.kotlin.model.Comprobante;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,6 @@ public class ComprobanteController {
 
 	private final ComprobanteService service;
 
-	@Autowired
 	public ComprobanteController(ComprobanteService service) {
 		this.service = service;
 	}
@@ -34,12 +32,17 @@ public class ComprobanteController {
 	@GetMapping("/modulo/{modulo}/{debita}/{comprobanteId}")
 	public ResponseEntity<List<Comprobante>> findAllByModulo(@PathVariable Integer modulo, @PathVariable Byte debita,
 															 @PathVariable Integer comprobanteId) {
-		return new ResponseEntity<List<Comprobante>>(service.findAllByModulo(modulo, debita, comprobanteId),
+		return new ResponseEntity<>(service.findAllByModulo(modulo, debita, comprobanteId),
 				HttpStatus.OK);
+	}
+
+	@GetMapping("/disponibles")
+	public ResponseEntity<List<Integer>> findAllDisponibles() {
+		return new ResponseEntity<>(service.findAllDisponibles(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{comprobanteId}")
 	public ResponseEntity<Comprobante> findByComprobanteId(@PathVariable Integer comprobanteId) {
-		return new ResponseEntity<Comprobante>(service.findByComprobanteId(comprobanteId), HttpStatus.OK);
+		return new ResponseEntity<>(service.findByComprobanteId(comprobanteId), HttpStatus.OK);
 	}
 }
