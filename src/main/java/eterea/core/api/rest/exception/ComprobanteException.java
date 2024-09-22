@@ -8,10 +8,10 @@ package eterea.core.api.rest.exception;
  *
  */
 public class ComprobanteException extends RuntimeException {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5757903343280334045L;
+
+	public ComprobanteException() {
+		super("Cannot find Comprobante");
+	}
 
 	public ComprobanteException(Integer comprobanteId) {
 		super("Cannot find Comprobante " + comprobanteId);
