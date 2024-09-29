@@ -11,7 +11,6 @@ import eterea.core.api.rest.kotlin.model.Articulo;
 import eterea.core.api.rest.kotlin.model.ProductoArticulo;
 import eterea.core.api.rest.kotlin.model.VoucherProducto;
 import eterea.core.api.rest.kotlin.repository.ArticuloRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,7 +24,6 @@ public class ArticuloService {
 
 	private final ProductoArticuloService productoArticuloService;
 
-	@Autowired
 	public ArticuloService(ArticuloRepository repository, ProductoArticuloService productoArticuloService) {
 		this.repository = repository;
 		this.productoArticuloService = productoArticuloService;
