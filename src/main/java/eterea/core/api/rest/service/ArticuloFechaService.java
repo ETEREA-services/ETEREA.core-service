@@ -8,7 +8,6 @@ import java.time.OffsetDateTime;
 import eterea.core.api.rest.exception.ArticuloFechaException;
 import eterea.core.api.rest.kotlin.model.ArticuloFecha;
 import eterea.core.api.rest.kotlin.repository.ArticuloFechaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,7 +19,6 @@ public class ArticuloFechaService {
 
 	private final ArticuloFechaRepository repository;
 
-	@Autowired
 	public ArticuloFechaService(ArticuloFechaRepository repository) {
 		this.repository = repository;
 	}

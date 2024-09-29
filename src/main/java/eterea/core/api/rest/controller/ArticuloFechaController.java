@@ -6,7 +6,6 @@ package eterea.core.api.rest.controller;
 import java.time.OffsetDateTime;
 
 import eterea.core.api.rest.kotlin.model.ArticuloFecha;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,6 @@ public class ArticuloFechaController {
 
 	private final ArticuloFechaService service;
 
-	@Autowired
 	public ArticuloFechaController(ArticuloFechaService service) {
 		this.service = service;
 	}
