@@ -11,7 +11,7 @@ data class Proveedor(
 
     @Id
     @Column(name = "codigo")
-    var proveedorId: Int? = null,
+    var proveedorId: Long? = null,
 
     @Column(name = "razon")
     var razonSocial: String = "",
