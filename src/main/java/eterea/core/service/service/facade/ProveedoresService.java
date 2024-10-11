@@ -5,10 +5,8 @@ import eterea.core.service.service.FacturaRendicionDetalleService;
 import eterea.core.service.service.ProveedorMovimientoService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProveedoresService {
@@ -33,7 +31,11 @@ public class ProveedoresService {
                 proveedorMovimientos.remove(detalle.comprobanteKey())
         );
 
-        return new ArrayList<>(proveedorMovimientos.values());
+        // Convertimos a lista y ordenamos por fechaComprobante
+        return proveedorMovimientos.values()
+                .stream()
+                .sorted(Comparator.comparing(ProveedorMovimiento::getFechaComprobante, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
     }
 
 }
