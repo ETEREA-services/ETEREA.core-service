@@ -34,6 +34,16 @@ public class ClienteMovimientoController {
 		return new ResponseEntity<>(service.findTop200Asociables(clienteId), HttpStatus.OK);
 	}
 
+	@GetMapping("/findAllByReservaIds/{reservaIds}")
+	public ResponseEntity<List<ClienteMovimiento>> findAllByReservaIds(@PathVariable List<Long> reservaIds) {
+		return new ResponseEntity<>(service.findAllByReservaIds(reservaIds), HttpStatus.OK);
+	}
+
+	@GetMapping("/reserva/{reservaId}")
+	public ResponseEntity<List<ClienteMovimiento>> findAllByReservaId(@PathVariable Long reservaId) {
+		return new ResponseEntity<>(service.findAllByReservaId(reservaId), HttpStatus.OK);
+	}
+
 	@GetMapping("/last/{puntoVenta}/{letraComprobante}")
 	public ResponseEntity<Long> nextNumeroFactura(@PathVariable Integer puntoVenta,
 			@PathVariable String letraComprobante) {

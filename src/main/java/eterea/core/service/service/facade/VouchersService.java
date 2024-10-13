@@ -1,20 +1,8 @@
-/**
- *
- */
 package eterea.core.service.service.facade;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.exception.ClienteException;
-import eterea.core.service.exception.ProgramaDiaException;
 import eterea.core.service.kotlin.exception.FeriadoException;
 import eterea.core.service.kotlin.exception.ProductoSkuException;
 import eterea.core.service.kotlin.exception.VoucherException;
@@ -28,127 +16,43 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-/**
- * @author daniel
- */
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Service
 @Slf4j
-public class ProgramaDiaService {
-
-    private final VoucherService voucherService;
-
-    private final ReservaOrigenService reservaOrigenService;
-
-    private final ClienteMovimientoService clienteMovimientoService;
-
-    private final ClienteService clienteService;
+public class VouchersService {
 
     private final EmpresaService empresaService;
-
     private final NegocioService negocioService;
-
-    private final FeriadoService feriadoService;
-
-    private final ProductoSkuService productoSkuService;
-
-    private final VoucherProductoService voucherProductoService;
-
-    private final ReservaService reservaService;
-
-    private final MakeFacturaService makeFacturaService;
-
-    private final ReservaContextService reservaContextService;
-
     private final OrderNoteService orderNoteService;
+    private final VoucherService voucherService;
+    private final ClienteService clienteService;
+    private final FeriadoService feriadoService;
+    private final ProductoSkuService productoSkuService;
+    private final ReservaContextService reservaContextService;
+    private final VoucherProductoService voucherProductoService;
+    private final ReservaService reservaService;
 
     private record PersonType(int cantidad, String descripcion) {
 
     }
 
-    public ProgramaDiaService(VoucherService voucherService, ReservaOrigenService reservaOrigenService, ClienteMovimientoService clienteMovimientoService, ClienteService clienteService, EmpresaService empresaService, NegocioService negocioService, FeriadoService feriadoService, ProductoSkuService productoSkuService, VoucherProductoService voucherProductoService, ReservaService reservaService, MakeFacturaService makeFacturaService, ReservaContextService reservaContextService, OrderNoteService orderNoteService) {
-        this.voucherService = voucherService;
-        this.reservaOrigenService = reservaOrigenService;
-        this.clienteMovimientoService = clienteMovimientoService;
-        this.clienteService = clienteService;
+    public VouchersService(EmpresaService empresaService, NegocioService negocioService, OrderNoteService orderNoteService, VoucherService voucherService, ClienteService clienteService, FeriadoService feriadoService, ProductoSkuService productoSkuService, ReservaContextService reservaContextService, VoucherProductoService voucherProductoService, ReservaService reservaService) {
         this.empresaService = empresaService;
         this.negocioService = negocioService;
+        this.orderNoteService = orderNoteService;
+        this.voucherService = voucherService;
+        this.clienteService = clienteService;
         this.feriadoService = feriadoService;
         this.productoSkuService = productoSkuService;
+        this.reservaContextService = reservaContextService;
         this.voucherProductoService = voucherProductoService;
         this.reservaService = reservaService;
-        this.makeFacturaService = makeFacturaService;
-        this.reservaContextService = reservaContextService;
-        this.orderNoteService = orderNoteService;
-    }
-
-    public ProgramaDiaDto findAllByFechaServicio(OffsetDateTime fechaServicio, Boolean soloConfirmados,
-                                                 Boolean porNombrePax) {
-        List<Voucher> vouchers = voucherService.findAllByFechaServicio(fechaServicio, soloConfirmados, porNombrePax);
-        List<Long> reservaIds = vouchers.stream().map(Voucher::getReservaId)
-                .filter(reservaId -> reservaId > 0).collect(Collectors.toList());
-        List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findAllByReservaIds(reservaIds);
-        return new ProgramaDiaDto.Builder()
-                .vouchers(vouchers)
-                .reservaOrigens(reservaOrigenService.findAll())
-                .clienteMovimientos(clienteMovimientos)
-                .build();
-    }
-
-    public ProgramaDiaDto findByVoucherId(Long voucherId) {
-        Voucher voucher = null;
-        try {
-            voucher = voucherService.findByVoucherId(voucherId);
-        } catch (VoucherException e) {
-            throw new ProgramaDiaException(voucherId);
-        }
-        List<Voucher> vouchers = new ArrayList<>();
-        vouchers.add(voucher);
-        ReservaOrigen reservaOrigen = reservaOrigenService.findByReservaOrigenId(voucher.getReservaOrigenId());
-        List<ReservaOrigen> reservaOrigens = new ArrayList<>();
-        reservaOrigens.add(reservaOrigen);
-        List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService
-                .findAllByReservaId(voucher.getReservaId());
-        return new ProgramaDiaDto.Builder()
-                .vouchers(vouchers)
-                .reservaOrigens(reservaOrigens)
-                .clienteMovimientos(clienteMovimientos)
-                .build();
-    }
-
-    public void importManyCompletedFromWeb() {
-        // Si el negocio no es agencia no hago nada
-        if (empresaService.findTop().getNegocioId() != 54) {
-            return;
-        }
-        // Importa las reservas web e intenta facturarlas
-        for (OrderNote orderNote : orderNoteService.findAllCompletedByLastTwoDays()) {
-            log.debug("importing order_note={}", orderNote.getOrderNumberId());
-            ProgramaDiaDto programaDiaDTO = importOneFromWeb(orderNote.getOrderNumberId());
-            try {
-                log.info("imported result={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(programaDiaDTO));
-            } catch (JsonProcessingException e) {
-                log.debug("something went wrong with order_note={}", orderNote.getOrderNumberId());
-            }
-            if (programaDiaDTO.getVouchers() != null) {
-                Voucher voucher = programaDiaDTO.getVouchers().getFirst();
-                boolean isFacturado = makeFacturaService.facturaReserva(voucher.getReservaId(), 853);
-                if (!isFacturado) {
-                    log.debug("error facturando reserva={}", voucher.getReservaId());
-                }
-            }
-        }
-        // Intenta facturar las reservas que quedaron sin facturar
-        for (ReservaContext reservaContext : reservaContextService.findAllByFacturacionPendiente()) {
-            try {
-                log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
-            } catch (JsonProcessingException e) {
-                log.debug("reserva_context=null");
-            }
-            boolean isFacturado = makeFacturaService.facturaReserva(reservaContext.getReservaId(), 853);
-            if (!isFacturado) {
-                log.debug("error facturando reserva={}", reservaContext.getReservaId());
-            }
-        }
     }
 
     @Transactional
@@ -356,20 +260,6 @@ public class ProgramaDiaService {
         return voucher;
     }
 
-    private Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos) {
-        Reserva reserva = reservaService.copyFromVoucher(voucher);
-        reserva.setNegocioId(empresaService.findTop().getNegocioId());
-        reserva.setUsuario("admin");
-        reserva = reservaService.add(reserva);
-
-        voucher.setReservaId(reserva.getReservaId());
-        voucher = voucherService.update(voucher, voucher.getVoucherId());
-
-        reservaService.generarReservaArticulo(reserva, voucherProductos);
-
-        return reserva;
-    }
-
     @Transactional
     public List<VoucherProducto> saveVoucherProductos(Long voucherId, List<VoucherProducto> voucherProductos) {
         voucherProductoService.deleteAllByVoucherId(voucherId);
@@ -377,6 +267,17 @@ public class ProgramaDiaService {
             voucherProducto.setVoucherId(voucherId);
         }
         return voucherProductoService.saveAll(voucherProductos);
+    }
+
+    private List<PersonType> extractPaxs(String personTypes) {
+        var types = new ArrayList<PersonType>();
+        Pattern pattern = Pattern.compile("\\((\\d+)\\)\\s+([^()]+)");
+        Matcher matcher = pattern.matcher(personTypes);
+
+        while (matcher.find()) {
+            types.add(new PersonType(Integer.parseInt(matcher.group(1)), matcher.group(2).trim()));
+        }
+        return types;
     }
 
     private String cadenaResumen(List<VoucherProducto> voucherProductos) {
@@ -393,15 +294,18 @@ public class ProgramaDiaService {
         return cadena.toString();
     }
 
-    private List<PersonType> extractPaxs(String personTypes) {
-        var types = new ArrayList<PersonType>();
-        Pattern pattern = Pattern.compile("\\((\\d+)\\)\\s+([^()]+)");
-        Matcher matcher = pattern.matcher(personTypes);
+    private Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos) {
+        Reserva reserva = reservaService.copyFromVoucher(voucher);
+        reserva.setNegocioId(empresaService.findTop().getNegocioId());
+        reserva.setUsuario("admin");
+        reserva = reservaService.add(reserva);
 
-        while (matcher.find()) {
-            types.add(new PersonType(Integer.parseInt(matcher.group(1)), matcher.group(2).trim()));
-        }
-        return types;
+        voucher.setReservaId(reserva.getReservaId());
+        voucher = voucherService.update(voucher, voucher.getVoucherId());
+
+        reservaService.generarReservaArticulo(reserva, voucherProductos);
+
+        return reserva;
     }
 
 }

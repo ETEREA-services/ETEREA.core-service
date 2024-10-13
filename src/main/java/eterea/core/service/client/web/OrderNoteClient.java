@@ -1,4 +1,4 @@
-package eterea.core.service.client;
+package eterea.core.service.client.web;
 
 import eterea.core.service.kotlin.extern.OrderNote;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "import-service/orderNote")
+@FeignClient("import-service/orderNote")
 public interface OrderNoteClient {
 
     @GetMapping("/{orderNumberId}")
