@@ -1,6 +1,6 @@
 package eterea.core.service.service.extern;
 
-import eterea.core.service.client.OrderNoteClient;
+import eterea.core.service.client.web.OrderNoteClient;
 import eterea.core.service.kotlin.extern.OrderNote;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;

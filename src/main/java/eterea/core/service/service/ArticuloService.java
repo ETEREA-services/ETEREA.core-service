@@ -62,9 +62,9 @@ public class ArticuloService {
         return articulo;
 	}
 
-	public Articulo findByAutoNumericoId(Long autoNumericoId) {
-		return Objects.requireNonNull(repository.findByAutoNumericoId(autoNumericoId))
-				.orElseThrow(() -> new ArticuloException(autoNumericoId));
+	public Articulo findByAutoNumerico(Long autoNumerico) {
+		return Objects.requireNonNull(repository.findByAutoNumericoId(autoNumerico))
+				.orElseThrow(() -> new ArticuloException(autoNumerico));
 	}
 
 	public Articulo findByMascaraBalanza(String mascaraBalanza) {
