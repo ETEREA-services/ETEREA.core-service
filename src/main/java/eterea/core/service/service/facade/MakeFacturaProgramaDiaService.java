@@ -27,7 +27,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class MakeFacturaService {
+public class MakeFacturaProgramaDiaService {
 
     private final ComprobanteService comprobanteService;
     private final ReservaService reservaService;
@@ -48,13 +48,13 @@ public class MakeFacturaService {
     private final OrderNoteService orderNoteService;
     private final MakeFacturaReportClient makeFacturaReportClient;
 
-    public MakeFacturaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService,
-                              ReservaArticuloService reservaArticuloService, ParametroService parametroService,
-                              FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService,
-                              VoucherService voucherService, ClienteMovimientoService clienteMovimientoService, ValorService valorService,
-                              ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService,
-                              RegistroCaeService registroCaeService, ClienteService clienteService, ArticuloService articuloService,
-                              ReservaContextService reservaContextService, OrderNoteService orderNoteService, MakeFacturaReportClient makeFacturaReportClient) {
+    public MakeFacturaProgramaDiaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService,
+                                         ReservaArticuloService reservaArticuloService, ParametroService parametroService,
+                                         FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService,
+                                         VoucherService voucherService, ClienteMovimientoService clienteMovimientoService, ValorService valorService,
+                                         ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService,
+                                         RegistroCaeService registroCaeService, ClienteService clienteService, ArticuloService articuloService,
+                                         ReservaContextService reservaContextService, OrderNoteService orderNoteService, MakeFacturaReportClient makeFacturaReportClient) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;

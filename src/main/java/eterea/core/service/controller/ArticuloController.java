@@ -5,6 +5,7 @@ package eterea.core.service.controller;
 
 import java.util.List;
 
+import eterea.core.service.exception.ArticuloException;
 import eterea.core.service.kotlin.model.Articulo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.service.ArticuloService;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping({"/api/core/articulo", "/articulo"})
@@ -40,17 +42,29 @@ public class ArticuloController {
     @GetMapping("/{articuloId}")
     public ResponseEntity<Articulo> findByArticuloId(@PathVariable String articuloId) {
         log.debug("Trying Articulo Nativo -> {}", articuloId);
-        return new ResponseEntity<>(service.findByArticuloId(articuloId), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(service.findByArticuloId(articuloId), HttpStatus.OK);
+        } catch (ArticuloException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @GetMapping("/autonumerico/{autonumerico}")
     public ResponseEntity<Articulo> findByAutonumerico(@PathVariable Long autonumerico) {
-        return new ResponseEntity<>(service.findByAutoNumericoId(autonumerico), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(service.findByAutoNumerico(autonumerico), HttpStatus.OK);
+        } catch (ArticuloException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
     @GetMapping("/mascaraBalanza/{mascaraBalanza}")
     public ResponseEntity<Articulo> findByMascaraBalanza(@PathVariable String mascaraBalanza) {
-        return new ResponseEntity<>(service.findByMascaraBalanza(mascaraBalanza), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(service.findByMascaraBalanza(mascaraBalanza), HttpStatus.OK);
+        } catch (ArticuloException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 
 }

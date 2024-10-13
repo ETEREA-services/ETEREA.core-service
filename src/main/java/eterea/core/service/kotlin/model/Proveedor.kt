@@ -45,6 +45,6 @@ data class Proveedor(
     @Column(name = "prv_rep_codigo")
     var reparticionId: Int? = null,
 
-    var transporte: Byte = 0,
+    var transporte: Byte = 0
 
 ) : Auditable()

@@ -5,6 +5,7 @@ package eterea.core.service.controller;
 
 import java.time.OffsetDateTime;
 
+import eterea.core.service.exception.ArticuloFechaException;
 import eterea.core.service.kotlin.model.ArticuloFecha;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.service.ArticuloFechaService;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * @author daniel
@@ -37,7 +39,11 @@ public class ArticuloFechaController {
 	@GetMapping("/unique/{articuloId}/{fecha}")
 	public ResponseEntity<ArticuloFecha> getByUnique(@PathVariable String articuloId,
 													 @PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fecha) {
-		return new ResponseEntity<>(service.findByUnique(articuloId, fecha), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(service.findByUnique(articuloId, fecha), HttpStatus.OK);
+		} catch (ArticuloFechaException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
 	}
 
 	@PostMapping("/")

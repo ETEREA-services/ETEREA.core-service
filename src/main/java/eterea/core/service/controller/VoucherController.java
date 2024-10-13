@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eterea.core.service.controller;
 
@@ -28,32 +28,41 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping({"/api/core/voucher", "/voucher"})
 public class VoucherController {
 
-	private final VoucherService service;
+    private final VoucherService service;
 
-	public VoucherController(VoucherService service) {
-		this.service = service;
-	}
+    public VoucherController(VoucherService service) {
+        this.service = service;
+    }
 
-	@GetMapping("/today/{user}")
-	public ResponseEntity<List<Voucher>> findAllByUserToday(@PathVariable String user) {
-		return new ResponseEntity<>(service.findAllByUserToday(user), HttpStatus.OK);
-	}
+    @GetMapping("/today/{user}")
+    public ResponseEntity<List<Voucher>> findAllByUserToday(@PathVariable String user) {
+        return new ResponseEntity<>(service.findAllByUserToday(user), HttpStatus.OK);
+    }
 
-	@GetMapping("/fechaServicio/{fechaServicio}/{soloConfirmados}/{porNombrePax}")
-	public ResponseEntity<List<Voucher>> findAllByFecha(
-			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaServicio,
-			@PathVariable Boolean soloConfirmados, @PathVariable Boolean porNombrePax) {
-		return new ResponseEntity<>(
-				service.findAllByFechaServicio(fechaServicio, soloConfirmados, porNombrePax), HttpStatus.OK);
-	}
+    @GetMapping("/fechaServicio/{fechaServicio}/{soloConfirmados}/{porNombrePax}")
+    public ResponseEntity<List<Voucher>> findAllByFecha(
+            @PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaServicio,
+            @PathVariable Boolean soloConfirmados, @PathVariable Boolean porNombrePax) {
+        return new ResponseEntity<>(
+                service.findAllByFechaServicio(fechaServicio, soloConfirmados, porNombrePax), HttpStatus.OK);
+    }
 
-	@GetMapping("/byNumeroVoucher/{numeroVoucher}")
-	public ResponseEntity<Voucher> findByNumeroVoucher(@PathVariable String numeroVoucher) {
-		try {
-			return new ResponseEntity<>(service.findByNumeroVoucher(numeroVoucher), HttpStatus.OK);
-		} catch (VoucherException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-		}
-	}
+    @GetMapping("/byNumeroVoucher/{numeroVoucher}")
+    public ResponseEntity<Voucher> findByNumeroVoucher(@PathVariable String numeroVoucher) {
+        try {
+            return new ResponseEntity<>(service.findByNumeroVoucher(numeroVoucher), HttpStatus.OK);
+        } catch (VoucherException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{voucherId}")
+    public ResponseEntity<Voucher> findByVoucherId(@PathVariable Long voucherId) {
+        try {
+            return new ResponseEntity<>(service.findByVoucherId(voucherId), HttpStatus.OK);
+        } catch (VoucherException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 
 }
