@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.FileNotFoundException;
 
-@FeignClient(name = "report-service/api/report/makeFactura")
+@FeignClient("report-service/api/report/makeFactura")
 public interface MakeFacturaReportClient {
 
     @GetMapping("/pdf/{clienteMovimientoId}")
