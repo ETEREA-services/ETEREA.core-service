@@ -48,4 +48,8 @@ public class ArticuloFechaService {
         return repository.findAllByArticuloIdAndFechaBetween(articuloId, fechaInicio, fechaFin);
     }
 
+    public List<ArticuloFecha> saveAll(List<ArticuloFecha> toSave) {
+        return repository.saveAll(toSave);
+    }
+
 }
