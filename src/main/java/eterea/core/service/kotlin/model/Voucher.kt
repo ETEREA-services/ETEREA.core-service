@@ -2,8 +2,8 @@ package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
-import java.sql.Time
 import java.time.OffsetDateTime
+import java.time.LocalTime
 
 @Entity
 @Table
@@ -27,7 +27,7 @@ data class Voucher(
     var fechaVencimiento: OffsetDateTime? = null,
 
     @Column(name = "vou_horavto")
-    var horaVencimiento: Time? = Time.valueOf("00:00:00"),
+    var horaVencimiento: LocalTime? = LocalTime.of(0, 0, 0),
 
     @Column(name = "vou_nombrepax")
     var nombrePax: String? = null,
@@ -134,7 +134,7 @@ data class Voucher(
         var fechaToma: OffsetDateTime? = null,
         var fechaServicio: OffsetDateTime? = null,
         var fechaVencimiento: OffsetDateTime? = null,
-        var horaVencimiento: Time? = Time.valueOf("00:00:00"),
+        var horaVencimiento: LocalTime? = LocalTime.of(0, 0, 0),
         var nombrePax: String? = null,
         var paxs: Int? = null,
         var subeEn: String = "",
@@ -172,7 +172,7 @@ data class Voucher(
         fun fechaToma(fechaToma: OffsetDateTime?) = apply { this.fechaToma = fechaToma }
         fun fechaServicio(fechaServicio: OffsetDateTime?) = apply { this.fechaServicio = fechaServicio }
         fun fechaVencimiento(fechaVencimiento: OffsetDateTime?) = apply { this.fechaVencimiento = fechaVencimiento }
-        fun horaVencimiento(horaVencimiento: Time?) = apply { this.horaVencimiento = horaVencimiento }
+        fun horaVencimiento(horaVencimiento: LocalTime?) = apply { this.horaVencimiento = horaVencimiento }
         fun nombrePax(nombrePax: String?) = apply { this.nombrePax = nombrePax }
         fun paxs(paxs: Int?) = apply { this.paxs = paxs }
         fun subeEn(subeEn: String) = apply { this.subeEn = subeEn }
