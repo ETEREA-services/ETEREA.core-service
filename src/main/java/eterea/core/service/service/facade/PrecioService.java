@@ -27,9 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PrecioService {
 
 	private final ArticuloFechaService articuloFechaService;
-
 	private final ArticuloService articuloService;
-
 	private final ProductoArticuloService productoArticuloService;
 
 	public PrecioService(ArticuloFechaService articuloFechaService, ArticuloService articuloService, ProductoArticuloService productoArticuloService) {

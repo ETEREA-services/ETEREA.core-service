@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.repository.ReservaRepository;
+import eterea.core.service.service.facade.PrecioService;
 import jakarta.transaction.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +40,19 @@ public class ReservaService {
     private final ConceptoFacturadoService conceptoFacturadoService;
     private final EmpresaService empresaService;
     private final VoucherProductoService voucherProductoService;
+    private final PrecioService precioService;
 
-    public ReservaService(ReservaRepository repository, ClienteMovimientoService clienteMovimientoService, VoucherService voucherService, ComprobanteService comprobanteService, ReservaArticuloService reservaArticuloService, ArticuloService articuloService, ArticuloMovimientoService articuloMovimientoService, ConceptoFacturadoService conceptoFacturadoService, EmpresaService empresaService, VoucherProductoService voucherProductoService) {
+    public ReservaService(ReservaRepository repository,
+                          ClienteMovimientoService clienteMovimientoService,
+                          VoucherService voucherService,
+                          ComprobanteService comprobanteService,
+                          ReservaArticuloService reservaArticuloService,
+                          ArticuloService articuloService,
+                          ArticuloMovimientoService articuloMovimientoService,
+                          ConceptoFacturadoService conceptoFacturadoService,
+                          EmpresaService empresaService,
+                          VoucherProductoService voucherProductoService,
+                          PrecioService precioService) {
         this.repository = repository;
         this.clienteMovimientoService = clienteMovimientoService;
         this.voucherService = voucherService;
@@ -51,6 +63,7 @@ public class ReservaService {
         this.conceptoFacturadoService = conceptoFacturadoService;
         this.empresaService = empresaService;
         this.voucherProductoService = voucherProductoService;
+        this.precioService = precioService;
     }
 
     public List<Reserva> findTopPendientes() {
@@ -281,12 +294,13 @@ public class ReservaService {
         // Agrego los artículos nuevos en reservaarticulo
         List<ReservaArticulo> reservaArticulos = new ArrayList<>();
         for (Articulo articulo : collectionAgregar.values()) {
+            var precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(), reserva.getFechaInServicio());
             reservaArticulos.add(new ReservaArticulo.Builder()
                     .negocioId(empresa.getNegocioId())
                     .reservaId(reserva.getReservaId())
                     .voucherId(reserva.getVoucherId())
                     .articuloId(articulo.getArticuloId())
-                    .precioUnitarioSinComision(articulo.getPrecioVentaConIva())
+                    .precioUnitarioSinComision(precioArticulo)
                     .build());
 
         }
