@@ -22,4 +22,27 @@ data class ArticuloFecha(
     var precioUsd: BigDecimal = BigDecimal.ZERO,
     var precioArs: BigDecimal = BigDecimal.ZERO
 
-) : Auditable()
+) : Auditable() {
+
+    class Builder {
+        private var articuloFechaId: Long? = null
+        private var articuloId: String = ""
+        private var fecha: OffsetDateTime? = null
+        private var precioUsd: BigDecimal = BigDecimal.ZERO
+        private var precioArs: BigDecimal = BigDecimal.ZERO
+
+        fun articuloFechaId(articuloFechaId: Long?) = apply { this.articuloFechaId = articuloFechaId }
+        fun articuloId(articuloId: String) = apply { this.articuloId = articuloId }
+        fun fecha(fecha: OffsetDateTime?) = apply { this.fecha = fecha }
+        fun precioUsd(precioUsd: BigDecimal) = apply { this.precioUsd = precioUsd }
+        fun precioArs(precioArs: BigDecimal) = apply { this.precioArs = precioArs }
+
+        fun build() = ArticuloFecha(
+            articuloFechaId = articuloFechaId,
+            articuloId = articuloId,
+            fecha = fecha,
+            precioUsd = precioUsd,
+            precioArs = precioArs
+        )
+    }
+}
