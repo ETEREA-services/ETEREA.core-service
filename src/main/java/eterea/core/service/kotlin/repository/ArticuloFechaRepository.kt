@@ -11,5 +11,10 @@ interface ArticuloFechaRepository : JpaRepository<ArticuloFecha?, Long?> {
     fun findByArticuloIdAndFecha(articuloId: String?, fecha: OffsetDateTime?): Optional<ArticuloFecha?>?
 
     fun findByArticuloFechaId(articuloFechaId: Long?): Optional<ArticuloFecha?>?
+    fun findAllByArticuloIdAndFechaBetween(
+        articuloId: String,
+        fechaInicio: OffsetDateTime,
+        fechaFin: OffsetDateTime
+    ): List<ArticuloFecha?>?
 
 }

@@ -5,12 +5,14 @@ package eterea.core.service.service.facade;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import eterea.core.service.exception.ArticuloException;
 import eterea.core.service.exception.ArticuloFechaException;
 import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.ArticuloFecha;
 import eterea.core.service.kotlin.model.ProductoArticulo;
+import eterea.core.service.kotlin.model.dto.PriceDto;
 import org.springframework.stereotype.Service;
 
 import eterea.core.service.service.ArticuloFechaService;
@@ -65,5 +67,11 @@ public class PrecioService {
 					.add(getUnitPriceByArticuloIdAndFecha(productoarticulo.getArticuloId(), fecha));
 		}
 		return preciounitario;
+	}
+
+	public Boolean setUnitPriceByPeriod(PriceDto priceDto) {
+		List<ArticuloFecha> articulofechas = articuloFechaService.findAllByArticuloIdAndPeriodo(
+				priceDto.getArticuloId(), priceDto.getFechaInicio(), priceDto.getFechaFin());
+		return false;
 	}
 }
