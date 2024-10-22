@@ -89,7 +89,11 @@ data class ArticuloMovimiento(
     var comision: BigDecimal? = BigDecimal.ZERO,
 
     @Transient
-    var total: BigDecimal? = BigDecimal.ZERO
+    var total: BigDecimal? = BigDecimal.ZERO,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "cgoartic", updatable = false, insertable = false)
+    var articulo: Articulo? = null
 
 ) : Auditable() {
 
@@ -120,6 +124,7 @@ data class ArticuloMovimiento(
         var mozoId: Long = 0
         var comision: BigDecimal? = BigDecimal.ZERO
         var total: BigDecimal? = BigDecimal.ZERO
+        var articulo: Articulo? = null
 
         fun articuloMovimientoId(articuloMovimientoId: Long?) =
             apply { this.articuloMovimientoId = articuloMovimientoId }
@@ -155,12 +160,13 @@ data class ArticuloMovimiento(
         fun mozoId(mozoId: Long) = apply { this.mozoId = mozoId }
         fun comision(comision: BigDecimal?) = apply { this.comision = comision }
         fun total(total: BigDecimal?) = apply { this.total = total }
+        fun articulo(articulo: Articulo?) = apply { this.articulo = articulo }
 
         fun build() = ArticuloMovimiento(
             articuloMovimientoId, clienteMovimientoId, stockMovimientoId, tenenciaMovimientoId, centroStockId,
             comprobanteId, item, articuloId, negocioId, cantidad, precioUnitario, precioUnitarioSinIva,
             precioUnitarioConIva, numeroCuenta, iva105, exento, fechaMovimiento, fechaFactura, nivel, cierreCajaId,
-            cierreRestaurantId, precioCompra, precioValuacion, mozoId, comision, total
+            cierreRestaurantId, precioCompra, precioValuacion, mozoId, comision, total, articulo
         )
     }
 }

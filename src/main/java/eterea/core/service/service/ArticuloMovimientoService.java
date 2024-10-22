@@ -32,8 +32,7 @@ public class ArticuloMovimientoService {
 	}
 
 	public ArticuloMovimiento add(ArticuloMovimiento articuloMovimiento) {
-		articuloMovimiento = repository.save(articuloMovimiento);
-		return articuloMovimiento;
+		return repository.save(articuloMovimiento);
 	}
 
     public List<ArticuloMovimiento> saveAll(List<ArticuloMovimiento> articuloMovimientos) {

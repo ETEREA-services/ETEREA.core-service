@@ -13,7 +13,7 @@ import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 @Entity
-@Table(name = "articulossaldoffecha", uniqueConstraints = [UniqueConstraint(columnNames = ["asf_cst_id", "asf_art_id", "asf_fecha"])])
+@Table(name = "articulossaldofecha", uniqueConstraints = [UniqueConstraint(columnNames = ["asf_cst_id", "asf_art_id", "asf_fecha"])])
 data class ArticuloSaldoFecha(
 
     @Id
@@ -41,4 +41,33 @@ data class ArticuloSaldoFecha(
     @JoinColumn(name = "asf_art_id", insertable = false, updatable = false)
     var articulo: Articulo? = null
 
-) : Auditable()
+) : Auditable() {
+
+    class Builder {
+        private var articuloSaldoFechaId: Long? = null
+        private var centroStockId: Int? = null
+        private var articuloId: String? = null
+        private var fecha: OffsetDateTime? = null
+        private var saldo: BigDecimal = BigDecimal.ZERO
+        private var centroStock: CentroStock? = null
+        private var articulo: Articulo? = null
+
+        fun articuloSaldoFechaId(articuloSaldoFechaId: Long?) = apply { this.articuloSaldoFechaId = articuloSaldoFechaId }
+        fun centroStockId(centroStockId: Int?) = apply { this.centroStockId = centroStockId }
+        fun articuloId(articuloId: String?) = apply { this.articuloId = articuloId }
+        fun fecha(fecha: OffsetDateTime?) = apply { this.fecha = fecha }
+        fun saldo(saldo: BigDecimal) = apply { this.saldo = saldo }
+        fun centroStock(centroStock: CentroStock?) = apply { this.centroStock = centroStock }
+        fun articulo(articulo: Articulo?) = apply { this.articulo = articulo }
+
+        fun build() = ArticuloSaldoFecha(
+            articuloSaldoFechaId = articuloSaldoFechaId,
+            centroStockId = centroStockId,
+            articuloId = articuloId,
+            fecha = fecha,
+            saldo = saldo,
+            centroStock = centroStock,
+            articulo = articulo
+        )
+    }
+}
