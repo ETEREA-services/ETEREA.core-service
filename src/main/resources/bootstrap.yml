@@ -59,3 +59,10 @@ logging:
       hibernate:
         SQL: ${app.logging}
       springframework.cloud.config: ${app.logging}
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 60000
