@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.math.BigDecimal
 import java.time.OffsetDateTime
+import java.util.Optional
 
 
 interface ArticuloSaldoFechaRepository : JpaRepository<ArticuloSaldoFecha, Long> {
@@ -21,5 +22,18 @@ interface ArticuloSaldoFechaRepository : JpaRepository<ArticuloSaldoFecha, Long>
         @Param("articuloId") articuloId: String?,
         @Param("tope") tope: OffsetDateTime?
     ): BigDecimal?
+
+    fun findAllByCentroStockIdAndFechaAndArticuloIdIn(
+        centroStockId: Int,
+        fechaMovimiento: OffsetDateTime,
+        articuloIds: MutableList<String>
+    ): List<ArticuloSaldoFecha>
+
+    fun findByCentroStockIdAndArticuloIdAndFecha(
+        centroStockId: Int,
+        articuloId: String,
+        fechaMovimiento: OffsetDateTime
+    ): Optional<ArticuloSaldoFecha>
+
 
 }
