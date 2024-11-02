@@ -97,9 +97,9 @@ public class VouchersService {
             return facturaUnProducto(orderNote, product, negocio);
         }
         // Factura tarde terma spa
-//        if (product.getSku().equals("tarde_termaspa")) {
-//            return facturaUnProducto(orderNote, product, negocio);
-//        }
+        if (product.getSku().equals("tarde_termaspa")) {
+            return facturaUnProducto(orderNote, product, negocio);
+        }
 //        // Factura terma spa full day
 //        if (product.getSku().equals("termaspa_fullday")) {
 //            return facturaUnProducto(orderNote, product, negocio);
