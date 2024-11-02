@@ -301,6 +301,7 @@ public class ReservaService {
                     .voucherId(reserva.getVoucherId())
                     .articuloId(articulo.getArticuloId())
                     .precioUnitarioSinComision(precioArticulo)
+                    .articulo(articulo)
                     .build());
 
         }
