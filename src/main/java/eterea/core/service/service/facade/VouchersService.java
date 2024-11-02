@@ -100,10 +100,10 @@ public class VouchersService {
         if (product.getSku().equals("tarde_termaspa")) {
             return facturaUnProducto(orderNote, product, negocio);
         }
-//        // Factura terma spa full day
-//        if (product.getSku().equals("termaspa_fullday")) {
-//            return facturaUnProducto(orderNote, product, negocio);
-//        }
+        // Factura terma spa full day
+        if (product.getSku().equals("termaspa_fullday") && product.getServiciosAdicionales().isEmpty()) {
+            return facturaUnProducto(orderNote, product, negocio);
+        }
         // Si no puede facturar el sku
         return new ProgramaDiaDto.Builder()
                 .errorMessage("Error: no corresponde a un producto facturable")
@@ -242,7 +242,6 @@ public class VouchersService {
                     .build();
         }
         // Determina paxs
-        int paxs = 0;
         int paxsMenor = 0;
         int paxsMayor = 0;
         for (PersonType personType : extractPaxs(product.getPersonTypes())) {
@@ -263,7 +262,7 @@ public class VouchersService {
                 .fechaVencimiento(product.getBookingStart())
                 .nombrePax(fullName)
                 .contacto(orderNote.getBillingPhone())
-                .paxs(paxs)
+                .paxs(paxsMayor + paxsMenor)
                 .productos(cadenaResumen(voucherProductos))
                 .tieneVoucher((byte) 1)
                 .clienteId(cliente.getClienteId())
@@ -271,7 +270,7 @@ public class VouchersService {
                 .confirmado((byte) 1)
                 .pagaCacheuta((byte) 0)
                 .hotelId(475)
-                .paxsReales(paxs)
+                .paxsReales(paxsMayor + paxsMenor)
                 .proveedorId(130)
                 .numeroVoucher(String.valueOf(orderNote.getOrderNumberId()))
                 .usuario("admin")
