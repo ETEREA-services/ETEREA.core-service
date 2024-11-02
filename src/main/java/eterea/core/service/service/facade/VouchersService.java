@@ -85,41 +85,108 @@ public class VouchersService {
                     .errorMessage("Error: reserva sin productos")
                     .build();
         }
-        // Verifica  (por ahora) que sea sólo un sku=parque_termal
+        // Verifica (por ahora) que sea un producto sin adicionales
         if (orderNote.getProducts().size() > 1) {
             return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: más de un producto en la reserva")
                     .build();
         }
         Product product = orderNote.getProducts().getFirst();
-        if (!product.getSku().equals("parque_termal")) {
-            return new ProgramaDiaDto.Builder()
-                    .errorMessage("Error: producto no corresponde a parque_termal")
-                    .build();
+        // Factura parque termal
+        if (product.getSku().equals("parque_termal")) {
+            return facturaUnProducto(orderNote, product, negocio);
         }
-        // Verifica cliente
+        // Factura tarde terma spa
+//        if (product.getSku().equals("tarde_termaspa")) {
+//            return facturaUnProducto(orderNote, product, negocio);
+//        }
+//        // Factura terma spa full day
+//        if (product.getSku().equals("termaspa_fullday")) {
+//            return facturaUnProducto(orderNote, product, negocio);
+//        }
+        // Si no puede facturar el sku
+        return new ProgramaDiaDto.Builder()
+                .errorMessage("Error: no corresponde a un producto facturable")
+                .build();
+    }
+
+    @Transactional
+    public Voucher registrarVoucher(Voucher voucher, List<VoucherProducto> voucherProductos) {
+        voucher = voucherService.save(voucher);
+        voucherProductos = saveVoucherProductos(voucher.getVoucherId(), voucherProductos);
+        voucher.setProductos(cadenaResumen(voucherProductos));
+        voucher = voucherService.save(voucher);
+
+        if (voucher.getReservaId() == null) {
+            Reserva reserva = generarReserva(voucher, voucherProductos);
+            voucher.setReservaId(reserva.getReservaId());
+        }
+
+        ReservaContext reservaContext = new ReservaContext.Builder()
+                .reservaId(voucher.getReservaId())
+                .voucherId(voucher.getVoucherId())
+                .orderNumberId(Long.valueOf(voucher.getNumeroVoucher()))
+                .facturaPendiente((byte) 1)
+                .envioPendiente((byte) 1)
+                .build();
+        reservaContextService.add(reservaContext);
+
+        return voucher;
+    }
+
+    @Transactional
+    public List<VoucherProducto> saveVoucherProductos(Long voucherId, List<VoucherProducto> voucherProductos) {
+        voucherProductoService.deleteAllByVoucherId(voucherId);
+        for (var voucherProducto : voucherProductos) {
+            voucherProducto.setVoucherId(voucherId);
+        }
+        return voucherProductoService.saveAll(voucherProductos);
+    }
+
+    private List<PersonType> extractPaxs(String personTypes) {
+        var types = new ArrayList<PersonType>();
+        Pattern pattern = Pattern.compile("\\((\\d+)\\)\\s+([^()]+)");
+        Matcher matcher = pattern.matcher(personTypes);
+
+        while (matcher.find()) {
+            types.add(new PersonType(Integer.parseInt(matcher.group(1)), matcher.group(2).trim()));
+        }
+        return types;
+    }
+
+    private String cadenaResumen(List<VoucherProducto> voucherProductos) {
+        StringBuilder cadena = new StringBuilder();
+        boolean primero = true;
+        for (var voucherProducto : voucherProductos) {
+            if (!primero) {
+                cadena.append(" + ");
+            }
+            cadena.append(voucherProducto.getProducto().getNombre()).append(" x ").append(voucherProducto.getCantidadPaxs());
+
+            primero = false;
+        }
+        return cadena.toString();
+    }
+
+    @Transactional
+    public Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos) {
+        Reserva reserva = reservaService.copyFromVoucher(voucher);
+        reserva.setNegocioId(empresaService.findTop().getNegocioId());
+        reserva.setUsuario("admin");
+        reserva = reservaService.add(reserva);
+
+        voucher.setReservaId(reserva.getReservaId());
+        voucher = voucherService.update(voucher, voucher.getVoucherId());
+
+        reservaService.generarReservaArticulo(reserva, voucherProductos);
+
+        return reserva;
+    }
+
+    @Transactional
+    public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Product product, Negocio negocio) {
         String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
-        Cliente cliente = null;
-        try {
-            cliente = clienteService.findByNumeroDocumento(orderNote.getBillingDniPasaporte());
-        } catch (ClienteException e) {
-            Long clienteId = 1 + clienteService.findLast().getClienteId();
-            cliente = clienteService.add(new Cliente.Builder()
-                    .clienteId(clienteId)
-                    .nombre(fullName)
-                    .negocioId(negocio.getNegocioId())
-                    .razonSocial(fullName)
-                    .nombreFantasia(fullName)
-                    .domicilio(orderNote.getBillingAddress())
-                    .telefono(orderNote.getBillingPhone())
-                    .email(orderNote.getBillingEmail())
-                    .numeroMovil(orderNote.getBillingPhone())
-                    .posicionIva(2)
-                    .numeroDocumento(orderNote.getBillingDniPasaporte())
-                    .nacionalidad(orderNote.getBillingCountry())
-                    .clienteCategoriaId(0)
-                    .build());
-        }
+        var cliente = determinaCliente(orderNote, fullName, negocio);
         OffsetDateTime fechaServicio = product.getBookingStart();
         byte lunes = 0;
         byte martes = 0;
@@ -187,23 +254,8 @@ public class VouchersService {
                 paxsMayor = personType.cantidad();
             }
         }
-        var voucherProductos = new ArrayList<VoucherProducto>();
-        if (paxsMayor > 0) {
-            voucherProductos.add(new VoucherProducto.Builder()
-                    .productoId(productoPaxMayor.getProductoId())
-                    .cantidadPaxs(paxsMayor)
-                    .producto(productoPaxMayor)
-                    .build());
-            paxs += paxsMayor;
-        }
-        if (paxsMenor > 0) {
-            voucherProductos.add(new VoucherProducto.Builder()
-                    .productoId(productoPaxMenor.getProductoId())
-                    .cantidadPaxs(paxsMenor)
-                    .producto(productoPaxMenor)
-                    .build());
-            paxs += paxsMenor;
-        }
+        // Determina productos
+        var voucherProductos = determinaProductos(paxsMayor, paxsMenor, productoPaxMayor, productoPaxMenor);
         //
         Voucher voucher = new Voucher.Builder()
                 .fechaToma(orderNote.getCompletedDate())
@@ -221,7 +273,7 @@ public class VouchersService {
                 .hotelId(475)
                 .paxsReales(paxs)
                 .proveedorId(130)
-                .numeroVoucher(String.valueOf(orderNumberId))
+                .numeroVoucher(String.valueOf(orderNote.getOrderNumberId()))
                 .usuario("admin")
                 .reservaOrigenId(3)
                 .ventaInternet((byte) 1)
@@ -234,78 +286,51 @@ public class VouchersService {
                 .vouchers(Collections.singletonList(voucher))
                 .errorMessage("")
                 .build();
+
+    }
+
+    private List<VoucherProducto> determinaProductos(int paxsMayor, int paxsMenor, Producto productoPaxMayor, Producto productoPaxMenor) {
+        var voucherProductos = new ArrayList<VoucherProducto>();
+        if (paxsMayor > 0) {
+            voucherProductos.add(new VoucherProducto.Builder()
+                    .productoId(productoPaxMayor.getProductoId())
+                    .cantidadPaxs(paxsMayor)
+                    .producto(productoPaxMayor)
+                    .build());
+        }
+        if (paxsMenor > 0) {
+            voucherProductos.add(new VoucherProducto.Builder()
+                    .productoId(productoPaxMenor.getProductoId())
+                    .cantidadPaxs(paxsMenor)
+                    .producto(productoPaxMenor)
+                    .build());
+        }
+        return voucherProductos;
     }
 
     @Transactional
-    public Voucher registrarVoucher(Voucher voucher, List<VoucherProducto> voucherProductos) {
-        voucher = voucherService.save(voucher);
-        voucherProductos = saveVoucherProductos(voucher.getVoucherId(), voucherProductos);
-        voucher.setProductos(cadenaResumen(voucherProductos));
-        voucher = voucherService.save(voucher);
-
-        if (voucher.getReservaId() == null) {
-            Reserva reserva = generarReserva(voucher, voucherProductos);
-            voucher.setReservaId(reserva.getReservaId());
+    public Cliente determinaCliente(OrderNote orderNote, String fullName, Negocio negocio) {
+        // Verifica cliente
+        try {
+            return clienteService.findByNumeroDocumento(orderNote.getBillingDniPasaporte());
+        } catch (ClienteException e) {
+            Long clienteId = 1 + clienteService.findLast().getClienteId();
+            return clienteService.add(new Cliente.Builder()
+                    .clienteId(clienteId)
+                    .nombre(fullName)
+                    .negocioId(negocio.getNegocioId())
+                    .razonSocial(fullName)
+                    .nombreFantasia(fullName)
+                    .domicilio(orderNote.getBillingAddress())
+                    .telefono(orderNote.getBillingPhone())
+                    .email(orderNote.getBillingEmail())
+                    .numeroMovil(orderNote.getBillingPhone())
+                    .posicionIva(2)
+                    .numeroDocumento(orderNote.getBillingDniPasaporte())
+                    .nacionalidad(orderNote.getBillingCountry())
+                    .clienteCategoriaId(0)
+                    .build());
         }
-
-        ReservaContext reservaContext = new ReservaContext.Builder()
-                .reservaId(voucher.getReservaId())
-                .voucherId(voucher.getVoucherId())
-                .orderNumberId(Long.valueOf(voucher.getNumeroVoucher()))
-                .facturaPendiente((byte) 1)
-                .envioPendiente((byte) 1)
-                .build();
-        reservaContextService.add(reservaContext);
-
-        return voucher;
-    }
-
-    @Transactional
-    public List<VoucherProducto> saveVoucherProductos(Long voucherId, List<VoucherProducto> voucherProductos) {
-        voucherProductoService.deleteAllByVoucherId(voucherId);
-        for (var voucherProducto : voucherProductos) {
-            voucherProducto.setVoucherId(voucherId);
-        }
-        return voucherProductoService.saveAll(voucherProductos);
-    }
-
-    private List<PersonType> extractPaxs(String personTypes) {
-        var types = new ArrayList<PersonType>();
-        Pattern pattern = Pattern.compile("\\((\\d+)\\)\\s+([^()]+)");
-        Matcher matcher = pattern.matcher(personTypes);
-
-        while (matcher.find()) {
-            types.add(new PersonType(Integer.parseInt(matcher.group(1)), matcher.group(2).trim()));
-        }
-        return types;
-    }
-
-    private String cadenaResumen(List<VoucherProducto> voucherProductos) {
-        StringBuilder cadena = new StringBuilder();
-        boolean primero = true;
-        for (var voucherProducto : voucherProductos) {
-            if (!primero) {
-                cadena.append(" + ");
-            }
-            cadena.append(voucherProducto.getProducto().getNombre()).append(" x ").append(voucherProducto.getCantidadPaxs());
-
-            primero = false;
-        }
-        return cadena.toString();
-    }
-
-    private Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos) {
-        Reserva reserva = reservaService.copyFromVoucher(voucher);
-        reserva.setNegocioId(empresaService.findTop().getNegocioId());
-        reserva.setUsuario("admin");
-        reserva = reservaService.add(reserva);
-
-        voucher.setReservaId(reserva.getReservaId());
-        voucher = voucherService.update(voucher, voucher.getVoucherId());
-
-        reservaService.generarReservaArticulo(reserva, voucherProductos);
-
-        return reserva;
     }
 
 }
