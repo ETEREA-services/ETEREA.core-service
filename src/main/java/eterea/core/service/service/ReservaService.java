@@ -324,8 +324,11 @@ public class ReservaService {
         int contador = 0;
         for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByVoucherId(reservaId, voucherId)) {
             contador++;
-            VoucherProducto voucherProducto = voucherProductoService.findByArticuloId(voucherId, reservaArticulo.getArticuloId());
-            reservaArticulo.setCantidad(voucherProducto.getCantidadPaxs());
+            var cantidadPaxs = 0;
+            for (VoucherProducto voucherProducto : voucherProductoService.findAllByArticuloId(voucherId, reservaArticulo.getArticuloId())) {
+                cantidadPaxs += voucherProducto.getCantidadPaxs();
+            }
+            reservaArticulo.setCantidad(cantidadPaxs);
 
             if (reservaArticulo.getPrecioUnitarioSinComision().compareTo(BigDecimal.ZERO) == 0) {
                 reservaArticulo.setPrecioUnitarioSinComision(reservaArticulo.getArticulo().getPrecioVentaConIva());
@@ -341,6 +344,11 @@ public class ReservaService {
             }
 
             reservaArticulo = reservaArticuloService.update(reservaArticulo, reservaArticulo.getReservaArticuloId());
+            try {
+                log.debug("reserva_articulo={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
+            } catch (JsonProcessingException e) {
+                log.debug("reserva_articulo=null");
+            }
 
         }
     }
