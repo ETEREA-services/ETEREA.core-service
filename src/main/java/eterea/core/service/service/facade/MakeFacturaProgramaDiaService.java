@@ -414,8 +414,8 @@ public class MakeFacturaProgramaDiaService {
                     .negocioId(clienteMovimiento.getNegocioId())
                     .cantidad(new BigDecimal(-1 * reservaArticulo.getCantidad()))
                     .precioUnitario(reservaArticulo.getPrecioUnitario())
-                    .precioUnitarioSinIva(reservaArticulo.getArticulo().getPrecioVentaSinIva())
-                    .precioUnitarioConIva(reservaArticulo.getArticulo().getPrecioVentaConIva())
+                    .precioUnitarioSinIva(calcularPrecioSinIva(reservaArticulo.getPrecioUnitario(), reservaArticulo.getArticulo().getIva105(), reservaArticulo.getArticulo().getExento(), parametro))
+                    .precioUnitarioConIva(reservaArticulo.getPrecioUnitario())
                     .numeroCuenta(reservaArticulo.getArticulo().getCuentaVentas())
                     .iva105(reservaArticulo.getArticulo().getIva105())
                     .exento(reservaArticulo.getArticulo().getExento())
@@ -436,6 +436,18 @@ public class MakeFacturaProgramaDiaService {
         voucher = voucherService.update(voucher, voucher.getVoucherId());
 
         return clienteMovimiento;
+    }
+
+    private BigDecimal calcularPrecioSinIva(BigDecimal precioUnitario, byte iva105, byte exento, Parametro parametro) {
+        if (exento == 1) {
+            return precioUnitario;
+        }
+        var coeficiente = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
+        if (iva105 == 1) {
+            coeficiente = parametro.getIva2().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
+        }
+        var precioUnitarioSinIva = precioUnitario.divide(BigDecimal.ONE.add(coeficiente), 5, RoundingMode.HALF_UP);
+        return precioUnitarioSinIva.setScale(2, RoundingMode.HALF_UP);
     }
 
     @Transactional
