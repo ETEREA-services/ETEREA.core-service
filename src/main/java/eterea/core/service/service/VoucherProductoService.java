@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,16 +31,17 @@ public class VoucherProductoService {
         return repository.findByVoucherProductoId(voucherProductoId).orElseThrow(() -> new VoucherProductoException(voucherProductoId));
     }
 
-    public VoucherProducto findByArticuloId(Long voucherId, String articuloId) {
+    public List<VoucherProducto> findAllByArticuloId(Long voucherId, String articuloId) {
+        List<VoucherProducto> voucherProductos = new ArrayList<>();
         for (VoucherProducto voucherProducto : findAllByVoucherId(voucherId)) {
             try {
                 productoArticuloService.findByProductoIdAndArticuloId(voucherProducto.getProductoId(), articuloId);
-                return voucherProducto;
+                voucherProductos.add(voucherProducto);
             } catch (ProductoArticuloException e) {
                 log.debug("Following");
             }
         }
-        return null;
+        return voucherProductos;
     }
 
     public VoucherProducto add(VoucherProducto voucherProducto) {
