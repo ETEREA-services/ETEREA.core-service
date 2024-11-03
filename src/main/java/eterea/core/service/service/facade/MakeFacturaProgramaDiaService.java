@@ -3,6 +3,7 @@ package eterea.core.service.service.facade;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.client.report.MakeFacturaReportClient;
+import eterea.core.service.kotlin.exception.ReservaContextException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
@@ -13,6 +14,7 @@ import eterea.core.service.tool.ToolService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -47,6 +49,7 @@ public class MakeFacturaProgramaDiaService {
     private final ReservaContextService reservaContextService;
     private final OrderNoteService orderNoteService;
     private final MakeFacturaReportClient makeFacturaReportClient;
+    private final Environment environment;
 
     public MakeFacturaProgramaDiaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService,
                                          ReservaArticuloService reservaArticuloService, ParametroService parametroService,
@@ -54,7 +57,8 @@ public class MakeFacturaProgramaDiaService {
                                          VoucherService voucherService, ClienteMovimientoService clienteMovimientoService, ValorService valorService,
                                          ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService,
                                          RegistroCaeService registroCaeService, ClienteService clienteService, ArticuloService articuloService,
-                                         ReservaContextService reservaContextService, OrderNoteService orderNoteService, MakeFacturaReportClient makeFacturaReportClient) {
+                                         ReservaContextService reservaContextService, OrderNoteService orderNoteService, MakeFacturaReportClient makeFacturaReportClient,
+                                         Environment environment) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;
@@ -73,6 +77,7 @@ public class MakeFacturaProgramaDiaService {
         this.reservaContextService = reservaContextService;
         this.orderNoteService = orderNoteService;
         this.makeFacturaReportClient = makeFacturaReportClient;
+        this.environment = environment;
     }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId) {
@@ -106,17 +111,27 @@ public class MakeFacturaProgramaDiaService {
         }
         if (reserva.getFacturada() == (byte) 1) {
             log.debug("reserva facturada={}", reserva.getReservaId());
-            var reservaContext = reservaContextService.findByReservaId(reservaId);
-            reservaContext.setFacturadoFuera((byte) 1);
-            reservaContext.setFacturaPendiente((byte) 0);
-            reservaContext.setEnvioPendiente((byte) 0);
-            reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
             try {
-                log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
-            } catch (JsonProcessingException e) {
-                log.debug("reserva_context=null");
+                var reservaContext = reservaContextService.findByReservaId(reservaId);
+                reservaContext.setFacturadoFuera((byte) 1);
+                reservaContext.setFacturaPendiente((byte) 0);
+                reservaContext.setEnvioPendiente((byte) 0);
+                reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                try {
+                    log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
+                } catch (JsonProcessingException e) {
+                    log.debug("reserva_context=null");
+                }
+            } catch (ReservaContextException e) {
+                log.debug("No hay reserva_context para esta reserva");
             }
             return false;
+        }
+        Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
+        try {
+            log.debug("voucher={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
+        } catch (JsonProcessingException e) {
+            log.debug("voucher=null");
         }
         Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
         try {
@@ -174,17 +189,35 @@ public class MakeFacturaProgramaDiaService {
         }
 
         // actualiza reserva_context
-        ReservaContext reservaContext = reservaContextService.findByVoucherId(reserva.getVoucherId());
-        reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
+        ReservaContext reservaContext = null;
+        try {
+            reservaContext = reservaContextService.findByVoucherId(reserva.getVoucherId());
+            reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
+        } catch (ReservaContextException e) {
+            log.debug("creando reserva_context");
+            reservaContext = new ReservaContext.Builder()
+                    .reservaId(reserva.getReservaId())
+                    .voucherId(reserva.getVoucherId())
+                    .orderNumberId(Long.valueOf(voucher.getNumeroVoucher()))
+                    .facturaPendiente((byte) 1)
+                    .envioPendiente((byte) 1)
+                    .build();
+            reservaContext = reservaContextService.add(reservaContext);
+        }
+        try {
+            log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
+        } catch (JsonProcessingException e) {
+            log.debug("reserva_context=null");
+        }
 
-        BigDecimal coeficienteIva1 = (parametro.getIva1().add(new BigDecimal(100))).divide(new BigDecimal(100), RoundingMode.HALF_UP);
-        BigDecimal neto21 = total21.divide(coeficienteIva1, RoundingMode.HALF_UP);
-        BigDecimal coeficienteIva2 = (parametro.getIva2().add(new BigDecimal(100))).divide(new BigDecimal(100), RoundingMode.HALF_UP);
-        BigDecimal neto105 = total105.divide(coeficienteIva2, RoundingMode.HALF_UP);
-        BigDecimal neto = neto21.add(neto105);
-        BigDecimal iva21 = neto21.multiply(parametro.getIva1()).divide(new BigDecimal(100), RoundingMode.HALF_UP);
-        BigDecimal iva105 = neto105.multiply(parametro.getIva2()).divide(new BigDecimal(100), RoundingMode.HALF_UP);
-        BigDecimal iva = iva21.add(iva105);
+        BigDecimal coeficienteIva1 = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
+        BigDecimal neto21 = total21.divide(BigDecimal.ONE.add(coeficienteIva1), 5, RoundingMode.HALF_UP);
+        BigDecimal coeficienteIva2 = parametro.getIva2().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
+        BigDecimal neto105 = total105.divide(BigDecimal.ONE.add(coeficienteIva2), 5, RoundingMode.HALF_UP);
+        BigDecimal iva21 = neto21.multiply(coeficienteIva1).setScale(5, RoundingMode.HALF_UP);
+        log.debug("total21={} - neto21={} - coeficienteIva1={} - iva21={}", total21, neto21, coeficienteIva1, iva21);
+        BigDecimal iva105 = neto105.multiply(coeficienteIva2).setScale(5, RoundingMode.HALF_UP);
+        log.debug("total105={} - neto105={} - coeficienteIva2={} - iva105={}", total105, neto105, coeficienteIva2, iva105);
 
         FacturacionDto facturacionDto = new FacturacionDto.Builder()
                 .tipoDocumento(tipoDocumento)
@@ -260,21 +293,24 @@ public class MakeFacturaProgramaDiaService {
 
         ClienteMovimiento clienteMovimiento = registraTransaccionFactura(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext);
 
-        if (clienteMovimiento.getClienteMovimientoId() != null) {
-            try {
-                log.debug("reservaContext={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
-            } catch (JsonProcessingException e) {
-                log.debug("reservaContext=null");
-            }
+        var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
+        if (enableSendEmail) {
+            if (clienteMovimiento.getClienteMovimientoId() != null) {
+                try {
+                    log.debug("reservaContext={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
+                } catch (JsonProcessingException e) {
+                    log.debug("reservaContext=null");
+                }
 
-            try {
-                reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
-                log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), "daniel.quinterospinto@gmail.com"));
-                reservaContext.setEnvioPendiente((byte) 0);
-                reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-                return true;
-            } catch (MessagingException e) {
-                reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                try {
+                    reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
+                    log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), "daniel.quinterospinto@gmail.com"));
+                    reservaContext.setEnvioPendiente((byte) 0);
+                    reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                    return true;
+                } catch (MessagingException e) {
+                    reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                }
             }
         }
 
