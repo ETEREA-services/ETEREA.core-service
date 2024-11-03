@@ -94,15 +94,19 @@ public class VouchersService {
         Product product = orderNote.getProducts().getFirst();
         // Factura parque termal
         if (product.getSku().equals("parque_termal")) {
-            return facturaUnProducto(orderNote, product, negocio);
+            return facturaUnProducto(orderNote, 130, 475, product, negocio);
         }
         // Factura tarde terma spa
         if (product.getSku().equals("tarde_termaspa")) {
-            return facturaUnProducto(orderNote, product, negocio);
+            return facturaUnProducto(orderNote, 130, 475,product, negocio);
         }
         // Factura terma spa full day
         if (product.getSku().equals("termaspa_fullday") && product.getServiciosAdicionales().isEmpty()) {
-            return facturaUnProducto(orderNote, product, negocio);
+            return facturaUnProducto(orderNote, 130, 475,product, negocio);
+        }
+        // Factura parque termal con traslado
+        if (product.getSku().equals("parque_termal_traslado") && product.getServiciosAdicionales().isEmpty()) {
+            return facturaUnProducto(orderNote, 31, 475,product, negocio);
         }
         // Si no puede facturar el sku
         return new ProgramaDiaDto.Builder()
@@ -184,7 +188,7 @@ public class VouchersService {
     }
 
     @Transactional
-    public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Product product, Negocio negocio) {
+    public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio) {
         String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
         var cliente = determinaCliente(orderNote, fullName, negocio);
         OffsetDateTime fechaServicio = product.getBookingStart();
@@ -269,14 +273,15 @@ public class VouchersService {
                 .observaciones("backend")
                 .confirmado((byte) 1)
                 .pagaCacheuta((byte) 0)
-                .hotelId(475)
+                .hotelId(hotelId)
                 .paxsReales(paxsMayor + paxsMenor)
-                .proveedorId(130)
+                .proveedorId(proveedorId)
                 .numeroVoucher(String.valueOf(orderNote.getOrderNumberId()))
                 .usuario("admin")
                 .reservaOrigenId(3)
                 .ventaInternet((byte) 1)
                 .cliente(cliente)
+                .subeEn(product.getPuntoDeEncuentro())
                 .build();
 
         voucher = registrarVoucher(voucher, voucherProductos);
