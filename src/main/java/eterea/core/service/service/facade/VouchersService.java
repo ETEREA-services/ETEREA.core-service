@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -60,7 +61,8 @@ public class VouchersService {
         Empresa empresa = empresaService.findTop();
         Negocio negocio = negocioService.findByNegocioId(empresa.getNegocioId());
         OrderNote orderNote = orderNoteService.findByOrderNumberId(orderNumberId);
-        if (!orderNote.getOrderStatus().equals("Completado")) {
+
+        if (!Arrays.asList("Completado", "Completed").contains(orderNote.getOrderStatus())) {
             return new ProgramaDiaDto.Builder()
                     .errorMessage("Error: Order Note pendiente de PAGO")
                     .build();
