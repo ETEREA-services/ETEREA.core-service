@@ -39,9 +39,7 @@ public class VouchersService {
     private final VoucherProductoService voucherProductoService;
     private final ReservaService reservaService;
 
-    private record PersonType(int cantidad, String descripcion) {
-
-    }
+    private record PersonType(int cantidad, String descripcion) {}
 
     public VouchersService(EmpresaService empresaService, NegocioService negocioService, OrderNoteService orderNoteService, VoucherService voucherService, ClienteService clienteService, FeriadoService feriadoService, ProductoSkuService productoSkuService, ReservaContextService reservaContextService, VoucherProductoService voucherProductoService, ReservaService reservaService) {
         this.empresaService = empresaService;
@@ -58,62 +56,76 @@ public class VouchersService {
 
     @Transactional
     public ProgramaDiaDto importOneFromWeb(Long orderNumberId) {
-        Empresa empresa = empresaService.findTop();
-        Negocio negocio = negocioService.findByNegocioId(empresa.getNegocioId());
-        OrderNote orderNote = orderNoteService.findByOrderNumberId(orderNumberId);
-
-        if (!Arrays.asList("Completado", "Completed").contains(orderNote.getOrderStatus())) {
-            return new ProgramaDiaDto.Builder()
-                    .errorMessage("Error: Order Note pendiente de PAGO")
-                    .build();
+        OrderNote orderNote = getOrderNoteById(orderNumberId);
+        if (orderNote == null || !isOrderCompleted(orderNote)) {
+            return createErrorResponse("Error: Order Note pendiente de PAGO");
         }
+
+        logOrderNote(orderNote);
+
+        if (isVoucherAlreadyRegistered(orderNumberId)) {
+            return createErrorResponse("Error: Programa por el Día YA registrado");
+        }
+
+        if (orderNote.getProducts().isEmpty()) {
+            return createErrorResponse("Error: reserva sin productos");
+        }
+
+        if (orderNote.getProducts().size() > 1) {
+            return createErrorResponse("Error: más de un producto en la reserva");
+        }
+
+        Product product = orderNote.getProducts().getFirst();
+        return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findTop().getNegocioId()));
+    }
+
+    private OrderNote getOrderNoteById(Long orderNumberId) {
+        return orderNoteService.findByOrderNumberId(orderNumberId);
+    }
+
+    private boolean isOrderCompleted(OrderNote orderNote) {
+        return Arrays.asList("Completado", "Completed").contains(orderNote.getOrderStatus());
+    }
+
+    private void logOrderNote(OrderNote orderNote) {
         try {
             log.debug("order_note={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(orderNote));
         } catch (JsonProcessingException e) {
             log.debug("order_note=NOT_FOUND");
         }
-        // Verifica si ya hay un programa por el día registrado para esta orderNote
+    }
+
+    private boolean isVoucherAlreadyRegistered(Long orderNumberId) {
         try {
             voucherService.findByNumeroVoucher(String.valueOf(orderNumberId));
-            return new ProgramaDiaDto.Builder()
-                    .errorMessage("Error: Programa por el Día YA registrado")
-                    .build();
+            return true;
         } catch (VoucherException e) {
-            log.debug("looks good");
+            log.debug("Voucher not found, proceeding.");
+            return false;
         }
-        // Verifica por las dudas que no tenga productos
-        if (orderNote.getProducts().isEmpty()) {
-            return new ProgramaDiaDto.Builder()
-                    .errorMessage("Error: reserva sin productos")
-                    .build();
+    }
+
+    private ProgramaDiaDto createErrorResponse(String message) {
+        return new ProgramaDiaDto.Builder().errorMessage(message).build();
+    }
+
+    private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio) {
+        switch (product.getSku()) {
+            case "parque_termal":
+            case "tarde_termaspa":
+                return facturaUnProducto(orderNote, 130, 475, product, negocio);
+            case "termaspa_fullday":
+                if (product.getServiciosAdicionales().isEmpty()) {
+                    return facturaUnProducto(orderNote, 130, 475, product, negocio);
+                }
+                break;
+            case "parque_termal_traslado":
+                if (product.getServiciosAdicionales().isEmpty()) {
+                    return facturaUnProducto(orderNote, 31, 475, product, negocio);
+                }
+                break;
         }
-        // Verifica (por ahora) que sea un producto sin adicionales
-        if (orderNote.getProducts().size() > 1) {
-            return new ProgramaDiaDto.Builder()
-                    .errorMessage("Error: más de un producto en la reserva")
-                    .build();
-        }
-        Product product = orderNote.getProducts().getFirst();
-        // Factura parque termal
-        if (product.getSku().equals("parque_termal")) {
-            return facturaUnProducto(orderNote, 130, 475, product, negocio);
-        }
-        // Factura tarde terma spa
-        if (product.getSku().equals("tarde_termaspa")) {
-            return facturaUnProducto(orderNote, 130, 475,product, negocio);
-        }
-        // Factura terma spa full day
-        if (product.getSku().equals("termaspa_fullday") && product.getServiciosAdicionales().isEmpty()) {
-            return facturaUnProducto(orderNote, 130, 475,product, negocio);
-        }
-        // Factura parque termal con traslado
-        if (product.getSku().equals("parque_termal_traslado") && product.getServiciosAdicionales().isEmpty()) {
-            return facturaUnProducto(orderNote, 31, 475,product, negocio);
-        }
-        // Si no puede facturar el sku
-        return new ProgramaDiaDto.Builder()
-                .errorMessage("Error: no corresponde a un producto facturable")
-                .build();
+        return createErrorResponse("Error: no corresponde a un producto facturable");
     }
 
     @Transactional
@@ -168,7 +180,6 @@ public class VouchersService {
                 cadena.append(" + ");
             }
             cadena.append(voucherProducto.getProducto().getNombre()).append(" x ").append(voucherProducto.getCantidadPaxs());
-
             primero = false;
         }
         return cadena.toString();
@@ -183,10 +194,19 @@ public class VouchersService {
 
         voucher.setReservaId(reserva.getReservaId());
         voucher = voucherService.update(voucher, voucher.getVoucherId());
+        logVoucher(voucher);
 
         reservaService.generarReservaArticulo(reserva, voucherProductos);
 
         return reserva;
+    }
+
+    private void logVoucher(Voucher voucher) {
+        try {
+            log.debug("Voucher -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
+        } catch (JsonProcessingException e) {
+            log.debug("Voucher error -> {}", e.getMessage());
+        }
     }
 
     @Transactional
@@ -194,62 +214,32 @@ public class VouchersService {
         String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
         var cliente = determinaCliente(orderNote, fullName, negocio);
         OffsetDateTime fechaServicio = product.getBookingStart();
-        byte lunes = 0;
-        byte martes = 0;
-        byte miercoles = 0;
-        byte jueves = 0;
-        byte viernes = 0;
-        byte sabado = 0;
-        byte domingo = 0;
+        byte[] dias = new byte[7]; // Lunes a Domingo
         byte feriado = 0;
+
         try {
             feriadoService.findByFecha(fechaServicio);
             feriado = 1;
         } catch (FeriadoException e) {
-            switch (fechaServicio.getDayOfWeek().getValue()) {
-                case 1:    // 1 Lunes
-                    lunes = 1;
-                    break;
-                case 2:
-                    martes = 1;
-                    break;
-                case 3:
-                    miercoles = 1;
-                    break;
-                case 4:
-                    jueves = 1;
-                    break;
-                case 5:
-                    viernes = 1;
-                    break;
-                case 6:
-                    sabado = 1;
-                    break;
-                case 7:
-                    domingo = 1;
-                    break;
-            }
+            dias[fechaServicio.getDayOfWeek().getValue() - 1] = 1; // Marca el día correspondiente
         }
-        // Determina productos
+
         Producto productoPaxMayor = null;
         Producto productoPaxMenor = null;
+        Producto productoPaxInfante = null;
+
         try {
-            ProductoSku productoSku = productoSkuService.findBySku(product.getSku(), lunes, martes, miercoles, jueves, viernes, sabado, domingo, feriado);
-            try {
-                log.debug("producto_sku={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(productoSku));
-            } catch (JsonProcessingException e) {
-                log.debug("producto_sku=NOT_FOUND");
-            }
+            ProductoSku productoSku = productoSkuService.findBySku(product.getSku(), dias[0], dias[1], dias[2], dias[3], dias[4], dias[5], dias[6], feriado);
             productoPaxMayor = productoSku.getProductoPaxMayor();
             productoPaxMenor = productoSku.getProductoPaxMenor();
+            productoPaxInfante = productoSku.getProductoPaxInfante();
         } catch (ProductoSkuException e) {
-            return new ProgramaDiaDto.Builder()
-                    .errorMessage("Error: SKU sin asociación de Productos")
-                    .build();
+            return createErrorResponse("Error: SKU sin asociación de Productos");
         }
-        // Determina paxs
+
         int paxsMenor = 0;
         int paxsMayor = 0;
+        int paxsInfante = 0;
         for (PersonType personType : extractPaxs(product.getPersonTypes())) {
             log.debug("personType={}", personType);
             if (personType.descripcion().contains("Niño")) {
@@ -258,10 +248,12 @@ public class VouchersService {
             if (personType.descripcion().contains("Adulto")) {
                 paxsMayor = personType.cantidad();
             }
+            if (personType.descripcion().contains("Infante")) {
+                paxsInfante = personType.cantidad();
+            }
         }
-        // Determina productos
-        var voucherProductos = determinaProductos(paxsMayor, paxsMenor, productoPaxMayor, productoPaxMenor);
-        //
+
+        var voucherProductos = determinaProductos(paxsMayor, paxsMenor, paxsInfante, productoPaxMayor, productoPaxMenor, productoPaxInfante);
         Voucher voucher = new Voucher.Builder()
                 .fechaToma(orderNote.getCompletedDate())
                 .fechaServicio(fechaServicio)
@@ -292,10 +284,9 @@ public class VouchersService {
                 .vouchers(Collections.singletonList(voucher))
                 .errorMessage("")
                 .build();
-
     }
 
-    private List<VoucherProducto> determinaProductos(int paxsMayor, int paxsMenor, Producto productoPaxMayor, Producto productoPaxMenor) {
+    private List<VoucherProducto> determinaProductos(int paxsMayor, int paxsMenor, int paxsInfante, Producto productoPaxMayor, Producto productoPaxMenor, Producto productoPaxInfante) {
         var voucherProductos = new ArrayList<VoucherProducto>();
         if (paxsMayor > 0) {
             voucherProductos.add(new VoucherProducto.Builder()
@@ -311,12 +302,27 @@ public class VouchersService {
                     .producto(productoPaxMenor)
                     .build());
         }
+        if (paxsInfante > 0) {
+            voucherProductos.add(new VoucherProducto.Builder()
+                    .productoId(productoPaxInfante.getProductoId())
+                    .cantidadPaxs(paxsInfante)
+                    .producto(productoPaxInfante)
+                    .build());
+        }
+        logVoucherProductos(voucherProductos);
         return voucherProductos;
+    }
+
+    private void logVoucherProductos(ArrayList<VoucherProducto> voucherProductos) {
+        try {
+            log.debug("VoucherProductos -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucherProductos));
+        } catch (JsonProcessingException e) {
+            log.debug("VoucherProductos - error -> {}", e.getMessage());
+        }
     }
 
     @Transactional
     public Cliente determinaCliente(OrderNote orderNote, String fullName, Negocio negocio) {
-        // Verifica cliente
         try {
             return clienteService.findByNumeroDocumento(orderNote.getBillingDniPasaporte());
         } catch (ClienteException e) {
