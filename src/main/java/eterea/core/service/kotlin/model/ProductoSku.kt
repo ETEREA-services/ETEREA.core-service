@@ -19,6 +19,7 @@ data class ProductoSku(
     var feriado: Byte = 0,
     var productoIdPaxMayor: Int? = null,
     var productoIdPaxMenor: Int? = null,
+    var productoIdPaxInfante: Int? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "productoIdPaxMayor", insertable = false, updatable = false)
@@ -26,6 +27,10 @@ data class ProductoSku(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "productoIdPaxMenor", insertable = false, updatable = false)
-    var productoPaxMenor: Producto? = null
+    var productoPaxMenor: Producto? = null,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "productoIdPaxInfante", insertable = false, updatable = false)
+    var productoPaxInfante: Producto? = null
 
 ) : Auditable()

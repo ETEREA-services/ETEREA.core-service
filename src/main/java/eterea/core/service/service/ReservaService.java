@@ -5,6 +5,7 @@ package eterea.core.service.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -301,6 +302,7 @@ public class ReservaService {
                     .voucherId(reserva.getVoucherId())
                     .articuloId(articulo.getArticuloId())
                     .precioUnitarioSinComision(precioArticulo)
+                    .articulo(articulo)
                     .build());
 
         }
@@ -322,8 +324,11 @@ public class ReservaService {
         int contador = 0;
         for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByVoucherId(reservaId, voucherId)) {
             contador++;
-            VoucherProducto voucherProducto = voucherProductoService.findByArticuloId(voucherId, reservaArticulo.getArticuloId());
-            reservaArticulo.setCantidad(voucherProducto.getCantidadPaxs());
+            var cantidadPaxs = 0;
+            for (VoucherProducto voucherProducto : voucherProductoService.findAllByArticuloId(voucherId, reservaArticulo.getArticuloId())) {
+                cantidadPaxs += voucherProducto.getCantidadPaxs();
+            }
+            reservaArticulo.setCantidad(cantidadPaxs);
 
             if (reservaArticulo.getPrecioUnitarioSinComision().compareTo(BigDecimal.ZERO) == 0) {
                 reservaArticulo.setPrecioUnitarioSinComision(reservaArticulo.getArticulo().getPrecioVentaConIva());
@@ -335,10 +340,15 @@ public class ReservaService {
             reservaArticulo.setObservaciones("");
 
             if (contador == 1 && voucher.getReservaId() > 0) {
-                reservaArticulo.setObservaciones("RVA " + voucher.getReservaId() + " " + voucher.getNombrePax() + " x " + voucher.getPaxs() + " " + voucher.getProductos() + " " + voucher.getFechaServicio());
+                reservaArticulo.setObservaciones("RVA " + voucher.getReservaId() + " " + voucher.getNombrePax() + " x " + voucher.getPaxs() + " " + voucher.getProductos() + " " + voucher.getFechaServicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             }
 
             reservaArticulo = reservaArticuloService.update(reservaArticulo, reservaArticulo.getReservaArticuloId());
+            try {
+                log.debug("reserva_articulo={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
+            } catch (JsonProcessingException e) {
+                log.debug("reserva_articulo=null");
+            }
 
         }
     }
