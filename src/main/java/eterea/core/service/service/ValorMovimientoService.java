@@ -3,15 +3,28 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.ValorMovimientoException;
 import eterea.core.service.kotlin.model.ValorMovimiento;
 import eterea.core.service.kotlin.repository.ValorMovimientoRepository;
+import eterea.core.service.model.dto.ValorMovimientoDto;
+import eterea.core.service.model.dto.ValorMovimientoDtoMapper;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class ValorMovimientoService {
 
     private final ValorMovimientoRepository repository;
+    private final ValorMovimientoDtoMapper valorMovimientoDtoMapper;
 
-    public ValorMovimientoService(ValorMovimientoRepository repository) {
+    public ValorMovimientoService(ValorMovimientoRepository repository,
+            ValorMovimientoDtoMapper valorMovimientoDtoMapper) {
         this.repository = repository;
+        this.valorMovimientoDtoMapper = valorMovimientoDtoMapper;
     }
 
     public ValorMovimiento add(ValorMovimiento valorMovimiento) {
@@ -50,4 +63,19 @@ public class ValorMovimientoService {
             return repository.save(valorMovimiento);
         }).orElseThrow(() -> new ValorMovimientoException(valorMovimientoId));
     }
+
+    public List<ValorMovimientoDto> findAllMovimientos(LocalDate desde,
+            LocalDate hasta,
+            boolean cierreCajaOnly,
+            boolean ingresosOnly) {
+        return repository
+                .findAllByFechaContableBetween(
+                        OffsetDateTime.of(desde.atTime(LocalTime.MIN), ZoneOffset.UTC),
+                        OffsetDateTime.of(hasta.atTime(LocalTime.MAX), ZoneOffset.UTC), cierreCajaOnly,
+                        ingresosOnly)
+                .stream()
+                .map(valorMovimientoDtoMapper)
+                .collect(Collectors.toList());
+    }
+
 }
