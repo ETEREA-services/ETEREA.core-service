@@ -288,21 +288,21 @@ public class VouchersService {
 
     private List<VoucherProducto> determinaProductos(int paxsMayor, int paxsMenor, int paxsInfante, Producto productoPaxMayor, Producto productoPaxMenor, Producto productoPaxInfante) {
         var voucherProductos = new ArrayList<VoucherProducto>();
-        if (paxsMayor > 0) {
+        if (paxsMayor > 0 && productoPaxMayor != null) {
             voucherProductos.add(new VoucherProducto.Builder()
                     .productoId(productoPaxMayor.getProductoId())
                     .cantidadPaxs(paxsMayor)
                     .producto(productoPaxMayor)
                     .build());
         }
-        if (paxsMenor > 0) {
+        if (paxsMenor > 0 && productoPaxMenor != null) {
             voucherProductos.add(new VoucherProducto.Builder()
                     .productoId(productoPaxMenor.getProductoId())
                     .cantidadPaxs(paxsMenor)
                     .producto(productoPaxMenor)
                     .build());
         }
-        if (paxsInfante > 0) {
+        if (paxsInfante > 0 && productoPaxInfante != null) {
             voucherProductos.add(new VoucherProducto.Builder()
                     .productoId(productoPaxInfante.getProductoId())
                     .cantidadPaxs(paxsInfante)
