@@ -70,8 +70,8 @@ public class ValorMovimientoService {
             boolean ingresosOnly) {
         return repository
                 .findAllByFechaContableBetween(
-                        OffsetDateTime.of(desde.atTime(LocalTime.MIN), ZoneOffset.ofHours(-3)),
-                        OffsetDateTime.of(hasta.atTime(LocalTime.MAX), ZoneOffset.ofHours(-3)), cierreCajaOnly,
+                        OffsetDateTime.of(desde.atTime(LocalTime.MIN), ZoneOffset.UTC),
+                        OffsetDateTime.of(hasta.atTime(LocalTime.MIN), ZoneOffset.UTC), cierreCajaOnly,
                         ingresosOnly)
                 .stream()
                 .map(valorMovimientoDtoMapper)
