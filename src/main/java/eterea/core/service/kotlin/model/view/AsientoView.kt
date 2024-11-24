@@ -10,14 +10,14 @@ import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 @Entity
-@Table(name = "vw_Asientos")
+@Table(name = "vw_asientos")
 @Immutable
 data class AsientoView(
 
     @Id
     var uniqueId: String? = null,
 
-    var negocioId: String? = null,
+    var negocioId: Int? = null,
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
     var fecha: OffsetDateTime? = null,

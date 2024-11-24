@@ -4,7 +4,6 @@ import eterea.core.service.kotlin.model.CuentaMovimiento;
 import eterea.core.service.kotlin.model.view.AsientoView;
 import eterea.core.service.service.CuentaMovimientoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -40,4 +39,9 @@ public class BalanceService {
         }
         cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);
     }
+
+    public List<AsientoView> findAsientosByFecha(Integer negocioId, OffsetDateTime fecha) {
+        return asientoViewService.findAllByNegocioIdAndFecha(negocioId, fecha);
+    }
+
 }

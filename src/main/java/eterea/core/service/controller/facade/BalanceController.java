@@ -1,8 +1,8 @@
 package eterea.core.service.controller.facade;
 
+import eterea.core.service.kotlin.model.view.AsientoView;
 import eterea.core.service.service.CuentaMovimientoService;
 import eterea.core.service.service.view.BalanceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,6 @@ public class BalanceController {
 
     private final CuentaMovimientoService cuentaMovimientoService;
 
-    @Autowired
     public BalanceController(BalanceService service, CuentaMovimientoService cuentaMovimientoService) {
         this.service = service;
         this.cuentaMovimientoService = cuentaMovimientoService;
@@ -50,6 +49,11 @@ public class BalanceController {
     public ResponseEntity<List<BigDecimal>> totalesEntreFechas(@PathVariable Long numeroCuenta, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
                                                                @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta, @PathVariable Boolean incluyeApertura, @PathVariable Boolean incluyeInflacion) {
         return new ResponseEntity<>(cuentaMovimientoService.totalesEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
+    }
+
+    @GetMapping("/asientos/{negocioId}{fecha}")
+    public ResponseEntity<List<AsientoView>> asientos(@PathVariable Integer negocioId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fecha) {
+        return new ResponseEntity<>(service.findAsientosByFecha(negocioId, fecha), HttpStatus.OK);
     }
 
 }

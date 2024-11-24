@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface IAsientoViewRepository extends JpaRepository<AsientoView, String> {
 
-    public List<AsientoView> findAllByFechaBetween(OffsetDateTime desde, OffsetDateTime hasta);
+    List<AsientoView> findAllByFechaBetween(OffsetDateTime desde, OffsetDateTime hasta);
+
+    List<AsientoView> findAllByNegocioIdAndFecha(Integer negocioId, OffsetDateTime fecha);
 
 }
