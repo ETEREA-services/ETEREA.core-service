@@ -2,7 +2,6 @@ package eterea.core.service.service.view;
 
 import eterea.core.service.kotlin.model.view.AsientoView;
 import eterea.core.service.repository.view.IAsientoViewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -21,4 +20,9 @@ public class AsientoViewService {
     public List<AsientoView> findAllDifferences(OffsetDateTime desde, OffsetDateTime hasta) {
         return repository.findAllByFechaBetween(desde, hasta).stream().filter(asiento -> asiento.getDebe().compareTo(asiento.getHaber()) != 0).collect(Collectors.toList());
     }
+
+    public List<AsientoView> findAllByNegocioIdAndFecha(Integer negocioId, OffsetDateTime fecha) {
+        return repository.findAllByNegocioIdAndFecha(negocioId, fecha);
+    }
+
 }
