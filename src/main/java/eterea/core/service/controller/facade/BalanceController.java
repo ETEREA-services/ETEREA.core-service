@@ -51,7 +51,7 @@ public class BalanceController {
         return new ResponseEntity<>(cuentaMovimientoService.totalesEntreFechas(numeroCuenta, desde, hasta, incluyeApertura, incluyeInflacion), HttpStatus.OK);
     }
 
-    @GetMapping("/asientos/{negocioId}{fecha}")
+    @GetMapping("/asientos/{negocioId}/{fecha}")
     public ResponseEntity<List<AsientoView>> asientos(@PathVariable Integer negocioId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fecha) {
         return new ResponseEntity<>(service.findAsientosByFecha(negocioId, fecha), HttpStatus.OK);
     }
