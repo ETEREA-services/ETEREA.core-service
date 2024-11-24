@@ -15,7 +15,7 @@ interface ValorMovimientoRepository : JpaRepository<ValorMovimiento, Int> {
     @Query("""
         SELECT vm
         FROM ValorMovimiento vm
-        WHERE vm.fechaContable BETWEEN :desde AND :hasta
+        WHERE vm.fechaContable >= :desde AND vm.fechaContable <= :hasta
             AND (CASE WHEN :cierreCajaOnly = TRUE
                THEN (vm.cierreCajaId != 0 AND vm.cierreCajaId IS NOT NULL)
                ELSE TRUE
