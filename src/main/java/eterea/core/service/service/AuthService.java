@@ -1,9 +1,12 @@
 package eterea.core.service.service;
 
+import org.springframework.stereotype.Service;
+
 import eterea.core.service.exception.UsuarioException;
 import eterea.core.service.repository.UsuarioRepository;
 import eterea.core.service.kotlin.model.Usuario;
 
+@Service
 public class AuthService {
    private final UsuarioRepository usuarioRepository;
 
