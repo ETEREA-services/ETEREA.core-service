@@ -52,7 +52,7 @@ public class BalanceController {
     }
 
     @GetMapping("/asientos/{negocioId}/{fecha}")
-    public ResponseEntity<List<AsientoView>> asientos(@PathVariable Integer negocioId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fecha) {
+    public ResponseEntity<List<AsientoView>> findAsientosByFecha(@PathVariable Integer negocioId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fecha) {
         return new ResponseEntity<>(service.findAsientosByFecha(negocioId, fecha), HttpStatus.OK);
     }
 
