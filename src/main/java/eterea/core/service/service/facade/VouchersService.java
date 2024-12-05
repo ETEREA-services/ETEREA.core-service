@@ -97,7 +97,7 @@ public class VouchersService {
 
     private boolean isVoucherAlreadyRegistered(Long orderNumberId) {
         try {
-            voucherService.findByNumeroVoucher(String.valueOf(orderNumberId));
+            voucherService.findByNumeroVoucherAlreadyRegistered(String.valueOf(orderNumberId));
             return true;
         } catch (VoucherException e) {
             log.debug("Voucher not found, proceeding.");
