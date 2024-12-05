@@ -4,6 +4,7 @@
 package eterea.core.service.service;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,6 +65,10 @@ public class VoucherService {
 
     public Voucher findByNumeroVoucher(String numeroVoucher) {
         return repository.findTopByNumeroVoucherContains(numeroVoucher).orElseThrow(() -> new VoucherException(numeroVoucher));
+    }
+
+    public Voucher findByNumeroVoucherAlreadyRegistered(String numeroVoucher) {
+        return repository.findTopByNumeroVoucherContainsAndFechaTomaAfter(numeroVoucher, OffsetDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)).orElseThrow(() -> new VoucherException(numeroVoucher));
     }
 
     public Voucher save(Voucher voucher) {
