@@ -17,6 +17,9 @@ interface VoucherRepository : JpaRepository<Voucher, Long> {
     fun findByReservaId(reservaId: Long?): Optional<Voucher?>?
 
     fun findByVoucherId(voucherId: Long?): Optional<Voucher?>?
+
     fun findTopByNumeroVoucherContains(numeroVoucher: String): Optional<Voucher?>?
 
+    fun findTopByNumeroVoucherContainsAndFechaTomaAfter(numeroVoucher: String, fechaToma: OffsetDateTime): Optional<Voucher?>?
+    
 }
