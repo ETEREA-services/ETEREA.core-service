@@ -16,10 +16,22 @@ public class WebConfig {
       return new WebMvcConfigurer() {
          public void addCorsMappings(@NonNull CorsRegistry registry) {
             registry.addMapping("/**")
-//                 .allowedOrigins("http://10.147.30.50:4200", "http://10.147.17.50:4200", "http://10.11.50.5:4200")
-                 .allowedOrigins("*")
-                 .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.DELETE.name())
-                 .allowedHeaders(HttpHeaders.CONTENT_TYPE, HttpHeaders.AUTHORIZATION);
+                  .allowedOrigins(
+                     "http://localhost:4200",
+                     "http://192.168.101.31",
+                     "http://10.147.17.28"
+                  )
+               //.allowedOrigins("*")
+                 .allowedMethods(
+                     HttpMethod.GET.name(),
+                     HttpMethod.POST.name(),
+                     HttpMethod.PUT.name(),
+                     HttpMethod.DELETE.name()
+                  )
+                 .allowedHeaders(
+                     HttpHeaders.CONTENT_TYPE,
+                     HttpHeaders.AUTHORIZATION
+                  );
          }
       };
    }
