@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author daniel
@@ -31,7 +32,7 @@ public class CuentaMovimientoService {
     }
 
     public CuentaMovimiento findByCuentaMovimientoId(Long cuentaMovimientoId) {
-        return repository.findByCuentaMovimientoId(cuentaMovimientoId)
+        return Objects.requireNonNull(repository.findByCuentaMovimientoId(cuentaMovimientoId))
                 .orElseThrow(() -> new CuentaMovimientoException(cuentaMovimientoId));
     }
 
@@ -83,7 +84,6 @@ public class CuentaMovimientoService {
     }
 
     public int nextOrdenContable(OffsetDateTime fechaContable) {
-
         try {
             return 1 + findLastByFecha(fechaContable).getOrden();
         } catch (CuentaMovimientoException e) {
