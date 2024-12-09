@@ -20,7 +20,6 @@ import java.util.List;
 public class BalanceController {
 
     private final BalanceService service;
-
     private final CuentaMovimientoService cuentaMovimientoService;
 
     public BalanceController(BalanceService service, CuentaMovimientoService cuentaMovimientoService) {
