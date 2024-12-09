@@ -53,22 +53,36 @@ public class ArticuloService {
 	}
 
 	public Articulo findByArticuloId(String articuloId) {
-		var articulo = repository.findByArticuloId(articuloId).orElseThrow(() -> new ArticuloException(articuloId));
-        try {
-            log.debug("Articulo -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articulo));
-        } catch (JsonProcessingException e) {
-            log.debug("Articulo error -> {}", e.getMessage());
-        }
+		log.debug("Processing findByArticuloId");
+		var articulo = Objects.requireNonNull(repository.findByArticuloId(articuloId)).orElseThrow(() -> new ArticuloException(articuloId));
+		logArticulo(articulo);
         return articulo;
 	}
 
+	private void logArticulo(Articulo articulo) {
+		try {
+			log.debug("Articulo -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articulo));
+		} catch (JsonProcessingException e) {
+			log.debug("Articulo jsonify error -> {}", e.getMessage());
+		}
+	}
+
 	public Articulo findByAutoNumerico(Long autoNumerico) {
+		log.debug("Processing findByAutoNumerico");
 		return Objects.requireNonNull(repository.findByAutoNumericoId(autoNumerico))
 				.orElseThrow(() -> new ArticuloException(autoNumerico));
 	}
 
 	public Articulo findByMascaraBalanza(String mascaraBalanza) {
+		log.debug("Processing findByMascaraBalanza");
 		return Objects.requireNonNull(repository.findByMascaraBalanza(mascaraBalanza)).orElseThrow(() -> new ArticuloException(mascaraBalanza));
 	}
 
+    public Articulo add(Articulo articulo) {
+		log.debug("Processing add");
+		articulo.setAutoNumericoId(null);
+		articulo = repository.save(articulo);
+		logArticulo(articulo);
+		return articulo;
+    }
 }

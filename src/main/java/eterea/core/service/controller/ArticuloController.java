@@ -10,10 +10,7 @@ import eterea.core.service.kotlin.model.Articulo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import eterea.core.service.service.ArticuloService;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,7 +38,7 @@ public class ArticuloController {
 
     @GetMapping("/{articuloId}")
     public ResponseEntity<Articulo> findByArticuloId(@PathVariable String articuloId) {
-        log.debug("Trying Articulo Nativo -> {}", articuloId);
+        log.debug("processing findByArticuloId -> {}", articuloId);
         try {
             return new ResponseEntity<>(service.findByArticuloId(articuloId), HttpStatus.OK);
         } catch (ArticuloException e) {
@@ -65,6 +62,11 @@ public class ArticuloController {
         } catch (ArticuloException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Articulo> add(@RequestBody Articulo articulo) {
+        return new ResponseEntity<>(service.add(articulo), HttpStatus.OK);
     }
 
 }

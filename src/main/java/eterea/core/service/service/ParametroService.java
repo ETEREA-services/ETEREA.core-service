@@ -5,6 +5,8 @@ import eterea.core.service.kotlin.model.Parametro;
 import eterea.core.service.kotlin.repository.ParametroRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class ParametroService {
 
@@ -15,6 +17,7 @@ public class ParametroService {
     }
 
     public Parametro findTop() {
-        return repository.findTopByOrderByParametroIdDesc().orElseThrow(ParametroException::new);
+        return Objects.requireNonNull(repository.findTopByOrderByParametroIdDesc()).orElseThrow(ParametroException::new);
     }
+
 }

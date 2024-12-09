@@ -10,4 +10,6 @@ interface NegocioRepository : JpaRepository<Negocio, Int> {
 
     fun findByNegocioId(negocioId: Int): Optional<Negocio?>?
 
+    fun findAllByCopyArticulo(copyArticulo: Byte): List<Negocio?>?
+
 }

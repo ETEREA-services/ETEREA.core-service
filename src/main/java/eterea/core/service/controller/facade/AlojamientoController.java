@@ -21,13 +21,16 @@ import eterea.core.service.service.facade.AlojamientoService;
 @RequestMapping({"/api/core/alojamiento", "/alojamiento"})
 public class AlojamientoController {
 
-	@Autowired
-	private AlojamientoService service;
+	private final AlojamientoService service;
+
+	public AlojamientoController(AlojamientoService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/saveHabitacion/{numero}/{paxs}/{habitacionTipoId}/{valorDefault}")
 	public ResponseEntity<Boolean> saveHabitacion(@PathVariable Integer numero, @PathVariable Integer paxs,
 			@PathVariable Integer habitacionTipoId, @PathVariable Boolean valorDefault) {
-		return new ResponseEntity<Boolean>(service.saveHabitacion(numero, paxs, habitacionTipoId, valorDefault),
+		return new ResponseEntity<>(service.saveHabitacion(numero, paxs, habitacionTipoId, valorDefault),
 				HttpStatus.OK);
 	}
 

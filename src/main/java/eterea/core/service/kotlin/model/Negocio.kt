@@ -42,6 +42,7 @@ data class Negocio(
     var facturaServer: String = "",
     var facturaPort: String = "",
     var hasGateway: Byte = 0,
+    var copyArticulo: Byte = 0,
 
     @Transient
     var ipAddress: String? = null,
