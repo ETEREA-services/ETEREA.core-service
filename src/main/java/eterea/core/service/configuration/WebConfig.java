@@ -19,7 +19,9 @@ public class WebConfig {
                   .allowedOrigins(
                      "http://localhost:4200",
                      "http://192.168.101.31",
-                     "http://10.147.17.28"
+                     "http://10.147.17.28",
+                     "http://eterea.termaliasa.com",
+                     "https://eterea.termaliasa.com"
                   )
                //.allowedOrigins("*")
                  .allowedMethods(
