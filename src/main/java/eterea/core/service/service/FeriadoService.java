@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class FeriadoService {
@@ -17,12 +18,12 @@ public class FeriadoService {
         this.repository = repository;
     }
 
-    public Feriado findByFecha(OffsetDateTime fecha) {
-        return repository.findByFecha(fecha).orElseThrow(() -> new FeriadoException(fecha));
-    }
-
     public List<Feriado> findAll() {
         return repository.findAll();
+    }
+
+    public Feriado findByFecha(OffsetDateTime fecha) {
+        return Objects.requireNonNull(repository.findByFecha(fecha)).orElseThrow(() -> new FeriadoException(fecha));
     }
 
     public Feriado save(Feriado feriado) {
@@ -30,7 +31,9 @@ public class FeriadoService {
     }
 
     public void delete(OffsetDateTime fecha) {
-        Feriado feriado = repository.findByFecha(fecha).orElseThrow(() -> new FeriadoException(fecha));
+        Feriado feriado = Objects.requireNonNull(repository.findByFecha(fecha)).orElseThrow(() -> new FeriadoException(fecha));
+        assert feriado != null;
         repository.delete(feriado);
     }
+
 }
