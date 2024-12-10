@@ -17,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +53,7 @@ public class VouchersService {
 
     @Transactional
     public ProgramaDiaDto importOneFromWeb(Long orderNumberId) {
+        log.debug("Processing importOneFromWeb");
         OrderNote orderNote = getOrderNoteById(orderNumberId);
         if (orderNote == null || !isOrderCompleted(orderNote)) {
             return createErrorResponse("Error: Order Note pendiente de PAGO");
@@ -67,7 +65,7 @@ public class VouchersService {
             return createErrorResponse("Error: Programa por el Día YA registrado");
         }
 
-        if (orderNote.getProducts().isEmpty()) {
+        if (Objects.requireNonNull(orderNote.getProducts()).isEmpty()) {
             return createErrorResponse("Error: reserva sin productos");
         }
 
@@ -76,18 +74,22 @@ public class VouchersService {
         }
 
         Product product = orderNote.getProducts().getFirst();
+        assert product != null;
         return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findTop().getNegocioId()));
     }
 
     private OrderNote getOrderNoteById(Long orderNumberId) {
+        log.debug("Processing getOrderNoteById");
         return orderNoteService.findByOrderNumberId(orderNumberId);
     }
 
     private boolean isOrderCompleted(OrderNote orderNote) {
+        log.debug("Processing isOrderCompleted");
         return Arrays.asList("Completado", "Completed").contains(orderNote.getOrderStatus());
     }
 
     private void logOrderNote(OrderNote orderNote) {
+        log.debug("Processing logOrderNote");
         try {
             log.debug("order_note={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(orderNote));
         } catch (JsonProcessingException e) {
@@ -96,6 +98,7 @@ public class VouchersService {
     }
 
     private boolean isVoucherAlreadyRegistered(Long orderNumberId) {
+        log.debug("Processing isVoucherAlreadyRegistered");
         try {
             voucherService.findByNumeroVoucherAlreadyRegistered(String.valueOf(orderNumberId));
             return true;
@@ -106,10 +109,12 @@ public class VouchersService {
     }
 
     private ProgramaDiaDto createErrorResponse(String message) {
+        log.debug("Processing createErrorResponse");
         return new ProgramaDiaDto.Builder().errorMessage(message).build();
     }
 
     private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio) {
+        log.debug("Processing processProduct");
         switch (product.getSku()) {
             case "parque_termal":
             case "tarde_termaspa":
@@ -130,6 +135,7 @@ public class VouchersService {
 
     @Transactional
     public Voucher registrarVoucher(Voucher voucher, List<VoucherProducto> voucherProductos) {
+        log.debug("Processing registrarVoucher");
         voucher = voucherService.save(voucher);
         voucherProductos = saveVoucherProductos(voucher.getVoucherId(), voucherProductos);
         voucher.setProductos(cadenaResumen(voucherProductos));
@@ -154,6 +160,7 @@ public class VouchersService {
 
     @Transactional
     public List<VoucherProducto> saveVoucherProductos(Long voucherId, List<VoucherProducto> voucherProductos) {
+        log.debug("Processing saveVoucherProductos");
         voucherProductoService.deleteAllByVoucherId(voucherId);
         for (var voucherProducto : voucherProductos) {
             voucherProducto.setVoucherId(voucherId);
@@ -162,6 +169,7 @@ public class VouchersService {
     }
 
     private List<PersonType> extractPaxs(String personTypes) {
+        log.debug("Processing extractPaxs");
         var types = new ArrayList<PersonType>();
         Pattern pattern = Pattern.compile("\\((\\d+)\\)\\s+([^()]+)");
         Matcher matcher = pattern.matcher(personTypes);
@@ -173,6 +181,7 @@ public class VouchersService {
     }
 
     private String cadenaResumen(List<VoucherProducto> voucherProductos) {
+        log.debug("Processing cadenaResumen");
         StringBuilder cadena = new StringBuilder();
         boolean primero = true;
         for (var voucherProducto : voucherProductos) {
@@ -187,6 +196,7 @@ public class VouchersService {
 
     @Transactional
     public Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos) {
+        log.debug("Processing generarReserva");
         Reserva reserva = reservaService.copyFromVoucher(voucher);
         reserva.setNegocioId(empresaService.findTop().getNegocioId());
         reserva.setUsuario("admin");
@@ -202,6 +212,7 @@ public class VouchersService {
     }
 
     private void logVoucher(Voucher voucher) {
+        log.debug("Processing logVoucher");
         try {
             log.debug("Voucher -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
         } catch (JsonProcessingException e) {
@@ -211,6 +222,7 @@ public class VouchersService {
 
     @Transactional
     public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio) {
+        log.debug("Processing facturaUnProducto");
         String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
         var cliente = determinaCliente(orderNote, fullName, negocio);
         OffsetDateTime fechaServicio = product.getBookingStart();
@@ -220,7 +232,10 @@ public class VouchersService {
         try {
             feriadoService.findByFecha(fechaServicio);
             feriado = 1;
+            assert fechaServicio != null;
+            dias[fechaServicio.getDayOfWeek().getValue() - 1] = 0; // Marca el día correspondiente
         } catch (FeriadoException e) {
+            assert fechaServicio != null;
             dias[fechaServicio.getDayOfWeek().getValue() - 1] = 1; // Marca el día correspondiente
         }
 
@@ -279,6 +294,7 @@ public class VouchersService {
                 .build();
 
         voucher = registrarVoucher(voucher, voucherProductos);
+        logVoucher(voucher);
 
         return new ProgramaDiaDto.Builder()
                 .vouchers(Collections.singletonList(voucher))
@@ -287,6 +303,7 @@ public class VouchersService {
     }
 
     private List<VoucherProducto> determinaProductos(int paxsMayor, int paxsMenor, int paxsInfante, Producto productoPaxMayor, Producto productoPaxMenor, Producto productoPaxInfante) {
+        log.debug("Processing determinaProductos");
         var voucherProductos = new ArrayList<VoucherProducto>();
         if (paxsMayor > 0 && productoPaxMayor != null) {
             voucherProductos.add(new VoucherProducto.Builder()
@@ -314,6 +331,7 @@ public class VouchersService {
     }
 
     private void logVoucherProductos(ArrayList<VoucherProducto> voucherProductos) {
+        log.debug("Processing logVoucherProductos");
         try {
             log.debug("VoucherProductos -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucherProductos));
         } catch (JsonProcessingException e) {
@@ -323,6 +341,7 @@ public class VouchersService {
 
     @Transactional
     public Cliente determinaCliente(OrderNote orderNote, String fullName, Negocio negocio) {
+        log.debug("Processing determinaCliente");
         try {
             return clienteService.findByNumeroDocumento(orderNote.getBillingDniPasaporte());
         } catch (ClienteException e) {
