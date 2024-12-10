@@ -10,6 +10,7 @@ import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.view.ClienteSearch;
 import eterea.core.service.repository.ClienteRepository;
 import eterea.core.service.service.view.ClienteSearchService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@Slf4j
 public class ClienteService {
 
 	private final ClienteRepository repository;
@@ -36,6 +38,7 @@ public class ClienteService {
 	}
 
 	public Cliente findByNumeroDocumento(String numeroDocumento) {
+		log.debug("Processing findByNumeroDocumento");
 		return repository.findTopByNumeroDocumento(numeroDocumento)
 				.orElseThrow(() -> new ClienteException(numeroDocumento));
 	}

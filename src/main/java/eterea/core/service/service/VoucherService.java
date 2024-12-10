@@ -6,6 +6,7 @@ package eterea.core.service.service;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +24,7 @@ import eterea.core.service.tool.ToolService;
  * @author daniel
  */
 @Service
+@Slf4j
 public class VoucherService {
 
     private final VoucherRepository repository;
@@ -38,7 +40,7 @@ public class VoucherService {
     public List<Voucher> findAllByFechaServicio(OffsetDateTime fechaServicio, Boolean soloConfirmados,
                                                 Boolean porNombrePax) {
         Sort sort = null;
-        if (porNombrePax == false) {
+        if (!porNombrePax) {
             sort = Sort.by("cliente.razonSocial").ascending();
         }
         if (sort == null) {
@@ -47,7 +49,7 @@ public class VoucherService {
             sort = sort.and(Sort.by("nombrePax").ascending());
         }
         List<Voucher> vouchers = repository.findAllByFechaServicio(fechaServicio, sort);
-        if (soloConfirmados == true) {
+        if (soloConfirmados) {
             vouchers = vouchers.stream().filter(voucher -> voucher.getConfirmado() == 1).collect(Collectors.toList());
         }
         return vouchers;
@@ -59,7 +61,7 @@ public class VoucherService {
     }
 
     public Voucher findByVoucherId(Long voucherId) {
-        return repository.findByVoucherId(voucherId)
+        return Objects.requireNonNull(repository.findByVoucherId(voucherId))
                 .orElseThrow(() -> new VoucherException(voucherId, "Programa por el Día"));
     }
 
@@ -68,7 +70,8 @@ public class VoucherService {
     }
 
     public Voucher findByNumeroVoucherAlreadyRegistered(String numeroVoucher) {
-        return repository.findTopByNumeroVoucherContainsAndFechaTomaAfter(numeroVoucher, OffsetDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)).orElseThrow(() -> new VoucherException(numeroVoucher));
+        log.debug("Processing findByNumeroVoucherAlreadyRegistered");
+        return Objects.requireNonNull(repository.findTopByNumeroVoucherContainsAndFechaTomaAfter(numeroVoucher, OffsetDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC))).orElseThrow(() -> new VoucherException(numeroVoucher));
     }
 
     public Voucher save(Voucher voucher) {
