@@ -2,21 +2,27 @@ package eterea.core.service.service.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.service.client.core.ArticuloBarraClient;
 import eterea.core.service.client.core.ArticuloClient;
 import eterea.core.service.client.core.CuentaClient;
+import eterea.core.service.client.core.ParametroClient;
+import eterea.core.service.client.core.builder.ArticuloBarraClientBuilder;
 import eterea.core.service.client.core.builder.ArticuloClientBuilder;
 import eterea.core.service.client.core.builder.CuentaClientBuilder;
 import eterea.core.service.client.core.builder.ParametroClientBuilder;
 import eterea.core.service.kotlin.model.Articulo;
+import eterea.core.service.kotlin.model.ArticuloBarra;
 import eterea.core.service.kotlin.model.Negocio;
 import eterea.core.service.kotlin.model.dto.ArticuloDto;
 import eterea.core.service.kotlin.model.dto.ParametroDto;
+import eterea.core.service.service.ArticuloBarraService;
 import eterea.core.service.service.ArticuloService;
 import eterea.core.service.service.NegocioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -25,11 +31,13 @@ public class ArticulosService {
 
     private final NegocioService negocioService;
     private final ArticuloService articuloService;
+    private final ArticuloBarraService articuloBarraService;
 
     public ArticulosService(NegocioService negocioService,
-                            ArticuloService articuloService) {
+                            ArticuloService articuloService, ArticuloBarraService articuloBarraService) {
         this.negocioService = negocioService;
         this.articuloService = articuloService;
+        this.articuloBarraService = articuloBarraService;
     }
 
     public String getNewCode() {
@@ -37,34 +45,140 @@ public class ArticulosService {
     }
 
     public Boolean replicate(String articuloId) {
-        log.debug("Processing replicate");
-        var negocios = negocioService.findAllByCopyArticulo((byte) 1);
+        log.debug("Starting article replication for articleId: {}", articuloId);
+
+        List<Negocio> negocios = negocioService.findAllByCopyArticulo((byte) 1);
+        Articulo articulo = articuloService.findByArticuloId(articuloId);
+        List<ArticuloBarra> barrasToReplicate = articuloBarraService.findAllByArticuloId(articuloId);
+
         logNegocios(negocios);
-        var articulo = articuloService.findByArticuloId(articuloId);
         logArticulo(articulo);
 
-        for (var negocio : negocios) {
-            var baseUrl = "http://" + negocio.getBackendIpVpn() + ":" + negocio.getBackendPort();
-            log.debug("BaseUrl = {}", baseUrl);
-            var articuloClient = ArticuloClientBuilder.buildClient(baseUrl);
-            var parametroClient = ParametroClientBuilder.buildClient(baseUrl);
-            var cuentaClient = CuentaClientBuilder.buildClient(baseUrl);
-
-            if (!articuloExists(articuloClient, articuloId, negocio.getNombre())) {
-                var parametro = parametroClient.findTop();
-                logParametro(parametro);
-
-                var cuentaVentas = verifyCuenta(cuentaClient, articulo.getCuentaVentas(), "ventas");
-                var cuentaCompras = verifyCuenta(cuentaClient, articulo.getCuentaCompras(), "compras");
-                var cuentaGastos = verifyCuenta(cuentaClient, articulo.getCuentaGastos(), "gastos");
-
-                var articuloDto = convertArticulo(articulo, parametro, cuentaVentas, cuentaCompras, cuentaGastos);
-                logArticuloDto(articuloDto);
-                articuloDto = articuloClient.add(articuloDto);
-                logArticuloDto(articuloDto);
+        for (Negocio negocio : negocios) {
+            try {
+                replicateToNegocio(negocio, articulo, barrasToReplicate);
+            } catch (Exception e) {
+                log.error("Failed to replicate article to business {}: {}", negocio.getNombre(), e.getMessage());
+                // Considerar si se debe continuar con los siguientes negocios o retornar false
             }
         }
+
         return true;
+    }
+
+    private void replicateToNegocio(Negocio negocio, Articulo articulo, List<ArticuloBarra> barrasToReplicate) {
+        String baseUrl = String.format("http://%s:%s", negocio.getBackendIpVpn(), negocio.getBackendPort());
+        log.debug("Replicating to business {} at {}", negocio.getNombre(), baseUrl);
+
+        // Inicializar clientes
+        var clients = initializeClients(baseUrl);
+
+        // Replicar artículo si no existe
+        if (!articuloExists(clients.articuloClient, articulo.getArticuloId(), negocio.getNombre())) {
+            replicateArticulo(clients, articulo);
+        }
+
+        // Replicar códigos de barras
+        replicateCodigosBarras(clients.articuloBarraClient, barrasToReplicate, articulo.getArticuloId());
+    }
+
+    private ClientsHolder initializeClients(String baseUrl) {
+        return new ClientsHolder(
+                ArticuloClientBuilder.buildClient(baseUrl),
+                ArticuloBarraClientBuilder.buildClient(baseUrl),
+                ParametroClientBuilder.buildClient(baseUrl),
+                CuentaClientBuilder.buildClient(baseUrl)
+        );
+    }
+
+    private void replicateArticulo(ClientsHolder clients, Articulo articulo) {
+        var parametro = clients.parametroClient.findTop();
+        logParametro(parametro);
+
+        var cuentaVentas = verifyCuenta(clients.cuentaClient, articulo.getCuentaVentas(), "ventas");
+        var cuentaCompras = verifyCuenta(clients.cuentaClient, articulo.getCuentaCompras(), "compras");
+        var cuentaGastos = verifyCuenta(clients.cuentaClient, articulo.getCuentaGastos(), "gastos");
+
+        var articuloDto = convertArticulo(articulo, parametro, cuentaVentas, cuentaCompras, cuentaGastos);
+        logArticuloDto(articuloDto);
+
+        articuloDto = clients.articuloClient.add(articuloDto);
+        logArticuloDto(articuloDto);
+    }
+
+    private void replicateCodigosBarras(ArticuloBarraClient client, List<ArticuloBarra> barrasToReplicate, String articuloId) {
+        log.debug("Processing replicateCodigosBarras");
+        try {
+            logBarras("A Replicar", barrasToReplicate);
+            var barrasExistentes = client.findAllByArticuloId(articuloId);
+            logBarras("Existentes", barrasExistentes);
+
+            // Eliminar códigos obsoletos
+            deleteObsoleteBarCodes(client, barrasExistentes, barrasToReplicate);
+
+            // Agregar nuevos códigos
+            addNewBarCodes(client, barrasToReplicate, barrasExistentes);
+        } catch (Exception e) {
+            log.error("Error processing bar codes: {}", e.getMessage());
+            throw new RuntimeException("Failed to replicate bar codes", e);
+        }
+    }
+
+    private void logBarras(String message, List<ArticuloBarra> barras) {
+        log.debug(message);
+        try {
+            log.debug("barras -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(barras));
+        } catch (JsonProcessingException e) {
+            log.debug("barras jsonify error -> {}", e.getMessage());
+        }
+    }
+
+    private void deleteObsoleteBarCodes(ArticuloBarraClient client, List<ArticuloBarra> existing, List<ArticuloBarra> toReplicate) {
+        log.debug("Processing deleteObsoleteBarCodes");
+        if (toReplicate.isEmpty()) {
+            // Si no hay códigos para replicar, eliminar todos los existentes
+            existing.forEach(barra -> {
+                try {
+                    client.delete(barra.getCodigoBarras());
+                    log.debug("Deleted bar code: {}", barra.getCodigoBarras());
+                } catch (Exception e) {
+                    log.error("Error deleting bar code {}: {}", barra.getCodigoBarras(), e.getMessage());
+                }
+            });
+            return;
+        }
+    
+        // Comportamiento original para cuando hay códigos para replicar
+        existing.stream()
+                .filter(existingBarra -> toReplicate.stream()
+                        .noneMatch(newBarra -> Objects.equals(existingBarra.getCodigoBarras(), newBarra.getCodigoBarras())))
+                .forEach(barra -> {
+                    try {
+                        client.delete(barra.getCodigoBarras());
+                        log.debug("Deleted bar code: {}", barra.getCodigoBarras());
+                    } catch (Exception e) {
+                        log.error("Error deleting bar code {}: {}", barra.getCodigoBarras(), e.getMessage());
+                    }
+                });
+    }
+    private void addNewBarCodes(ArticuloBarraClient client, List<ArticuloBarra> toReplicate, List<ArticuloBarra> existing) {
+        log.debug("Processing addNewBarCodes");
+        toReplicate.stream()
+                .filter(newBarra -> existing.stream()
+                        .noneMatch(existingBarra -> Objects.equals(newBarra.getCodigoBarras(), existingBarra.getCodigoBarras())))
+                .forEach(barra -> {
+                    try {
+                        barra.setArticuloBarraId(null);
+                        client.add(barra);
+                        log.debug("Added bar code: {}", barra.getCodigoBarras());
+                    } catch (Exception e) {
+                        log.error("Error adding bar code {}: {}", barra.getCodigoBarras(), e.getMessage());
+                    }
+                });
+    }
+
+    private record ClientsHolder(ArticuloClient articuloClient, ArticuloBarraClient articuloBarraClient,
+                                 ParametroClient parametroClient, CuentaClient cuentaClient) {
     }
 
     private boolean articuloExists(ArticuloClient articuloClient, String articuloId, String negocioNombre) {
