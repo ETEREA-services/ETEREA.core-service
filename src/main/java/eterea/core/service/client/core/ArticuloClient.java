@@ -11,7 +11,7 @@ public interface ArticuloClient {
     @GetMapping("/{articuloId}")
     ArticuloDto findByArticuloId(@PathVariable String articuloId);
 
-        @PostMapping("/")
+    @PostMapping("/")
     ArticuloDto add(@RequestBody ArticuloDto articulo);
 
 }
