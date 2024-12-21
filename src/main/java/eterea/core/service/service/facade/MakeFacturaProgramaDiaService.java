@@ -85,30 +85,14 @@ public class MakeFacturaProgramaDiaService {
         if (comprobante.getFacturaElectronica() == 0) {
             return false;
         }
-        try {
-            log.debug("comprobante={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
-        } catch (JsonProcessingException e) {
-            log.debug("comprobante=null");
-        }
+        logComprobante(comprobante);
         Empresa empresa = empresaService.findTop();
-        try {
-            log.debug("empresa={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(empresa));
-        } catch (JsonProcessingException e) {
-            log.debug("empresa=null");
-        }
+        logEmpresa(empresa);
         Parametro parametro = parametroService.findTop();
-        try {
-            log.debug("parametro={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(parametro));
-        } catch (JsonProcessingException e) {
-            log.debug("parametro=null");
-        }
+        logParametro(parametro);
         String moneda = "PES";
         Reserva reserva = reservaService.findByReservaId(reservaId);
-        try {
-            log.debug("reserva={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reserva));
-        } catch (JsonProcessingException e) {
-            log.debug("reserva=null");
-        }
+        logReserva(reserva);
         if (reserva.getFacturada() == (byte) 1) {
             log.debug("reserva facturada={}", reserva.getReservaId());
             try {
@@ -117,28 +101,16 @@ public class MakeFacturaProgramaDiaService {
                 reservaContext.setFacturaPendiente((byte) 0);
                 reservaContext.setEnvioPendiente((byte) 0);
                 reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-                try {
-                    log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
-                } catch (JsonProcessingException e) {
-                    log.debug("reserva_context=null");
-                }
+                logReservaContext(reservaContext);
             } catch (ReservaContextException e) {
                 log.debug("No hay reserva_context para esta reserva");
             }
             return false;
         }
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-        try {
-            log.debug("voucher={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
-        } catch (JsonProcessingException e) {
-            log.debug("voucher=null");
-        }
+        logVoucher(voucher);
         Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
-        try {
-            log.debug("cliente={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(cliente));
-        } catch (JsonProcessingException e) {
-            log.debug("cliente=null");
-        }
+        logCliente(cliente);
 
         int tipoDocumento = 80;
         String documento = cliente.getCuit().replace("-", "").trim();
@@ -172,11 +144,7 @@ public class MakeFacturaProgramaDiaService {
         BigDecimal exento = BigDecimal.ZERO;
         for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reservaId)) {
             reservaArticulo.setArticulo(articuloService.findByArticuloId(reservaArticulo.getArticuloId()));
-            try {
-                log.debug("reservaArticulo={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
-            } catch (JsonProcessingException e) {
-                log.debug("reservaArticulo=null");
-            }
+            logReservaArticulo(reservaArticulo);
             BigDecimal subtotal = reservaArticulo.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad()));
             total = total.add(subtotal);
             if (reservaArticulo.getArticulo().getExento() == (byte) 1) {
@@ -204,11 +172,7 @@ public class MakeFacturaProgramaDiaService {
                     .build();
             reservaContext = reservaContextService.add(reservaContext);
         }
-        try {
-            log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
-        } catch (JsonProcessingException e) {
-            log.debug("reserva_context=null");
-        }
+        logReservaContext(reservaContext);
 
         BigDecimal coeficienteIva1 = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
         BigDecimal neto21 = total21.divide(BigDecimal.ONE.add(coeficienteIva1), 5, RoundingMode.HALF_UP);
@@ -232,19 +196,12 @@ public class MakeFacturaProgramaDiaService {
                 .iva105(iva105.setScale(2, RoundingMode.HALF_UP))
                 .build();
 
-        try {
-            log.debug("facturacionDto={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDto));
-        } catch (JsonProcessingException e) {
-            log.debug("facturacionDto=null");
-        }
+        logFacturacionDto(facturacionDto);
 
         try {
             facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto);
-            try {
-                log.debug("facturacionDto (after)={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDto));
-            } catch (JsonProcessingException e) {
-                log.debug("facturacionDto=null");
-            }
+            log.debug("After makeFactura");
+            logFacturacionDto(facturacionDto);
         } catch (WebClientResponseException e) {
             log.debug("Servicio de Facturación NO disponible");
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
@@ -255,7 +212,12 @@ public class MakeFacturaProgramaDiaService {
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
             return false;
         }
+
+        var orderNote = orderNoteService.findByOrderNumberId(reservaContext.getOrderNumberId());
+        logOrderNote(orderNote);
+
         reservaContext.setFacturaPendiente((byte) 0);
+        reservaContext.setDiferenciaWeb(orderNote.getOrderTotal().subtract(facturacionDto.getTotal()).setScale(2, RoundingMode.HALF_UP));
         // Convierte fechas
         SimpleDateFormat formatoInDate = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat formatoOutDate = new SimpleDateFormat("ddMMyyyy");
@@ -285,22 +247,14 @@ public class MakeFacturaProgramaDiaService {
                 .numeroDocumento(new BigDecimal(facturacionDto.getDocumento()))
                 .build();
         registroCae = registroCaeService.add(registroCae);
-        try {
-            log.debug("registroCae={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(registroCae));
-        } catch (JsonProcessingException e) {
-            log.debug("registroCae=null");
-        }
+        logRegistroCae(registroCae);
 
         ClienteMovimiento clienteMovimiento = registraTransaccionFactura(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext);
 
         var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
         if (enableSendEmail) {
             if (clienteMovimiento.getClienteMovimientoId() != null) {
-                try {
-                    log.debug("reservaContext={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
-                } catch (JsonProcessingException e) {
-                    log.debug("reservaContext=null");
-                }
+                logReservaContext(reservaContext);
 
                 try {
                     reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
@@ -316,6 +270,94 @@ public class MakeFacturaProgramaDiaService {
 
         return false;
 
+    }
+
+    private void logOrderNote(OrderNote orderNote) {
+        try {
+            log.debug("order_note={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(orderNote));
+        } catch (JsonProcessingException e) {
+            log.debug("order_note=null");
+        }
+    }
+
+    private void logFacturacionDto(FacturacionDto facturacionDto) {
+        try {
+            log.debug("facturacionDto={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDto));
+        } catch (JsonProcessingException e) {
+            log.debug("facturacionDto=null");
+        }
+    }
+
+    private void logRegistroCae(RegistroCae registroCae) {
+        try {
+            log.debug("registroCae={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(registroCae));
+        } catch (JsonProcessingException e) {
+            log.debug("registroCae=null");
+        }
+    }
+
+    private void logReservaArticulo(ReservaArticulo reservaArticulo) {
+        try {
+            log.debug("reservaArticulo={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
+        } catch (JsonProcessingException e) {
+            log.debug("reservaArticulo=null");
+        }
+    }
+
+    private void logCliente(Cliente cliente) {
+        try {
+            log.debug("cliente={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(cliente));
+        } catch (JsonProcessingException e) {
+            log.debug("cliente=null");
+        }
+    }
+
+    private void logVoucher(Voucher voucher) {
+        try {
+            log.debug("voucher={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
+        } catch (JsonProcessingException e) {
+            log.debug("voucher=null");
+        }
+    }
+
+    private void logReservaContext(ReservaContext reservaContext) {
+        try {
+            log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
+        } catch (JsonProcessingException e) {
+            log.debug("reserva_context=null");
+        }
+    }
+
+    private void logReserva(Reserva reserva) {
+        try {
+            log.debug("reserva={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reserva));
+        } catch (JsonProcessingException e) {
+            log.debug("reserva=null");
+        }
+    }
+
+    private void logParametro(Parametro parametro) {
+        try {
+            log.debug("parametro={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(parametro));
+        } catch (JsonProcessingException e) {
+            log.debug("parametro=null");
+        }
+    }
+
+    private void logEmpresa(Empresa empresa) {
+        try {
+            log.debug("empresa={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(empresa));
+        } catch (JsonProcessingException e) {
+            log.debug("empresa=null");
+        }
+    }
+
+    private void logComprobante(Comprobante comprobante) {
+        try {
+            log.debug("comprobante={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
+        } catch (JsonProcessingException e) {
+            log.debug("comprobante=null");
+        }
     }
 
     @Transactional

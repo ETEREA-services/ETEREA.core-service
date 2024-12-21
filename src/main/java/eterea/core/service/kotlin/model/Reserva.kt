@@ -2,6 +2,7 @@ package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
+import java.math.BigDecimal
 import java.time.OffsetDateTime
 import java.util.*
 
