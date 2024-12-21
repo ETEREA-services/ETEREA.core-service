@@ -4,6 +4,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import java.math.BigDecimal
 
 @Entity
 data class ReservaContext(
@@ -19,7 +20,8 @@ data class ReservaContext(
     var facturaPendiente: Byte = 0,
     var facturaTries: Int = 0,
     var envioPendiente: Byte = 0,
-    var envioTries: Int = 0
+    var envioTries: Int = 0,
+    var diferenciaWeb: BigDecimal = BigDecimal.ZERO,
 
 ) : Auditable() {
 
@@ -34,6 +36,7 @@ data class ReservaContext(
         var facturaTries: Int = 0
         var envioPendiente: Byte = 0
         var envioTries: Int = 0
+        var diferenciaWeb: BigDecimal = BigDecimal.ZERO
 
         fun reservaContextId(reservaContextId: Long?) = apply { this.reservaContextId = reservaContextId }
         fun reservaId(reservaId: Long?) = apply { this.reservaId = reservaId }
@@ -45,6 +48,7 @@ data class ReservaContext(
         fun facturaTries(facturaTries: Int) = apply { this.facturaTries = facturaTries }
         fun envioPendiente(envioPendiente: Byte) = apply { this.envioPendiente = envioPendiente }
         fun envioTries(envioTries: Int) = apply { this.envioTries = envioTries }
+        fun diferenciaWeb(diferenciaWeb: BigDecimal) = apply { this.diferenciaWeb = diferenciaWeb }
 
         fun build() = ReservaContext(
             reservaContextId,
@@ -56,7 +60,8 @@ data class ReservaContext(
             facturaPendiente,
             facturaTries,
             envioPendiente,
-            envioTries
+            envioTries,
+            diferenciaWeb
         )
     }
 }
