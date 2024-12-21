@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -152,6 +153,7 @@ public class VouchersService {
                 .orderNumberId(Long.valueOf(voucher.getNumeroVoucher()))
                 .facturaPendiente((byte) 1)
                 .envioPendiente((byte) 1)
+                .diferenciaWeb(BigDecimal.ZERO)
                 .build();
         reservaContextService.add(reservaContext);
 
