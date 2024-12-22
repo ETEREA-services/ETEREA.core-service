@@ -1,10 +1,7 @@
 package eterea.core.service.client.core;
 
 import eterea.core.service.kotlin.model.dto.ArticuloDto;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 public interface ArticuloClient {
 
@@ -13,5 +10,8 @@ public interface ArticuloClient {
 
     @PostMapping("/")
     ArticuloDto add(@RequestBody ArticuloDto articulo);
+
+    @PutMapping("/{articuloId}")
+    ArticuloDto update(@RequestBody ArticuloDto articulo, @PathVariable String articuloId);
 
 }
