@@ -3,12 +3,13 @@ package eterea.core.service.kotlin.model.dto
 import java.math.BigDecimal
 
 data class ArticuloDto private constructor(
+
     val articuloId: String?,
     val negocioId: Int?,
-    val descripcion: String,
+    var descripcion: String,
     val leyendaVoucher: String,
-    val precioVentaSinIva: BigDecimal,
-    val precioVentaConIva: BigDecimal,
+    var precioVentaSinIva: BigDecimal,
+    var precioVentaConIva: BigDecimal,
     val cuentaVentas: Long?,
     val cuentaCompras: Long?,
     val cuentaGastos: Long?,
@@ -36,7 +37,8 @@ data class ArticuloDto private constructor(
     val mascaraBalanza: String,
     val habilitaIngreso: Byte,
     val comision: BigDecimal,
-    val prestadorId: Int?
+    val prestadorId: Int?,
+    val autoNumericoId: Long?
 ) {
     class Builder {
         private var articuloId: String? = null
@@ -73,6 +75,7 @@ data class ArticuloDto private constructor(
         private var habilitaIngreso: Byte = 0
         private var comision: BigDecimal = BigDecimal.ZERO
         private var prestadorId: Int? = null
+        private var autoNumericoId: Long? = null
 
         fun articuloId(articuloId: String?) = apply { this.articuloId = articuloId }
         fun negocioId(negocioId: Int?) = apply { this.negocioId = negocioId }
@@ -108,6 +111,7 @@ data class ArticuloDto private constructor(
         fun habilitaIngreso(habilitaIngreso: Byte) = apply { this.habilitaIngreso = habilitaIngreso }
         fun comision(comision: BigDecimal) = apply { this.comision = comision }
         fun prestadorId(prestadorId: Int?) = apply { this.prestadorId = prestadorId }
+        fun autoNumericoId(autoNumericoId: Long?) = apply { this.autoNumericoId = autoNumericoId }
 
         fun build() = ArticuloDto(
             articuloId, negocioId, descripcion, leyendaVoucher, precioVentaSinIva,
@@ -116,7 +120,7 @@ data class ArticuloDto private constructor(
             stockMinimo, stockOptimo, bloqueoCompras, bloqueoStock, bloqueoVentas,
             unidadMedidaId, conDecimales, ventas, compras, unidadMedida, conversionId,
             ventaSinStock, controlaStock, asientoCostos, mascaraBalanza, habilitaIngreso,
-            comision, prestadorId
+            comision, prestadorId, autoNumericoId
         )
     }
 

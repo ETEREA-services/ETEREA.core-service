@@ -59,7 +59,6 @@ public class ArticulosService {
                 replicateToNegocio(negocio, articulo, barrasToReplicate);
             } catch (Exception e) {
                 log.error("Failed to replicate article to business {}: {}", negocio.getNombre(), e.getMessage());
-                // Considerar si se debe continuar con los siguientes negocios o retornar false
             }
         }
 
@@ -73,13 +72,47 @@ public class ArticulosService {
         // Inicializar clientes
         var clients = initializeClients(baseUrl);
 
-        // Replicar artículo si no existe
-        if (!articuloExists(clients.articuloClient, articulo.getArticuloId(), negocio.getNombre())) {
+        // Verificar si existe y actualizar si es necesario
+        if (articuloExists(clients.articuloClient, articulo.getArticuloId(), negocio.getNombre())) {
+            updateArticuloIfNeeded(clients, articulo);
+        } else {
             replicateArticulo(clients, articulo);
         }
 
         // Replicar códigos de barras
         replicateCodigosBarras(clients.articuloBarraClient, barrasToReplicate, articulo.getArticuloId());
+    }
+
+    private void updateArticuloIfNeeded(ClientsHolder clients, Articulo articulo) {
+        try {
+            var existingArticulo = clients.articuloClient.findByArticuloId(articulo.getArticuloId());
+
+            if (!Objects.equals(existingArticulo.getDescripcion(), articulo.getDescripcion()) ||
+                !Objects.equals(existingArticulo.getPrecioVentaSinIva(), articulo.getPrecioVentaSinIva()) ||
+                !Objects.equals(existingArticulo.getPrecioVentaConIva(), articulo.getPrecioVentaConIva())) {
+                
+                log.debug("Article {} needs update. Existing values: desc={}, priceNoIva={}, priceWithIva={}. New values: desc={}, priceNoIva={}, priceWithIva={}",
+                    articulo.getArticuloId(),
+                    existingArticulo.getDescripcion(),
+                    existingArticulo.getPrecioVentaSinIva(),
+                    existingArticulo.getPrecioVentaConIva(),
+                    articulo.getDescripcion(),
+                    articulo.getPrecioVentaSinIva(),
+                    articulo.getPrecioVentaConIva());
+
+                // Update only the fields that need to be updated
+                existingArticulo.setDescripcion(articulo.getDescripcion());
+                existingArticulo.setPrecioVentaSinIva(articulo.getPrecioVentaSinIva());
+                existingArticulo.setPrecioVentaConIva(articulo.getPrecioVentaConIva());
+
+                clients.articuloClient.update(existingArticulo, articulo.getArticuloId());
+                log.debug("Article {} updated successfully", articulo.getArticuloId());
+            } else {
+                log.debug("Article {} doesn't need update", articulo.getArticuloId());
+            }
+        } catch (Exception e) {
+            log.error("Error updating article {}: {}", articulo.getArticuloId(), e.getMessage());
+        }
     }
 
     private ClientsHolder initializeClients(String baseUrl) {

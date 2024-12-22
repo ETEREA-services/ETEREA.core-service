@@ -69,4 +69,9 @@ public class ArticuloController {
         return new ResponseEntity<>(service.add(articulo), HttpStatus.OK);
     }
 
+    @PutMapping("/{articuloId}")
+    public ResponseEntity<Articulo> update(@RequestBody Articulo articulo, @PathVariable String articuloId) {
+        return new ResponseEntity<>(service.update(articulo, articuloId), HttpStatus.OK);
+    }
+
 }
