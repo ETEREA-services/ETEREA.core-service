@@ -85,4 +85,50 @@ public class ArticuloService {
 		logArticulo(articulo);
 		return articulo;
     }
+
+	public Articulo update(Articulo newArticulo, String articuloId) {
+		log.debug("Processing update");
+		return Objects.requireNonNull(repository.findByArticuloId(articuloId)).map(articulo -> {
+			articulo = new Articulo.Builder()
+					.articuloId(articuloId)
+					.negocioId(newArticulo.getNegocioId())
+					.descripcion(newArticulo.getDescripcion())
+					.leyendaVoucher(newArticulo.getLeyendaVoucher())
+					.precioVentaSinIva(newArticulo.getPrecioVentaSinIva())
+					.precioVentaConIva(newArticulo.getPrecioVentaConIva())
+					.cuentaVentas(newArticulo.getCuentaVentas())
+					.cuentaCompras(newArticulo.getCuentaCompras())
+					.cuentaGastos(newArticulo.getCuentaGastos())
+					.centroStockId(newArticulo.getCentroStockId())
+					.rubroId(newArticulo.getRubroId())
+					.subRubroId(newArticulo.getSubRubroId())
+					.precioCompra(newArticulo.getPrecioCompra())
+					.iva105(newArticulo.getIva105())
+					.precioCompraNeto(newArticulo.getPrecioCompraNeto())
+					.exento(newArticulo.getExento())
+					.stockMinimo(newArticulo.getStockMinimo())
+					.stockOptimo(newArticulo.getStockOptimo())
+					.bloqueoCompras(newArticulo.getBloqueoCompras())
+					.bloqueoStock(newArticulo.getBloqueoStock())
+					.bloqueoVentas(newArticulo.getBloqueoVentas())
+					.unidadMedidaId(newArticulo.getUnidadMedidaId())
+					.conDecimales(newArticulo.getConDecimales())
+					.ventas(newArticulo.getVentas())
+					.compras(newArticulo.getCompras())
+					.unidadMedida(newArticulo.getUnidadMedida())
+					.conversionId(newArticulo.getConversionId())
+					.ventaSinStock(newArticulo.getVentaSinStock())
+					.controlaStock(newArticulo.getControlaStock())
+					.asientoCostos(newArticulo.getAsientoCostos())
+					.mascaraBalanza(newArticulo.getMascaraBalanza())
+					.habilitaIngreso(newArticulo.getHabilitaIngreso())
+					.comision(newArticulo.getComision())
+					.prestadorId(newArticulo.getPrestadorId())
+					.autoNumericoId(newArticulo.getAutoNumericoId())
+					.build();
+			return repository.save(articulo);
+        }).orElseThrow(() -> new ArticuloException(articuloId));
+
+	}
+
 }
