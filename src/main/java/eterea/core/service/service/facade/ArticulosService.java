@@ -87,9 +87,7 @@ public class ArticulosService {
         try {
             var existingArticulo = clients.articuloClient.findByArticuloId(articulo.getArticuloId());
 
-            if (!Objects.equals(existingArticulo.getDescripcion(), articulo.getDescripcion()) ||
-                !Objects.equals(existingArticulo.getPrecioVentaSinIva(), articulo.getPrecioVentaSinIva()) ||
-                !Objects.equals(existingArticulo.getPrecioVentaConIva(), articulo.getPrecioVentaConIva())) {
+            if (!Objects.equals(existingArticulo.getDescripcion(), articulo.getDescripcion())) {
                 
                 log.debug("Article {} needs update. Existing values: desc={}, priceNoIva={}, priceWithIva={}. New values: desc={}, priceNoIva={}, priceWithIva={}",
                     articulo.getArticuloId(),
@@ -102,8 +100,6 @@ public class ArticulosService {
 
                 // Update only the fields that need to be updated
                 existingArticulo.setDescripcion(articulo.getDescripcion());
-                existingArticulo.setPrecioVentaSinIva(articulo.getPrecioVentaSinIva());
-                existingArticulo.setPrecioVentaConIva(articulo.getPrecioVentaConIva());
 
                 clients.articuloClient.update(existingArticulo, articulo.getArticuloId());
                 log.debug("Article {} updated successfully", articulo.getArticuloId());
