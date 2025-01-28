@@ -3,6 +3,7 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.ValorMovimientoException;
 import eterea.core.service.kotlin.model.ValorMovimiento;
 import eterea.core.service.kotlin.repository.ValorMovimientoRepository;
+import eterea.core.service.model.dto.CobroInternoDto;
 import eterea.core.service.model.dto.ValorMovimientoDto;
 import eterea.core.service.model.dto.ValorMovimientoDtoMapper;
 
@@ -64,18 +65,24 @@ public class ValorMovimientoService {
         }).orElseThrow(() -> new ValorMovimientoException(valorMovimientoId));
     }
 
-    public List<ValorMovimientoDto> findAllMovimientos(LocalDate desde,
-            LocalDate hasta,
-            boolean cierreCajaOnly,
-            boolean ingresosOnly) {
-        return repository
-                .findAllByFechaContableBetween(
-                        OffsetDateTime.of(desde.atTime(LocalTime.MIN), ZoneOffset.UTC),
-                        OffsetDateTime.of(hasta.atTime(LocalTime.MIN), ZoneOffset.UTC), cierreCajaOnly,
-                        ingresosOnly)
-                .stream()
-                .map(valorMovimientoDtoMapper)
-                .collect(Collectors.toList());
+    // public List<ValorMovimientoDto> findAllMovimientos(LocalDate desde,
+    //         LocalDate hasta,
+    //         boolean cierreCajaOnly,
+    //         boolean ingresosOnly) {
+    //     return repository
+    //             .findAllByFechaContableBetween(
+    //                     OffsetDateTime.of(desde.atTime(LocalTime.MIN), ZoneOffset.UTC),
+    //                     OffsetDateTime.of(hasta.atTime(LocalTime.MIN), ZoneOffset.UTC), cierreCajaOnly,
+    //                     ingresosOnly)
+    //             .stream()
+    //             .map(valorMovimientoDtoMapper)
+    //             .collect(Collectors.toList());
+    // }
+
+    public List<CobroInternoDto> findAllCobroInterno(LocalDate desde, LocalDate hasta) {
+        return repository.findAllCobroInternoByFechaContableBetween(
+                OffsetDateTime.of(desde.atTime(LocalTime.MIN), ZoneOffset.UTC),
+                OffsetDateTime.of(hasta.atTime(LocalTime.MAX), ZoneOffset.UTC));
     }
 
 }

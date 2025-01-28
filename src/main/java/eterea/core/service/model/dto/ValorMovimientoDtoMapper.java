@@ -13,6 +13,6 @@ public class ValorMovimientoDtoMapper implements Function<ValorMovimiento, Valor
    public ValorMovimientoDto apply(ValorMovimiento valorMovimiento) {
       return new ValorMovimientoDto(valorMovimiento.getValorMovimientoId(), valorMovimiento.getCierreCajaId(),
             valorMovimiento.getNegocioId(), valorMovimiento.getValor().getConcepto(),
-            valorMovimiento.getFechaContable(), valorMovimiento.getImporte());
+            valorMovimiento.getFechaContable(), valorMovimiento.getImporte(), );
    }
 }
