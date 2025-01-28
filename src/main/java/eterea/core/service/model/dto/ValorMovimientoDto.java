@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public record ValorMovimientoDto(Long valorMovimientoId, Long cierreCajaId, Integer negocioId, String concepto,
-            OffsetDateTime fechaContable, BigDecimal importe) {
+                                 OffsetDateTime fechaContable, BigDecimal importe, Long movClieId,
+                                 Long clienteId, Long nroPlanCta, Integer puntoVenta) {
 
 }

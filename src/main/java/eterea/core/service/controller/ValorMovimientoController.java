@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.service.model.dto.ValorMovimientoDto;
+import eterea.core.service.model.dto.CobroInternoDto;
 import eterea.core.service.service.ValorMovimientoService;
 
 @RestController
@@ -22,14 +22,22 @@ public class ValorMovimientoController {
       this.valorMovimientoService = valorMovimientoService;
    }
 
-   @GetMapping()
-   public ResponseEntity<List<ValorMovimientoDto>> findAllValorMovimientos(
+   // @GetMapping()
+   // public ResponseEntity<List<ValorMovimientoDto>> findAllValorMovimientos(
+   //       @RequestParam LocalDate desde,
+   //       @RequestParam LocalDate hasta,
+   //       @RequestParam boolean cierreCajaOnly,
+   //       @RequestParam boolean ingresosOnly) {
+   //    return ResponseEntity.status(HttpStatus.OK)
+   //          .body(valorMovimientoService.findAllMovimientos(desde, hasta, cierreCajaOnly,
+   //                ingresosOnly));
+   // }
+
+   @GetMapping("/cobros-internos")
+   public ResponseEntity<List<CobroInternoDto>> findAllCobroInternos(
          @RequestParam LocalDate desde,
-         @RequestParam LocalDate hasta,
-         @RequestParam boolean cierreCajaOnly,
-         @RequestParam boolean ingresosOnly) {
+         @RequestParam LocalDate hasta) {
       return ResponseEntity.status(HttpStatus.OK)
-            .body(valorMovimientoService.findAllMovimientos(desde, hasta, cierreCajaOnly,
-                  ingresosOnly));
+            .body(valorMovimientoService.findAllCobroInterno(desde, hasta));
    }
 }
