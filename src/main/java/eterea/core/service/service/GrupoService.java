@@ -6,13 +6,17 @@ package eterea.core.service.service;
 import eterea.core.service.exception.GrupoException;
 import eterea.core.service.kotlin.model.Grupo;
 import eterea.core.service.kotlin.model.GrupoProducto;
+import eterea.core.service.kotlin.model.Proveedor;
 import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.kotlin.model.VoucherProducto;
+import eterea.core.service.model.dto.programadia.VentasPorGrupoDto;
+import eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedor;
 import eterea.core.service.repository.GrupoRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,12 +32,15 @@ public class GrupoService {
 	private final GrupoProductoService grupoProductoService;
 	private final VoucherService voucherService;
 	private final VoucherProductoService voucherProductoService;
+	private final ProveedorService proveedorService;
 
-	public GrupoService(GrupoRepository repository, GrupoProductoService grupoProductoService, VoucherService voucherService, VoucherProductoService voucherProductoService) {
+	public GrupoService(GrupoRepository repository, GrupoProductoService grupoProductoService,
+			VoucherService voucherService, VoucherProductoService voucherProductoService, ProveedorService proveedorService) {
 		this.repository = repository;
 		this.grupoProductoService = grupoProductoService;
 		this.voucherService = voucherService;
 		this.voucherProductoService = voucherProductoService;
+		this.proveedorService = proveedorService;
 	}
 
 	public List<Grupo> findAll() {
@@ -72,6 +79,31 @@ public class GrupoService {
 			gruposSet.add(findById(element.getGrupoId()));
 		}
 		return new ArrayList<>(gruposSet);
+	}
+
+	public BigDecimal totalVentasByGrupoIdAndVoucherFechaServicio(Integer grupoId, OffsetDateTime fechaServicio) {
+		return repository.totalVentasByGrupoIdAndVoucherFechaServicio(grupoId, fechaServicio);
+	}
+
+	public List<VentasPorGrupoDto> getGruposVendidos(OffsetDateTime fechaServicio) {
+		List<Grupo> grupos = findAllByVoucherFechaServicio(fechaServicio);
+		List<VentasPorGrupoDto> ventasPorGrupo = new ArrayList<>();
+		grupos.forEach(g -> {
+			BigDecimal totalVentas = totalVentasByGrupoIdAndVoucherFechaServicio(g.getGrupoId(), fechaServicio);
+			List<Proveedor> proveedores = proveedorService.findAllByGrupoIdAndVoucherFechaServicio(g.getGrupoId(),
+					fechaServicio);
+			List<VentasPorGrupoPorProveedor> ventasPorProveedor = new ArrayList<>();
+
+			proveedores.forEach(p -> {
+				BigDecimal totalVentasPorProveedor = proveedorService
+						.totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(p.getProveedorId(), g.getGrupoId(),
+								fechaServicio);
+				ventasPorProveedor.add(new VentasPorGrupoPorProveedor(p.getRazonSocial(), totalVentasPorProveedor));
+			});
+
+			ventasPorGrupo.add(new VentasPorGrupoDto(fechaServicio, g.getNombre(), totalVentas, ventasPorProveedor));
+		});
+		return ventasPorGrupo;
 	}
 
 	/*

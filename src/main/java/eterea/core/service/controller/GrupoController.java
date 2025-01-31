@@ -4,6 +4,7 @@
 package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.Grupo;
+import eterea.core.service.model.dto.programadia.VentasPorGrupoDto;
 import eterea.core.service.service.GrupoService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author daniel
  */
 @RestController
-@RequestMapping({"/api/core/grupo", "/grupo"})
+@RequestMapping({ "/api/core/grupo", "/grupo" })
 public class GrupoController {
 
 	private final GrupoService service;
@@ -57,5 +58,11 @@ public class GrupoController {
 	public ResponseEntity<List<Grupo>> findAllByFecha(
 			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fecha) {
 		return new ResponseEntity<>(service.findAllByVoucherFechaServicio(fecha), HttpStatus.OK);
+	}
+
+	@GetMapping("/ventasporgrupo/{fecha}")
+	public ResponseEntity<List<VentasPorGrupoDto>> getGruposVendidos(
+			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fecha) {
+		return new ResponseEntity<>(service.getGruposVendidos(fecha), HttpStatus.OK);
 	}
 }
