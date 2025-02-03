@@ -11,6 +11,7 @@ import java.util.*
 @Repository
 interface CuentaMovimientoRepository : JpaRepository<CuentaMovimiento?, Long?> {
 
+    fun findAllByFechaBetween(fechaDesde: OffsetDateTime, fechaHasta: OffsetDateTime): List<CuentaMovimiento>
     fun findByCuentaMovimientoId(cuentaMovimientoId: Long?): Optional<CuentaMovimiento?>?
     fun findFirstByFechaAndOrdenOrderByItemDesc(fecha: OffsetDateTime?, orden: Int?): Optional<CuentaMovimiento?>?
     fun findFirstByFechaOrderByOrdenDesc(fecha: OffsetDateTime?): Optional<CuentaMovimiento?>?
@@ -26,5 +27,6 @@ interface CuentaMovimientoRepository : JpaRepository<CuentaMovimiento?, Long?> {
         desde: OffsetDateTime,
         hasta: OffsetDateTime
     ): BigDecimal
+
 
 }
