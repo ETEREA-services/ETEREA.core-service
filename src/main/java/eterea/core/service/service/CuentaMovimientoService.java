@@ -31,17 +31,21 @@ public class CuentaMovimientoService {
         this.cuentaMovimientoAperturaService = cuentaMovimientoAperturaService;
     }
 
+    public List<CuentaMovimiento> findAllByFechaBetween(OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
+        return repository.findAllByFechaBetween(fechaDesde, fechaHasta);
+    }
+
     public CuentaMovimiento findByCuentaMovimientoId(Long cuentaMovimientoId) {
         return Objects.requireNonNull(repository.findByCuentaMovimientoId(cuentaMovimientoId))
                 .orElseThrow(() -> new CuentaMovimientoException(cuentaMovimientoId));
     }
 
     public CuentaMovimiento findLastByAsiento(OffsetDateTime fecha, Integer orden) {
-        return repository.findFirstByFechaAndOrdenOrderByItemDesc(fecha, orden).orElseThrow(() -> new CuentaMovimientoException(fecha, orden));
+        return Objects.requireNonNull(repository.findFirstByFechaAndOrdenOrderByItemDesc(fecha, orden)).orElseThrow(() -> new CuentaMovimientoException(fecha, orden));
     }
 
     private CuentaMovimiento findLastByFecha(OffsetDateTime fecha) {
-        return repository.findFirstByFechaOrderByOrdenDesc(fecha).orElseThrow(() -> new CuentaMovimientoException(fecha));
+        return Objects.requireNonNull(repository.findFirstByFechaOrderByOrdenDesc(fecha)).orElseThrow(() -> new CuentaMovimientoException(fecha));
     }
 
     @Transactional

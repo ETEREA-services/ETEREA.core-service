@@ -8,6 +8,8 @@ import eterea.core.service.kotlin.model.Moneda;
 import eterea.core.service.repository.MonedaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author daniel
  *
@@ -19,6 +21,10 @@ public class MonedaService {
 
 	public MonedaService(MonedaRepository repository) {
 		this.repository = repository;
+	}
+
+	public List<Moneda> findAll() {
+		return repository.findAll();
 	}
 
 	public Moneda findByMonedaId(Integer monedaId) {
