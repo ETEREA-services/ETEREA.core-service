@@ -2,7 +2,7 @@ app:
   port: ${APP_PORT:8080}
   eureka: 8761
   logging: debug
-  server: 10.147.20.20:3306
+  server: 192.168.201.132:3306
   database: tsaagencia
   user: root
   password: root
@@ -13,6 +13,7 @@ app:
     password: pwd
 
 server:
+  address: 0.0.0.0
   port: ${app.port}
 
 eureka:
@@ -50,6 +51,13 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  mvc:
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET,POST,PUT,DELETE
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
 
 logging:
   level:
