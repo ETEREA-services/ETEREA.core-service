@@ -65,4 +65,9 @@ public class GrupoController {
 			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fecha) {
 		return new ResponseEntity<>(service.getGruposVendidos(fecha), HttpStatus.OK);
 	}
+
+	@GetMapping("/contienen-productos")
+	public ResponseEntity<List<Grupo>> findAllWithProductos() {
+		return new ResponseEntity<>(service.findAllWithProductos(), HttpStatus.OK);
+	}
 }

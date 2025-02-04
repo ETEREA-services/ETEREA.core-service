@@ -47,9 +47,14 @@ public class GrupoService {
 		return repository.findAll(Sort.by("nombre").ascending());
 	}
 
+	public List<Grupo> findAllWithProductos() {
+		return repository.findAllWithProductos();
+	}
+
 	public Grupo findById(Integer grupoId) {
 		return repository.findById(grupoId).orElseThrow(() -> new GrupoException(grupoId));
 	}
+
 
 	public List<Grupo> findAllByVentaInternet(Byte habilitado) {
 		return repository.findAllByVentaInternet(habilitado, Sort.by("nombre").ascending());
