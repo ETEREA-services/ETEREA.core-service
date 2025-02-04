@@ -30,6 +30,14 @@ public interface GrupoRepository extends JpaRepository<Grupo, Integer> {
             "ON vp.VPr_Prd_ID = gp.GrP_Prd_ID", nativeQuery = true)
     List<Integer> findAllByFecha(@Param("fecha") OffsetDateTime fecha);
 
+    @Query("""
+            SELECT DISTINCT g
+            FROM Grupo g
+                JOIN GrupoProducto gp
+                    ON g.grupoId = gp.grupoId
+            """)
+    List<Grupo> findAllWithProductos();
+
     /*
      * 
      * SELECT g.*
