@@ -16,7 +16,7 @@ data class ArticuloListaPrecio (
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    var articuloListaPrecioId: String? = null,
+    var articuloListaPrecioId: UUID? = null,
     var articuloId: String? = null,
     var publicar: Byte = 0,
 
@@ -27,12 +27,12 @@ data class ArticuloListaPrecio (
 ) : Auditable() {
 
     class Builder {
-        private var articuloListaPrecioId: String? = null
+        private var articuloListaPrecioId: UUID? = null
         private var articuloId: String? = null
         private var publicar: Byte = 0
         private var articulo: Articulo? = null
 
-        fun articuloListaPrecioId(articuloListaPrecioId: String?) = apply { this.articuloListaPrecioId = articuloListaPrecioId }
+        fun articuloListaPrecioId(articuloListaPrecioId: UUID?) = apply { this.articuloListaPrecioId = articuloListaPrecioId }
         fun articuloId(articuloId: String?) = apply { this.articuloId = articuloId }
         fun publicar(publicar: Byte) = apply { this.publicar = publicar }
         fun articulo(articulo: Articulo?) = apply { this.articulo = articulo }

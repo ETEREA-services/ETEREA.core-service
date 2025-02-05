@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -61,6 +62,38 @@ public class ArticuloListaPrecioService {
             logArticuloListaPrecio(articuloListaPrecio);
             return articuloListaPrecio;
         });
+    }
+
+    public Page<ArticuloListaPrecio> findAllByRubroIdPaginated(Integer rubroId, Pageable pageable) {
+        Sort sort = Sort.by("articulo.descripcion").ascending();
+        
+        Pageable pageableWithSort = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            sort
+        );
+        
+        return repository.findAllByPublicarAndArticuloPrecioVentaConIvaGreaterThanAndArticuloRubroId(
+            (byte) 1, 
+            BigDecimal.ZERO,
+            rubroId,
+            pageableWithSort
+        );
+    }
+
+    public ArticuloListaPrecio addOrUpdate(ArticuloListaPrecio articuloListaPrecio) {
+        // Buscar si existe un registro con el mismo articuloId
+        Optional<ArticuloListaPrecio> existingArticulo = repository.findByArticuloId(Objects.requireNonNull(articuloListaPrecio.getArticuloId()));
+
+        if (existingArticulo.isPresent()) {
+            // Actualizar el registro existente
+            ArticuloListaPrecio existing = existingArticulo.get();
+            existing.setPublicar(articuloListaPrecio.getPublicar());
+            return repository.save(existing);
+        } else {
+            // Crear nuevo registro
+            return repository.save(articuloListaPrecio);
+        }
     }
 
     private void logArticuloListaPrecio(ArticuloListaPrecio articuloListaPrecio) {

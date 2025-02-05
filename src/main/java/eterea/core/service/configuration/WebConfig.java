@@ -7,8 +7,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 
 @Configuration
+@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class WebConfig {
 
     @Bean
@@ -36,6 +39,15 @@ public class WebConfig {
                                 HttpHeaders.AUTHORIZATION
                         );
             }
+        };
+    }
+
+    @Bean
+    public PageableHandlerMethodArgumentResolverCustomizer pageableCustomizer() {
+        return pageableResolver -> {
+            pageableResolver.setMaxPageSize(100);
+            pageableResolver.setPageParameterName("page");
+            pageableResolver.setSizeParameterName("size");
         };
     }
 }
