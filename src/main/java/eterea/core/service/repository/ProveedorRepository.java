@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import eterea.core.service.kotlin.model.Proveedor;
+import eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedorDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -119,4 +120,39 @@ List<Proveedor> findAllByGrupoIdAndVoucherFechaServicio(@Param("grupoId") Intege
 	 """)
 BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("proveedorId") Long proveedorId,
 	 @Param("grupoId") Integer grupoId, @Param("fechaServicio") OffsetDateTime fechaServicio);
+
+	 @Query("""
+			SELECT new eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedorDto(
+				prov.razonSocial,
+				SUM(vp.cantidadPaxs * gp.coeficiente),
+				new eterea.core.service.model.dto.programadia.ProgramaDiaProductoDto(
+					p.productoId,
+					p.nombre,
+					p.observaciones,
+					new java.util.ArrayList()
+				)
+			)
+			FROM
+				GrupoProducto gp
+				JOIN VoucherProducto vp
+					ON vp.producto.productoId = gp.productoId
+				JOIN Voucher v
+					ON v.voucherId = vp.voucherId
+				JOIN Producto p
+					ON p.productoId = vp.producto.productoId
+				JOIN Proveedor prov
+					ON prov.proveedorId = v.proveedorId
+			WHERE
+				gp.grupoId = :grupoId
+				AND
+				v.fechaServicio = :fechaServicio
+				AND
+				p.traslado = 1
+				AND
+				prov.proveedorId = :proveedorId
+			GROUP BY
+				p.productoId
+			""")
+	List<VentasPorGrupoPorProveedorDto> findVentasPorGrupoPorProveedor(@Param("grupoId") Integer grupoId,
+																							 @Param("fechaServicio") OffsetDateTime fechaServicio, @Param("proveedorId") Long proveedorId);
 }
