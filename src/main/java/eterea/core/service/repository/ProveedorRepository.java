@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import eterea.core.service.kotlin.model.Proveedor;
-import eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedorDto;
+import eterea.core.service.model.dto.programadia.ProgramaDiaVentasDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -122,37 +122,28 @@ BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("pro
 	 @Param("grupoId") Integer grupoId, @Param("fechaServicio") OffsetDateTime fechaServicio);
 
 	 @Query("""
-			SELECT new eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedorDto(
-				prov.razonSocial,
-				SUM(vp.cantidadPaxs * gp.coeficiente),
-				new eterea.core.service.model.dto.programadia.ProgramaDiaProductoDto(
-					p.productoId,
-					p.nombre,
-					p.observaciones,
-					new java.util.ArrayList<eterea.core.service.model.dto.programadia.ProgramaDiaArticuloDto>()
-				)
-			)
-			FROM
-				GrupoProducto gp
-				JOIN VoucherProducto vp
-					ON vp.producto.productoId = gp.productoId
-				JOIN Voucher v
-					ON v.voucherId = vp.voucherId
-				JOIN Producto p
-					ON p.productoId = vp.producto.productoId
-				JOIN Proveedor prov
-					ON prov.proveedorId = v.proveedorId
-			WHERE
-				gp.grupoId = :grupoId
-				AND
-				v.fechaServicio = :fechaServicio
-				AND
-				p.traslado = 1
-				AND
-				prov.proveedorId = :proveedorId
-			GROUP BY
-				p.productoId
+			SELECT DISTINCT
+            new eterea.core.service.model.dto.VentaDto(
+                prov.razonSocial,
+                p.productoId,
+                SUM(vp.cantidadPaxs * gp.coeficiente)
+            )
+        FROM
+            GrupoProducto gp
+            JOIN VoucherProducto vp ON vp.producto.productoId = gp.productoId
+            JOIN Voucher v ON v.voucherId = vp.voucherId
+            JOIN Producto p ON p.productoId = vp.producto.productoId
+            JOIN Proveedor prov ON prov.proveedorId = v.proveedorId
+        WHERE
+            gp.grupoId = :grupoId
+            AND v.fechaServicio = :fechaServicio
+            AND p.traslado = 1
+            AND prov.proveedorId = :proveedorId
+        GROUP BY
+            prov.razonSocial,
+            p.productoId
 			""")
-	List<VentasPorGrupoPorProveedorDto> findVentasPorGrupoPorProveedor(@Param("grupoId") Integer grupoId,
-																							 @Param("fechaServicio") OffsetDateTime fechaServicio, @Param("proveedorId") Long proveedorId);
+	List<ProgramaDiaVentasDto> findVentasPorGrupoPorProveedor(@Param("grupoId") Integer grupoId,
+																				 @Param("fechaServicio") OffsetDateTime fechaServicio, @Param("proveedorId") Long proveedorId);
+
 }
