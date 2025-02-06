@@ -129,7 +129,7 @@ BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("pro
 					p.productoId,
 					p.nombre,
 					p.observaciones,
-					new java.util.ArrayList()
+					new java.util.ArrayList<eterea.core.service.model.dto.programadia.ProgramaDiaArticuloDto>()
 				)
 			)
 			FROM
