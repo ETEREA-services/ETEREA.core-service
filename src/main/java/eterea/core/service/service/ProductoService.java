@@ -54,4 +54,8 @@ public class ProductoService {
 			return repository.save(producto);
 		}).orElseThrow(() -> new ProductoException(productoId));
 	}
+
+	public List<Producto> findAllByGrupoId(Integer grupoId) {
+		return repository.findAllByGrupoId(grupoId);
+	}
 }

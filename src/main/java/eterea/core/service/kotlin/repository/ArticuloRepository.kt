@@ -2,6 +2,7 @@ package eterea.core.service.kotlin.repository
 
 import eterea.core.service.kotlin.model.Articulo
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -15,5 +16,17 @@ interface ArticuloRepository : JpaRepository<Articulo, String> {
     fun findByArticuloId(articuloId: String?): Optional<Articulo?>?
 
     fun findByMascaraBalanza(mascaraBalanza: String?): Optional<Articulo?>?
+
+    @Query("""
+        SELECT 
+            a
+        FROM 
+            Articulo a
+            JOIN ProductoArticulo pa 
+                ON a.articuloId = pa.articuloId
+        WHERE
+            pa.productoId = :productoId
+    """)
+    fun findAllByProductoId(productoId: Int): List<Articulo>
 
 }

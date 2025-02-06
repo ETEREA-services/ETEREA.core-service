@@ -4,13 +4,10 @@
 package eterea.core.service.service;
 
 import eterea.core.service.exception.GrupoException;
-import eterea.core.service.kotlin.model.Grupo;
-import eterea.core.service.kotlin.model.GrupoProducto;
-import eterea.core.service.kotlin.model.Proveedor;
-import eterea.core.service.kotlin.model.Voucher;
-import eterea.core.service.kotlin.model.VoucherProducto;
+import eterea.core.service.kotlin.model.*;
+import eterea.core.service.model.dto.programadia.GrupoToDtoMapper;
 import eterea.core.service.model.dto.programadia.VentasPorGrupoDto;
-import eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedor;
+import eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedorDto;
 import eterea.core.service.repository.GrupoRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author daniel
@@ -33,14 +32,22 @@ public class GrupoService {
 	private final VoucherService voucherService;
 	private final VoucherProductoService voucherProductoService;
 	private final ProveedorService proveedorService;
+	private final GrupoToDtoMapper grupoToDtoMapper;
+	private final ProductoService productoService;
+	private final ArticuloService articuloService;
 
 	public GrupoService(GrupoRepository repository, GrupoProductoService grupoProductoService,
-			VoucherService voucherService, VoucherProductoService voucherProductoService, ProveedorService proveedorService) {
+			VoucherService voucherService, VoucherProductoService voucherProductoService,
+			ProveedorService proveedorService, GrupoToDtoMapper grupoToDtoMapper,
+			ProductoService productoService, ArticuloService articuloService) {
 		this.repository = repository;
 		this.grupoProductoService = grupoProductoService;
 		this.voucherService = voucherService;
 		this.voucherProductoService = voucherProductoService;
 		this.proveedorService = proveedorService;
+		this.grupoToDtoMapper = grupoToDtoMapper;
+		this.productoService = productoService;
+		this.articuloService = articuloService;
 	}
 
 	public List<Grupo> findAll() {
@@ -54,7 +61,6 @@ public class GrupoService {
 	public Grupo findById(Integer grupoId) {
 		return repository.findById(grupoId).orElseThrow(() -> new GrupoException(grupoId));
 	}
-
 
 	public List<Grupo> findAllByVentaInternet(Byte habilitado) {
 		return repository.findAllByVentaInternet(habilitado, Sort.by("nombre").ascending());
@@ -90,24 +96,62 @@ public class GrupoService {
 		return repository.totalVentasByGrupoIdAndVoucherFechaServicio(grupoId, fechaServicio);
 	}
 
+	// public List<VentasPorGrupoDto> getGruposVendidos(OffsetDateTime
+	// fechaServicio) {
+	// List<Grupo> grupos = findAllByVoucherFechaServicio(fechaServicio);
+	// List<VentasPorGrupoDto> ventasPorGrupo = new ArrayList<>();
+	// grupos.forEach(g -> {
+	// BigDecimal totalVentas =
+	// totalVentasByGrupoIdAndVoucherFechaServicio(g.getGrupoId(), fechaServicio);
+	// List<Proveedor> proveedores =
+	// proveedorService.findAllByGrupoIdAndVoucherFechaServicio(g.getGrupoId(),
+	// fechaServicio);
+	// List<VentasPorGrupoPorProveedorDto> ventasPorProveedor = new ArrayList<>();
+
+	// proveedores.forEach(p -> {
+	// BigDecimal totalVentasPorProveedor = proveedorService
+	// .totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(p.getProveedorId(),
+	// g.getGrupoId(),
+	// fechaServicio);
+	// ventasPorProveedor.add(new VentasPorGrupoPorProveedorDto(p.getRazonSocial(),
+	// totalVentasPorProveedor));
+	// });
+
+	// ventasPorGrupo.add(new VentasPorGrupoDto(fechaServicio, g.getNombre(),
+	// totalVentas, ventasPorProveedor));
+	// });
+	// return ventasPorGrupo;
+	// }
+
 	public List<VentasPorGrupoDto> getGruposVendidos(OffsetDateTime fechaServicio) {
 		List<Grupo> grupos = findAllByVoucherFechaServicio(fechaServicio);
 		List<VentasPorGrupoDto> ventasPorGrupo = new ArrayList<>();
+
 		grupos.forEach(g -> {
 			BigDecimal totalVentas = totalVentasByGrupoIdAndVoucherFechaServicio(g.getGrupoId(), fechaServicio);
-			List<Proveedor> proveedores = proveedorService.findAllByGrupoIdAndVoucherFechaServicio(g.getGrupoId(),
-					fechaServicio);
-			List<VentasPorGrupoPorProveedor> ventasPorProveedor = new ArrayList<>();
+			List<Proveedor> proveedores = proveedorService.findAllByGrupoIdAndVoucherFechaServicio(g.getGrupoId(), fechaServicio);
+			List<VentasPorGrupoPorProveedorDto> ventasPorProveedor = new ArrayList<>();
 
 			proveedores.forEach(p -> {
-				BigDecimal totalVentasPorProveedor = proveedorService
-						.totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(p.getProveedorId(), g.getGrupoId(),
-								fechaServicio);
-				ventasPorProveedor.add(new VentasPorGrupoPorProveedor(p.getRazonSocial(), totalVentasPorProveedor));
+				ventasPorProveedor.addAll(proveedorService.findVentasPorGrupoPorProveedor(g.getGrupoId(), fechaServicio, p.getProveedorId()));
 			});
 
-			ventasPorGrupo.add(new VentasPorGrupoDto(fechaServicio, g.getNombre(), totalVentas, ventasPorProveedor));
+			List<Producto> productos = productoService.findAllByGrupoId(g.getGrupoId());
+			
+			// Fetch all articles for all products in one go
+			Map<Integer, List<Articulo>> articulosByProducto = productos.stream()
+				.collect(Collectors.toMap(
+					Producto::getProductoId,
+					producto -> articuloService.findAllByProductoId(producto.getProductoId())
+				));
+
+			ventasPorGrupo.add(new VentasPorGrupoDto(
+				fechaServicio, 
+				grupoToDtoMapper.toDto(g, productos, articulosByProducto), 
+				totalVentas, 
+				ventasPorProveedor));
 		});
+
 		return ventasPorGrupo;
 	}
 
