@@ -53,35 +53,54 @@ public class ImpresionFiscalService {
 						comprobante.getLetraComprobante()),
 				clienteService.findByClienteId(clienteId), comprobante,
 				articuloMovimientoTemporalService.findAllByHwnd(ipAddress, hWnd, null), clienteMovimiento, null);
-		try {
-			log.debug("ImpresionFiscal -> {}", JsonMapper.builder().findAndAddModules().build()
-					.writerWithDefaultPrettyPrinter().writeValueAsString(impresionFiscal));
-		} catch (JsonProcessingException e) {
-			log.debug("Exception in ImpresionFiscal object");
-		}
+		logImpresionFiscal(impresionFiscal);
 		return impresionFiscal;
 	}
 
 	public ImpresionFiscalDto getDataPrevio(Long clienteMovimientoPrevioId, Integer comprobanteId,
                                             Long comprobanteOrigenId) {
 		Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
+		logComprobante(comprobante);
 		ClienteMovimiento clienteMovimiento = null;
 		if (comprobanteOrigenId > 0) {
 			clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(comprobanteOrigenId);
 		}
 		ClienteMovimientoPrevio clienteMovimientoPrevio = clienteMovimientoPrevioService
 				.findByClienteMovimientoPrevioId(clienteMovimientoPrevioId);
+		logClienteMovimientoPrevio(clienteMovimientoPrevio);
 		ImpresionFiscalDto impresionFiscal = new ImpresionFiscalDto(
 				clienteMovimientoService.nextNumeroFactura(comprobante.getPuntoVenta(),
 						comprobante.getLetraComprobante()),
 				clienteMovimientoPrevio.getCliente(), comprobante, null, clienteMovimiento, clienteMovimientoPrevio);
+		logImpresionFiscal(impresionFiscal);
+		return impresionFiscal;
+	}
+
+	private void logClienteMovimientoPrevio(ClienteMovimientoPrevio clienteMovimientoPrevio) {
+		try {
+			log.debug("ClienteMovimientoPrecio -> {}", JsonMapper.builder().findAndAddModules().build()
+					.writerWithDefaultPrettyPrinter().writeValueAsString(clienteMovimientoPrevio));
+		} catch (JsonProcessingException e) {
+			log.debug("ClienteMovimientoPrevio jsonify error -> {}", e.getMessage());
+		}
+	}
+
+	private void logComprobante(Comprobante comprobante) {
+		try {
+			log.debug("Comprobante -> {}", JsonMapper.builder().findAndAddModules().build()
+					.writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
+		} catch (JsonProcessingException e) {
+			log.debug("Comprobante jsonify error -> {}", e.getMessage());
+		}
+	}
+
+	private void logImpresionFiscal(ImpresionFiscalDto impresionFiscal) {
 		try {
 			log.debug("ImpresionFiscal -> {}", JsonMapper.builder().findAndAddModules().build()
 					.writerWithDefaultPrettyPrinter().writeValueAsString(impresionFiscal));
 		} catch (JsonProcessingException e) {
 			log.debug("Exception in ImpresionFiscal object");
 		}
-		return impresionFiscal;
 	}
 
 }
