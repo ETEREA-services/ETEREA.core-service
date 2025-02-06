@@ -32,7 +32,7 @@ data class ClienteMovimientoPrevio(
     @JoinColumn(name = "clienteId", insertable = false, updatable = false)
     var cliente: Cliente? = null,
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "clientemovimientoprevio_id", insertable = false, updatable = false)
     var articuloMovimientoPrevios: List<ArticuloMovimientoPrevio>? = null
 
