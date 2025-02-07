@@ -13,8 +13,7 @@ public record VoucherDto(
    String contacto,
    Integer paxsReales,
    Long reservaId,
-   String numeroVoucher,
-   List<ProgramaDiaProductoDto> productos
+   String numeroVoucher
 
 ) {
 
