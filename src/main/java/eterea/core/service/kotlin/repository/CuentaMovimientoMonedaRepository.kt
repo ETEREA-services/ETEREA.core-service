@@ -21,7 +21,7 @@ interface CuentaMovimientoMonedaRepository : JpaRepository<CuentaMovimientoMoned
             m.nrocomp, 
             m.item, 
             c.moneda_id, 
-            ROUND(m.Importe / c.cotizacion, 4), 
+            ROUND(m.Importe / c.cotizacion, 5), 
             NOW()
         FROM movcon m
         JOIN moneda_cotizacion c ON m.fecha = c.fecha

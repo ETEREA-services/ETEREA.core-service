@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -15,4 +16,6 @@ public interface MonedaCotizacionRepository extends JpaRepository<MonedaCotizaci
 
     boolean existsByMonedaIdAndFecha(Integer monedaId, OffsetDateTime fecha);
 
+    Optional<MonedaCotizacion> findByMonedaIdAndFecha(Integer monedaId, OffsetDateTime fechaActual);
+    
 }
