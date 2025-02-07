@@ -2,9 +2,12 @@ package eterea.core.service.model.dto.programadia.mapper;
 
 import java.util.function.Function;
 
+import org.springframework.stereotype.Component;
+
 import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.model.dto.programadia.VoucherDto;
 
+@Component
 public class VoucherToDtoMapper implements Function<Voucher, VoucherDto> {
    
    @Override

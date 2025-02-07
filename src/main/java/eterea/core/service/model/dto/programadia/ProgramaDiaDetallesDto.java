@@ -7,7 +7,8 @@ public record ProgramaDiaDetallesDto(
    OffsetDateTime fechaServicio,
    VoucherDto voucher,
    ReservaDto reserva,
-   ProveedorDto proveedor
+   ProveedorDto proveedor,
+   List<ProgramaDiaProductoDto> productos
 ) {
     
 }

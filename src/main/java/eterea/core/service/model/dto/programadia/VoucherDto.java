@@ -1,5 +1,7 @@
 package eterea.core.service.model.dto.programadia;
 
+import java.util.List;
+
 public record VoucherDto(
    Long voucherId,
    String nombrePax,
@@ -11,7 +13,9 @@ public record VoucherDto(
    String contacto,
    Integer paxsReales,
    Long reservaId,
-   String numeroVoucher
+   String numeroVoucher,
+   List<ProgramaDiaProductoDto> productos
+
 ) {
 
 }
