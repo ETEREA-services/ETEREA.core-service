@@ -123,7 +123,7 @@ BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("pro
 
 	 @Query("""
 			SELECT DISTINCT
-            new eterea.core.service.model.dto.VentaDto(
+            new eterea.core.service.model.dto.programadia.ProgramaDiaVentasDto(
                 prov.razonSocial,
                 p.productoId,
                 SUM(vp.cantidadPaxs * gp.coeficiente)
