@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.Producto;
-import eterea.core.service.model.dto.programadia.ProgramaDiaVentasDto;
+import eterea.core.service.model.dto.programadia.ProgramaDiaVentasProveedorDto;
 import org.springframework.stereotype.Service;
 
 import eterea.core.service.exception.ProveedorException;
@@ -57,11 +57,11 @@ public class ProveedorService {
 	}
 
 	public List<VentasPorGrupoPorProveedorDto> findVentasPorGrupoPorProveedor(Integer grupoId, OffsetDateTime fechaServicio, Long proveedorId) {
-		List<ProgramaDiaVentasDto> ventas = repository.findVentasPorGrupoPorProveedor(grupoId, fechaServicio, proveedorId);
+		List<ProgramaDiaVentasProveedorDto> ventas = repository.findVentasPorGrupoPorProveedor(grupoId, fechaServicio, proveedorId);
 		
 		// Get all product IDs from ventas
 		List<Integer> productoIds = ventas.stream()
-			.map(ProgramaDiaVentasDto::productoId)
+			.map(ProgramaDiaVentasProveedorDto::productoId)
 			.distinct()
 			.toList();
 			

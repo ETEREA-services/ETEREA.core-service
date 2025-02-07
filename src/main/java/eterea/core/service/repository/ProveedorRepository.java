@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 import eterea.core.service.kotlin.model.Proveedor;
-import eterea.core.service.model.dto.programadia.ProgramaDiaVentasDto;
+import eterea.core.service.model.dto.programadia.ProgramaDiaVentasProveedorDto;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -123,7 +124,7 @@ BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("pro
 
 	 @Query("""
 			SELECT DISTINCT
-            new eterea.core.service.model.dto.programadia.ProgramaDiaVentasDto(
+            new eterea.core.service.model.dto.programadia.ProgramaDiaVentasProveedorDto(
                 prov.razonSocial,
                 p.productoId,
                 SUM(vp.cantidadPaxs * gp.coeficiente)
@@ -143,7 +144,7 @@ BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("pro
             prov.razonSocial,
             p.productoId
 			""")
-	List<ProgramaDiaVentasDto> findVentasPorGrupoPorProveedor(@Param("grupoId") Integer grupoId,
+	List<ProgramaDiaVentasProveedorDto> findVentasPorGrupoPorProveedor(@Param("grupoId") Integer grupoId,
 																				 @Param("fechaServicio") OffsetDateTime fechaServicio, @Param("proveedorId") Long proveedorId);
 
 }
