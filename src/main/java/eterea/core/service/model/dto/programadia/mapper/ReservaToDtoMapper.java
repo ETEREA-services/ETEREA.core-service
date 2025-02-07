@@ -12,6 +12,10 @@ public class ReservaToDtoMapper implements Function<Reserva, ReservaDto> {
 
    @Override
    public ReservaDto apply(Reserva reserva) {
-      return new ReservaDto(reserva.getReservaId());
+      return new ReservaDto(
+            reserva.getReservaId(),
+            reserva.getNombrePax(),
+            reserva.getCantidadPaxs(),
+            reserva.getObservaciones());
    }
 }
