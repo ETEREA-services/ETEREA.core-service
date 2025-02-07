@@ -22,7 +22,7 @@ data class MonedaCotizacion(
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
     var fecha: OffsetDateTime? = null,
-    var cotizacion: BigDecimal? = null,
+    var cotizacion: Double? = null,
     var copia: Byte = 0
 
 ) : Auditable()
