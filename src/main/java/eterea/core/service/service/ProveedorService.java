@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.Producto;
 import eterea.core.service.model.dto.programadia.ProgramaDiaVentasDto;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,6 @@ import eterea.core.service.model.dto.programadia.ProgramaDiaProductoDto;
 import eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedorDto;
 import eterea.core.service.model.dto.VentaDto;
 import eterea.core.service.repository.ProveedorRepository;
-import eterea.core.service.model.dto.Producto;
-import eterea.core.service.model.dto.Articulo;
 
 /**
  * @author daniel
@@ -58,7 +57,6 @@ public class ProveedorService {
 	}
 
 	public List<VentasPorGrupoPorProveedorDto> findVentasPorGrupoPorProveedor(Integer grupoId, OffsetDateTime fechaServicio, Long proveedorId) {
-		// Get sales data
 		List<ProgramaDiaVentasDto> ventas = repository.findVentasPorGrupoPorProveedor(grupoId, fechaServicio, proveedorId);
 		
 		// Get all product IDs from ventas
@@ -68,7 +66,7 @@ public class ProveedorService {
 			.toList();
 			
 		// Get all products
-		Map<Integer, Producto> productosMap = productoService.findById(productoIds).stream()
+		Map<Integer, Producto> productosMap = productoService.findAll().stream()
 			.collect(Collectors.toMap(
 				Producto::getProductoId,
 				producto -> producto

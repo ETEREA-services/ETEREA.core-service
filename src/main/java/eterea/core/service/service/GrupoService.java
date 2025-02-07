@@ -137,8 +137,6 @@ public class GrupoService {
 			});
 
 			List<Producto> productos = productoService.findAllByGrupoId(g.getGrupoId());
-			
-			// Fetch all articles for all products in one go
 			Map<Integer, List<Articulo>> articulosByProducto = productos.stream()
 				.collect(Collectors.toMap(
 					Producto::getProductoId,
