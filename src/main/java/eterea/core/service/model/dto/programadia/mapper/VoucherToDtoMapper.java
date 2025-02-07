@@ -1,21 +1,31 @@
 package eterea.core.service.model.dto.programadia.mapper;
 
-import java.util.function.Function;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.kotlin.model.VoucherProducto;
+import eterea.core.service.model.dto.programadia.ProductoToDtoMapper;
 import eterea.core.service.model.dto.programadia.VoucherDto;
+import eterea.core.service.model.dto.programadia.VoucherProductoDto;
 
 @Component
-public class VoucherToDtoMapper implements Function<Voucher, VoucherDto> {
+public class VoucherToDtoMapper {
+   private final ProductoToDtoMapper productoToDtoMapper;
 
-   @Override
-   public VoucherDto apply(Voucher voucher) {
+   public VoucherToDtoMapper(ProductoToDtoMapper productoToDtoMapper) {
+      this.productoToDtoMapper = productoToDtoMapper;
+   }
+
+   public VoucherDto toDto(Voucher voucher, List<VoucherProducto> voucherProductos,
+         Map<Integer, List<Articulo>> articulosByProducto) {
       return new VoucherDto(
             voucher.getVoucherId(),
             voucher.getNombrePax(),
-            voucher.getCantidadPax(),
             voucher.getSubeEn(),
             voucher.getObservaciones(),
             voucher.getConfirmado() == 1,
@@ -23,6 +33,11 @@ public class VoucherToDtoMapper implements Function<Voucher, VoucherDto> {
             voucher.getContacto(),
             voucher.getPaxsReales(),
             voucher.getReservaId(),
-            voucher.getNumeroVoucher());
+            voucher.getNumeroVoucher(),
+            voucherProductos.stream()
+                  .map(vp -> new VoucherProductoDto(vp.getCantidadPaxs(),
+                        productoToDtoMapper.toDto(vp.getProducto(),
+                              articulosByProducto.getOrDefault(vp.getProducto().getProductoId(), List.of()))))
+                  .collect(Collectors.toList()));
    }
 }
