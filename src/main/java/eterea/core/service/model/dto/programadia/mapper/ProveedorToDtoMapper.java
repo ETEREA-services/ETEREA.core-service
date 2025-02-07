@@ -11,6 +11,6 @@ import eterea.core.service.model.dto.programadia.ProveedorDto;
 public class ProveedorToDtoMapper implements Function<Proveedor, ProveedorDto> {
    @Override
    public ProveedorDto apply(Proveedor proveedor) {
-      return new ProveedorDto(proveedor.getProveedorId());
+      return new ProveedorDto(proveedor.getProveedorId(), proveedor.getRazonSocial());
    }
 }
