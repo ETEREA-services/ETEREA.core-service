@@ -8,9 +8,9 @@ public record ReservaDto(
       Integer cantidadPaxs,
       String observaciones,
       Boolean facturada,
-      OffsetDateTime resFechaToma,
-      OffsetDateTime resFechaInServicio,
-      OffsetDateTime resFechaOutServicio,
-      OffsetDateTime resFechaVencimiento) {
+      OffsetDateTime fechaToma,
+      OffsetDateTime fechaInServicio,
+      OffsetDateTime fechaOutServicio,
+      OffsetDateTime fechaVencimiento) {
 
 }
