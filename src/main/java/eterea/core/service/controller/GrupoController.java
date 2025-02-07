@@ -4,6 +4,7 @@
 package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.Grupo;
+import eterea.core.service.model.dto.programadia.ProgramaDiaGrupoDto;
 import eterea.core.service.model.dto.programadia.VentasPorGrupoDto;
 import eterea.core.service.service.GrupoService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -67,7 +68,7 @@ public class GrupoController {
 	}
 
 	@GetMapping("/contienen-productos")
-	public ResponseEntity<List<Grupo>> findAllWithProductos() {
+	public ResponseEntity<List<ProgramaDiaGrupoDto>> findAllWithProductos() {
 		return new ResponseEntity<>(service.findAllWithProductos(), HttpStatus.OK);
 	}
 }

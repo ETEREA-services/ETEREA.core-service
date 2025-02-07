@@ -6,6 +6,8 @@ package eterea.core.service.service;
 import eterea.core.service.exception.GrupoException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.dto.programadia.GrupoToDtoMapper;
+import eterea.core.service.model.dto.programadia.ProductoToDtoMapper;
+import eterea.core.service.model.dto.programadia.ProgramaDiaGrupoDto;
 import eterea.core.service.model.dto.programadia.VentasPorGrupoDto;
 import eterea.core.service.model.dto.programadia.VentasPorGrupoPorProveedorDto;
 import eterea.core.service.repository.GrupoRepository;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,11 +38,13 @@ public class GrupoService {
 	private final GrupoToDtoMapper grupoToDtoMapper;
 	private final ProductoService productoService;
 	private final ArticuloService articuloService;
+	private final ProductoToDtoMapper productoToDtoMapper;
 
 	public GrupoService(GrupoRepository repository, GrupoProductoService grupoProductoService,
 			VoucherService voucherService, VoucherProductoService voucherProductoService,
 			ProveedorService proveedorService, GrupoToDtoMapper grupoToDtoMapper,
-			ProductoService productoService, ArticuloService articuloService) {
+			ProductoService productoService, ArticuloService articuloService,
+			ProductoToDtoMapper productoToDtoMapper) {
 		this.repository = repository;
 		this.grupoProductoService = grupoProductoService;
 		this.voucherService = voucherService;
@@ -48,14 +53,18 @@ public class GrupoService {
 		this.grupoToDtoMapper = grupoToDtoMapper;
 		this.productoService = productoService;
 		this.articuloService = articuloService;
+		this.productoToDtoMapper = productoToDtoMapper;
 	}
 
 	public List<Grupo> findAll() {
 		return repository.findAll(Sort.by("nombre").ascending());
 	}
 
-	public List<Grupo> findAllWithProductos() {
-		return repository.findAllWithProductos();
+	public List<ProgramaDiaGrupoDto> findAllWithProductos() {
+
+		return repository.findAllWithProductos().stream()
+				.map(grupo -> grupoToDtoMapper.toDto(grupo, new ArrayList<>(), new HashMap<>()))
+				.toList();
 	}
 
 	public Grupo findById(Integer grupoId) {
@@ -129,25 +138,26 @@ public class GrupoService {
 
 		grupos.forEach(g -> {
 			BigDecimal totalVentas = totalVentasByGrupoIdAndVoucherFechaServicio(g.getGrupoId(), fechaServicio);
-			List<Proveedor> proveedores = proveedorService.findAllByGrupoIdAndVoucherFechaServicio(g.getGrupoId(), fechaServicio);
+			List<Proveedor> proveedores = proveedorService.findAllByGrupoIdAndVoucherFechaServicio(g.getGrupoId(),
+					fechaServicio);
 			List<VentasPorGrupoPorProveedorDto> ventasPorProveedor = new ArrayList<>();
 
 			proveedores.forEach(p -> {
-				ventasPorProveedor.addAll(proveedorService.findVentasPorGrupoPorProveedor(g.getGrupoId(), fechaServicio, p.getProveedorId()));
+				ventasPorProveedor.addAll(
+						proveedorService.findVentasPorGrupoPorProveedor(g.getGrupoId(), fechaServicio, p.getProveedorId()));
 			});
 
 			List<Producto> productos = productoService.findAllByGrupoId(g.getGrupoId());
 			Map<Integer, List<Articulo>> articulosByProducto = productos.stream()
-				.collect(Collectors.toMap(
-					Producto::getProductoId,
-					producto -> articuloService.findAllByProductoId(producto.getProductoId())
-				));
+					.collect(Collectors.toMap(
+							Producto::getProductoId,
+							producto -> articuloService.findAllByProductoId(producto.getProductoId())));
 
 			ventasPorGrupo.add(new VentasPorGrupoDto(
-				fechaServicio, 
-				grupoToDtoMapper.toDto(g, productos, articulosByProducto), 
-				totalVentas, 
-				ventasPorProveedor));
+					fechaServicio,
+					grupoToDtoMapper.toDto(g, productos, articulosByProducto),
+					totalVentas,
+					ventasPorProveedor));
 		});
 
 		return ventasPorGrupo;
