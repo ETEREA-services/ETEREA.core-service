@@ -58,4 +58,8 @@ public class ProductoService {
 	public List<Producto> findAllByGrupoId(Integer grupoId) {
 		return repository.findAllByGrupoId(grupoId);
 	}
+
+	public List<Producto> findAllByVoucherId(Long voucherId) {
+		return repository.findAllByVoucherId(voucherId);
+	}
 }

@@ -34,5 +34,16 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 	""")
 	List<Producto> findAllByGrupoId(Integer grupoId);
 
+	@Query("""
+			SELECT
+				p
+			FROM Producto p
+				JOIN VoucherProducto vp
+					ON p.productoId = vp.productoId
+			WHERE
+				vp.voucherId = :voucherId
+	""")
+   List<Producto> findAllByVoucherId(Long voucherId);
+
 
 }

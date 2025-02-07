@@ -25,7 +25,7 @@ public class ProgramaDiaController {
       this.programaDiaService = programaDiaService;
    }
 
-   @GetMapping("/{fechaServicio}")
+   @GetMapping("/{fecha}")
    public ResponseEntity<List<ProgramaDiaDetallesDto>> getProgramaDiaDetalles(@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fecha) {
       return new ResponseEntity<>(programaDiaService.getProgramaDiaDetalles(fecha), HttpStatus.OK);
    }
