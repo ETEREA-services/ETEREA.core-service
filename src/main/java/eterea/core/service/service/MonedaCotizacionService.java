@@ -1,10 +1,13 @@
 package eterea.core.service.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.MonedaCotizacion;
 import eterea.core.service.repository.MonedaCotizacionRepository;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +24,10 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class MonedaCotizacionService {
 
     private final MonedaCotizacionRepository repository;
@@ -94,8 +99,12 @@ public class MonedaCotizacionService {
         NavigableMap<LocalDate, Double> cotizacionesPorFecha = new TreeMap<>();
         for (ResultadoCotizacion resultado : response.results) {
             DetalleCotizacion detalle = resultado.detalle.getFirst();
+            logDetalleCotizacion(detalle);
             LocalDate fecha = LocalDate.parse(resultado.fecha);
-            cotizacionesPorFecha.put(fecha, detalle.tipoCotizacion);
+            var cotizacion = detalle.tipoCotizacion;
+            log.debug("Cotizacion al {} -> 1.00 ARS = {} {} / 1.00 {} = {} ARS", 
+                fecha, 1 / cotizacion, moneda.getSimbolo(), moneda.getSimbolo(), cotizacion);
+            cotizacionesPorFecha.put(fecha, cotizacion);
         }
 
         List<MonedaCotizacion> cotizacionesNuevas = new ArrayList<>();
@@ -107,24 +116,40 @@ public class MonedaCotizacionService {
         while (!currentDate.isAfter(fechaHastaLocal)) {
             OffsetDateTime fechaActual = currentDate.atStartOfDay().atOffset(ZoneOffset.UTC);
             
-            // Solo procesar si la fecha no existe
-            if (!repository.existsByMonedaIdAndFecha(monedaId, fechaActual)) {
-                // Buscar la cotización para la fecha actual o la anterior más cercana
-                Map.Entry<LocalDate, Double> cotizacionEntry = cotizacionesPorFecha.floorEntry(currentDate);
+            // Buscar la cotización para la fecha actual o la anterior más cercana
+            Map.Entry<LocalDate, Double> cotizacionEntry = cotizacionesPorFecha.floorEntry(currentDate);
+            
+            if (cotizacionEntry != null) {
+                // Determinar si es una cotización copiada
+                byte esCopia = (byte) (cotizacionEntry.getKey().equals(currentDate) ? 0 : 1);
+                Double nuevaCotizacion = cotizacionEntry.getValue();
                 
-                if (cotizacionEntry != null) {
-                    // Determinar si es una cotización copiada
-                    byte esCopia = (byte) (cotizacionEntry.getKey().equals(currentDate) ? 0 : 1);
-                    
+                // Buscar si existe una cotización para esta fecha
+                Optional<MonedaCotizacion> cotizacionExistente = repository
+                    .findByMonedaIdAndFecha(monedaId, fechaActual);
+                
+                if (cotizacionExistente.isPresent()) {
+                    MonedaCotizacion existente = cotizacionExistente.get();
+                    // Actualizar solo si el valor es diferente
+                    if (!existente.getCotizacion().equals(nuevaCotizacion)) {
+                        existente.setCotizacion(nuevaCotizacion);
+                        existente.setCopia(esCopia);
+                        cotizacionesNuevas.add(existente);
+                        log.debug("Actualizando cotización para {} de {} a {}", 
+                            fechaActual, existente.getCotizacion(), nuevaCotizacion);
+                    }
+                } else {
+                    // Crear nueva cotización
                     MonedaCotizacion cotizacion = new MonedaCotizacion(
                         null,
                         monedaId,
                         fechaActual,
-                        BigDecimal.valueOf(cotizacionEntry.getValue()),
+                        nuevaCotizacion,
                         esCopia
                     );
-                    
                     cotizacionesNuevas.add(cotizacion);
+                    log.debug("Creando nueva cotización para {} con valor {}", 
+                        fechaActual, nuevaCotizacion);
                 }
             }
             
@@ -132,6 +157,14 @@ public class MonedaCotizacionService {
         }
 
         return repository.saveAll(cotizacionesNuevas);
+    }
+
+    private void logDetalleCotizacion(DetalleCotizacion detalle) {
+        try {
+            log.debug("Detalle cotizacion: {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(detalle));
+        } catch (JsonProcessingException e) {
+            log.debug("Detalle cotizacion jsonify error: {}", e.getMessage());
+        }
     }
 
     private List<MonedaCotizacion> fillPesoCotizacion(
@@ -152,7 +185,7 @@ public class MonedaCotizacionService {
                     null,
                     monedaId,
                     fechaActual,
-                    BigDecimal.ONE,  // Cotización siempre 1
+                    1.0,  // Cotización siempre 1
                     (byte) 0         // No es copia
                 );
                 
