@@ -16,6 +16,11 @@ public class ReservaToDtoMapper implements Function<Reserva, ReservaDto> {
             reserva.getReservaId(),
             reserva.getNombrePax(),
             reserva.getCantidadPaxs(),
-            reserva.getObservaciones());
+            reserva.getObservaciones(),
+            reserva.getFacturada() == 1,
+            reserva.getFechaToma(),
+            reserva.getFechaInServicio(),
+            reserva.getFechaOutServicio(),
+            reserva.getFechaVencimiento());
    }
 }
