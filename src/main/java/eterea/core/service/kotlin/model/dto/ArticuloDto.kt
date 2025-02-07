@@ -2,7 +2,7 @@ package eterea.core.service.kotlin.model.dto
 
 import java.math.BigDecimal
 
-data class ArticuloDto private constructor(
+data class ArticuloDto (
 
     val articuloId: String?,
     val negocioId: Int?,
