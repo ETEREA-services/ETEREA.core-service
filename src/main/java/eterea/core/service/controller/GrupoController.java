@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -70,5 +71,11 @@ public class GrupoController {
 	@GetMapping("/contienen-productos")
 	public ResponseEntity<List<ProgramaDiaGrupoDto>> findAllWithProductos() {
 		return new ResponseEntity<>(service.findAllWithProductos(), HttpStatus.OK);
+	}
+
+	@GetMapping("/ventas-por-voucher")
+	public ResponseEntity<BigDecimal> totalVentasByGrupoIdAndVoucherId(@RequestParam Integer grupoId,
+			@RequestParam Integer voucherId) {
+		return new ResponseEntity<>(service.totalVentasByGrupoIdAndVoucherId(grupoId, voucherId), HttpStatus.OK);
 	}
 }

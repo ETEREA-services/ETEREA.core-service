@@ -102,4 +102,21 @@ public interface GrupoRepository extends JpaRepository<Grupo, Integer> {
     BigDecimal totalVentasByGrupoIdAndVoucherFechaServicio(@Param("grupoId") Integer grupoId,
             @Param("fechaServicio") OffsetDateTime fechaServicio);
 
+    
+    @Query("""
+            SELECT SUM(vp.cantidadPaxs * gp.coeficiente)
+            FROM
+                Voucher v
+                JOIN VoucherProducto vp
+                    ON vp.voucherId = v.voucherId
+                JOIN GrupoProducto gp
+                    ON gp.productoId = vp.productoId
+            WHERE
+                gp.grupoId = :grupoId
+                AND
+                v.voucherId = :voucherId
+            """)
+    BigDecimal totalVentasByGrupoIdAndVoucherId(@Param("grupoId") Integer grupoId,
+            @Param("voucherId") Integer voucherId);
+
 }

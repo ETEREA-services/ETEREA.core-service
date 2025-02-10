@@ -163,10 +163,15 @@ public class GrupoService {
 		return ventasPorGrupo;
 	}
 
+	public BigDecimal totalVentasByGrupoIdAndVoucherId(Integer grupoId, Integer voucherId) {
+		return repository.totalVentasByGrupoIdAndVoucherId(grupoId, voucherId);
+	}
+
 	/*
 	 * public List<Grupo> findByFechaServicio(String fecha) { List<Integer> lista =
 	 * repository.findAllByFecha(ToolService.stringDDMMYYYY2OffsetDateTime(fecha));
 	 * System.out.println(lista.size()); List<Grupo> grupos = new ArrayList<>(); for
 	 * (Integer element : lista) { grupos.add(findById(element)); } return grupos; }
+
 	 */
 }
