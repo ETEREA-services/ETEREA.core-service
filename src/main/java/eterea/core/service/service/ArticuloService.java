@@ -135,5 +135,8 @@ public class ArticuloService {
 		return repository.findAllByProductoId(productoId);
 	}
 
+	public List<Articulo> findAllByProductoIds(List<Integer> productoIds) {
+		return repository.findAllByProductoIdIn(productoIds);
+	}
 }
 

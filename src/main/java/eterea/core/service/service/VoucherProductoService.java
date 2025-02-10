@@ -57,4 +57,8 @@ public class VoucherProductoService {
         repository.deleteAllByVoucherId(voucherId);
     }
 
+    public List<VoucherProducto> findAllByVouchersIds(List<Long> voucherIds) {
+        return repository.findAllByVoucherIdIn(voucherIds);
+    }
+
 }
