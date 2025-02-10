@@ -1,5 +1,6 @@
 package eterea.core.service.service;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import eterea.core.service.model.dto.programadia.ProgramaDiaDetallesDto;
 import eterea.core.service.model.dto.programadia.mapper.ProveedorToDtoMapper;
 import eterea.core.service.model.dto.programadia.mapper.ReservaToDtoMapper;
 import eterea.core.service.model.dto.programadia.mapper.VoucherToDtoMapper;
-import eterea.core.service.model.dto.programadia.mapper.GrupoToDtoMapper;
+import eterea.core.service.model.dto.programadia.GrupoToDtoMapper;
 import eterea.core.service.model.dto.programadia.VentasPorGrupoDto;
 
 
@@ -79,11 +80,11 @@ public class ProgramaDiaService {
          //       .collect(Collectors.toMap(
          //             Producto::getProductoId,
          //             producto -> articuloService.findAllByProductoId(producto.getProductoId())));
-         List<Grupo> grupos = grupoService.findAllByFechaServicio(fechaServicio);
+         List<Grupo> grupos = grupoService.findAllByVoucherFechaServicio(fechaServicio);
          List<VentasPorGrupoDto> ventasPorGrupo = grupos.stream()
                .map(g -> {
                   List<Producto> productos = productoService.findAllByGrupoId(g.getGrupoId());
-                  Map<Integer, List<Articulo>> articulosByProducto = productos.stream()
+                  Map<Integer, List<Articulo>> artsByProducto = productos.stream()
                         .collect(Collectors.toMap(
                               Producto::getProductoId,
                               producto -> articuloService.findAllByProductoId(producto.getProductoId())));
@@ -104,8 +105,6 @@ public class ProgramaDiaService {
                proveedorToDtoMapper.apply(proveedor),
                ventasPorGrupo));
       });
-
-
       return programas;
    }
 }

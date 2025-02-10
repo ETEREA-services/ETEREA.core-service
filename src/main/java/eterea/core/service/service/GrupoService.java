@@ -163,7 +163,7 @@ public class GrupoService {
 		return ventasPorGrupo;
 	}
 
-	public BigDecimal totalVentasByGrupoIdAndVoucherId(Integer grupoId, Integer voucherId) {
+	public BigDecimal totalVentasByGrupoAndVoucher(Integer grupoId, Long voucherId) {
 		return repository.totalVentasByGrupoIdAndVoucherId(grupoId, voucherId);
 	}
 

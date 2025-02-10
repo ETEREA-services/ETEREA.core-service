@@ -117,6 +117,6 @@ public interface GrupoRepository extends JpaRepository<Grupo, Integer> {
                 v.voucherId = :voucherId
             """)
     BigDecimal totalVentasByGrupoIdAndVoucherId(@Param("grupoId") Integer grupoId,
-            @Param("voucherId") Integer voucherId);
+            @Param("voucherId") Long voucherId);
 
 }
