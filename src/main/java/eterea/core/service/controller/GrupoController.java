@@ -73,9 +73,10 @@ public class GrupoController {
 		return new ResponseEntity<>(service.findAllWithProductos(), HttpStatus.OK);
 	}
 
-	@GetMapping("/ventas-por-voucher")
-	public ResponseEntity<BigDecimal> totalVentasByGrupoIdAndVoucherId(@RequestParam Integer grupoId,
-			@RequestParam Integer voucherId) {
+	@GetMapping("/{grupoId}/ventas-por-voucher/{voucherId}")
+	public ResponseEntity<BigDecimal> totalVentasByGrupoAndVoucher(@PathVariable Integer grupoId,
+			@PathVariable Integer voucherId) {
 		return new ResponseEntity<>(service.totalVentasByGrupoIdAndVoucherId(grupoId, voucherId), HttpStatus.OK);
 	}
+
 }
