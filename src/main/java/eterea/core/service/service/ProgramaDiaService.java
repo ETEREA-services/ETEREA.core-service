@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -65,47 +66,86 @@ public class ProgramaDiaService {
 
 
    public List<ProgramaDiaDetallesDto> getProgramaDiaDetalles(OffsetDateTime fechaServicio) {
-      List<ProgramaDiaDetallesDto> programas = new ArrayList<>();
+      // Get all vouchers first
       List<Voucher> vouchers = voucherService.findAllByFechaServicio(fechaServicio, false, false);
+      if (vouchers.isEmpty()) {
+          return new ArrayList<>();
+      }
 
-      vouchers.forEach(voucher -> {
-         Reserva reserva = voucher.getReserva();
-         Proveedor proveedor = voucher.getProveedor();
-         List<VoucherProducto> voucherProductos = voucherProductoService.findAllByVoucherId(voucher.getVoucherId());
-         Map<Integer, List<Articulo>> articulosByProducto = voucherProductos.stream()
-               .collect(Collectors.toMap(
-                     voucherProducto -> voucherProducto.getProducto().getProductoId(),
-                     voucherProducto -> articuloService.findAllByProductoId(voucherProducto.getProducto().getProductoId())));
-         // List<Producto> productos = productoService.findAllByVoucherId(voucher.getVoucherId());
-         // Map<Integer, List<Articulo>> articulosByProducto = productos.stream()
-         //       .collect(Collectors.toMap(
-         //             Producto::getProductoId,
-         //             producto -> articuloService.findAllByProductoId(producto.getProductoId())));
-         List<Grupo> grupos = grupoService.findAllByVoucherFechaServicio(fechaServicio);
-         List<VentasPorGrupoDto> ventasPorGrupo = grupos.stream()
-               .map(g -> {
-                  List<Producto> productos = productoService.findAllByGrupoId(g.getGrupoId());
-                  Map<Integer, List<Articulo>> artsByProducto = productos.stream()
-                        .collect(Collectors.toMap(
+      // Get all voucher IDs
+      List<Long> voucherIds = vouchers.stream()
+          .map(Voucher::getVoucherId)
+          .toList();
+
+      // Batch fetch all voucher products
+      Map<Long, List<VoucherProducto>> voucherProductosMap = voucherProductoService
+           .findAllByVouchersIds(voucherIds)
+          .stream()
+          .collect(Collectors.groupingBy(VoucherProducto::getVoucherId));
+
+      // Get all unique product IDs
+      Set<Integer> allProductIds = voucherProductosMap.values().stream()
+          .flatMap(List::stream)
+          .map(vp -> vp.getProducto().getProductoId())
+          .collect(Collectors.toSet());
+
+      // Batch fetch all articles for all products
+      Map<String, List<Articulo>> allArticulosByProducto = articuloService
+          .findAllByProductoIds(new ArrayList<>(allProductIds))
+          .stream()
+          .collect(Collectors.groupingBy(Articulo::getArticuloId));
+
+      // Get all grupos once
+      List<Grupo> grupos = grupoService.findAllByVoucherFechaServicio(fechaServicio);
+      
+      // Batch fetch all productos by grupo
+      Map<Integer, List<Producto>> productosByGrupo = grupos.stream()
+          .collect(Collectors.toMap(
+              Grupo::getGrupoId,
+              grupo -> productoService.findAllByGrupoId(grupo.getGrupoId())
+          ));
+
+      // Create the final list
+      return vouchers.stream()
+          .map(voucher -> {
+              List<VoucherProducto> voucherProductos = voucherProductosMap.getOrDefault(voucher.getVoucherId(), new ArrayList<>());
+              
+              Map<Integer, List<Articulo>> articulosByProducto = voucherProductos.stream()
+                  .collect(Collectors.toMap(
+                      vp -> vp.getProducto().getProductoId(),
+                      vp -> allArticulosByProducto.getOrDefault(vp.getProducto().getProductoId(), new ArrayList<>())
+                  ));
+
+              List<VentasPorGrupoDto> ventasPorGrupo = grupos.stream()
+                  .map(g -> {
+                      List<Producto> productos = productosByGrupo.get(g.getGrupoId());
+                      BigDecimal totalVentas = grupoService.totalVentasByGrupoAndVoucher(g.getGrupoId(), voucher.getVoucherId());
+
+                      if (totalVentas == null || totalVentas.compareTo(BigDecimal.ZERO) == 0) {
+                          return null;
+                      }
+
+                      Map<Integer, List<Articulo>> artsByProducto = productos.stream()
+                          .collect(Collectors.toMap(
                               Producto::getProductoId,
-                              producto -> articuloService.findAllByProductoId(producto.getProductoId())));
-                  BigDecimal totalVentas = grupoService.totalVentasByGrupoAndVoucher(g.getGrupoId(), voucher.getVoucherId());
+                              producto -> allArticulosByProducto.getOrDefault(producto.getProductoId(), new ArrayList<>())
+                          ));
 
-                  if (totalVentas == null || totalVentas.compareTo(BigDecimal.ZERO) == 0) {
-                     return null;
-                  }
-                  return new VentasPorGrupoDto(fechaServicio, grupoToDtoMapper.toDto(g, productos, articulosByProducto), totalVentas, null);
-               })
-               .filter(Objects::nonNull)
-               .toList();
+                      return new VentasPorGrupoDto(fechaServicio, 
+                          grupoToDtoMapper.toDto(g, productos, artsByProducto), 
+                          totalVentas, 
+                          null);
+                  })
+                  .filter(Objects::nonNull)
+                  .toList();
 
-         programas.add(new ProgramaDiaDetallesDto(
-               voucher.getFechaServicio(),
-               voucherToDtoMapper.toDto(voucher, voucherProductos, articulosByProducto),
-               reservaToDtoMapper.apply(reserva),
-               proveedorToDtoMapper.apply(proveedor),
-               ventasPorGrupo));
-      });
-      return programas;
+              return new ProgramaDiaDetallesDto(
+                  voucher.getFechaServicio(),
+                  voucherToDtoMapper.toDto(voucher, voucherProductos, articulosByProducto),
+                  reservaToDtoMapper.apply(voucher.getReserva()),
+                  proveedorToDtoMapper.apply(voucher.getProveedor()),
+                  ventasPorGrupo);
+          })
+          .toList();
    }
 }

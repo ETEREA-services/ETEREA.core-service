@@ -12,5 +12,7 @@ interface VoucherProductoRepository : JpaRepository<VoucherProducto, Long> {
     fun findByVoucherProductoId(voucherProductoId: Long): Optional<VoucherProducto?>?
 
     fun deleteAllByVoucherId(voucherId: Long)
+    
+    fun findAllByVoucherIdIn(voucherIds: List<Long>): List<VoucherProducto?>?
 
 }
