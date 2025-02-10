@@ -75,7 +75,7 @@ public class GrupoController {
 
 	@GetMapping("/{grupoId}/ventas-por-voucher/{voucherId}")
 	public ResponseEntity<BigDecimal> totalVentasByGrupoAndVoucher(@PathVariable Integer grupoId,
-			@PathVariable Integer voucherId) {
+			@PathVariable Long voucherId) {
 		return new ResponseEntity<>(service.totalVentasByGrupoAndVoucher(grupoId, voucherId), HttpStatus.OK);
 	}
 
