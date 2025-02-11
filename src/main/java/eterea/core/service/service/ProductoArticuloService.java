@@ -40,4 +40,8 @@ public class ProductoArticuloService {
 		repository.deleteById(productoarticuloId);
 	}
 
+	public List<ProductoArticulo> findAllByProductoIdIn(List<Integer> productoIds) {
+		return repository.findAllByProductoIdIn(productoIds);
+	}
+
 }
