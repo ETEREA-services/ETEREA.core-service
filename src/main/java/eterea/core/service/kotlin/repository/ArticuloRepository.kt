@@ -29,4 +29,13 @@ interface ArticuloRepository : JpaRepository<Articulo, String> {
     """)
     fun findAllByProductoId(productoId: Int): List<Articulo>
 
+    @Query("""
+        SELECT 
+            a
+        FROM 
+            Articulo a
+        WHERE
+            a.productoId IN :productoIds
+    """)
+    fun findAllByProductoIds(productoIds: List<Int>): List<Articulo>
 }

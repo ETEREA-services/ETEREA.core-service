@@ -12,4 +12,6 @@ interface ProductoArticuloRepository : JpaRepository<ProductoArticulo, Long> {
 
     fun findByProductoIdAndArticuloId(productoId: Int?, articuloId: String?): Optional<ProductoArticulo?>?
 
+    fun findAllByProductoIdIn(productoIds: List<Int>): List<ProductoArticulo?>?
+
 }
