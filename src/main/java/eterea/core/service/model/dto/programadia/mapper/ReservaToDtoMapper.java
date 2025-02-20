@@ -21,6 +21,7 @@ public class ReservaToDtoMapper implements Function<Reserva, ReservaDto> {
             reserva.getFechaToma(),
             reserva.getFechaInServicio(),
             reserva.getFechaOutServicio(),
-            reserva.getFechaVencimiento());
+            reserva.getFechaVencimiento(),
+            reserva.getUpdated());
    }
 }

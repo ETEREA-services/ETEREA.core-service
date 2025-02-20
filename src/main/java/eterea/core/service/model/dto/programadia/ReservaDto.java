@@ -1,5 +1,6 @@
 package eterea.core.service.model.dto.programadia;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 public record ReservaDto(
@@ -11,6 +12,7 @@ public record ReservaDto(
       OffsetDateTime fechaToma,
       OffsetDateTime fechaInServicio,
       OffsetDateTime fechaOutServicio,
-      OffsetDateTime fechaVencimiento) {
+      OffsetDateTime fechaVencimiento,
+      LocalDateTime updated) {
 
 }
