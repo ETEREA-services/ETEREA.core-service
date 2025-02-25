@@ -73,9 +73,16 @@ mvn spring-boot:run
 
 ## Documentación API
 
-La documentación de la API está disponible a través de SpringDoc OpenAPI:
-- Swagger UI: `http://localhost:8080/swagger-ui.html`
-- OpenAPI Spec: `http://localhost:8080/v3/api-docs`
+La documentación de la API está disponible en:
+
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- OpenAPI JSON: http://localhost:8080/v3/api-docs
+- OpenAPI YAML: http://localhost:8080/v3/api-docs.yaml
+
+## Documentación Adicional
+
+- [Documentación del Proyecto](https://eterea-services.github.io/ETEREA.core-service/)
+- [Wiki del Proyecto](https://github.com/ETEREA-services/ETEREA.core-service/wiki)
 
 ## Contribución
 
@@ -88,3 +95,18 @@ La documentación de la API está disponible a través de SpringDoc OpenAPI:
 ## Estado del Proyecto
 
 El proyecto está en desarrollo activo. Ver [GitHub Projects](https://github.com/ETEREA-services/ETEREA.core-service/projects) para el roadmap.
+
+## Características
+
+- Proyecto mixto Java/Kotlin
+- Documentación API con OpenAPI 3.0
+- Soporte para transacciones distribuidas
+- Integración con Eureka Service Discovery
+
+## Notas Importantes
+
+- El proyecto usa una combinación de Java y Kotlin
+- Las entidades JPA están definidas en Kotlin
+- Los servicios y controladores están en Java
+- Se requiere configuración de Eureka para el registro de servicios
+- La documentación de la API se genera automáticamente en tiempo de ejecución
