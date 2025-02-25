@@ -35,6 +35,10 @@ public class CuentaMovimientoService {
         return repository.findAllByFechaBetween(fechaDesde, fechaHasta);
     }
 
+    public List<CuentaMovimiento> findAllByContable(OffsetDateTime fechaContable, Integer ordenContable) {
+        return repository.findAllByFechaAndOrden(fechaContable, ordenContable);
+    }
+
     public CuentaMovimiento findByCuentaMovimientoId(Long cuentaMovimientoId) {
         return Objects.requireNonNull(repository.findByCuentaMovimientoId(cuentaMovimientoId))
                 .orElseThrow(() -> new CuentaMovimientoException(cuentaMovimientoId));
@@ -96,4 +100,9 @@ public class CuentaMovimientoService {
         return 1;
     }
 
+    @Transactional
+    public void deleteAllByContable(OffsetDateTime fechaContable, Integer ordenContable) {
+        log.debug("Intentando eliminar movimientos contables para fecha={} orden={}", fechaContable, ordenContable);
+        repository.deleteAllByFechaAndOrden(fechaContable, ordenContable);
+    }
 }

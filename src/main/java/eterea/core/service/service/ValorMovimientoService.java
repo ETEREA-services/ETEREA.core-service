@@ -13,9 +13,12 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ValorMovimientoService {
 
     private final ValorMovimientoRepository repository;
@@ -25,6 +28,10 @@ public class ValorMovimientoService {
             ValorMovimientoDtoMapper valorMovimientoDtoMapper) {
         this.repository = repository;
         this.valorMovimientoDtoMapper = valorMovimientoDtoMapper;
+    }
+
+    public List<ValorMovimiento> findAllByContable(OffsetDateTime fechaContable, Integer ordenContable) {
+        return repository.findAllByFechaContableAndOrdenContable(fechaContable, ordenContable);
     }
 
     public ValorMovimiento add(ValorMovimiento valorMovimiento) {
@@ -76,6 +83,16 @@ public class ValorMovimientoService {
                 .stream()
                 .map(valorMovimientoDtoMapper)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteAllByContable(OffsetDateTime fechaContable, Integer ordenContable) {
+        log.debug("Intentando eliminar valores para fecha={} orden={}", fechaContable, ordenContable);
+        repository.deleteAllByFechaContableAndOrdenContable(fechaContable, ordenContable);
+    }
+
+    public List<ValorMovimiento> saveAll(List<ValorMovimiento> valorMovimientos) {
+        return repository.saveAll(valorMovimientos);
     }
 
 }

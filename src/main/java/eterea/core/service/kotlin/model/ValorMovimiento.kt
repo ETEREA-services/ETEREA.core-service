@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.OffsetDateTime
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 
 @Entity
 @Table(name = "valores")
@@ -82,14 +84,18 @@ data class ValorMovimiento(
 
     var observaciones: String? = null,
 
-    @Column(name = "clavev")
-    var valorMovimientoIdSlave: Long = 0,
-
     @OneToOne(optional = true)
     @JoinColumn(name = "codigo", insertable = false, updatable = false)
-    var valor: Valor? = null
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    var valor: Valor? = null,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "cgocontable", insertable = false, updatable = false)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    var cuenta: Cuenta? = null
 
 ) : Auditable() {
+
     data class Builder(
         var valorMovimientoId: Long? = null,
         var negocioId: Int? = null,
@@ -116,8 +122,8 @@ data class ValorMovimiento(
         var cierreCajaId: Long? = null,
         var nivel: Int = 0,
         var observaciones: String? = null,
-        var valorMovimientoIdSlave: Long = 0,
-        var valor: Valor? = null
+        var valor: Valor? = null,
+        var cuenta: Cuenta? = null
     ) {
         fun valorMovimientoId(valorMovimientoId: Long?) = apply { this.valorMovimientoId = valorMovimientoId }
         fun negocioId(negocioId: Int?) = apply { this.negocioId = negocioId }
@@ -146,17 +152,16 @@ data class ValorMovimiento(
         fun cierreCajaId(cierreCajaId: Long?) = apply { this.cierreCajaId = cierreCajaId }
         fun nivel(nivel: Int) = apply { this.nivel = nivel }
         fun observaciones(observaciones: String?) = apply { this.observaciones = observaciones }
-        fun valorMovimientoIdSlave(valorMovimientoIdSlave: Long) =
-            apply { this.valorMovimientoIdSlave = valorMovimientoIdSlave }
 
         fun valor(valor: Valor?) = apply { this.valor = valor }
+        fun cuenta(cuenta: Cuenta?) = apply { this.cuenta = cuenta }
 
         fun build() = ValorMovimiento(
             valorMovimientoId, negocioId, valorId, proveedorId, clienteId,
             fechaEmision, fechaVencimiento, comprobanteId, numeroComprobante,
             importe, numeroCuenta, fechaContable, ordenContable, proveedorMovimientoId,
             clienteMovimientoId, titular, banco, receptor, estadoId,
-            fechaEntrega, tanda, tandaIndex, cierreCajaId, nivel, observaciones, valorMovimientoIdSlave, valor
+            fechaEntrega, tanda, tandaIndex, cierreCajaId, nivel, observaciones, valor, cuenta
         )
     }
 }

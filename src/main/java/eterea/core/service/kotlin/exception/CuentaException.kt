@@ -1,3 +1,8 @@
 package eterea.core.service.kotlin.exception
 
-class CuentaException(numeroCuenta: Long) : RuntimeException("No existe la cuenta $numeroCuenta")
+import java.math.BigDecimal
+
+class CuentaException : RuntimeException {
+    constructor(numeroCuenta: Long) : super("No existe la cuenta $numeroCuenta")
+    constructor(cuentaMaestro: BigDecimal) : super("No existe la cuenta maestra $cuentaMaestro")
+}

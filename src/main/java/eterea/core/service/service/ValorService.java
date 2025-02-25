@@ -5,6 +5,9 @@ import eterea.core.service.kotlin.model.Valor;
 import eterea.core.service.kotlin.repository.ValorRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+
 @Service
 public class ValorService {
 
@@ -14,8 +17,12 @@ public class ValorService {
         this.repository = repository;
     }
 
+    public List<Valor> findAll() {
+        return repository.findAll();
+    }
+
     public Valor findByValorId(Integer valorId) {
-        return repository.findByValorId(valorId).orElseThrow(() -> new ValorException(valorId));
+        return Objects.requireNonNull(repository.findByValorId(valorId)).orElseThrow(() -> new ValorException(valorId));
     }
 
 }
