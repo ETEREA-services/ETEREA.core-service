@@ -14,12 +14,13 @@ import eterea.core.service.model.dto.ValorMovimientoDto;
 import eterea.core.service.service.ValorMovimientoService;
 
 @RestController
-@RequestMapping("/api/v1/valor-movimientos")
+@RequestMapping({"/api/v1/valor-movimientos", "/api/core/valorMovimiento", "/valorMovimiento"})
 public class ValorMovimientoController {
-   private final ValorMovimientoService valorMovimientoService;
 
-   public ValorMovimientoController(ValorMovimientoService valorMovimientoService) {
-      this.valorMovimientoService = valorMovimientoService;
+   private final ValorMovimientoService service;
+
+   public ValorMovimientoController(ValorMovimientoService service) {
+      this.service = service;
    }
 
    @GetMapping()
@@ -29,7 +30,8 @@ public class ValorMovimientoController {
          @RequestParam boolean cierreCajaOnly,
          @RequestParam boolean ingresosOnly) {
       return ResponseEntity.status(HttpStatus.OK)
-            .body(valorMovimientoService.findAllMovimientos(desde, hasta, cierreCajaOnly,
+            .body(service.findAllMovimientos(desde, hasta, cierreCajaOnly,
                   ingresosOnly));
    }
+
 }

@@ -2,6 +2,8 @@ package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -64,14 +66,17 @@ data class CuentaMovimiento(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cuenta", insertable = false, updatable = false)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     var cuenta: Cuenta? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cgotcomp", insertable = false, updatable = false)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     var comprobante: Comprobante? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "mco_neg_id", insertable = false, updatable = false)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     var negocio: Negocio? = null
 
 ) : Auditable() {
