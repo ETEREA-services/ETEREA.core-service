@@ -2,8 +2,11 @@ package eterea.core.service.kotlin.repository
 
 import eterea.core.service.kotlin.model.ValorMovimiento
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.OffsetDateTime
 import java.util.Optional
 
@@ -31,5 +34,18 @@ interface ValorMovimientoRepository : JpaRepository<ValorMovimiento, Int> {
         cierreCajaOnly: Boolean,
         ingresosOnly: Boolean
     ): List<ValorMovimiento>
+
+    fun findAllByFechaContableAndOrdenContable(
+        fechaContable: OffsetDateTime,
+        ordenContable: Int
+    ): List<ValorMovimiento?>?
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query("""
+        DELETE FROM ValorMovimiento vm
+        WHERE vm.fechaContable = :fechaContable AND vm.ordenContable = :ordenContable
+    """)
+    fun deleteAllByFechaContableAndOrdenContable(fechaContable: OffsetDateTime, ordenContable: Int)
 
 }

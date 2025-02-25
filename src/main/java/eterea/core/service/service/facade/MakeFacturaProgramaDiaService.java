@@ -440,7 +440,6 @@ public class MakeFacturaProgramaDiaService {
                 .estadoId(0)
                 .cierreCajaId(0L)
                 .observaciones(observaciones)
-                .valorMovimientoIdSlave(0L)
                 .build();
         valorMovimiento = valorMovimientoService.add(valorMovimiento);
 
