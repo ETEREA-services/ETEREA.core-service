@@ -31,6 +31,7 @@ public class VoucherToDtoMapper {
             voucher.getConfirmado() == 1,
             voucher.getPagaCacheuta() == 1,
             voucher.getContacto(),
+            voucher.getPaxs(),
             voucher.getPaxsReales(),
             voucher.getReservaId(),
             voucher.getNumeroVoucher(),

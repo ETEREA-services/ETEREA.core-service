@@ -1,6 +1,7 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.OffsetDateTime
@@ -107,7 +108,11 @@ data class Reserva(
 
     @OneToOne
     @JoinColumn(name = "res_cli_id", insertable = false, updatable = false)
-    var cliente: Cliente? = null
+    var cliente: Cliente? = null,
+
+    @OneToMany(mappedBy = "reserva")
+    @JsonIgnore()
+    var comentarios: List<ReservaComentario> = mutableListOf()
 
 ) : Auditable() {
     data class Builder(
@@ -141,7 +146,8 @@ data class Reserva(
         var reservaOrigenId: Int? = null,
         var facturarExtranjero: Byte = 0,
         var fechaAbierta: Byte = 0,
-        var cliente: Cliente? = null
+        var cliente: Cliente? = null,
+        var comentarios: List<ReservaComentario> = mutableListOf()
     ) {
         fun reservaId(reservaId: Long?) = apply { this.reservaId = reservaId }
         fun negocioId(negocioId: Int?) = apply { this.negocioId = negocioId }
@@ -176,6 +182,7 @@ data class Reserva(
         fun facturarExtranjero(facturarExtranjero: Byte) = apply { this.facturarExtranjero = facturarExtranjero }
         fun fechaAbierta(fechaAbierta: Byte) = apply { this.fechaAbierta = fechaAbierta }
         fun cliente(cliente: Cliente?) = apply { this.cliente = cliente }
+        fun comentarios(comentarios: List<ReservaComentario>) = apply { this.comentarios = comentarios }
 
         fun build() = Reserva(
             reservaId,
@@ -208,7 +215,8 @@ data class Reserva(
             reservaOrigenId,
             facturarExtranjero,
             fechaAbierta,
-            cliente
+            cliente,
+            comentarios
         )
     }
 }
