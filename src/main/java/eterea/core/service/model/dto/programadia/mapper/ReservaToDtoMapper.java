@@ -18,6 +18,8 @@ public class ReservaToDtoMapper implements Function<Reserva, ReservaDto> {
             reserva.getCantidadPaxs(),
             reserva.getObservaciones(),
             reserva.getFacturada() == 1,
+            reserva.getCliente().getEmail(),
+            reserva.getComentarios(),
             reserva.getFechaToma(),
             reserva.getFechaInServicio(),
             reserva.getFechaOutServicio(),

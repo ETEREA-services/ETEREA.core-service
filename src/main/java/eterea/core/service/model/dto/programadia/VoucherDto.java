@@ -10,6 +10,7 @@ public record VoucherDto(
    Boolean confirmado,
    Boolean pagaCacheuta,
    String contacto,
+   Integer paxs,
    Integer paxsReales,
    Long reservaId,
    String numeroVoucher,
