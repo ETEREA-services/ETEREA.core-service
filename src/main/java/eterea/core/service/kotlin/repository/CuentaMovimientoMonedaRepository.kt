@@ -20,13 +20,15 @@ interface CuentaMovimientoMonedaRepository : JpaRepository<CuentaMovimientoMoned
             m.fecha, 
             m.nrocomp, 
             m.item, 
-            c.moneda_id, 
-            ROUND(m.Importe / c.cotizacion, 5), 
+            c.moneda_id_destino,
+            ROUND(m.Importe * c.coeficiente, 5),
             NOW()
         FROM movcon m
-        JOIN moneda_cotizacion c ON m.fecha = c.fecha
+        JOIN moneda_cotizacion c 
+        ON m.fecha = c.fecha
         WHERE m.fecha BETWEEN :fechaDesde AND :fechaHasta
-        AND c.moneda_id = :monedaId
+        AND c.moneda_id_origen = :monedaIdOrigen
+        AND c.moneda_id_destino = :monedaIdDestino
         ON DUPLICATE KEY UPDATE 
             fecha = VALUES(fecha),
             orden = VALUES(orden),
@@ -36,7 +38,8 @@ interface CuentaMovimientoMonedaRepository : JpaRepository<CuentaMovimientoMoned
             created = VALUES(created)
     """)
     fun insertOrUpdateMovimientosCotizados(
-        @Param("monedaId") monedaId: Int,
+        @Param("monedaIdOrigen") monedaIdOrigen: Int,
+        @Param("monedaIdDestino") monedaIdDestino: Int,
         @Param("fechaDesde") fechaDesde: OffsetDateTime,
         @Param("fechaHasta") fechaHasta: OffsetDateTime
     )

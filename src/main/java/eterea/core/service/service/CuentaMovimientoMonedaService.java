@@ -21,8 +21,8 @@ public class CuentaMovimientoMonedaService {
         return repository.saveAll(cuentaMovimientoMonedas);
     }
 
-    public void generateMovimientosCotizados(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
-        repository.insertOrUpdateMovimientosCotizados(monedaId, fechaDesde, fechaHasta);
+    public void generateMovimientosCotizados(Integer monedaIdOrigen, Integer monedaIdDestino, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
+        repository.insertOrUpdateMovimientosCotizados(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
     }
 
     @Transactional

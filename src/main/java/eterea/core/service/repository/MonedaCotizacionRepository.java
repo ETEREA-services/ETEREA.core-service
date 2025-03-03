@@ -12,10 +12,6 @@ import java.util.UUID;
 @Repository
 public interface MonedaCotizacionRepository extends JpaRepository<MonedaCotizacion, UUID> {
 
-    List<MonedaCotizacion> findAllByMonedaIdAndFechaBetween(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta);
+    List<MonedaCotizacion> findAllByMonedaIdOrigenAndMonedaIdDestinoAndFechaBetween(Integer monedaIdOrigen, Integer monedaIdDestino, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta);
 
-    boolean existsByMonedaIdAndFecha(Integer monedaId, OffsetDateTime fecha);
-
-    Optional<MonedaCotizacion> findByMonedaIdAndFecha(Integer monedaId, OffsetDateTime fechaActual);
-    
 }

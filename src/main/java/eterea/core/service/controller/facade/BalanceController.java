@@ -55,10 +55,12 @@ public class BalanceController {
         return new ResponseEntity<>(service.findAsientosByFecha(negocioId, fecha), HttpStatus.OK);
     }
 
-    @GetMapping("/cotizacion/generate/{monedaId}/{fechaDesde}/{fechaHasta}")
-    public ResponseEntity<Void> generateMovimientosCotizados(@PathVariable Integer monedaId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaDesde,
-                                                   @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaHasta) {
-        service.generateMovimientosCotizados(monedaId, fechaDesde, fechaHasta);
+    @GetMapping("/cotizacion/generate/{monedaIdOrigen}/{monedaIdDestino}/{fechaDesde}/{fechaHasta}")
+    public ResponseEntity<Void> generateMovimientosCotizados(@PathVariable Integer monedaIdOrigen,
+                                                             @PathVariable Integer monedaIdDestino,
+                                                             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaDesde,
+                                                            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaHasta) {
+        service.generateMovimientosCotizados(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
