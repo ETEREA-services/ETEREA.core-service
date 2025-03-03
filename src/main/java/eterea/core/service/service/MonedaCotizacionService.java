@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,8 +44,8 @@ public class MonedaCotizacionService {
         this.webClient = createInsecureWebClient(webClientBuilder);
     }
 
-    public List<MonedaCotizacion> findAllPeriodoCotizacion(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
-        return repository.findAllByMonedaIdAndFechaBetween(monedaId, fechaDesde, fechaHasta);
+    public List<MonedaCotizacion> findAllPeriodoCotizacion(Integer monedaIdOrigen, Integer monedaIdDestino, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
+        return repository.findAllByMonedaIdOrigenAndMonedaIdDestinoAndFechaBetween(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
     }
 
     private WebClient createInsecureWebClient(WebClient.Builder webClientBuilder) throws Exception {
@@ -66,46 +65,13 @@ public class MonedaCotizacionService {
 
     @Transactional
     public List<MonedaCotizacion> fillCotizacion(
-            Integer monedaId, 
+            Integer monedaIdOrigen,
+            Integer monedaIdDestino,
             OffsetDateTime fechaDesde, 
             OffsetDateTime fechaHasta) {
-            
-        // Caso especial para monedaId = 1 (peso argentino)
-        if (monedaId == 1) {
-            return fillPesoCotizacion(monedaId, fechaDesde, fechaHasta);
-        }
 
-        var moneda = monedaService.findByMonedaId(monedaId);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        
-        // Consultar 7 días antes para tener cotizaciones anteriores
-        OffsetDateTime fechaConsultaDesde = fechaDesde.minusDays(7);
-        
-        ApiResponse response = webClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .path("/Cotizaciones/{moneda}")
-                .queryParam("fechadesde", fechaConsultaDesde.format(formatter))
-                .queryParam("fechahasta", fechaHasta.format(formatter))
-                .build(moneda.getSimbolo()))
-            .retrieve()
-            .bodyToMono(ApiResponse.class)
-            .block();
-
-        if (response == null || response.results == null) {
-            return new ArrayList<>();
-        }
-
-        // Crear un mapa ordenado con todas las cotizaciones disponibles
-        NavigableMap<LocalDate, Double> cotizacionesPorFecha = new TreeMap<>();
-        for (ResultadoCotizacion resultado : response.results) {
-            DetalleCotizacion detalle = resultado.detalle.getFirst();
-            logDetalleCotizacion(detalle);
-            LocalDate fecha = LocalDate.parse(resultado.fecha);
-            var cotizacion = detalle.tipoCotizacion;
-            log.debug("Cotizacion al {} -> 1.00 ARS = {} {} / 1.00 {} = {} ARS", 
-                fecha, 1 / cotizacion, moneda.getSimbolo(), moneda.getSimbolo(), cotizacion);
-            cotizacionesPorFecha.put(fecha, cotizacion);
-        }
+        NavigableMap<LocalDate, Double> cotizacionesOrigen = retrieveCotizaciones(monedaIdOrigen, fechaDesde, fechaHasta);
+        NavigableMap<LocalDate, Double> cotizacionesDestino = retrieveCotizaciones(monedaIdDestino, fechaDesde, fechaHasta);
 
         List<MonedaCotizacion> cotizacionesNuevas = new ArrayList<>();
         LocalDate fechaDesdeLocal = fechaDesde.toLocalDate();
@@ -117,46 +83,105 @@ public class MonedaCotizacionService {
             OffsetDateTime fechaActual = currentDate.atStartOfDay().atOffset(ZoneOffset.UTC);
             
             // Buscar la cotización para la fecha actual o la anterior más cercana
-            Map.Entry<LocalDate, Double> cotizacionEntry = cotizacionesPorFecha.floorEntry(currentDate);
-            
-            if (cotizacionEntry != null) {
+            Map.Entry<LocalDate, Double> cotizacionOrigenEntry = cotizacionesOrigen.floorEntry(currentDate);
+
+            Double cotizacionOrigen = 1.0;
+            byte esCopiaOrigen = 0;
+            if (cotizacionOrigenEntry != null) {
                 // Determinar si es una cotización copiada
-                byte esCopia = (byte) (cotizacionEntry.getKey().equals(currentDate) ? 0 : 1);
-                Double nuevaCotizacion = cotizacionEntry.getValue();
-                
-                // Buscar si existe una cotización para esta fecha
-                Optional<MonedaCotizacion> cotizacionExistente = repository
-                    .findByMonedaIdAndFecha(monedaId, fechaActual);
-                
-                if (cotizacionExistente.isPresent()) {
-                    MonedaCotizacion existente = cotizacionExistente.get();
-                    // Actualizar solo si el valor es diferente
-                    if (!existente.getCotizacion().equals(nuevaCotizacion)) {
-                        existente.setCotizacion(nuevaCotizacion);
-                        existente.setCopia(esCopia);
-                        cotizacionesNuevas.add(existente);
-                        log.debug("Actualizando cotización para {} de {} a {}", 
-                            fechaActual, existente.getCotizacion(), nuevaCotizacion);
-                    }
-                } else {
-                    // Crear nueva cotización
-                    MonedaCotizacion cotizacion = new MonedaCotizacion(
-                        null,
-                        monedaId,
-                        fechaActual,
-                        nuevaCotizacion,
-                        esCopia
-                    );
-                    cotizacionesNuevas.add(cotizacion);
-                    log.debug("Creando nueva cotización para {} con valor {}", 
-                        fechaActual, nuevaCotizacion);
-                }
+                esCopiaOrigen = (byte) (cotizacionOrigenEntry.getKey().equals(currentDate) ? 0 : 1);
+                cotizacionOrigen = cotizacionOrigenEntry.getValue();
             }
+
+            // Buscar la cotización para la fecha actual o la anterior más cercana
+            Map.Entry<LocalDate, Double> cotizacionDestinoEntry = cotizacionesDestino.floorEntry(currentDate);
+
+            Double cotizacionDestino = 1.0;
+            byte esCopiaDestino = 0;
+            if (cotizacionDestinoEntry != null) {
+                // Determinar si es una cotización copiada
+                esCopiaDestino = (byte) (cotizacionDestinoEntry.getKey().equals(currentDate) ? 0 : 1);
+                cotizacionDestino = cotizacionDestinoEntry.getValue();
+            }
+
+            // Crear nueva cotización
+            var monedaCotizacion = new MonedaCotizacion.Builder()
+                .monedaCotizacionId(null)
+                .fecha(fechaActual)
+                .monedaIdOrigen(monedaIdOrigen)
+                .cotizacionOrigen(cotizacionOrigen)
+                .copiaOrigen(esCopiaOrigen)
+                .monedaIdDestino(monedaIdDestino)
+                .cotizacionDestino(cotizacionDestino)
+                .copiaDestino(esCopiaDestino)
+                .coeficiente(cotizacionOrigen/cotizacionDestino)
+                .build();
+            cotizacionesNuevas.add(monedaCotizacion);
             
             currentDate = currentDate.plusDays(1);
         }
 
+        // Actualizando ID's de cotizaciones
+        var cotizacionesRegistradas = this.findAllPeriodoCotizacion(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta)
+                .stream()
+                .collect(Collectors.toMap(MonedaCotizacion::getFecha, cotizacion -> cotizacion));
+        for (var monedaCotizacion : cotizacionesNuevas) {
+            if (cotizacionesRegistradas.containsKey(monedaCotizacion.getFecha())) {
+                var registrada = cotizacionesRegistradas.get(monedaCotizacion.getFecha());
+                monedaCotizacion.setMonedaCotizacionId(registrada.getMonedaCotizacionId());
+            }
+        }
+
         return repository.saveAll(cotizacionesNuevas);
+    }
+
+    private NavigableMap<LocalDate, Double> retrieveCotizaciones(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
+        if (monedaId == 1) {
+            return fillPesoCotizacion(monedaId, fechaDesde, fechaHasta);
+        }
+
+        var moneda = monedaService.findByMonedaId(monedaId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // Consultar 7 días antes para tener cotizaciones anteriores
+        OffsetDateTime fechaConsultaDesde = fechaDesde.minusDays(7);
+
+        ApiResponse response = webClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/Cotizaciones/{moneda}")
+                .queryParam("fechadesde", fechaConsultaDesde.format(formatter))
+                .queryParam("fechahasta", fechaHasta.format(formatter))
+                .build(moneda.getSimbolo()))
+            .retrieve()
+            .bodyToMono(ApiResponse.class)
+            .block();
+
+        if (response == null || response.results == null) {
+            return new TreeMap<>();
+        }
+
+        // Crear un mapa ordenado con todas las cotizaciones disponibles
+        NavigableMap<LocalDate, Double> cotizacionesPorFecha = new TreeMap<>();
+        for (ResultadoCotizacion resultado : response.results) {
+            DetalleCotizacion detalle = resultado.detalle.getFirst();
+            logDetalleCotizacion(detalle);
+            LocalDate fecha = LocalDate.parse(resultado.fecha);
+            var cotizacion = detalle.tipoCotizacion;
+            log.debug("Cotizacion al {} -> 1.00 ARS = {} {} / 1.00 {} = {} ARS",
+                    fecha, 1 / cotizacion, moneda.getSimbolo(), moneda.getSimbolo(), cotizacion);
+            cotizacionesPorFecha.put(fecha, cotizacion);
+        }
+        return cotizacionesPorFecha;
+    }
+
+    private NavigableMap<LocalDate, Double> fillPesoCotizacion(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
+        NavigableMap<LocalDate, Double> cotizacionesPorFecha = new TreeMap<>();
+        LocalDate fecha = fechaDesde.toLocalDate();
+        while (!fecha.isAfter(fechaHasta.toLocalDate())) {
+            cotizacionesPorFecha.put(fecha, 1.0);
+            fecha = fecha.plusDays(1);
+        }
+        return cotizacionesPorFecha;
     }
 
     private void logDetalleCotizacion(DetalleCotizacion detalle) {
@@ -165,37 +190,6 @@ public class MonedaCotizacionService {
         } catch (JsonProcessingException e) {
             log.debug("Detalle cotizacion jsonify error: {}", e.getMessage());
         }
-    }
-
-    private List<MonedaCotizacion> fillPesoCotizacion(
-            Integer monedaId,
-            OffsetDateTime fechaDesde,
-            OffsetDateTime fechaHasta) {
-
-        List<MonedaCotizacion> cotizacionesNuevas = new ArrayList<>();
-        LocalDate fechaDesdeLocal = fechaDesde.toLocalDate();
-        LocalDate fechaHastaLocal = fechaHasta.toLocalDate();
-        
-        LocalDate currentDate = fechaDesdeLocal;
-        while (!currentDate.isAfter(fechaHastaLocal)) {
-            OffsetDateTime fechaActual = currentDate.atStartOfDay().atOffset(ZoneOffset.UTC);
-            
-            if (!repository.existsByMonedaIdAndFecha(monedaId, fechaActual)) {
-                MonedaCotizacion cotizacion = new MonedaCotizacion(
-                    null,
-                    monedaId,
-                    fechaActual,
-                    1.0,  // Cotización siempre 1
-                    (byte) 0         // No es copia
-                );
-                
-                cotizacionesNuevas.add(cotizacion);
-            }
-            
-            currentDate = currentDate.plusDays(1);
-        }
-
-        return repository.saveAll(cotizacionesNuevas);
     }
 
     // Clases para mapear la respuesta de la API
