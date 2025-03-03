@@ -22,18 +22,20 @@ public class MonedaCotizacionController {
         this.service = service;
     }
 
-    @GetMapping("/periodo/{monedaId}/{fechaDesde}/{fechaHasta}")
-    public ResponseEntity<List<MonedaCotizacion>> finAllPeriodoCotizacion(@PathVariable Integer monedaId,
-                                                                    @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaDesde,
-                                                                    @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaHasta) {
-        return ResponseEntity.ok(service.findAllPeriodoCotizacion(monedaId, fechaDesde, fechaHasta));
+    @GetMapping("/periodo/{monedaIdOrigen}/{monedaIdDestino}/{fechaDesde}/{fechaHasta}")
+    public ResponseEntity<List<MonedaCotizacion>> findAllPeriodoCotizacion(@PathVariable Integer monedaIdOrigen,
+                                                                          @PathVariable Integer monedaIdDestino,
+                                                                          @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaDesde,
+                                                                          @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaHasta) {
+        return ResponseEntity.ok(service.findAllPeriodoCotizacion(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta));
     }
 
-    @GetMapping("/fill/{monedaId}/{fechaDesde}/{fechaHasta}")
-    public ResponseEntity<List<MonedaCotizacion>> fillCotizacion(@PathVariable Integer monedaId,
+    @GetMapping("/fill/{monedaIdOrigen}/{monedaIdDestino}/{fechaDesde}/{fechaHasta}")
+    public ResponseEntity<List<MonedaCotizacion>> fillCotizacion(@PathVariable Integer monedaIdOrigen,
+                                                                 @PathVariable Integer monedaIdDestino,
                                                                  @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaDesde,
                                                                  @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fechaHasta) {
-        return ResponseEntity.ok(service.fillCotizacion(monedaId, fechaDesde, fechaHasta));
+        return ResponseEntity.ok(service.fillCotizacion(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta));
     }
 
 }

@@ -14,8 +14,8 @@ public class CuentaMovimientoAperturaMonedaService {
         this.repository = repository;
     }
 
-    public void generateMovimientosCotizados(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
-        repository.insertOrUpdateMovimientosCotizados(monedaId, fechaDesde, fechaHasta);
+    public void generateMovimientosCotizados(Integer monedaIdOrigen, Integer monedaIdDestino, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
+        repository.insertOrUpdateMovimientosCotizados(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
     }
 
     public int deleteOrphanedRecords(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {

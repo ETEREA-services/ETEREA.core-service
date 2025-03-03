@@ -64,18 +64,18 @@ public class BalanceService {
     }
 
     @Transactional
-    public void generateMovimientosCotizados(Integer monedaId, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
-        log.debug("Iniciando generación de movimientos cotizados para moneda {} entre {} y {}", 
-                monedaId, fechaDesde, fechaHasta);
+    public void generateMovimientosCotizados(Integer monedaIdOrigen, Integer monedaIdDestino, OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
+        log.debug("Iniciando generación de movimientos cotizados para moneda origen {} destino {} entre {} y {}",
+                monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
                 
-        monedaCotizacionService.fillCotizacion(monedaId, fechaDesde, fechaHasta);
-        cuentaMovimientoMonedaService.generateMovimientosCotizados(monedaId, fechaDesde, fechaHasta);
-        cuentaMovimientoAperturaMonedaService.generateMovimientosCotizados(monedaId, fechaDesde, fechaHasta);
+        monedaCotizacionService.fillCotizacion(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
+        cuentaMovimientoMonedaService.generateMovimientosCotizados(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
+        cuentaMovimientoAperturaMonedaService.generateMovimientosCotizados(monedaIdOrigen, monedaIdDestino, fechaDesde, fechaHasta);
         
         // Limpiar registros huérfanos después de la generación
-        int deletedCount = cuentaMovimientoMonedaService.deleteOrphanedRecords(monedaId, fechaDesde, fechaHasta);
+        int deletedCount = cuentaMovimientoMonedaService.deleteOrphanedRecords(monedaIdDestino, fechaDesde, fechaHasta);
         log.debug("Se eliminaron {} registros huérfanos", deletedCount);
-        deletedCount = cuentaMovimientoAperturaMonedaService.deleteOrphanedRecords(monedaId, fechaDesde, fechaHasta);
+        deletedCount = cuentaMovimientoAperturaMonedaService.deleteOrphanedRecords(monedaIdOrigen, fechaDesde, fechaHasta);
         log.debug("Se eliminaron {} registros huérfanos", deletedCount);
     }
 
