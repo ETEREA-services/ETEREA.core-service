@@ -353,6 +353,10 @@ public class ReservaService {
         }
     }
 
+    public List<ReservaArticulo> findAllReservaArticulos(Long reservaId) {
+        return reservaArticuloService.findAllByReservaId(reservaId);
+    }
+
     private BigDecimal comisionArticulo(Long reservaId, String articuloId, Long clienteId) {
         // TODO: simplificado para avanzar
         return BigDecimal.ZERO;
