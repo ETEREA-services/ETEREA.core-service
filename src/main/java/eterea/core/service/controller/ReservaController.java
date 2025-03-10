@@ -38,5 +38,10 @@ public class ReservaController {
 	public ResponseEntity<Reserva> findByReservaId(@PathVariable Long reservaId) {
 		return new ResponseEntity<>(service.findByReservaId(reservaId), HttpStatus.OK);
 	}
+
+	@GetMapping("/{reservaId}/articulos")
+	public ResponseEntity<List<ReservaArticulo>> findAllReservaArticulos(@PathVariable Long reservaId) {
+		return new ResponseEntity<>(service.findAllReservaArticulos(reservaId), HttpStatus.OK);
+	}
 	
 }
