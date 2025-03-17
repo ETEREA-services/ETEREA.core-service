@@ -30,17 +30,16 @@ interface HabitacionMovimientoRepository : JpaRepository<HabitacionMovimiento, L
         FROM
          HabitacionMovimiento hm 
         WHERE 
-         ((hm.fechaIngreso <= :fechaIngreso) AND (hm.fechaSalida >= :fechaIngreso + 1))
-         OR
-         ((hm.fechaIngreso <= :fechaSalida - 1) AND (hm.fechaSalida >= :fechaSalida))
-         OR
-         ((hm.fechaIngreso >= :fechaIngreso) AND (hm.fechaSalida <= :fechaSalida))
-         AND
-         hm.habitacion.numero = :habitacionId
-         AND
-         hm.habitacionMovimientoId != :idExcluir
-         AND
-         hm.estadoReserva.tipoComprobante != 'Z'
+         (
+             ((hm.fechaIngreso <= :fechaIngreso) AND (hm.fechaSalida >= FUNCTION('DATE_ADD', :fechaIngreso, 1, 'DAY')))
+             OR
+             ((hm.fechaIngreso <= FUNCTION('DATE_ADD', :fechaSalida, -1, 'DAY')) AND (hm.fechaSalida >= :fechaSalida))
+             OR
+             ((hm.fechaIngreso >= :fechaIngreso) AND (hm.fechaSalida <= :fechaSalida))
+         )
+         AND hm.habitacion.numero = :numeroHabitacion
+         AND hm.habitacionMovimientoId != :idExcluir
+         AND hm.estadoReserva.tipoComprobante != 'Z'
         """)
     fun findReservasSuperpuestas(
         @Param("numeroHabitacion") numeroHabitacion: Int,
