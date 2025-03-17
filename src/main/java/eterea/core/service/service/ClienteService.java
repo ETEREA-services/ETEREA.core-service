@@ -51,4 +51,9 @@ public class ClienteService {
 		return repository.save(cliente);
 	}
 
+	// NUEVO METODO PARA BUSCAR CLIENTES CON "LIKE"
+	public List<Cliente> buscar(String searchTerm) {
+		return repository.findByNombreContainingIgnoreCase(searchTerm);
+	}
+
 }
