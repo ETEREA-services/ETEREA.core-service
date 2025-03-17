@@ -23,10 +23,14 @@ public class HabitacionMovimientoService {
             OffsetDateTime fechaSalida,
             Long idExcluir) {
                 
+        OffsetDateTime fechaIngresoMasUnDia = fechaIngreso.plusDays(1);
+        OffsetDateTime fechaSalidaMenosUnDia = fechaSalida.minusDays(1);
         return repository.findReservasSuperpuestas(
             numeroHabitacion,
             fechaIngreso,
             fechaSalida,
+            fechaIngresoMasUnDia,
+            fechaSalidaMenosUnDia,
             idExcluir != null ? idExcluir : 0L
         );
     }

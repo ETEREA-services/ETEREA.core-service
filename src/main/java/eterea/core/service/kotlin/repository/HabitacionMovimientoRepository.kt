@@ -26,25 +26,30 @@ interface HabitacionMovimientoRepository : JpaRepository<HabitacionMovimiento, L
      */
     @Query("""
         SELECT
-         hm
+            hm
         FROM
-         HabitacionMovimiento hm 
+            HabitacionMovimiento hm 
         WHERE 
-         (
-             ((hm.fechaIngreso <= :fechaIngreso) AND (hm.fechaSalida >= FUNCTION('DATE_ADD', :fechaIngreso, 1, 'DAY')))
-             OR
-             ((hm.fechaIngreso <= FUNCTION('DATE_ADD', :fechaSalida, -1, 'DAY')) AND (hm.fechaSalida >= :fechaSalida))
-             OR
-             ((hm.fechaIngreso >= :fechaIngreso) AND (hm.fechaSalida <= :fechaSalida))
-         )
-         AND hm.habitacion.numero = :numeroHabitacion
-         AND hm.habitacionMovimientoId != :idExcluir
-         AND hm.estadoReserva.tipoComprobante != 'Z'
+            (
+                (hm.fechaIngreso <= :fechaIngresoMasUno AND hm.fechaSalida >= :fechaIngresoMasUno)
+                OR
+                (hm.fechaIngreso <= :fechaSalidaMenosUno AND hm.fechaSalida >= :fechaSalidaMenosUno)
+                OR
+                (hm.fechaIngreso >= :fechaIngreso AND hm.fechaSalida <= :fechaSalida)
+            )
+            AND
+            hm.habitacion.numero = :numeroHabitacion
+            AND
+            hm.habitacionMovimientoId != :idExcluir
+            AND
+            hm.estadoReserva.tipoComprobante != 'Z'
         """)
     fun findReservasSuperpuestas(
         @Param("numeroHabitacion") numeroHabitacion: Int,
         @Param("fechaIngreso") fechaIngreso: OffsetDateTime,
         @Param("fechaSalida") fechaSalida: OffsetDateTime,
+        @Param("fechaIngresoMasUnDia") fechaIngresoMasUnDia: OffsetDateTime,
+        @Param("fechaSalidaMenosUnDia") fechaSalidaMenosUnDia: OffsetDateTime,
         @Param("idExcluir") idExcluir: Long
     ): List<HabitacionMovimiento>
 }
