@@ -53,7 +53,7 @@ public class ClienteService {
 
 	// NUEVO METODO PARA BUSCAR CLIENTES CON "LIKE"
 	public List<Cliente> buscar(String searchTerm) {
-		return repository.findByNombreContainingIgnoreCase(searchTerm);
+		return repository.findByRazonSocialStartingWithIgnoreCase(searchTerm);
 	}
 
 }
