@@ -27,15 +27,15 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	@Query("""
 		SELECT
-			c
-		FROM
-			Clientes c
-		WHERE
-			c.razon LIKE ':searchTerm%'
-			AND
-			c.bloqueado = 0
-		ORDER BY c.razon, c.nombre
+        c
+   	FROM
+        Cliente c
+   	WHERE
+        LOWER(c.razonSocial) LIKE LOWER(CONCAT(:searchTerm, '%'))
+        AND
+        c.bloqueado = 0
+   	ORDER BY c.razonSocial, c.nombre
 		""")
-	List<Cliente> findByNombreContainingIgnoreCase(@Param("searchTerm") String searchTerm);
+	List<Cliente> findByRazonSocialStartingWithIgnoreCase(@Param("searchTerm") String searchTerm);
 
 }
