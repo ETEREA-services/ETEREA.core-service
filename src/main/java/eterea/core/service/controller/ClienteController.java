@@ -39,6 +39,7 @@ public class ClienteController {
 		return new ResponseEntity<List<ClienteSearch>>(service.findAllBySearch(chain), HttpStatus.OK);
 	}
 
+
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> findByClienteId(@PathVariable Long clienteId) {
 		try {
@@ -70,5 +71,11 @@ public class ClienteController {
 	public ResponseEntity<Cliente> add(@RequestBody Cliente cliente) {
 		return new ResponseEntity<>(service.add(cliente), HttpStatus.OK);
 	}
+
+	@GetMapping("/buscar/{searchTerm}")
+	public ResponseEntity<List<Cliente>> buscar(@PathVariable String searchTerm) {
+		return new ResponseEntity<>(service.buscar(searchTerm), HttpStatus.OK);
+	}
+
 
 }

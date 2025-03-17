@@ -80,4 +80,9 @@ public class ComprobanteService {
 				.orElseThrow(() -> new ComprobanteException(comprobanteId));
 	}
 
+	public Comprobante findByLetraComprobante(String letraComprobante) {
+		return repository.findByLetraComprobante(letraComprobante)
+			.orElseThrow(() -> new ComprobanteException(letraComprobante));
+	}
+
 }

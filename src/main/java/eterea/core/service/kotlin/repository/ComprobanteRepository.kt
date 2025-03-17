@@ -34,4 +34,6 @@ interface ComprobanteRepository : JpaRepository<Comprobante, Int> {
     fun findFirstByOrderByComprobanteId(): Optional<Comprobante?>?
     fun findFirstByOrderByComprobanteIdDesc(): Optional<Comprobante?>?
 
+    fun findByLetraComprobante(letraComprobante: String?): Optional<Comprobante?>?
+
 }

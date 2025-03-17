@@ -17,4 +17,8 @@ public class ComprobanteException extends RuntimeException {
 		super("Cannot find Comprobante " + comprobanteId);
 	}
 
+	public ComprobanteException(String tipoComprobante) {
+		super("Cannot find Comprobante " + tipoComprobante);
+	}
+
 }

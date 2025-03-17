@@ -1,3 +1,9 @@
 package eterea.core.service.kotlin.exception
 
-class ReservaException(reservaId: Long) : RuntimeException("Cannot find Reserva $reservaId")
+import java.time.OffsetDateTime
+
+class ReservaException : RuntimeException {
+    constructor(reservaId: Long) : super("Cannot find Reserva $reservaId")
+    constructor(habitacionId: Long, fechaIngreso: OffsetDateTime, fechaSalida: OffsetDateTime) : 
+        super("Habitacion con id: $habitacionId no disponible para las fechas: $fechaIngreso hasta $fechaSalida")
+}
