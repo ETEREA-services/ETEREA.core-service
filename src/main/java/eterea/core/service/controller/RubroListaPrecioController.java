@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping({"/api/core/rubroListaPrecio", "/rubroListaPrecio"})
 public class RubroListaPrecioController {
