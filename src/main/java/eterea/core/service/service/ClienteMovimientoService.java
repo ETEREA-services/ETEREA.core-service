@@ -44,7 +44,7 @@ public class ClienteMovimientoService {
 	}
 
 	public List<ClienteMovimiento> findAllFacturadosByFecha(OffsetDateTime fecha) {
-		return repository.findAllByFechaComprobanteAndComprobanteLibroIva(fecha, (byte) 1);
+		return repository.findAllByFechaComprobanteAndPuntoVentaGreaterThanAndComprobanteLibroIva(fecha, 0, (byte) 1);
 	}
 
 	public List<ClienteMovimiento> findAllFacturasByRango(String letraComprobante, Byte debita, Integer puntoVenta, Long numeroComprobanteDesde, Long numeroComprobanteHasta) {
