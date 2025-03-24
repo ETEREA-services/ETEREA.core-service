@@ -27,7 +27,7 @@ public interface ClienteMovimientoRepository extends JpaRepository<ClienteMovimi
 
 	List<ClienteMovimiento> findAllByReservaId(Long reservaId);
 
-	List<ClienteMovimiento> findAllByFechaComprobanteAndComprobanteLibroIva(OffsetDateTime fechaComprobante, Byte libroIva);
+	List<ClienteMovimiento> findAllByFechaComprobanteAndPuntoVentaGreaterThanAndComprobanteLibroIva(OffsetDateTime fechaComprobante, Integer puntoVenta, Byte libroIva);
 
 	List<ClienteMovimiento> findAllByLetraComprobanteAndReciboAndPuntoVentaAndNumeroComprobanteBetweenAndComprobanteDebita(String letraComprobante, Byte recibo, Integer puntoVenta, Long numeroComprobanteDesde, Long numeroComprobanteHasta, Byte debita);
 
