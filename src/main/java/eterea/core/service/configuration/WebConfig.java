@@ -25,8 +25,7 @@ public class WebConfig {
                                 "http://192.168.101.31",
                                 "http://10.147.17.28",
                                 "http://eterea.termaliasa.com",
-                                "https://eterea.termaliasa.com",
-                                "http://core-service:8652"
+                                "https://eterea.termaliasa.com"
                         )
                         .allowedMethods(
                                 HttpMethod.GET.name(),
