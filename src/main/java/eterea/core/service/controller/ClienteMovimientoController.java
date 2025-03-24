@@ -44,6 +44,14 @@ public class ClienteMovimientoController {
 		return new ResponseEntity<>(service.findAllByReservaId(reservaId), HttpStatus.OK);
 	}
 
+	@GetMapping("/rango/facturas/{letraComprobante}/{debita}/{puntoVenta}/{numeroComprobanteDesde}/{numeroComprobanteHasta}")
+	public ResponseEntity<List<ClienteMovimiento>> findAllFacturasByRango(@PathVariable String letraComprobante,
+			@PathVariable Byte debita, @PathVariable Integer puntoVenta,
+			@PathVariable Long numeroComprobanteDesde, @PathVariable Long numeroComprobanteHasta) {
+		return new ResponseEntity<>(service.findAllFacturasByRango(letraComprobante, debita, puntoVenta, numeroComprobanteDesde,
+				numeroComprobanteHasta), HttpStatus.OK);
+	}
+
 	@GetMapping("/last/{puntoVenta}/{letraComprobante}")
 	public ResponseEntity<Long> nextNumeroFactura(@PathVariable Integer puntoVenta,
 			@PathVariable String letraComprobante) {
