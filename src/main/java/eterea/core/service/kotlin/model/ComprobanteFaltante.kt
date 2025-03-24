@@ -6,6 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
@@ -38,9 +39,11 @@ data class ComprobanteFaltante(
     var numero: Long = 0,
 
     @OneToOne(optional = true)
+    @JoinColumn(name = "cfa_neg_id", insertable = false, updatable = false)
     var negocio: Negocio? = null,
 
     @OneToOne(optional = true)
+    @JoinColumn(name = "cfa_cmp_id", insertable = false, updatable = false)
     var comprobante: Comprobante? = null
 
 ) : Auditable() {

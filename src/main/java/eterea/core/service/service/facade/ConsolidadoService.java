@@ -47,7 +47,9 @@ public class ConsolidadoService {
                 .collect(Collectors.groupingBy(cm -> 
                     cm.getLetraComprobante() + "." + 
                     cm.getPuntoVenta() + "." + 
-                    (cm.getComprobante() != null ? cm.getComprobante().getDebita() : "0")));
+                    (cm.getComprobante() != null ? cm.getComprobante().getDebita() : "0") + "." +
+                    (cm.getComprobante() != null ? cm.getComprobante().getComprobanteAfipId() : "0")
+                ));
         logGrupos(groupedByLetraAndPuntoVenta);
 
         List<ComprobanteFaltante> faltantes = groupedByLetraAndPuntoVenta.entrySet().stream()
@@ -121,12 +123,29 @@ public class ConsolidadoService {
     private void logGrupos(Map<String, List<ClienteMovimiento>> groupedByLetraAndPrefijo) {
         log.debug("Processing ConsolidadoService.logGrupos");
         try {
+            Map<String, Map<String, Long>> gruposResumidos = groupedByLetraAndPrefijo.entrySet().stream()
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> {
+                        List<ClienteMovimiento> movimientos = entry.getValue();
+                        Long min = movimientos.stream()
+                            .mapToLong(ClienteMovimiento::getNumeroComprobante)
+                            .min()
+                            .orElse(0L);
+                        Long max = movimientos.stream()
+                            .mapToLong(ClienteMovimiento::getNumeroComprobante)
+                            .max()
+                            .orElse(0L);
+                        return Map.of("min", min, "max", max);
+                    }
+                ));
+
             log.debug("Grupos -> {}", JsonMapper
                     .builder()
                     .findAndAddModules()
                     .build()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(groupedByLetraAndPrefijo));
+                    .writeValueAsString(gruposResumidos));
         } catch (JsonProcessingException e) {
             log.debug("Grupos jsonify error -> {}", e.getMessage());
         }

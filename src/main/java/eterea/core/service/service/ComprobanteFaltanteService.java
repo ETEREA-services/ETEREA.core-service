@@ -23,7 +23,6 @@ public class ComprobanteFaltanteService {
                             Integer prefijo,
                             Long numeroComprobante) {
         return new ComprobanteFaltante.Builder()
-                .comprobanteFaltanteId(null)
                 .negocioId(negocioId)
                 .comprobanteId(comprobanteId)
                 .fecha(fechaComprobante)
