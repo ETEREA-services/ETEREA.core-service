@@ -47,6 +47,9 @@ public class ClienteMovimientoService {
 		return repository.findAllByFechaComprobanteAndComprobanteLibroIva(fecha, (byte) 1);
 	}
 
+	public List<ClienteMovimiento> findAllFacturasByRango(String letraComprobante, Byte debita, Integer puntoVenta, Long numeroComprobanteDesde, Long numeroComprobanteHasta) {
+		return repository.findAllByLetraComprobanteAndReciboAndPuntoVentaAndNumeroComprobanteBetweenAndComprobanteDebita(letraComprobante, (byte) 0, puntoVenta, numeroComprobanteDesde, numeroComprobanteHasta, debita);
+	}
 
 	public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {
 		return repository.findByClienteMovimientoId(clienteMovimientoId)
