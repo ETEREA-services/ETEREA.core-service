@@ -37,9 +37,14 @@ public class VouchersService {
     private final VoucherProductoService voucherProductoService;
     private final ReservaService reservaService;
 
-    private record PersonType(int cantidad, String descripcion) {}
+    private record PersonType(int cantidad, String descripcion) {
+    }
 
-    public VouchersService(EmpresaService empresaService, NegocioService negocioService, OrderNoteService orderNoteService, VoucherService voucherService, ClienteService clienteService, FeriadoService feriadoService, ProductoSkuService productoSkuService, ReservaContextService reservaContextService, VoucherProductoService voucherProductoService, ReservaService reservaService) {
+    public VouchersService(EmpresaService empresaService, NegocioService negocioService,
+            OrderNoteService orderNoteService, VoucherService voucherService, ClienteService clienteService,
+            FeriadoService feriadoService, ProductoSkuService productoSkuService,
+            ReservaContextService reservaContextService, VoucherProductoService voucherProductoService,
+            ReservaService reservaService) {
         this.empresaService = empresaService;
         this.negocioService = negocioService;
         this.orderNoteService = orderNoteService;
@@ -76,7 +81,8 @@ public class VouchersService {
 
         Product product = orderNote.getProducts().getFirst();
         assert product != null;
-        return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findTop().getNegocioId()));
+        return processProduct(orderNote, product,
+                negocioService.findByNegocioId(empresaService.findTop().getNegocioId()));
     }
 
     private OrderNote getOrderNoteById(Long orderNumberId) {
@@ -92,7 +98,8 @@ public class VouchersService {
     private void logOrderNote(OrderNote orderNote) {
         log.debug("Processing logOrderNote");
         try {
-            log.debug("order_note={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(orderNote));
+            log.debug("order_note={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(orderNote));
         } catch (JsonProcessingException e) {
             log.debug("order_note=NOT_FOUND");
         }
@@ -190,7 +197,8 @@ public class VouchersService {
             if (!primero) {
                 cadena.append(" + ");
             }
-            cadena.append(voucherProducto.getProducto().getNombre()).append(" x ").append(voucherProducto.getCantidadPaxs());
+            cadena.append(voucherProducto.getProducto().getNombre()).append(" x ")
+                    .append(voucherProducto.getCantidadPaxs());
             primero = false;
         }
         return cadena.toString();
@@ -216,16 +224,19 @@ public class VouchersService {
     private void logVoucher(Voucher voucher) {
         log.debug("Processing logVoucher");
         try {
-            log.debug("Voucher -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
+            log.debug("Voucher -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(voucher));
         } catch (JsonProcessingException e) {
             log.debug("Voucher error -> {}", e.getMessage());
         }
     }
 
     @Transactional
-    public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio) {
+    public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product,
+            Negocio negocio) {
         log.debug("Processing facturaUnProducto");
-        String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
+        String fullName = orderNote.getBillingLastName().toUpperCase() + ", "
+                + orderNote.getBillingFirstName().toUpperCase();
         var cliente = determinaCliente(orderNote, fullName, negocio);
         OffsetDateTime fechaServicio = product.getBookingStart();
         byte[] dias = new byte[7]; // Lunes a Domingo
@@ -246,7 +257,8 @@ public class VouchersService {
         Producto productoPaxInfante = null;
 
         try {
-            ProductoSku productoSku = productoSkuService.findBySku(product.getSku(), dias[0], dias[1], dias[2], dias[3], dias[4], dias[5], dias[6], feriado);
+            ProductoSku productoSku = productoSkuService.findBySku(product.getSku(), dias[0], dias[1], dias[2], dias[3],
+                    dias[4], dias[5], dias[6], feriado);
             productoPaxMayor = productoSku.getProductoPaxMayor();
             productoPaxMenor = productoSku.getProductoPaxMenor();
             productoPaxInfante = productoSku.getProductoPaxInfante();
@@ -270,7 +282,8 @@ public class VouchersService {
             }
         }
 
-        var voucherProductos = determinaProductos(paxsMayor, paxsMenor, paxsInfante, productoPaxMayor, productoPaxMenor, productoPaxInfante);
+        var voucherProductos = determinaProductos(paxsMayor, paxsMenor, paxsInfante, productoPaxMayor, productoPaxMenor,
+                productoPaxInfante);
         Voucher voucher = new Voucher.Builder()
                 .fechaToma(orderNote.getCompletedDate())
                 .fechaServicio(fechaServicio)
@@ -304,7 +317,8 @@ public class VouchersService {
                 .build();
     }
 
-    private List<VoucherProducto> determinaProductos(int paxsMayor, int paxsMenor, int paxsInfante, Producto productoPaxMayor, Producto productoPaxMenor, Producto productoPaxInfante) {
+    private List<VoucherProducto> determinaProductos(int paxsMayor, int paxsMenor, int paxsInfante,
+            Producto productoPaxMayor, Producto productoPaxMenor, Producto productoPaxInfante) {
         log.debug("Processing determinaProductos");
         var voucherProductos = new ArrayList<VoucherProducto>();
         if (paxsMayor > 0 && productoPaxMayor != null) {
@@ -335,7 +349,8 @@ public class VouchersService {
     private void logVoucherProductos(ArrayList<VoucherProducto> voucherProductos) {
         log.debug("Processing logVoucherProductos");
         try {
-            log.debug("VoucherProductos -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucherProductos));
+            log.debug("VoucherProductos -> {}", JsonMapper.builder().findAndAddModules().build()
+                    .writerWithDefaultPrettyPrinter().writeValueAsString(voucherProductos));
         } catch (JsonProcessingException e) {
             log.debug("VoucherProductos - error -> {}", e.getMessage());
         }
@@ -364,6 +379,69 @@ public class VouchersService {
                     .clienteCategoriaId(0)
                     .build());
         }
+    }
+
+    /*
+     * 
+     * 
+     * --------------- Métodos intermedios para generar reservas ---------------
+     * 
+     * 
+     */
+
+    public ProgramaDiaDto preGenerarReserva(Long orderNumberId) {
+        OrderNote orderNote = getOrderNoteById(orderNumberId);
+        if (validateOrderNote(orderNote) != null)
+            return validateOrderNote(orderNote);
+
+        Product product = orderNote.getProducts().getFirst();
+
+        if (!product.getSku().equals("parque_termal_aventura"))
+            return createErrorResponse("Error: Producto no facturable");
+
+        String fullName = orderNote.getBillingLastName().toUpperCase() + ", "
+                + orderNote.getBillingFirstName().toUpperCase();
+
+        Negocio negocio = negocioService.findByNegocioId(empresaService.findTop().getNegocioId());
+        Cliente cliente = determinaCliente(orderNote, fullName, negocio);
+
+        if (product.getBookingStart() == null)
+            return createErrorResponse("Error: Fecha de servicio no encontrada");
+
+        OffsetDateTime fechaServicio = product.getBookingStart();
+        byte[] dias = new byte[7]; // Lunes a Domingo
+        byte feriado = 0;
+
+        feriado = (byte) (feriadoService.isFeriado(fechaServicio) ? 1 : 0);
+        dias[fechaServicio.getDayOfWeek().getValue() - 1] = (byte) (feriadoService.isFeriado(fechaServicio) ? 0 : 1);
+
+        Producto productoPaxMayor = null;
+        Producto productoPaxMenor = null;
+        Producto productoPaxInfante = null;
+
+        try {
+            ProductoSku productoSku = productoSkuService
+                    .findBySku(product.getSku(), dias[0], dias[1], dias[2], dias[3], dias[4], dias[5], dias[6], feriado);
+            productoPaxMayor = productoSku.getProductoPaxMayor();
+            productoPaxMenor = productoSku.getProductoPaxMenor();
+            productoPaxInfante = productoSku.getProductoPaxInfante();
+        } catch (ProductoSkuException e) {
+            return createErrorResponse("Error: SKU sin asociación de Productos");
+        }
+    }
+
+    private ProgramaDiaDto validateOrderNote(OrderNote orderNote) {
+        if (orderNote == null)
+            return createErrorResponse("Error: Order Note no encontrado");
+        if (!isOrderCompleted(orderNote))
+            return createErrorResponse("Error: Order Note pendiente de PAGO");
+        if (Objects.requireNonNull(orderNote.getProducts()).isEmpty())
+            return createErrorResponse("Error: reserva sin productos");
+        if (orderNote.getProducts().size() > 1)
+            return createErrorResponse("Error: más de un producto en la reserva");
+        if (isVoucherAlreadyRegistered(orderNote.getOrderNumberId()))
+            return createErrorResponse("Error: Programa por el Día YA registrado");
+        return null;
     }
 
 }
