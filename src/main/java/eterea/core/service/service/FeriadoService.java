@@ -31,9 +31,19 @@ public class FeriadoService {
     }
 
     public void delete(OffsetDateTime fecha) {
-        Feriado feriado = Objects.requireNonNull(repository.findByFecha(fecha)).orElseThrow(() -> new FeriadoException(fecha));
+        Feriado feriado = Objects.requireNonNull(repository.findByFecha(fecha))
+                .orElseThrow(() -> new FeriadoException(fecha));
         assert feriado != null;
         repository.delete(feriado);
+    }
+
+    public boolean isFeriado(OffsetDateTime fecha) {
+        try {
+            findByFecha(fecha);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
