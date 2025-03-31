@@ -5,6 +5,7 @@
 /cloudbeaver/
 !.mvn/wrapper/maven-wrapper.jar
 .vscode/
+.cursor/
 
 ### STS ###
 .apt_generated
