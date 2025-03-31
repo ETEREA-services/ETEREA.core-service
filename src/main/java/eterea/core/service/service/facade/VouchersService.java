@@ -428,6 +428,8 @@ public class VouchersService {
         } catch (ProductoSkuException e) {
             return createErrorResponse("Error: SKU sin asociación de Productos");
         }
+
+        return null;
     }
 
     private ProgramaDiaDto validateOrderNote(OrderNote orderNote) {
