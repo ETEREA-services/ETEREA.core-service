@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -36,6 +37,10 @@ public class VouchersService {
     private final ReservaContextService reservaContextService;
     private final VoucherProductoService voucherProductoService;
     private final ReservaService reservaService;
+    private final ProductoWebProductoService productoWebProductoService;
+    private final TipoDiaService tipoDiaService;
+    private final TipoPaxService tipoPaxService;
+    private final ProductoWebService productoWebService;
 
     private record PersonType(int cantidad, String descripcion) {
     }
@@ -44,7 +49,8 @@ public class VouchersService {
             OrderNoteService orderNoteService, VoucherService voucherService, ClienteService clienteService,
             FeriadoService feriadoService, ProductoSkuService productoSkuService,
             ReservaContextService reservaContextService, VoucherProductoService voucherProductoService,
-            ReservaService reservaService) {
+            ReservaService reservaService, ProductoWebProductoService productoWebProductoService,
+            TipoDiaService tipoDiaService, TipoPaxService tipoPaxService, ProductoWebService productoWebService) {
         this.empresaService = empresaService;
         this.negocioService = negocioService;
         this.orderNoteService = orderNoteService;
@@ -55,6 +61,10 @@ public class VouchersService {
         this.reservaContextService = reservaContextService;
         this.voucherProductoService = voucherProductoService;
         this.reservaService = reservaService;
+        this.productoWebProductoService = productoWebProductoService;
+        this.tipoDiaService = tipoDiaService;
+        this.tipoPaxService = tipoPaxService;
+        this.productoWebService = productoWebService;
     }
 
     @Transactional
@@ -409,27 +419,114 @@ public class VouchersService {
             return createErrorResponse("Error: Fecha de servicio no encontrada");
 
         OffsetDateTime fechaServicio = product.getBookingStart();
-        byte[] dias = new byte[7]; // Lunes a Domingo
-        byte feriado = 0;
 
-        feriado = (byte) (feriadoService.isFeriado(fechaServicio) ? 1 : 0);
-        dias[fechaServicio.getDayOfWeek().getValue() - 1] = (byte) (feriadoService.isFeriado(fechaServicio) ? 0 : 1);
+        TipoDia tipoDia = null;
 
-        Producto productoPaxMayor = null;
-        Producto productoPaxMenor = null;
-        Producto productoPaxInfante = null;
+        if (feriadoService.isFeriado(fechaServicio)) {
+            tipoDia = tipoDiaService.findByNombre("feriado");
+        } else {
+            tipoDia = fechaServicio.getDayOfWeek().equals(DayOfWeek.SATURDAY)
+                    || fechaServicio.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+                            ? tipoDiaService.findByNombre("fin_semana")
+                            : tipoDiaService.findByNombre("semana");
+        }
+        ProductoWeb productoWeb = productoWebService.findBySku(product.getSku());
 
-        try {
-            ProductoSku productoSku = productoSkuService
-                    .findBySku(product.getSku(), dias[0], dias[1], dias[2], dias[3], dias[4], dias[5], dias[6], feriado);
-            productoPaxMayor = productoSku.getProductoPaxMayor();
-            productoPaxMenor = productoSku.getProductoPaxMenor();
-            productoPaxInfante = productoSku.getProductoPaxInfante();
-        } catch (ProductoSkuException e) {
-            return createErrorResponse("Error: SKU sin asociación de Productos");
+        List<Producto> productosPaxMayor = new ArrayList<>();
+        List<Producto> productosPaxMenor = new ArrayList<>();
+        List<Producto> productosPaxInfante = new ArrayList<>();
+
+        // Por ejemplo, el productoWeb "parque_termal_aventura" entre semana contiene
+        // los productos eterea "PST LaV May - 1 y Tirolesa - 2"
+        for (ProductoWebProducto productoWebProducto : productoWebProductoService
+                .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("mayor"), tipoDia)) {
+            productosPaxMayor.add(productoWebProducto.getProducto());
         }
 
-        return null;
+        for (ProductoWebProducto productoWebProducto : productoWebProductoService
+                .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("menor"), tipoDia)) {
+            productosPaxMenor.add(productoWebProducto.getProducto());
+        }
+
+        for (ProductoWebProducto productoWebProducto : productoWebProductoService
+                .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("infante"), tipoDia)) {
+            productosPaxInfante.add(productoWebProducto.getProducto());
+        }
+
+        int paxsMenor = 0;
+        int paxsMayor = 0;
+        int paxsInfante = 0;
+
+        for (PersonType personType : extractPaxs(product.getPersonTypes())) {
+            if (personType.descripcion().contains("Niño")) {
+                paxsMenor = personType.cantidad();
+            }
+            if (personType.descripcion().contains("Adulto")) {
+                paxsMayor = personType.cantidad();
+            }
+            if (personType.descripcion().contains("Infante")) {
+                paxsInfante = personType.cantidad();
+            }
+        }
+
+        List<VoucherProducto> voucherProductos = new ArrayList<>();
+
+        if (paxsMayor > 0 && !productosPaxMayor.isEmpty()) {
+            for (Producto producto : productosPaxMayor) {
+                voucherProductos.add(new VoucherProducto.Builder()
+                        .productoId(producto.getProductoId())
+                        .cantidadPaxs(paxsMayor)
+                        .producto(producto)
+                        .build());
+            }
+        }
+        if (paxsMenor > 0 && !productosPaxMenor.isEmpty()) {
+            for (Producto producto : productosPaxMenor) {
+                voucherProductos.add(new VoucherProducto.Builder()
+                        .productoId(producto.getProductoId())
+                        .cantidadPaxs(paxsMenor)
+                        .producto(producto)
+                        .build());
+            }
+        }
+        if (paxsInfante > 0 && !productosPaxInfante.isEmpty()) {
+            for (Producto producto : productosPaxInfante) {
+                voucherProductos.add(new VoucherProducto.Builder()
+                        .productoId(producto.getProductoId())
+                        .cantidadPaxs(paxsInfante)
+                        .producto(producto)
+                        .build());
+            }
+        }
+
+        Voucher voucher = new Voucher.Builder()
+                .fechaToma(orderNote.getCompletedDate())
+                .fechaServicio(fechaServicio)
+                .fechaVencimiento(product.getBookingStart())
+                .nombrePax(fullName)
+                .contacto(orderNote.getBillingPhone())
+                .paxs(paxsMayor + paxsMenor)
+                .productos(cadenaResumen(voucherProductos))
+                .tieneVoucher((byte) 1)
+                .clienteId(cliente.getClienteId())
+                .observaciones("backend")
+                .confirmado((byte) 1)
+                .pagaCacheuta((byte) 0)
+                .hotelId(475)
+                .paxsReales(paxsMayor + paxsMenor) // TODO: verificar paxsReales
+                .proveedorId(null) // TODO: obtener proveedorId
+                .numeroVoucher(String.valueOf(orderNote.getOrderNumberId()))
+                .usuario("admin")
+                .reservaOrigenId(3)
+                .ventaInternet((byte) 1)
+                .cliente(cliente)
+                .subeEn(product.getPuntoDeEncuentro())
+                .build();
+
+        return new ProgramaDiaDto.Builder()
+                .vouchers(Collections.singletonList(voucher))
+                .errorMessage("")
+                .build();
     }
 
     private ProgramaDiaDto validateOrderNote(OrderNote orderNote) {

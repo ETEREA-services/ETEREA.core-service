@@ -1,8 +1,14 @@
 package eterea.core.service.kotlin.repository
 
-import eterea.core.service.kotlin.model.ProductoWebProducto
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import eterea.core.service.kotlin.model.ProductoWebProducto
+import eterea.core.service.kotlin.model.TipoDia
+import eterea.core.service.kotlin.model.TipoPax
+import eterea.core.service.kotlin.model.ProductoWeb
 
+@Repository
 interface ProductoWebProductoRepository : JpaRepository<ProductoWebProducto, Long> {
+   fun findBySku(sku: String): List<ProductoWebProducto>;
+   fun findByProductoWebAndTipoPaxAndTipoDia(productoWeb: ProductoWeb, tipoPax: TipoPax, tipoDia: TipoDia): List<ProductoWebProducto>;
 }
