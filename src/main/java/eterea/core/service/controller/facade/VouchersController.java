@@ -31,4 +31,8 @@ public class VouchersController {
         return ResponseEntity.ok(service.importOneFromWeb(orderNumberId));
     }
 
+    @GetMapping("/reserva/pre-generate/{orderNumberId}")
+    public ResponseEntity<ProgramaDiaDto> preGenerateReserva(@PathVariable Long orderNumberId) {
+        return ResponseEntity.ok(service.preGenerarReserva(orderNumberId));
+    }
 }

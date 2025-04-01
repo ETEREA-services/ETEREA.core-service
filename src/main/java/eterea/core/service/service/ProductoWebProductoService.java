@@ -18,10 +18,6 @@ public class ProductoWebProductoService {
       this.repository = repository;
    }
 
-   public List<ProductoWebProducto> findBySku(String sku) {
-      return repository.findBySku(sku);
-   }
-
    public List<ProductoWebProducto> findByProductoWebAndTipoPaxAndTipoDia(ProductoWeb productoWeb, TipoPax tipoPax, TipoDia tipoDia) {
       return repository.findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPax, tipoDia);
    }

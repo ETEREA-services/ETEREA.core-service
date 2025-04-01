@@ -9,6 +9,5 @@ import eterea.core.service.kotlin.model.ProductoWeb
 
 @Repository
 interface ProductoWebProductoRepository : JpaRepository<ProductoWebProducto, Long> {
-   fun findBySku(sku: String): List<ProductoWebProducto>;
    fun findByProductoWebAndTipoPaxAndTipoDia(productoWeb: ProductoWeb, tipoPax: TipoPax, tipoDia: TipoDia): List<ProductoWebProducto>;
 }
