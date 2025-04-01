@@ -430,7 +430,9 @@ public class VouchersService {
                             ? tipoDiaService.findByNombre("fin_semana")
                             : tipoDiaService.findByNombre("semana");
         }
+        log.debug("tipoDia={}", tipoDia);
         ProductoWeb productoWeb = productoWebService.findBySku(product.getSku());
+        log.debug("productoWeb={}", productoWeb);
 
         List<Producto> productosPaxMayor = new ArrayList<>();
         List<Producto> productosPaxMenor = new ArrayList<>();
@@ -438,18 +440,27 @@ public class VouchersService {
 
         // Por ejemplo, el productoWeb "parque_termal_aventura" entre semana contiene
         // los productos eterea "PST LaV May - 1 y Tirolesa - 2"
-        for (ProductoWebProducto productoWebProducto : productoWebProductoService
-                .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("mayor"), tipoDia)) {
+        log.debug("Inicializando productosPaxMayor");
+        List<ProductoWebProducto> productoWebProductosMayor = productoWebProductoService
+                .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("mayor"), tipoDia);
+        log.debug("productoWebProductosMayor={}", productoWebProductosMayor);
+        for (ProductoWebProducto productoWebProducto : productoWebProductosMayor) {
+            log.debug("productoWebProducto={}", productoWebProducto);
             productosPaxMayor.add(productoWebProducto.getProducto());
         }
 
-        for (ProductoWebProducto productoWebProducto : productoWebProductoService
-                .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("menor"), tipoDia)) {
+        log.debug("Inicializando productosPaxMenor");
+        List<ProductoWebProducto> productoWebProductosMenor = productoWebProductoService.findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("menor"), tipoDia);
+        log.debug("productoWebProductosMenor={}", productoWebProductosMenor);
+        for (ProductoWebProducto productoWebProducto : productoWebProductosMenor) {
+            log.debug("productoWebProducto={}", productoWebProducto);
             productosPaxMenor.add(productoWebProducto.getProducto());
         }
 
+        log.debug("Inicializando productosPaxInfante");
         for (ProductoWebProducto productoWebProducto : productoWebProductoService
                 .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("infante"), tipoDia)) {
+            log.debug("productoWebProducto={}", productoWebProducto);
             productosPaxInfante.add(productoWebProducto.getProducto());
         }
 
@@ -457,14 +468,18 @@ public class VouchersService {
         int paxsMayor = 0;
         int paxsInfante = 0;
 
+        log.debug("Inicializando extractPaxs");
         for (PersonType personType : extractPaxs(product.getPersonTypes())) {
             if (personType.descripcion().contains("Niño")) {
+                log.debug("personType={}", personType);
                 paxsMenor = personType.cantidad();
             }
             if (personType.descripcion().contains("Adulto")) {
+                log.debug("personType={}", personType);
                 paxsMayor = personType.cantidad();
             }
             if (personType.descripcion().contains("Infante")) {
+                log.debug("personType={}", personType);
                 paxsInfante = personType.cantidad();
             }
         }
@@ -472,6 +487,7 @@ public class VouchersService {
         List<VoucherProducto> voucherProductos = new ArrayList<>();
 
         if (paxsMayor > 0 && !productosPaxMayor.isEmpty()) {
+            log.debug("productosPaxMayor={}", productosPaxMayor);
             for (Producto producto : productosPaxMayor) {
                 voucherProductos.add(new VoucherProducto.Builder()
                         .productoId(producto.getProductoId())
@@ -481,6 +497,7 @@ public class VouchersService {
             }
         }
         if (paxsMenor > 0 && !productosPaxMenor.isEmpty()) {
+            log.debug("productosPaxMenor={}", productosPaxMenor);
             for (Producto producto : productosPaxMenor) {
                 voucherProductos.add(new VoucherProducto.Builder()
                         .productoId(producto.getProductoId())
@@ -490,6 +507,7 @@ public class VouchersService {
             }
         }
         if (paxsInfante > 0 && !productosPaxInfante.isEmpty()) {
+            log.debug("productosPaxInfante={}", productosPaxInfante);
             for (Producto producto : productosPaxInfante) {
                 voucherProductos.add(new VoucherProducto.Builder()
                         .productoId(producto.getProductoId())

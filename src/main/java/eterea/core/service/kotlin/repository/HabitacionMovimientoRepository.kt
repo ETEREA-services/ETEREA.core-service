@@ -24,32 +24,32 @@ interface HabitacionMovimientoRepository : JpaRepository<HabitacionMovimiento, L
      *
      *   TipoComprobante = 'Z' -> 'De Baja' (Reserva dada de baja)
      */
-    @Query("""
-        SELECT
-            hm
-        FROM
-            HabitacionMovimiento hm 
-        WHERE 
-            (
-                (hm.fechaIngreso <= :fechaIngresoMasUno AND hm.fechaSalida >= :fechaIngresoMasUno)
-                OR
-                (hm.fechaIngreso <= :fechaSalidaMenosUno AND hm.fechaSalida >= :fechaSalidaMenosUno)
-                OR
-                (hm.fechaIngreso >= :fechaIngreso AND hm.fechaSalida <= :fechaSalida)
-            )
-            AND
-            hm.habitacion.numero = :numeroHabitacion
-            AND
-            hm.habitacionMovimientoId != :idExcluir
-            AND
-            hm.estadoReserva.tipoComprobante != 'Z'
-        """)
-    fun findReservasSuperpuestas(
-        @Param("numeroHabitacion") numeroHabitacion: Int,
-        @Param("fechaIngreso") fechaIngreso: OffsetDateTime,
-        @Param("fechaSalida") fechaSalida: OffsetDateTime,
-        @Param("fechaIngresoMasUnDia") fechaIngresoMasUnDia: OffsetDateTime,
-        @Param("fechaSalidaMenosUnDia") fechaSalidaMenosUnDia: OffsetDateTime,
-        @Param("idExcluir") idExcluir: Long
-    ): List<HabitacionMovimiento>
+    // @Query("""
+    //     SELECT
+    //         hm
+    //     FROM
+    //         HabitacionMovimiento hm 
+    //     WHERE 
+    //         (
+    //             (hm.fechaIngreso <= :fechaIngresoMasUno AND hm.fechaSalida >= :fechaIngresoMasUno)
+    //             OR
+    //             (hm.fechaIngreso <= :fechaSalidaMenosUno AND hm.fechaSalida >= :fechaSalidaMenosUno)
+    //             OR
+    //             (hm.fechaIngreso >= :fechaIngreso AND hm.fechaSalida <= :fechaSalida)
+    //         )
+    //         AND
+    //         hm.habitacion.numero = :numeroHabitacion
+    //         AND
+    //         hm.habitacionMovimientoId != :idExcluir
+    //         AND
+    //         hm.estadoReserva.tipoComprobante != 'Z'
+    //     """)
+    // fun findReservasSuperpuestas(
+    //     @Param("numeroHabitacion") numeroHabitacion: Int,
+    //     @Param("fechaIngreso") fechaIngreso: OffsetDateTime,
+    //     @Param("fechaSalida") fechaSalida: OffsetDateTime,
+    //     @Param("fechaIngresoMasUnDia") fechaIngresoMasUnDia: OffsetDateTime,
+    //     @Param("fechaSalidaMenosUnDia") fechaSalidaMenosUnDia: OffsetDateTime,
+    //     @Param("idExcluir") idExcluir: Long
+    // ): List<HabitacionMovimiento>
 }

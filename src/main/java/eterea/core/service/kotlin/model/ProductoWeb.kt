@@ -8,11 +8,11 @@ import jakarta.persistence.Table
 import jakarta.persistence.Column
 
 @Entity
-@Table(name = "producto_web")
+@Table(name = "productoweb")
 data class ProductoWeb(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "producto_web_id")
+    @Column(name = "productoweb_id")
     val id: Long,
     @Column(name = "producto_nombre")
     val nombre: String,
