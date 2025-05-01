@@ -8,6 +8,6 @@ import java.util.Optional
 @Repository
 interface ConceptoFacturadoRepository : JpaRepository<ConceptoFacturado?, Long?> {
 
-    fun findByArticuloMovimientoId(articuloMovimientoId: Long): Optional<ConceptoFacturado?>?
+    fun findTopByArticuloMovimientoId(articuloMovimientoId: Long): Optional<ConceptoFacturado?>?
 
 }
