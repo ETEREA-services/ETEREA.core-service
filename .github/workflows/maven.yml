@@ -30,7 +30,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn clean verify install -DskipTests
+        run: mvn -B verify -DskipTests
 
       - name: Set VERSION environment variable
         id: version
