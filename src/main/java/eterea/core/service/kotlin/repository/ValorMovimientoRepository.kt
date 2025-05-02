@@ -1,13 +1,13 @@
 package eterea.core.service.kotlin.repository
 
 import eterea.core.service.kotlin.model.ValorMovimiento
-import eterea.core.service.model.dto.CobroInternoDto
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.OffsetDateTime
 import java.util.Optional
-
 
 @Repository
 interface ValorMovimientoRepository : JpaRepository<ValorMovimiento, Int> {
@@ -34,38 +34,17 @@ interface ValorMovimientoRepository : JpaRepository<ValorMovimiento, Int> {
         ingresosOnly: Boolean
     ): List<ValorMovimiento>
 
+    fun findAllByFechaContableAndOrdenContable(
+        fechaContable: OffsetDateTime,
+        ordenContable: Int
+    ): List<ValorMovimiento?>?
 
+    @Modifying(clearAutomatically = true)
+    @Transactional
     @Query("""
-        SELECT new eterea.core.service.model.dto.CobroInternoDto(
-            vm.valorMovimientoId,
-            vm.cierreCajaId,
-            vm.negocioId,
-            vm.fechaContable,
-            vm.importe,
-            vm.clienteMovimientoId,
-            vm.clienteId,
-            vm.numeroCuenta,
-            cm.puntoVenta,
-            cli.cuit,
-            cli.razonSocial,
-            cli.nombre,
-            val.concepto,
-            comp.comprobanteId,
-            comp.descripcion
-        )
-        FROM
-            ValorMovimiento vm
-            JOIN ClienteMovimiento cm
-                ON vm.clienteMovimientoId = cm.clienteMovimientoId
-            JOIN Cliente cli
-                ON cm.clienteId = cli.clienteId
-            JOIN Valor val
-                ON vm.valor.valorId = val.valorId
-            JOIN Comprobante comp
-                ON vm.comprobanteId = comp.comprobanteId
-        WHERE
-            vm.fechaContable >= :desde AND vm.fechaContable < :hasta
+        DELETE FROM ValorMovimiento vm
+        WHERE vm.fechaContable = :fechaContable AND vm.ordenContable = :ordenContable
     """)
-    fun findAllCobroInternoByFechaContableBetween(desde: OffsetDateTime, hasta: OffsetDateTime): List<CobroInternoDto>
+    fun deleteAllByFechaContableAndOrdenContable(fechaContable: OffsetDateTime, ordenContable: Int)
 
 }

@@ -19,5 +19,5 @@ public record ReservaHabitacionDTO(
         OffsetDateTime fechaOperacion,
         OffsetDateTime fechaVencimiento,
         Boolean tarifaStandard,
-        String estadoReserva) {
+        String letraComprobante) {
 }

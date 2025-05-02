@@ -8,7 +8,8 @@ import java.util.List;
 import eterea.core.service.kotlin.model.HabitacionMovimiento;
 import eterea.core.service.kotlin.model.Reserva;
 import eterea.core.service.kotlin.model.ReservaArticulo;
-import eterea.core.service.model.dto.ReservaHabitacionDTO;
+import eterea.core.service.model.dto.ReservaHotelDto;
+import eterea.core.service.model.dto.reserva.CreateReservaDto;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,15 +52,13 @@ public class ReservaController {
 		return new ResponseEntity<>(service.findAllReservaArticulos(reservaId), HttpStatus.OK);
 	}
 
-	// HABITACIONES
-
-	@PostMapping("/habitacion")
-	public ResponseEntity<HabitacionMovimiento> createReservaHabitacion(@RequestBody ReservaHabitacionDTO dto) {
-		return new ResponseEntity<>(service.createReservaHabitacion(dto), HttpStatus.CREATED);
+	@PostMapping("/")
+	public ResponseEntity<Reserva> createReserva(@RequestBody CreateReservaDto createReservaDto) {
+		return new ResponseEntity<>(service.createReserva(createReservaDto), HttpStatus.CREATED);
 	}
 
-	@PutMapping("/habitacion/{habitacionMovimientoId}")
-	public ResponseEntity<HabitacionMovimiento> updateReservaHabitacion(@PathVariable Long habitacionMovimientoId, @RequestBody ReservaHabitacionDTO dto) {
-		return new ResponseEntity<>(service.updateReservaHabitacion(habitacionMovimientoId, dto), HttpStatus.OK);
+	@GetMapping("/last")
+	public ResponseEntity<Reserva> findLastReserva() {
+		return new ResponseEntity<>(service.findLastReserva(), HttpStatus.OK);
 	}
 }

@@ -20,58 +20,68 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class ArticuloController {
 
-    private final ArticuloService service;
+   private final ArticuloService service;
 
-    public ArticuloController(ArticuloService service) {
-        this.service = service;
-    }
+   public ArticuloController(ArticuloService service) {
+      this.service = service;
+   }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Articulo>> findAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
+   @GetMapping("/")
+   public ResponseEntity<List<Articulo>> findAll() {
+      return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+   }
 
-    @GetMapping("/search/{chain}")
-    public ResponseEntity<List<Articulo>> findAllBySearch(@PathVariable String chain) {
-        return new ResponseEntity<>(service.findAllBySearch(chain), HttpStatus.OK);
-    }
+   @GetMapping("/search/{chain}")
+   public ResponseEntity<List<Articulo>> findAllBySearch(@PathVariable String chain) {
+      return new ResponseEntity<>(service.findAllBySearch(chain), HttpStatus.OK);
+   }
 
-    @GetMapping("/{articuloId}")
-    public ResponseEntity<Articulo> findByArticuloId(@PathVariable String articuloId) {
-        log.debug("processing findByArticuloId -> {}", articuloId);
-        try {
-            return new ResponseEntity<>(service.findByArticuloId(articuloId), HttpStatus.OK);
-        } catch (ArticuloException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-    }
+   @GetMapping("/{articuloId}")
+   public ResponseEntity<Articulo> findByArticuloId(@PathVariable String articuloId) {
+      log.debug("processing findByArticuloId -> {}", articuloId);
+      try {
+         return new ResponseEntity<>(service.findByArticuloId(articuloId), HttpStatus.OK);
+      } catch (ArticuloException e) {
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+      }
+   }
 
-    @GetMapping("/autonumerico/{autonumerico}")
-    public ResponseEntity<Articulo> findByAutonumerico(@PathVariable Long autonumerico) {
-        try {
-            return new ResponseEntity<>(service.findByAutoNumerico(autonumerico), HttpStatus.OK);
-        } catch (ArticuloException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-    }
+   @GetMapping("/autonumerico/{autonumerico}")
+   public ResponseEntity<Articulo> findByAutonumerico(@PathVariable Long autonumerico) {
+      try {
+         return new ResponseEntity<>(service.findByAutoNumerico(autonumerico), HttpStatus.OK);
+      } catch (ArticuloException e) {
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+      }
+   }
 
-    @GetMapping("/mascaraBalanza/{mascaraBalanza}")
-    public ResponseEntity<Articulo> findByMascaraBalanza(@PathVariable String mascaraBalanza) {
-        try {
-            return new ResponseEntity<>(service.findByMascaraBalanza(mascaraBalanza), HttpStatus.OK);
-        } catch (ArticuloException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
-    }
+   @GetMapping("/mascaraBalanza/{mascaraBalanza}")
+   public ResponseEntity<Articulo> findByMascaraBalanza(@PathVariable String mascaraBalanza) {
+      try {
+         return new ResponseEntity<>(service.findByMascaraBalanza(mascaraBalanza), HttpStatus.OK);
+      } catch (ArticuloException e) {
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+      }
+   }
 
-    @PostMapping("/")
-    public ResponseEntity<Articulo> add(@RequestBody Articulo articulo) {
-        return new ResponseEntity<>(service.add(articulo), HttpStatus.OK);
-    }
+   @PostMapping("/")
+   public ResponseEntity<Articulo> add(@RequestBody Articulo articulo) {
+      return new ResponseEntity<>(service.add(articulo), HttpStatus.OK);
+   }
 
-    @PutMapping("/{articuloId}")
-    public ResponseEntity<Articulo> update(@RequestBody Articulo articulo, @PathVariable String articuloId) {
-        return new ResponseEntity<>(service.update(articulo, articuloId), HttpStatus.OK);
-    }
+   @PutMapping("/{articuloId}")
+   public ResponseEntity<Articulo> update(@RequestBody Articulo articulo, @PathVariable String articuloId) {
+      return new ResponseEntity<>(service.update(articulo, articuloId), HttpStatus.OK);
+   }
+
+   @GetMapping("/producto/{productoId}")
+   public ResponseEntity<List<Articulo>> findAllByProductoId(@PathVariable Integer productoId) {
+      return new ResponseEntity<>(service.findAllByProductoId(productoId), HttpStatus.OK);
+   }
+
+   @GetMapping("/articulosByIds")
+   public ResponseEntity<List<Articulo>> findAllByIds(@RequestParam List<String> articuloIds) {
+      return new ResponseEntity<>(service.findAllByIds(articuloIds), HttpStatus.OK);
+   }
 
 }

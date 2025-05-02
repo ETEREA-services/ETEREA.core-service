@@ -5,6 +5,7 @@ package eterea.core.service.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,7 +35,7 @@ public class ComprobanteService {
 	}
 
 	public List<Integer> findAllDisponibles() {
-		Comprobante firstComprobante = repository.findFirstByOrderByComprobanteId().orElseThrow(ComprobanteException::new);
+		Comprobante firstComprobante = Objects.requireNonNull(repository.findFirstByOrderByComprobanteId()).orElseThrow(ComprobanteException::new);
         try {
             log.debug("First comprobante: {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(firstComprobante));
         } catch (JsonProcessingException e) {
@@ -76,7 +77,8 @@ public class ComprobanteService {
 	}
 
 	public Comprobante findByComprobanteId(Integer comprobanteId) {
-		return repository.findByComprobanteId(comprobanteId)
+		log.debug("Processing ComprobanteService.findByComprobanteId");
+		return Objects.requireNonNull(repository.findByComprobanteId(comprobanteId))
 				.orElseThrow(() -> new ComprobanteException(comprobanteId));
 	}
 

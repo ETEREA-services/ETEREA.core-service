@@ -10,34 +10,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import eterea.core.service.model.dto.CobroInternoDto;
+import eterea.core.service.model.dto.ValorMovimientoDto;
 import eterea.core.service.service.ValorMovimientoService;
 
 @RestController
-@RequestMapping("/api/v1/valor-movimientos")
+@RequestMapping({"/api/v1/valor-movimientos", "/api/core/valorMovimiento", "/valorMovimiento"})
 public class ValorMovimientoController {
-   private final ValorMovimientoService valorMovimientoService;
 
-   public ValorMovimientoController(ValorMovimientoService valorMovimientoService) {
-      this.valorMovimientoService = valorMovimientoService;
+   private final ValorMovimientoService service;
+
+   public ValorMovimientoController(ValorMovimientoService service) {
+      this.service = service;
    }
 
-   // @GetMapping()
-   // public ResponseEntity<List<ValorMovimientoDto>> findAllValorMovimientos(
-   //       @RequestParam LocalDate desde,
-   //       @RequestParam LocalDate hasta,
-   //       @RequestParam boolean cierreCajaOnly,
-   //       @RequestParam boolean ingresosOnly) {
-   //    return ResponseEntity.status(HttpStatus.OK)
-   //          .body(valorMovimientoService.findAllMovimientos(desde, hasta, cierreCajaOnly,
-   //                ingresosOnly));
-   // }
-
-   @GetMapping("/cobros-internos")
-   public ResponseEntity<List<CobroInternoDto>> findAllCobroInternos(
+   @GetMapping()
+   public ResponseEntity<List<ValorMovimientoDto>> findAllValorMovimientos(
          @RequestParam LocalDate desde,
-         @RequestParam LocalDate hasta) {
+         @RequestParam LocalDate hasta,
+         @RequestParam boolean cierreCajaOnly,
+         @RequestParam boolean ingresosOnly) {
       return ResponseEntity.status(HttpStatus.OK)
-            .body(valorMovimientoService.findAllCobroInterno(desde, hasta));
+            .body(service.findAllMovimientos(desde, hasta, cierreCajaOnly,
+                  ingresosOnly));
    }
+
 }

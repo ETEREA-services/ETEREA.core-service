@@ -4,6 +4,7 @@ import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.Negocio;
 import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
+import eterea.core.service.model.dto.PregenerarReservaDto;
 import eterea.core.service.service.facade.VouchersService;
 
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class VouchersController {
     }
 
     @GetMapping("/reserva/pre-generate/{orderNumberId}")
-    public ResponseEntity<ProgramaDiaDto> preGenerateReserva(@PathVariable Long orderNumberId) {
+    public ResponseEntity<PregenerarReservaDto> preGenerateReserva(@PathVariable Long orderNumberId) {
         return ResponseEntity.ok(service.preGenerarReserva(orderNumberId));
     }
 }

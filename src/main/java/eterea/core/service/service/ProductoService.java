@@ -62,4 +62,12 @@ public class ProductoService {
 	public List<Producto> findAllByVoucherId(Long voucherId) {
 		return repository.findAllByVoucherId(voucherId);
 	}
+
+	public List<Producto> findAllByIds(List<Integer> productoIds) {
+		return repository.findAllByProductoIdIn(productoIds);
+	}
+
+	public List<Producto> findByExactArticuloIds(List<String> articuloIds) {
+		return repository.findByExactArticuloIds(articuloIds, articuloIds.size());
+	}
 }

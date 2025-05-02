@@ -5,7 +5,6 @@ package eterea.core.service.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,23 +12,30 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-
-import eterea.core.service.kotlin.exception.HabitacionNoDisponibleException;
-import eterea.core.service.kotlin.exception.ReservaException;
-import eterea.core.service.kotlin.exception.ReservaNoEditableException;
-import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.repository.ReservaRepository;
-import eterea.core.service.model.dto.ReservaHabitacionDTO;
-import eterea.core.service.service.facade.PrecioService;
-import jakarta.transaction.Transactional;
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import eterea.core.service.kotlin.model.HabitacionMovimiento;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+
+import eterea.core.service.exception.ArticuloException;
+import eterea.core.service.kotlin.exception.ReservaException;
+import eterea.core.service.kotlin.model.Articulo;
+import eterea.core.service.kotlin.model.ArticuloMovimiento;
+import eterea.core.service.kotlin.model.Cliente;
+import eterea.core.service.kotlin.model.ClienteMovimiento;
+import eterea.core.service.kotlin.model.Comprobante;
+import eterea.core.service.kotlin.model.ConceptoFacturado;
+import eterea.core.service.kotlin.model.Empresa;
+import eterea.core.service.kotlin.model.Reserva;
+import eterea.core.service.kotlin.model.ReservaArticulo;
+import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.kotlin.model.VoucherProducto;
+import eterea.core.service.kotlin.repository.ReservaRepository;
+import eterea.core.service.model.dto.reserva.CreateReservaDto;
+import eterea.core.service.service.facade.PrecioService;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author daniel
@@ -54,19 +60,19 @@ public class ReservaService {
    private final HabitacionService habitacionService;
 
    public ReservaService(ReservaRepository repository,
-                         ClienteMovimientoService clienteMovimientoService,
-                         VoucherService voucherService,
-                         ComprobanteService comprobanteService,
-                         ReservaArticuloService reservaArticuloService,
-                         ArticuloService articuloService,
-                         ArticuloMovimientoService articuloMovimientoService,
-                         ConceptoFacturadoService conceptoFacturadoService,
-                         EmpresaService empresaService,
-                         VoucherProductoService voucherProductoService,
-                         PrecioService precioService,
-                         HabitacionMovimientoService habitacionMovimientoService,
-                         ClienteService clienteService,
-                         HabitacionService habitacionService) {
+         ClienteMovimientoService clienteMovimientoService,
+         VoucherService voucherService,
+         ComprobanteService comprobanteService,
+         ReservaArticuloService reservaArticuloService,
+         ArticuloService articuloService,
+         ArticuloMovimientoService articuloMovimientoService,
+         ConceptoFacturadoService conceptoFacturadoService,
+         EmpresaService empresaService,
+         VoucherProductoService voucherProductoService,
+         PrecioService precioService,
+         HabitacionMovimientoService habitacionMovimientoService,
+         ClienteService clienteService,
+         HabitacionService habitacionService) {
       this.repository = repository;
       this.clienteMovimientoService = clienteMovimientoService;
       this.voucherService = voucherService;
@@ -85,9 +91,9 @@ public class ReservaService {
 
    public List<Reserva> findTopPendientes() {
       return repository
-           .findTop100ByVerificadaAndFacturadaAndEliminadaAndPagaCacheutaAndFacturadoFueraAndAnuladaAndClienteIdGreaterThan(
-                (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, 0L,
-                Sort.by("fechaToma").descending().and(Sort.by("clienteId")));
+            .findTop100ByVerificadaAndFacturadaAndEliminadaAndPagaCacheutaAndFacturadoFueraAndAnuladaAndClienteIdGreaterThan(
+                  (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, 0L,
+                  Sort.by("fechaToma").descending().and(Sort.by("clienteId")));
    }
 
    public Reserva findByReservaId(Long reservaId) {
@@ -99,7 +105,7 @@ public class ReservaService {
       ClienteMovimiento clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
       try {
          log.debug("ClienteMovimiento = {}", JsonMapper.builder().findAndAddModules().build()
-              .writerWithDefaultPrettyPrinter().writeValueAsString(clienteMovimiento));
+               .writerWithDefaultPrettyPrinter().writeValueAsString(clienteMovimiento));
       } catch (JsonProcessingException e) {
          log.debug("ClienteMovimiento error = {}", e.getMessage());
       }
@@ -109,14 +115,14 @@ public class ReservaService {
       Reserva reserva = repository.findByReservaId(clienteMovimiento.getReservaId()).get();
       try {
          log.debug("Reserva = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter()
-              .writeValueAsString(reserva));
+               .writeValueAsString(reserva));
       } catch (JsonProcessingException e) {
          log.debug("Reserva error = {}", e.getMessage());
       }
       Comprobante comprobante = comprobanteService.findByComprobanteId(clienteMovimiento.getComprobanteId());
       try {
          log.debug("Comprobante = {}", JsonMapper.builder().findAndAddModules().build()
-              .writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
+               .writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
       } catch (JsonProcessingException e) {
          log.debug("Comprobante error = {}", e.getMessage());
       }
@@ -131,28 +137,28 @@ public class ReservaService {
       List<ArticuloMovimiento> articuloMovs = new ArrayList<>();
 
       for (ReservaArticulo reservaArticulo : reservaArticuloService
-           .findAllByReservaId(clienteMovimiento.getReservaId())) {
+            .findAllByReservaId(clienteMovimiento.getReservaId())) {
          try {
             log.debug("ReservaArticulo = {}", JsonMapper.builder().findAndAddModules().build()
-                 .writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
+                  .writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
          } catch (JsonProcessingException e) {
             log.debug("ReservaArticulo error = {}", e.getMessage());
          }
          if (!reservaArticulo.getObservaciones().trim().isEmpty())
             reservaArticulo.setObservaciones(reservaArticulo.getObservaciones() + numeroVoucher);
          addArticulo(clienteMovimiento, reservaArticulo, comprobante, ++item, reserva.getFacturarExtranjero(),
-              articuloMovs);
+               articuloMovs);
       }
       log.debug("Fin proceso de completar articulos");
    }
 
    @Transactional
    protected void addArticulo(ClienteMovimiento clienteMovimiento, ReservaArticulo reservaArticulo,
-                              Comprobante comprobante, Integer item, Byte facturaExtranjero, List<ArticuloMovimiento> articuloMovs) {
+         Comprobante comprobante, Integer item, Byte facturaExtranjero, List<ArticuloMovimiento> articuloMovs) {
       Articulo articulo = articuloService.findByArticuloId(reservaArticulo.getArticuloId());
       try {
          log.debug("Articulo = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter()
-              .writeValueAsString(articulo));
+               .writeValueAsString(articulo));
       } catch (JsonProcessingException e) {
          log.debug("Articulo error = {}", e.getMessage());
       }
@@ -165,31 +171,31 @@ public class ReservaService {
 
       if (articulo.getCentroStockId() != 1 || facturaExtranjero == 0) {
          BigDecimal precioUnitarioSinIva = reservaArticulo.getPrecioUnitario().divide(factorIva, 2,
-              RoundingMode.HALF_UP);
+               RoundingMode.HALF_UP);
          BigDecimal precioUnitarioConIva = precioUnitarioSinIva.multiply(factorIva);
          ArticuloMovimiento articuloMovimiento = new ArticuloMovimiento.Builder()
-              .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
-              .comprobanteId(clienteMovimiento.getComprobanteId())
-              .negocioId(clienteMovimiento.getNegocioId())
-              .item(item)
-              .fechaMovimiento(clienteMovimiento.getFechaComprobante())
-              .fechaFactura(clienteMovimiento.getFechaComprobante())
-              .cierreCajaId(clienteMovimiento.getCierreCajaId())
-              .articuloId(reservaArticulo.getArticuloId())
-              .centroStockId(articulo.getCentroStockId())
-              .precioUnitarioSinIva(precioUnitarioSinIva)
-              .precioUnitarioConIva(precioUnitarioConIva)
-              .precioUnitario(precioUnitarioConIva)
-              .cantidad(new BigDecimal(factor * reservaArticulo.getCantidad()))
-              .total(precioUnitarioConIva.multiply(new BigDecimal(reservaArticulo.getCantidad())))
-              .numeroCuenta(articulo.getCuentaVentas())
-              .iva105(articulo.getIva105())
-              .exento(articulo.getExento())
-              .build();
+               .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
+               .comprobanteId(clienteMovimiento.getComprobanteId())
+               .negocioId(clienteMovimiento.getNegocioId())
+               .item(item)
+               .fechaMovimiento(clienteMovimiento.getFechaComprobante())
+               .fechaFactura(clienteMovimiento.getFechaComprobante())
+               .cierreCajaId(clienteMovimiento.getCierreCajaId())
+               .articuloId(reservaArticulo.getArticuloId())
+               .centroStockId(articulo.getCentroStockId())
+               .precioUnitarioSinIva(precioUnitarioSinIva)
+               .precioUnitarioConIva(precioUnitarioConIva)
+               .precioUnitario(precioUnitarioConIva)
+               .cantidad(new BigDecimal(factor * reservaArticulo.getCantidad()))
+               .total(precioUnitarioConIva.multiply(new BigDecimal(reservaArticulo.getCantidad())))
+               .numeroCuenta(articulo.getCuentaVentas())
+               .iva105(articulo.getIva105())
+               .exento(articulo.getExento())
+               .build();
 
          try {
             log.debug("ArticuloMovimiento before = {}", JsonMapper.builder().findAndAddModules().build()
-                 .writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
+                  .writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
          } catch (JsonProcessingException e) {
             log.debug("ArticuloMovimiento before error = {}", e.getMessage());
          }
@@ -198,7 +204,7 @@ public class ReservaService {
 
          try {
             log.debug("ArticuloMovimiento after = {}", JsonMapper.builder().findAndAddModules().build()
-                 .writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
+                  .writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
          } catch (JsonProcessingException e) {
             log.debug("ArticuloMovimiento after error = {}", e.getMessage());
          }
@@ -214,7 +220,7 @@ public class ReservaService {
 
             try {
                log.debug("ConceptoFacturado before = {}", JsonMapper.builder().findAndAddModules().build()
-                    .writerWithDefaultPrettyPrinter().writeValueAsString(conceptoFacturado));
+                     .writerWithDefaultPrettyPrinter().writeValueAsString(conceptoFacturado));
             } catch (JsonProcessingException e) {
                log.debug("ConceptoFacturado before error = {}", e.getMessage());
             }
@@ -223,7 +229,7 @@ public class ReservaService {
 
             try {
                log.debug("ConceptoFacturado after = {}", JsonMapper.builder().findAndAddModules().build()
-                    .writerWithDefaultPrettyPrinter().writeValueAsString(conceptoFacturado));
+                     .writerWithDefaultPrettyPrinter().writeValueAsString(conceptoFacturado));
             } catch (JsonProcessingException e) {
                log.debug("ConceptoFacturado after error = {}", e.getMessage());
             }
@@ -234,18 +240,18 @@ public class ReservaService {
 
    public Reserva copyFromVoucher(Voucher voucher) {
       return new Reserva.Builder()
-           .voucherId(voucher.getVoucherId())
-           .clienteId(voucher.getClienteId())
-           .fechaToma(voucher.getFechaToma())
-           .fechaInServicio(voucher.getFechaServicio())
-           .fechaOutServicio(voucher.getFechaServicio())
-           .fechaVencimiento(voucher.getFechaVencimiento())
-           .nombrePax(voucher.getNombrePax())
-           .cantidadPaxs(voucher.getPaxs())
-           .observaciones(voucher.getObservaciones())
-           .reservaOrigenId(voucher.getReservaOrigenId())
-           .pagaCacheuta(voucher.getPagaCacheuta())
-           .build();
+            .voucherId(voucher.getVoucherId())
+            .clienteId(voucher.getClienteId())
+            .fechaToma(voucher.getFechaToma())
+            .fechaInServicio(voucher.getFechaServicio())
+            .fechaOutServicio(voucher.getFechaServicio())
+            .fechaVencimiento(voucher.getFechaVencimiento())
+            .nombrePax(voucher.getNombrePax())
+            .cantidadPaxs(voucher.getPaxs())
+            .observaciones(voucher.getObservaciones())
+            .reservaOrigenId(voucher.getReservaOrigenId())
+            .pagaCacheuta(voucher.getPagaCacheuta())
+            .build();
    }
 
    public Reserva add(Reserva reserva) {
@@ -255,37 +261,37 @@ public class ReservaService {
    public Reserva update(Reserva newReserva, Long reservaId) {
       return repository.findByReservaId(reservaId).map(reserva -> {
          reserva = new Reserva.Builder()
-              .reservaId(reservaId)
-              .negocioId(newReserva.getNegocioId())
-              .clienteId(newReserva.getClienteId())
-              .fechaToma(newReserva.getFechaToma())
-              .fechaInServicio(newReserva.getFechaInServicio())
-              .fechaOutServicio(newReserva.getFechaOutServicio())
-              .fechaVencimiento(newReserva.getFechaVencimiento())
-              .horaVencimiento(newReserva.getHoraVencimiento())
-              .avisoMail(newReserva.getAvisoMail())
-              .pendiente(newReserva.getPendiente())
-              .confirmada(newReserva.getConfirmada())
-              .facturada(newReserva.getFacturada())
-              .anulada(newReserva.getAnulada())
-              .eliminada(newReserva.getEliminada())
-              .verificada(newReserva.getVerificada())
-              .nombrePax(newReserva.getNombrePax())
-              .cantidadPaxs(newReserva.getCantidadPaxs())
-              .observaciones(newReserva.getObservaciones())
-              .voucherId(newReserva.getVoucherId())
-              .pagaComision(newReserva.getPagaComision())
-              .observacionesComision(newReserva.getObservacionesComision())
-              .comisionPagada(newReserva.getComisionPagada())
-              .pagaCacheuta(newReserva.getPagaCacheuta())
-              .facturadoFuera(newReserva.getFacturadoFuera())
-              .reservaArticulos(newReserva.getReservaArticulos())
-              .usuario(newReserva.getUsuario())
-              .contacto(newReserva.getContacto())
-              .reservaOrigenId(newReserva.getReservaOrigenId())
-              .facturarExtranjero(newReserva.getFacturarExtranjero())
-              .fechaAbierta(newReserva.getFechaAbierta())
-              .build();
+               .reservaId(reservaId)
+               .negocioId(newReserva.getNegocioId())
+               .clienteId(newReserva.getClienteId())
+               .fechaToma(newReserva.getFechaToma())
+               .fechaInServicio(newReserva.getFechaInServicio())
+               .fechaOutServicio(newReserva.getFechaOutServicio())
+               .fechaVencimiento(newReserva.getFechaVencimiento())
+               .horaVencimiento(newReserva.getHoraVencimiento())
+               .avisoMail(newReserva.getAvisoMail())
+               .pendiente(newReserva.getPendiente())
+               .confirmada(newReserva.getConfirmada())
+               .facturada(newReserva.getFacturada())
+               .anulada(newReserva.getAnulada())
+               .eliminada(newReserva.getEliminada())
+               .verificada(newReserva.getVerificada())
+               .nombrePax(newReserva.getNombrePax())
+               .cantidadPaxs(newReserva.getCantidadPaxs())
+               .observaciones(newReserva.getObservaciones())
+               .voucherId(newReserva.getVoucherId())
+               .pagaComision(newReserva.getPagaComision())
+               .observacionesComision(newReserva.getObservacionesComision())
+               .comisionPagada(newReserva.getComisionPagada())
+               .pagaCacheuta(newReserva.getPagaCacheuta())
+               .facturadoFuera(newReserva.getFacturadoFuera())
+               .reservaArticulos(newReserva.getReservaArticulos())
+               .usuario(newReserva.getUsuario())
+               .contacto(newReserva.getContacto())
+               .reservaOrigenId(newReserva.getReservaOrigenId())
+               .facturarExtranjero(newReserva.getFacturarExtranjero())
+               .fechaAbierta(newReserva.getFechaAbierta())
+               .build();
          return repository.save(reserva);
       }).orElseThrow(() -> new ReservaException(reservaId));
    }
@@ -297,12 +303,12 @@ public class ReservaService {
       // Para eliminar parto de todos los que ya están guardados y sacaré los que hay
       // que guardar que ya estaban, los que queden serán eliminados
       Map<String, ReservaArticulo> collectionEliminar = reservaArticuloService
-           .findAllByVoucherId(reserva.getReservaId(), reserva.getVoucherId()).stream()
-           .collect(Collectors.toMap(ReservaArticulo::getArticuloId, reservaArticulo -> reservaArticulo));
+            .findAllByVoucherId(reserva.getReservaId(), reserva.getVoucherId()).stream()
+            .collect(Collectors.toMap(ReservaArticulo::getArticuloId, reservaArticulo -> reservaArticulo));
       // Para agregar parto de todos los artículos que corresponden al voucher y
       // elimino los que ya están guardados, los que queden seran agregados
       Map<String, Articulo> collectionAgregar = articuloService.findAllByVoucher(voucherProductos).stream().collect(
-           Collectors.toMap(Articulo::toString, Function.identity(), ((articulo, otherArticulo) -> articulo)));
+            Collectors.toMap(Articulo::toString, Function.identity(), ((articulo, otherArticulo) -> articulo)));
 
       // Busco las claves a eliminar en ambas colecciones
       var claves = new ArrayList<String>();
@@ -327,22 +333,22 @@ public class ReservaService {
       List<ReservaArticulo> reservaArticulos = new ArrayList<>();
       for (Articulo articulo : collectionAgregar.values()) {
          var precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(),
-              reserva.getFechaInServicio());
+               reserva.getFechaInServicio());
          reservaArticulos.add(new ReservaArticulo.Builder()
-              .negocioId(empresa.getNegocioId())
-              .reservaId(reserva.getReservaId())
-              .voucherId(reserva.getVoucherId())
-              .articuloId(articulo.getArticuloId())
-              .precioUnitarioSinComision(precioArticulo)
-              .articulo(articulo)
-              .build());
+               .negocioId(empresa.getNegocioId())
+               .reservaId(reserva.getReservaId())
+               .voucherId(reserva.getVoucherId())
+               .articuloId(articulo.getArticuloId())
+               .precioUnitarioSinComision(precioArticulo)
+               .articulo(articulo)
+               .build());
 
       }
       reservaArticulos = reservaArticuloService.saveAll(reservaArticulos);
 
       try {
          log.debug("reservaArticulos={}", JsonMapper.builder().findAndAddModules().build()
-              .writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulos));
+               .writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulos));
       } catch (JsonProcessingException e) {
          log.debug("something went wrong");
       }
@@ -359,7 +365,7 @@ public class ReservaService {
          contador++;
          var cantidadPaxs = 0;
          for (VoucherProducto voucherProducto : voucherProductoService.findAllByArticuloId(voucherId,
-              reservaArticulo.getArticuloId())) {
+               reservaArticulo.getArticuloId())) {
             cantidadPaxs += voucherProducto.getCantidadPaxs();
          }
          reservaArticulo.setCantidad(cantidadPaxs);
@@ -369,23 +375,23 @@ public class ReservaService {
          }
 
          reservaArticulo
-              .setComision(comisionArticulo(reservaId, reservaArticulo.getArticuloId(), voucher.getClienteId()));
+               .setComision(comisionArticulo(reservaId, reservaArticulo.getArticuloId(), voucher.getClienteId()));
          BigDecimal complemento = BigDecimal.ONE.subtract(reservaArticulo.getComision()).setScale(2,
-              RoundingMode.HALF_UP);
+               RoundingMode.HALF_UP);
          reservaArticulo.setPrecioUnitario(reservaArticulo.getPrecioUnitarioSinComision().multiply(complemento)
-              .setScale(2, RoundingMode.HALF_UP));
+               .setScale(2, RoundingMode.HALF_UP));
          reservaArticulo.setObservaciones("");
 
          if (contador == 1 && voucher.getReservaId() > 0) {
             reservaArticulo.setObservaciones("RVA " + voucher.getReservaId() + " " + voucher.getNombrePax() + " x "
-                 + voucher.getPaxs() + " " + voucher.getProductos() + " "
-                 + voucher.getFechaServicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                  + voucher.getPaxs() + " " + voucher.getProductos() + " "
+                  + voucher.getFechaServicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
          }
 
          reservaArticulo = reservaArticuloService.update(reservaArticulo, reservaArticulo.getReservaArticuloId());
          try {
             log.debug("reserva_articulo={}", JsonMapper.builder().findAndAddModules().build()
-                 .writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
+                  .writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
          } catch (JsonProcessingException e) {
             log.debug("reserva_articulo=null");
          }
@@ -402,137 +408,53 @@ public class ReservaService {
       return BigDecimal.ZERO;
    }
 
-   @Transactional
-   public HabitacionMovimiento createReservaHabitacion(ReservaHabitacionDTO dto) {
-      // 1. Validate operation date (similar to violacionlimite check in VB6)
-      validarFechaOperacion(dto.fechaOperacion());
+   /**
+    * @author: sebastian
+    * 
+    */
+   public Reserva createReserva(CreateReservaDto createReservaDto) {
+      // TODO: Decidir que hacer con ReservaHistorial, en VB6 crea un registro por
+      // cada reserva
+      Cliente cliente = clienteService.findByNumeroDocumento(createReservaDto.clienteNumeroDocumento());
+      Reserva newReserva = createReservaDto.reserva();
 
-      // 2. Validate future date limit
-      validarPlazoFuturo(dto.fechaOperacion());
+      newReserva.setClienteId(cliente.getClienteId());
+      newReserva.setCliente(cliente);
+      Reserva savedReserva = repository.save(newReserva);
 
-      // 3. Validate required fields -> TODO: Validate this in the controller
+      List<String> articuloIds = createReservaDto.reservaArticulos().stream()
+            .map(ReservaArticulo::getArticuloId)
+            .toList();
+      List<Articulo> articulos = articuloService.findAllByIds(articuloIds);
 
-      // 4. Validate dates
-      validarFechas(dto.fechaIngreso(), dto.fechaSalida());
+      List<ReservaArticulo> reservaArticulos = createReservaDto.reservaArticulos();
+      for (ReservaArticulo reservaArticulo : reservaArticulos) {
+         Articulo articulo = articulos.stream()
+               .filter(a -> a.getArticuloId().equals(reservaArticulo.getArticuloId()))
+               .findFirst()
+               .orElseThrow(() -> new ArticuloException(reservaArticulo.getArticuloId()));
+         BigDecimal precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(),
+               newReserva.getFechaInServicio());
 
-      // 5. Validate PAX counts
-      validarCantidadPax(dto.paxMayor(), dto.paxMenor(), dto.cantidadPax());
 
-      // 6. Check room availability
-      if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida(), null)) {
-         throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
-      }
-
-      // 8. Create the reservation
-      HabitacionMovimiento reserva = new HabitacionMovimiento.Builder()
-           .cliente(clienteService.findByClienteId(dto.clienteId()))
-           .fechaIngreso(dto.fechaIngreso())
-           .fechaSalida(dto.fechaSalida())
-           .habitacion(habitacionService.findByNumero(dto.numeroHabitacion()))
-           .tarifaId(dto.tarifaId())
-           .precioUnitarioTarifa(dto.precioUnitario())
-           .cantidadPax(dto.cantidadPax().longValue())
-           .cantidadPaxMayor(dto.paxMayor())
-           .cantidadPaxMenor(dto.paxMenor())
-           .tarifaStandard(dto.tarifaStandard() ? (byte) 1 : (byte) 0)
-           .estadoReserva(comprobanteService.findByLetraComprobante(dto.estadoReserva()))
-           .fechaOperacion(dto.fechaOperacion())
-           .fechaVencimiento(dto.fechaVencimiento())
-           .observaciones(dto.observaciones())
-           .build();
+         reservaArticulo.setArticulo(articulo);
+         reservaArticulo.setArticuloId(articulo.getArticuloId());
+         reservaArticulo.setPrecioUnitarioSinComision(precioArticulo);
+         reservaArticulo.setReservaId(savedReserva.getReservaId());
+         reservaArticulo.setNegocioId(savedReserva.getNegocioId());
          
-      HabitacionMovimiento savedReserva = habitacionMovimientoService.save(reserva);
-
-      if (savedReserva.getEstadoReserva().getLetraComprobante().equals("R")) {
-         Habitacion habitacion = habitacionService.findByNumero(dto.numeroHabitacion());
-         habitacion.setClienteId(dto.clienteId());
-         habitacionService.update(habitacion, habitacion.getNumero());
+         BigDecimal complemento = BigDecimal.ONE.subtract(reservaArticulo.getComision()).setScale(2,
+               RoundingMode.HALF_UP);
+         reservaArticulo.setPrecioUnitario(reservaArticulo.getPrecioUnitarioSinComision().multiply(complemento)
+               .setScale(2, RoundingMode.HALF_UP));
       }
-      
+      reservaArticulos = reservaArticuloService.saveAll(reservaArticulos);
+
       return savedReserva;
-
    }
 
-   @Transactional
-   public HabitacionMovimiento updateReservaHabitacion(Long habitacionMovimientoId, ReservaHabitacionDTO dto) {
-
-      OffsetDateTime fechaLimite; // TODO: Traer de la tabla violacionlimite (falta mapear a una clase)
-
-      // 1. Find existing reservation
-      HabitacionMovimiento existingReserva = habitacionMovimientoService.findById(habitacionMovimientoId)
-           .orElseThrow(() -> new ReservaException(habitacionMovimientoId));
-
-      // 2. Validate operation date
-      validarFechaOperacion(dto.fechaOperacion());
-
-      // 3. Validate future date limit
-      validarPlazoFuturo(dto.fechaOperacion());
-
-      // 4. Validate required fields
-      validarCamposRequeridos(dto);
-
-      // 5. Validate dates
-      validarFechas(dto.fechaIngreso(), dto.fechaSalida());
-
-      // 6. Validate PAX counts
-      validarCantidadPax(dto.paxMayor(), dto.paxMenor(), dto.cantidadPax());
-
-      // 7. Check room availability (excluding current reservation)
-      if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida(),
-           habitacionMovimientoId)) {
-         throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
-      }
-
-      // Check if reservation can be updated
-      if (existingReserva.getEstadoReserva().getLetraComprobante().equals("V")
-           || existingReserva.getEstadoReserva().getLetraComprobante().equals("A")) {
-         throw new ReservaNoEditableException(existingReserva.getHabitacionMovimientoId(), existingReserva.getEstadoReserva().getLetraComprobante());
-      }
-
-      // 8. Update the reservation
-      existingReserva.setCliente(clienteService.findByClienteId(dto.clienteId()));
-      existingReserva.setHabitacion(habitacionService.findByNumero(dto.numeroHabitacion()));
-      existingReserva.setFechaIngreso(dto.fechaIngreso());
-      existingReserva.setFechaSalida(dto.fechaSalida());
-      existingReserva.setCantidadPax(dto.cantidadPax().longValue());
-      existingReserva.setCantidadPaxMayor(dto.paxMayor());
-      existingReserva.setCantidadPaxMenor(dto.paxMenor());
-      existingReserva.setFechaOperacion(dto.fechaOperacion());
-      existingReserva.setFechaVencimiento(dto.fechaVencimiento());
-      existingReserva.setTarifaId(dto.tarifaId());
-      existingReserva.setPrecioUnitarioTarifa(dto.precioUnitario());
-      existingReserva.setTarifaStandard(dto.tarifaStandard() ? (byte) 1 : (byte) 0);
-      existingReserva.setObservaciones(dto.observaciones());
-
-      return habitacionMovimientoService.save(existingReserva);
-   }
-
-   private void validarCamposRequeridos(ReservaHabitacionDTO dto) {
-   }
-
-   private void validarFechas(OffsetDateTime fechaIngreso, OffsetDateTime fechaSalida) {
-   }
-
-   private void validarCantidadPax(Integer paxMayor, Integer paxMenor, Integer totalPax) {
-   }
-
-   private void validarFechaOperacion(OffsetDateTime fechaOperacion) {
-      // TODO: Implement violation limit check
-      // This would be similar to: If violacionlimite.fecha >= Me.dtpOperacion.value
-   }
-
-   private void validarPlazoFuturo(OffsetDateTime fechaOperacion) {
-   }
-
-   private boolean isHabitacionReservada(Integer numeroHabitacion, OffsetDateTime fechaIngreso,
-                                         OffsetDateTime fechaSalida, Long reservaIdExcluir) {
-      List<HabitacionMovimiento> reservasSuperpuestas = habitacionMovimientoService.findReservasSuperpuestas(
-           numeroHabitacion,
-           fechaIngreso,
-           fechaSalida,
-           reservaIdExcluir);
-
-      return !reservasSuperpuestas.isEmpty();
+   public Reserva findLastReserva() {
+      return repository.findTopByOrderByReservaIdDesc().orElseThrow(() -> new ReservaException("No hay reservas"));
    }
 
 }
