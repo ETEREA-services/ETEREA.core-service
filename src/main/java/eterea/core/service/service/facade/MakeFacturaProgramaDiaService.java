@@ -12,7 +12,6 @@ import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.tool.ToolService;
 import jakarta.mail.MessagingException;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -23,9 +22,8 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -37,12 +35,6 @@ public class MakeFacturaProgramaDiaService {
     private final ReservaArticuloService reservaArticuloService;
     private final ParametroService parametroService;
     private final FacturacionElectronicaService facturacionElectronicaService;
-    private final CuentaMovimientoService cuentaMovimientoService;
-    private final VoucherService voucherService;
-    private final ClienteMovimientoService clienteMovimientoService;
-    private final ValorService valorService;
-    private final ValorMovimientoService valorMovimientoService;
-    private final ArticuloMovimientoService articuloMovimientoService;
     private final RegistroCaeService registroCaeService;
     private final ClienteService clienteService;
     private final ArticuloService articuloService;
@@ -50,27 +42,30 @@ public class MakeFacturaProgramaDiaService {
     private final OrderNoteService orderNoteService;
     private final MakeFacturaReportClient makeFacturaReportClient;
     private final Environment environment;
+    private final VoucherService voucherService;
+    private final FacturacionService facturacionService;
 
-    public MakeFacturaProgramaDiaService(ComprobanteService comprobanteService, ReservaService reservaService, EmpresaService empresaService,
-                                         ReservaArticuloService reservaArticuloService, ParametroService parametroService,
-                                         FacturacionElectronicaService facturacionElectronicaService, CuentaMovimientoService cuentaMovimientoService,
-                                         VoucherService voucherService, ClienteMovimientoService clienteMovimientoService, ValorService valorService,
-                                         ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService,
-                                         RegistroCaeService registroCaeService, ClienteService clienteService, ArticuloService articuloService,
-                                         ReservaContextService reservaContextService, OrderNoteService orderNoteService, MakeFacturaReportClient makeFacturaReportClient,
-                                         Environment environment) {
+    public MakeFacturaProgramaDiaService(ComprobanteService comprobanteService,
+                                         ReservaService reservaService,
+                                         EmpresaService empresaService,
+                                         ReservaArticuloService reservaArticuloService,
+                                         ParametroService parametroService,
+                                         FacturacionElectronicaService facturacionElectronicaService,
+                                         RegistroCaeService registroCaeService,
+                                         ClienteService clienteService,
+                                         ArticuloService articuloService,
+                                         ReservaContextService reservaContextService,
+                                         OrderNoteService orderNoteService,
+                                         MakeFacturaReportClient makeFacturaReportClient,
+                                         Environment environment,
+                                         VoucherService voucherService,
+                                         FacturacionService facturacionService) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;
         this.reservaArticuloService = reservaArticuloService;
         this.parametroService = parametroService;
         this.facturacionElectronicaService = facturacionElectronicaService;
-        this.cuentaMovimientoService = cuentaMovimientoService;
-        this.voucherService = voucherService;
-        this.clienteMovimientoService = clienteMovimientoService;
-        this.valorService = valorService;
-        this.valorMovimientoService = valorMovimientoService;
-        this.articuloMovimientoService = articuloMovimientoService;
         this.registroCaeService = registroCaeService;
         this.clienteService = clienteService;
         this.articuloService = articuloService;
@@ -78,6 +73,8 @@ public class MakeFacturaProgramaDiaService {
         this.orderNoteService = orderNoteService;
         this.makeFacturaReportClient = makeFacturaReportClient;
         this.environment = environment;
+        this.voucherService = voucherService;
+        this.facturacionService = facturacionService;
     }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId) {
@@ -147,7 +144,7 @@ public class MakeFacturaProgramaDiaService {
             logReservaArticulo(reservaArticulo);
             BigDecimal subtotal = reservaArticulo.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad()));
             total = total.add(subtotal);
-            if (reservaArticulo.getArticulo().getExento() == (byte) 1) {
+            if (Objects.requireNonNull(reservaArticulo.getArticulo()).getExento() == (byte) 1) {
                 exento = exento.add(subtotal);
             } else if (reservaArticulo.getArticulo().getIva105() == (byte) 1) {
                 total105 = total105.add(subtotal);
@@ -166,7 +163,7 @@ public class MakeFacturaProgramaDiaService {
             reservaContext = new ReservaContext.Builder()
                     .reservaId(reserva.getReservaId())
                     .voucherId(reserva.getVoucherId())
-                    .orderNumberId(Long.valueOf(voucher.getNumeroVoucher()))
+                    .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
                     .facturaPendiente((byte) 1)
                     .envioPendiente((byte) 1)
                     .build();
@@ -183,6 +180,7 @@ public class MakeFacturaProgramaDiaService {
         BigDecimal iva105 = neto105.multiply(coeficienteIva2).setScale(5, RoundingMode.HALF_UP);
         log.debug("total105={} - neto105={} - coeficienteIva2={} - iva105={}", total105, neto105, coeficienteIva2, iva105);
 
+        assert comprobante.getComprobanteAfipId() != null;
         FacturacionDto facturacionDto = new FacturacionDto.Builder()
                 .tipoDocumento(tipoDocumento)
                 .documento(documento)
@@ -225,6 +223,7 @@ public class MakeFacturaProgramaDiaService {
         try {
             vencimientoCae = formatoInDate.parse(facturacionDto.getVencimientoCae());
         } catch (ParseException e) {
+            log.error("Error al parsear vencimientoCae", e);
         }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");
         // Registra el resultado de la AFIP
@@ -249,7 +248,7 @@ public class MakeFacturaProgramaDiaService {
         registroCae = registroCaeService.add(registroCae);
         logRegistroCae(registroCae);
 
-        ClienteMovimiento clienteMovimiento = registraTransaccionFactura(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext);
+        ClienteMovimiento clienteMovimiento = facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext);
 
         var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
         if (enableSendEmail) {
@@ -358,221 +357,6 @@ public class MakeFacturaProgramaDiaService {
         } catch (JsonProcessingException e) {
             log.debug("comprobante=null");
         }
-    }
-
-    @Transactional
-    protected ClienteMovimiento registraTransaccionFactura(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext) {
-        Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-        try {
-            log.debug("voucher={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
-        } catch (JsonProcessingException e) {
-            log.debug("voucher=null");
-        }
-        OrderNote orderNote = orderNoteService.findByOrderNumberId(Long.valueOf(voucher.getNumeroVoucher()));
-        try {
-            log.debug("orderNote={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(orderNote));
-        } catch (JsonProcessingException e) {
-            log.debug("orderNote=null");
-        }
-        int valorId = switch (orderNote.getPayment().getMarcaTarjeta()) {
-            case "American Express" -> 64;
-            case "Cabal" -> 67;
-            case "Cabal Du00e9bito" -> 66;
-            case "Maestro" -> 61;
-            case "MasterCard" -> 62;
-            case "MasterCard Debito" -> 61;
-            case "Tarjeta Naranja" -> 60;
-            case "Visa Cru00e9dito" -> 60;
-            case "Visa Debito" -> 59;
-            default -> 0;
-        };
-        Valor valor = valorService.findByValorId(valorId);
-
-        String observaciones = "Pedido web #" + orderNote.getOrderNumberId() + " - Reserva #" + reserva.getReservaId();
-        // Registra clienteMovimiento
-        ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
-                .negocioId(empresa.getNegocioId())
-                .empresaId(empresa.getEmpresaId())
-                .clienteId(cliente.getClienteId())
-                .comprobanteId(comprobante.getComprobanteId())
-                .fechaComprobante(ToolService.dateAbsoluteArgentina())
-                .fechaVencimiento(ToolService.dateAbsoluteArgentina())
-                .importe(facturacionDTO.getTotal())
-                .cancelado(facturacionDTO.getTotal())  // contado
-                .puntoVenta(comprobante.getPuntoVenta())
-                .numeroComprobante(facturacionDTO.getNumeroComprobante())
-                .montoIva(facturacionDTO.getIva())
-                .montoIvaRni(facturacionDTO.getIva105())
-                .neto(facturacionDTO.getNeto())
-                .letraComprobante(comprobante.getLetraComprobante())
-                .montoExento(facturacionDTO.getExento())
-                .reservaId(reserva.getReservaId())
-                .cae(facturacionDTO.getCae())
-                .caeVencimiento(facturacionDTO.getVencimientoCae())
-                .monedaId(1)
-                .cotizacion(BigDecimal.ONE)
-                .letras(ToolService.number_2_text(facturacionDTO.getTotal()))
-                .observaciones(observaciones)
-                .build();
-        clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
-
-        // Registra reservaContext
-        reservaContext.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
-        reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-
-        // Registra valorMovimiento
-        ValorMovimiento valorMovimiento = new ValorMovimiento.Builder()
-                .negocioId(empresa.getNegocioId())
-                .clienteId(cliente.getClienteId())
-                .proveedorId(0L)
-                .comprobanteId(comprobante.getComprobanteId())
-                .fechaEmision(clienteMovimiento.getFechaComprobante())
-                .fechaVencimiento(clienteMovimiento.getFechaComprobante())
-                .valorId(valorId)
-                .numeroComprobante(0L)
-                .importe(facturacionDTO.getTotal())
-                .numeroCuenta(valor.getNumeroCuenta())
-                .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
-                .proveedorMovimientoId(0L)
-                .titular("")
-                .banco("")
-                .receptor("")
-                .estadoId(0)
-                .cierreCajaId(0L)
-                .observaciones(observaciones)
-                .valorMovimientoIdSlave(0L)
-                .build();
-        valorMovimiento = valorMovimientoService.add(valorMovimiento);
-
-        List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
-        int item = 1;
-        for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reserva.getReservaId())) {
-            articuloMovimientos.add(new ArticuloMovimiento.Builder()
-                    .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
-                    .centroStockId(reservaArticulo.getArticulo().getCentroStockId())
-                    .comprobanteId(comprobante.getComprobanteId())
-                    .item(item++)
-                    .articuloId(reservaArticulo.getArticuloId())
-                    .negocioId(clienteMovimiento.getNegocioId())
-                    .cantidad(new BigDecimal(-1 * reservaArticulo.getCantidad()))
-                    .precioUnitario(reservaArticulo.getPrecioUnitario())
-                    .precioUnitarioSinIva(calcularPrecioSinIva(reservaArticulo.getPrecioUnitario(), reservaArticulo.getArticulo().getIva105(), reservaArticulo.getArticulo().getExento(), parametro))
-                    .precioUnitarioConIva(reservaArticulo.getPrecioUnitario())
-                    .numeroCuenta(reservaArticulo.getArticulo().getCuentaVentas())
-                    .iva105(reservaArticulo.getArticulo().getIva105())
-                    .exento(reservaArticulo.getArticulo().getExento())
-                    .fechaMovimiento(clienteMovimiento.getFechaComprobante())
-                    .fechaFactura(clienteMovimiento.getFechaComprobante())
-                    .precioCompra(reservaArticulo.getArticulo().getPrecioCompra())
-                    .build());
-        }
-        articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
-
-        List<CuentaMovimiento> clienteMovimientos = registraContabilidad(clienteMovimiento, valorMovimiento, valor, articuloMovimientos, facturacionDTO, comprobante, parametro);
-
-        reserva.setFacturada((byte) 1);
-        reserva.setVerificada((byte) 1);
-        reserva = reservaService.update(reserva, reserva.getReservaId());
-
-        voucher.setConfirmado((byte) 1);
-        voucher = voucherService.update(voucher, voucher.getVoucherId());
-
-        return clienteMovimiento;
-    }
-
-    private BigDecimal calcularPrecioSinIva(BigDecimal precioUnitario, byte iva105, byte exento, Parametro parametro) {
-        if (exento == 1) {
-            return precioUnitario;
-        }
-        var coeficiente = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
-        if (iva105 == 1) {
-            coeficiente = parametro.getIva2().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
-        }
-        var precioUnitarioSinIva = precioUnitario.divide(BigDecimal.ONE.add(coeficiente), 5, RoundingMode.HALF_UP);
-        return precioUnitarioSinIva.setScale(2, RoundingMode.HALF_UP);
-    }
-
-    @Transactional
-    protected List<CuentaMovimiento> registraContabilidad(ClienteMovimiento clienteMovimiento, ValorMovimiento valorMovimiento, Valor valor, List<ArticuloMovimiento> articuloMovimientos, FacturacionDto facturacionDTO, Comprobante comprobante, Parametro parametro) {
-        List<CuentaMovimiento> cuentaMovimientos = new ArrayList<>();
-        int ordenContable = cuentaMovimientoService.nextOrdenContable(clienteMovimiento.getFechaComprobante());
-        // Agrego asiento contable a clienteMovimiento
-        clienteMovimiento.setFechaContable(clienteMovimiento.getFechaComprobante());
-        clienteMovimiento.setOrdenContable(ordenContable);
-        clienteMovimiento = clienteMovimientoService.update(clienteMovimiento, clienteMovimiento.getClienteMovimientoId());
-        // Agrego asiento contable a valorMovimiento
-        valorMovimiento.setFechaContable(clienteMovimiento.getFechaContable());
-        valorMovimiento.setOrdenContable(ordenContable);
-        valorMovimiento = valorMovimientoService.update(valorMovimiento, valorMovimiento.getValorMovimientoId());
-        int item = 1;
-        String concepto = String.format("Nro: %04d %06d", facturacionDTO.getPuntoVenta(), facturacionDTO.getNumeroComprobante());
-        // Registro total valores
-        cuentaMovimientos.add(new CuentaMovimiento.Builder()
-                .negocioId(clienteMovimiento.getNegocioId())
-                .numeroCuenta(valor.getNumeroCuenta())
-                .debita(comprobante.getDebita())
-                .importe(facturacionDTO.getTotal())
-                .item(item++)
-                .fecha(clienteMovimiento.getFechaComprobante())
-                .comprobanteId(comprobante.getComprobanteId())
-                .orden(ordenContable)
-                .clienteId(clienteMovimiento.getClienteId())
-                .subrubroId(2L)
-                .concepto(concepto)
-                .build());
-        // Registro iva 21
-        if (facturacionDTO.getIva().compareTo(BigDecimal.ZERO) > 0) {
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
-                    .negocioId(clienteMovimiento.getNegocioId())
-                    .numeroCuenta(parametro.getCuentaIvaVentas())
-                    .debita((byte) (1 - comprobante.getDebita()))
-                    .importe(facturacionDTO.getIva())
-                    .item(item++)
-                    .fecha(clienteMovimiento.getFechaComprobante())
-                    .comprobanteId(comprobante.getComprobanteId())
-                    .orden(ordenContable)
-                    .clienteId(clienteMovimiento.getClienteId())
-                    .subrubroId(2L)
-                    .concepto(concepto)
-                    .build());
-        }
-        // Registro iva 10.5
-        if (facturacionDTO.getIva105().compareTo(BigDecimal.ZERO) > 0) {
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
-                    .negocioId(clienteMovimiento.getNegocioId())
-                    .numeroCuenta(parametro.getCuentaIvaRniVentas())
-                    .debita((byte) (1 - comprobante.getDebita()))
-                    .importe(facturacionDTO.getIva105())
-                    .item(item++)
-                    .fecha(clienteMovimiento.getFechaComprobante())
-                    .comprobanteId(comprobante.getComprobanteId())
-                    .orden(ordenContable)
-                    .clienteId(clienteMovimiento.getClienteId())
-                    .subrubroId(2L)
-                    .concepto(concepto)
-                    .build());
-        }
-        // Registro de artículos
-        for (ArticuloMovimiento articuloMovimiento : articuloMovimientos) {
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
-                    .negocioId(clienteMovimiento.getNegocioId())
-                    .numeroCuenta(articuloMovimiento.getNumeroCuenta())
-                    .debita((byte) (1 - comprobante.getDebita()))
-                    .importe(articuloMovimiento.getPrecioUnitarioSinIva().multiply(articuloMovimiento.getCantidad()).setScale(2, RoundingMode.HALF_UP).abs())
-                    .item(item++)
-                    .fecha(clienteMovimiento.getFechaComprobante())
-                    .comprobanteId(comprobante.getComprobanteId())
-                    .orden(ordenContable)
-                    .clienteId(clienteMovimiento.getClienteId())
-                    .subrubroId(2L)
-                    .concepto(concepto)
-                    .articuloMovimientoId(articuloMovimiento.getArticuloMovimientoId())
-                    .build());
-        }
-
-        cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);
-
-        return cuentaMovimientos;
     }
 
 }

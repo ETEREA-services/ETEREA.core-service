@@ -3,7 +3,8 @@
  */
 package eterea.core.service.controller;
 
-import eterea.core.service.kotlin.model.Habitacion;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import eterea.core.service.kotlin.model.Habitacion;
 import eterea.core.service.service.HabitacionService;
 
 /**
@@ -30,5 +32,10 @@ public class HabitacionController {
 	@GetMapping("/{numero}")
 	public ResponseEntity<Habitacion> findByNumero(@PathVariable Integer numero) {
 		return new ResponseEntity<>(service.findByNumero(numero), HttpStatus.OK);
+	}
+
+	@GetMapping("/")
+	public ResponseEntity<List<Habitacion>> findAll() {
+		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 }

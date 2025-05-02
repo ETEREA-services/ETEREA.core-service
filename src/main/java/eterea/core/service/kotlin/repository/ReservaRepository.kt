@@ -22,4 +22,5 @@ interface ReservaRepository : JpaRepository<Reserva, Long> {
         sort: Sort?
     ): List<Reserva?>?
 
+    fun findTopByOrderByReservaIdDesc(): Optional<Reserva?>?
 }

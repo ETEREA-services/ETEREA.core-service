@@ -16,40 +16,42 @@ interface HabitacionMovimientoRepository : JpaRepository<HabitacionMovimiento, L
      * SELECT hm FROM HabitacionMovimiento hm 
      * WHERE 
      *   ((hm.fechaIngreso <= pIngreso) AND (hm.fechaSalida >= pIngreso + 1))
-     *   OR ((hm.fechaIngreso <= pSalida - 1) AND (hm.fechaSalida >= pSalida))
-     *   OR ((hm.fechaIngreso >= pIngreso) AND (hm.fechaSalida <= pSalida))
+     *   OR 
+     *   ((hm.fechaIngreso <= pSalida - 1) AND (hm.fechaSalida >= pSalida))
+     *   OR 
+     *   ((hm.fechaIngreso >= pIngreso) AND (hm.fechaSalida <= pSalida))
      *   AND hm.cgoEstadoRes <> pCodigoBaja
      *   AND hm.cgoHabitacion = pCgoHab
      *   AND hm.clave <> pClaveExcluir
      *
      *   TipoComprobante = 'Z' -> 'De Baja' (Reserva dada de baja)
      */
-    // @Query("""
-    //     SELECT
-    //         hm
-    //     FROM
-    //         HabitacionMovimiento hm 
-    //     WHERE 
-    //         (
-    //             (hm.fechaIngreso <= :fechaIngresoMasUno AND hm.fechaSalida >= :fechaIngresoMasUno)
-    //             OR
-    //             (hm.fechaIngreso <= :fechaSalidaMenosUno AND hm.fechaSalida >= :fechaSalidaMenosUno)
-    //             OR
-    //             (hm.fechaIngreso >= :fechaIngreso AND hm.fechaSalida <= :fechaSalida)
-    //         )
-    //         AND
-    //         hm.habitacion.numero = :numeroHabitacion
-    //         AND
-    //         hm.habitacionMovimientoId != :idExcluir
-    //         AND
-    //         hm.estadoReserva.tipoComprobante != 'Z'
-    //     """)
-    // fun findReservasSuperpuestas(
-    //     @Param("numeroHabitacion") numeroHabitacion: Int,
-    //     @Param("fechaIngreso") fechaIngreso: OffsetDateTime,
-    //     @Param("fechaSalida") fechaSalida: OffsetDateTime,
-    //     @Param("fechaIngresoMasUnDia") fechaIngresoMasUnDia: OffsetDateTime,
-    //     @Param("fechaSalidaMenosUnDia") fechaSalidaMenosUnDia: OffsetDateTime,
-    //     @Param("idExcluir") idExcluir: Long
-    // ): List<HabitacionMovimiento>
+    @Query("""
+        SELECT
+            hm
+        FROM
+            HabitacionMovimiento hm 
+        WHERE 
+            (
+                (hm.fechaIngreso <= :fechaIngreso AND hm.fechaSalida >= :fechaIngresoMasUnDia)
+                OR
+                (hm.fechaIngreso <= :fechaSalidaMenosUnDia AND hm.fechaSalida >= :fechaSalida)
+                OR
+                (hm.fechaIngreso >= :fechaIngreso AND hm.fechaSalida <= :fechaSalida)
+            )
+            AND
+            hm.habitacion.numero = :numeroHabitacion
+            AND
+            hm.habitacionMovimientoId != :idExcluir
+            AND
+            hm.estadoReserva.letraComprobante != 'Z'
+        """)
+    fun findReservasSuperpuestas(
+        numeroHabitacion: Int,
+        fechaIngreso: OffsetDateTime,
+        fechaSalida: OffsetDateTime,
+        fechaIngresoMasUnDia: OffsetDateTime,
+        fechaSalidaMenosUnDia: OffsetDateTime,
+        idExcluir: Long
+    ): List<HabitacionMovimiento>
 }

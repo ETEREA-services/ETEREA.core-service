@@ -2,7 +2,7 @@ app:
   port: ${APP_PORT:8080}
   eureka: 8761
   logging: debug
-  server: 10.147.20.20:3306
+  server: 192.168.201.132:3306
   database: tsaagencia
   user: root
   password: root
@@ -13,6 +13,7 @@ app:
     password: pwd
 
 server:
+  address: 0.0.0.0
   port: ${app.port}
 
 eureka:
@@ -35,6 +36,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+    open-in-view: false
   mail:
     host: smtp.gmail.com
     port: 587
@@ -50,6 +52,13 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  mvc:
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET,POST,PUT,DELETE
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
 
 logging:
   level:
@@ -58,7 +67,11 @@ logging:
     org:
       hibernate:
         SQL: ${app.logging}
-      springframework.cloud.config: ${app.logging}
+        stat: ${app.logging}
+        engine.transaction: ${app.logging}
+      springframework:
+        transaction: ${app.logging}
+        cloud.config: ${app.logging}
 
 feign:
   client:

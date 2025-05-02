@@ -10,6 +10,7 @@ import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
+import eterea.core.service.model.dto.PregenerarReservaDto;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -41,6 +43,8 @@ public class VouchersService {
     private final TipoDiaService tipoDiaService;
     private final TipoPaxService tipoPaxService;
     private final ProductoWebService productoWebService;
+    private final ArticuloService articuloService;
+    private final PrecioService precioService;
 
     private record PersonType(int cantidad, String descripcion) {
     }
@@ -50,7 +54,8 @@ public class VouchersService {
             FeriadoService feriadoService, ProductoSkuService productoSkuService,
             ReservaContextService reservaContextService, VoucherProductoService voucherProductoService,
             ReservaService reservaService, ProductoWebProductoService productoWebProductoService,
-            TipoDiaService tipoDiaService, TipoPaxService tipoPaxService, ProductoWebService productoWebService) {
+            TipoDiaService tipoDiaService, TipoPaxService tipoPaxService, ProductoWebService productoWebService,
+            ArticuloService articuloService, PrecioService precioService) {
         this.empresaService = empresaService;
         this.negocioService = negocioService;
         this.orderNoteService = orderNoteService;
@@ -65,6 +70,8 @@ public class VouchersService {
         this.tipoDiaService = tipoDiaService;
         this.tipoPaxService = tipoPaxService;
         this.productoWebService = productoWebService;
+        this.articuloService = articuloService;
+        this.precioService = precioService;
     }
 
     @Transactional
@@ -399,15 +406,15 @@ public class VouchersService {
      * 
      */
 
-    public ProgramaDiaDto preGenerarReserva(Long orderNumberId) {
+    public PregenerarReservaDto preGenerarReserva(Long orderNumberId) {
         OrderNote orderNote = getOrderNoteById(orderNumberId);
         if (validateOrderNote(orderNote) != null)
-            return validateOrderNote(orderNote);
+            return null;
 
         Product product = orderNote.getProducts().getFirst();
 
         if (!product.getSku().equals("parque_termal_aventura"))
-            return createErrorResponse("Error: Producto no facturable");
+            return null;
 
         String fullName = orderNote.getBillingLastName().toUpperCase() + ", "
                 + orderNote.getBillingFirstName().toUpperCase();
@@ -416,7 +423,7 @@ public class VouchersService {
         Cliente cliente = determinaCliente(orderNote, fullName, negocio);
 
         if (product.getBookingStart() == null)
-            return createErrorResponse("Error: Fecha de servicio no encontrada");
+            return null;
 
         OffsetDateTime fechaServicio = product.getBookingStart();
 
@@ -450,7 +457,8 @@ public class VouchersService {
         }
 
         log.debug("Inicializando productosPaxMenor");
-        List<ProductoWebProducto> productoWebProductosMenor = productoWebProductoService.findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("menor"), tipoDia);
+        List<ProductoWebProducto> productoWebProductosMenor = productoWebProductoService
+                .findByProductoWebAndTipoPaxAndTipoDia(productoWeb, tipoPaxService.findByNombre("menor"), tipoDia);
         log.debug("productoWebProductosMenor={}", productoWebProductosMenor);
         for (ProductoWebProducto productoWebProducto : productoWebProductosMenor) {
             log.debug("productoWebProducto={}", productoWebProducto);
@@ -541,10 +549,34 @@ public class VouchersService {
                 .subeEn(product.getPuntoDeEncuentro())
                 .build();
 
-        return new ProgramaDiaDto.Builder()
-                .vouchers(Collections.singletonList(voucher))
-                .errorMessage("")
+        Reserva reserva = new Reserva.Builder()
+                .clienteId(cliente.getClienteId())
+                .fechaToma(voucher.getFechaToma())
+                .fechaInServicio(voucher.getFechaServicio())
+                .fechaOutServicio(voucher.getFechaServicio())
+                .fechaVencimiento(voucher.getFechaVencimiento())
+                .nombrePax(voucher.getNombrePax())
+                .cantidadPaxs(voucher.getPaxs())
                 .build();
+
+        List<ReservaArticulo> reservaArticulos = voucherProductos.stream()
+                .flatMap(voucherProducto -> {
+                    Producto producto = voucherProducto.getProducto();
+                    return articuloService.findAllByProductoId(producto.getProductoId()).stream()
+                            .map(articulo -> {
+                                BigDecimal precioArticulo = precioService
+                                        .getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(), fechaServicio);
+                                return new ReservaArticulo.Builder()
+                                        .negocioId(negocio.getNegocioId())
+                                        .articuloId(articulo.getArticuloId())
+                                        .precioUnitarioSinComision(precioArticulo)
+                                        .articulo(articulo)
+                                        .build();
+                            });
+                })
+                .toList();
+
+        return new PregenerarReservaDto(voucher, voucherProductos, reserva, reservaArticulos);
     }
 
     private ProgramaDiaDto validateOrderNote(OrderNote orderNote) {

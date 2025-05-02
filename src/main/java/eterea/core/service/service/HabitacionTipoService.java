@@ -26,4 +26,7 @@ public class HabitacionTipoService {
 		return repository.findAll();
 	}
 
+	public HabitacionTipo findById(Integer id) {
+		return repository.findById(id).orElse(null);
+	}
 }

@@ -5,7 +5,6 @@ package eterea.core.service.controller;
 
 import java.util.List;
 
-import eterea.core.service.kotlin.model.Producto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import eterea.core.service.kotlin.model.Producto;
 import eterea.core.service.service.ProductoService;
 
 /**
@@ -55,6 +56,16 @@ public class ProductoController {
 	@PutMapping("/{productoId}")
 	public ResponseEntity<Producto> update(@RequestBody Producto producto, @PathVariable Integer productoId) {
 		return new ResponseEntity<>(service.update(producto, productoId), HttpStatus.OK);
+	}
+
+	@GetMapping("/productosByIds")
+	public ResponseEntity<List<Producto>> findAllByIds(@RequestParam List<Integer> productoIds) {
+		return new ResponseEntity<>(service.findAllByIds(productoIds), HttpStatus.OK);
+	}
+
+	@GetMapping("/productosByArticuloIds")
+	public ResponseEntity<List<Producto>> findByExactArticuloIds(@RequestParam List<String> articuloIds) {
+		return new ResponseEntity<>(service.findByExactArticuloIds(articuloIds), HttpStatus.OK);
 	}
 
 }

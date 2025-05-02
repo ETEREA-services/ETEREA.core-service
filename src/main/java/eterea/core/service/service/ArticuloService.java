@@ -135,5 +135,9 @@ public class ArticuloService {
 		return repository.findAllByProductoId(productoId);
 	}
 
+	public List<Articulo> findAllByIds(List<String> articuloIds) {
+		return repository.findAllByArticuloIdIn(articuloIds);
+	}
+
 }
 

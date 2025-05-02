@@ -1,7 +1,9 @@
 package eterea.core.service.kotlin.repository
 
 import eterea.core.service.kotlin.model.CuentaMovimiento
+import jakarta.transaction.Transactional
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
@@ -11,6 +13,8 @@ import java.util.*
 @Repository
 interface CuentaMovimientoRepository : JpaRepository<CuentaMovimiento?, Long?> {
 
+    fun findAllByFechaAndOrden(fechaContable: OffsetDateTime, ordenContable: Int): List<CuentaMovimiento>
+    fun findAllByFechaBetween(fechaDesde: OffsetDateTime, fechaHasta: OffsetDateTime): List<CuentaMovimiento>
     fun findByCuentaMovimientoId(cuentaMovimientoId: Long?): Optional<CuentaMovimiento?>?
     fun findFirstByFechaAndOrdenOrderByItemDesc(fecha: OffsetDateTime?, orden: Int?): Optional<CuentaMovimiento?>?
     fun findFirstByFechaOrderByOrdenDesc(fecha: OffsetDateTime?): Optional<CuentaMovimiento?>?
@@ -26,5 +30,13 @@ interface CuentaMovimientoRepository : JpaRepository<CuentaMovimiento?, Long?> {
         desde: OffsetDateTime,
         hasta: OffsetDateTime
     ): BigDecimal
+
+    @Modifying
+    @Transactional
+    @Query("""
+        DELETE FROM CuentaMovimiento cm
+        WHERE cm.fecha = :fechaContable AND cm.orden = :ordenContable
+    """)
+    fun deleteAllByFechaAndOrden(fechaContable: OffsetDateTime, ordenContable: Int)
 
 }

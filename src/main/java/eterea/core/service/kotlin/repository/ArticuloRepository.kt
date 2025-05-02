@@ -29,4 +29,6 @@ interface ArticuloRepository : JpaRepository<Articulo, String> {
     """)
     fun findAllByProductoId(productoId: Int): List<Articulo>
 
+    fun findAllByArticuloIdIn(articuloIds: List<String>): List<Articulo>
+
 }

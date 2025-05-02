@@ -3,10 +3,13 @@
  */
 package eterea.core.service.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import eterea.core.service.exception.HabitacionException;
 import eterea.core.service.kotlin.model.Habitacion;
 import eterea.core.service.repository.HabitacionRepository;
-import org.springframework.stereotype.Service;
 
 /**
  * @author daniel
@@ -31,6 +34,10 @@ public class HabitacionService {
 			habitacion = repository.save(habitacion);
 			return habitacion;
 		}).orElseThrow(() -> new HabitacionException(numero));
+	}
+
+	public List<Habitacion> findAll() {
+		return repository.findAll();
 	}
 
 }

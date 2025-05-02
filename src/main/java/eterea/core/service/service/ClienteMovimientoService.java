@@ -3,12 +3,15 @@
  */
 package eterea.core.service.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import eterea.core.service.exception.ClienteMovimientoException;
 import eterea.core.service.kotlin.model.ClienteMovimiento;
+import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.repository.ClienteMovimientoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,7 +31,7 @@ public class ClienteMovimientoService {
 
 	public List<ClienteMovimiento> findTop200Asociables(Long clienteId) {
 		List<Integer> comprobanteIds = comprobanteService.findAllAsociables().stream()
-				.map(comprobante -> comprobante.getComprobanteId()).collect(Collectors.toList());
+				.map(Comprobante::getComprobanteId).collect(Collectors.toList());
 		return repository.findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
 	}
 
@@ -38,6 +41,14 @@ public class ClienteMovimientoService {
 
 	public List<ClienteMovimiento> findAllByReservaId(Long reservaId) {
 		return repository.findAllByReservaId(reservaId);
+	}
+
+	public List<ClienteMovimiento> findAllFacturadosByFecha(OffsetDateTime fecha) {
+		return repository.findAllByFechaComprobanteAndPuntoVentaGreaterThanAndComprobanteLibroIva(fecha, 0, (byte) 1);
+	}
+
+	public List<ClienteMovimiento> findAllFacturasByRango(String letraComprobante, Byte debita, Integer puntoVenta, Long numeroComprobanteDesde, Long numeroComprobanteHasta) {
+		return repository.findAllByLetraComprobanteAndReciboAndPuntoVentaAndNumeroComprobanteBetweenAndComprobanteDebita(letraComprobante, (byte) 0, puntoVenta, numeroComprobanteDesde, numeroComprobanteHasta, debita);
 	}
 
 	public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {
@@ -98,10 +109,15 @@ public class ClienteMovimientoService {
 	}
 
 	public Long nextNumeroFactura(Integer puntoVenta, String letraComprobante) {
-		return repository.findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc(0, puntoVenta,
+		return repository.findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc((byte) 0, puntoVenta,
 				letraComprobante).map(clienteMovimiento -> {
 					return 1 + clienteMovimiento.getNumeroComprobante();
 				}).orElse(1L);
 	}
+
+	@Transactional
+    public void deleteAll0ByFecha(OffsetDateTime fecha) {
+		repository.deleteAllByFechaComprobanteAndComprobanteIdAndPuntoVentaAndNumeroComprobante(fecha, 0, 0, 0L);
+    }
 
 }
