@@ -3,6 +3,7 @@ package eterea.core.service.service.facade;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.ClienteMovimiento;
+import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.kotlin.model.ComprobanteFaltante;
 import eterea.core.service.service.ClienteMovimientoService;
 import eterea.core.service.service.ComprobanteFaltanteService;
@@ -13,9 +14,9 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -23,6 +24,16 @@ public class ConsolidadoService {
 
     private final ComprobanteFaltanteService comprobanteFaltanteService;
     private final ClienteMovimientoService clienteMovimientoService;
+
+    public record ComprobanteRango(
+            Integer afipComprobanteId,
+            String letraComprobante,
+            Integer puntoVenta,
+            Byte debita,
+            Long minimoNumeroComprobante,
+            Long maximoNumeroComprobante
+    ) {
+    }
 
     public ConsolidadoService(ComprobanteFaltanteService comprobanteFaltanteService,
                               ClienteMovimientoService clienteMovimientoService) {
@@ -40,129 +51,102 @@ public class ConsolidadoService {
 
         // Carga todos los comprobantes facturados por fecha
         var comprobantesFacturadosByFecha = clienteMovimientoService.findAllFacturadosByFecha(fecha);
-        logFacturados(comprobantesFacturadosByFecha);
 
-        // Tomar de la lista comprobantesFacturadosByFecha por grupos de letraComprobantes y puntoVenta y buscar los números faltantes entre el mínimo y el máximo encontrado
-        var groupedByLetraAndPuntoVenta = comprobantesFacturadosByFecha.stream()
-                .collect(Collectors.groupingBy(cm -> 
-                    cm.getLetraComprobante() + "." + 
-                    cm.getPuntoVenta() + "." + 
-                    (cm.getComprobante() != null ? cm.getComprobante().getDebita() : "0") + "." +
-                    (cm.getComprobante() != null ? cm.getComprobante().getComprobanteAfipId() : "0")
-                ));
-        logGrupos(groupedByLetraAndPuntoVenta);
+        // Obtiene lista única de Comprobantes
+        List<Comprobante> comprobantesUnicos = comprobantesFacturadosByFecha.stream()
+                .map(ClienteMovimiento::getComprobante)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+        logUnicos(comprobantesUnicos);
 
-        List<ComprobanteFaltante> faltantes = groupedByLetraAndPuntoVenta.entrySet().stream()
-            .flatMap(entry -> {
-                String key = entry.getKey();
-                List<ClienteMovimiento> list = entry.getValue();
-                log.debug("Processing key {}", key);
-                long minNumero = list.stream().mapToLong(ClienteMovimiento::getNumeroComprobante).min().orElse(0L);
-                var minComprobante = list.stream()
-                    .filter(cm -> cm.getNumeroComprobante() == minNumero)
-                    .findFirst()
-                    .orElse(null);
-                logClienteMovimiento(minComprobante);
-                if (minComprobante == null) {
-                    log.error("No se encontró el comprobante con número mínimo {} para la key {}", minNumero, key);
-                    return Stream.empty();
+        // Procesa los comprobantes para obtener los rangos
+        List<ComprobanteRango> rangosComprobantes = comprobantesFacturadosByFecha.stream()
+                .filter(cm -> cm.getComprobante() != null && Objects.requireNonNull(cm.getComprobante()).getComprobanteAfipId() != null)
+                .collect(Collectors.groupingBy(
+                        cm -> new ComprobanteRango(
+                                cm.getComprobante().getComprobanteAfipId(),
+                                cm.getLetraComprobante(),
+                                cm.getPuntoVenta(),
+                                cm.getComprobante().getDebita(),
+                                null,
+                                null
+                        ),
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> new ComprobanteRango(
+                                        Objects.requireNonNull(list.getFirst().getComprobante()).getComprobanteAfipId(),
+                                        list.getFirst().getLetraComprobante(),
+                                        list.getFirst().getPuntoVenta(),
+                                        list.getFirst().getComprobante().getDebita(),
+                                        list.stream().mapToLong(ClienteMovimiento::getNumeroComprobante).min().orElse(0L),
+                                        list.stream().mapToLong(ClienteMovimiento::getNumeroComprobante).max().orElse(0L)
+                                )
+                        )
+                ))
+                .values()
+                .stream()
+                .toList();
+        logRangos(rangosComprobantes);
+
+        List<ComprobanteFaltante> faltantes = new ArrayList<>();
+        for (ComprobanteRango rango : rangosComprobantes) {
+            List<ClienteMovimiento> comprobantes = clienteMovimientoService.findAllFacturasByRango(rango.letraComprobante, rango.debita, rango.puntoVenta, rango.minimoNumeroComprobante, rango.maximoNumeroComprobante);
+            var firstComprobante = comprobantes.getFirst();
+
+            // Convertimos la lista de números de comprobante a un Set para búsquedas O(1)
+            Set<Long> numerosComprobantes = comprobantes.stream()
+                    .map(ClienteMovimiento::getNumeroComprobante)
+                    .collect(Collectors.toSet());
+
+            for (Long numeroComprobanteSearched = rango.minimoNumeroComprobante; numeroComprobanteSearched <= rango.maximoNumeroComprobante; numeroComprobanteSearched++) {
+                if (!numerosComprobantes.contains(numeroComprobanteSearched)) {
+                    log.debug("Comprobante faltante - Tipo: {}, Letra: {}, Punto Venta: {}, Número: {}",
+                            rango.afipComprobanteId,
+                            rango.letraComprobante,
+                            rango.puntoVenta,
+                            numeroComprobanteSearched);
+                    faltantes.add(new ComprobanteFaltante.Builder()
+                            .negocioId(firstComprobante.getNegocioId())
+                            .comprobanteId(firstComprobante.getComprobanteId())
+                            .fecha(firstComprobante.getFechaComprobante())
+                            .prefijo(rango.puntoVenta)
+                            .numero(numeroComprobanteSearched)
+                            .build());
                 }
-                var negocioId = minComprobante.getNegocioId();
-                var comprobanteId = minComprobante.getComprobanteId();
-                var puntoVenta = minComprobante.getPuntoVenta();
-                long maxNumero = list.stream().mapToLong(ClienteMovimiento::getNumeroComprobante).max().orElse(0L);
-                log.debug("maxNumero {}", maxNumero);
-
-                List<ComprobanteFaltante> faltantesGrupo = new ArrayList<>();
-                for (long numeroComprobante = minNumero; numeroComprobante <= maxNumero; numeroComprobante++) {
-                    long finalNumeroComprobante = numeroComprobante;
-                    boolean exists = list.stream().anyMatch(cm -> cm.getNumeroComprobante() == finalNumeroComprobante);
-                    if (!exists) {
-                        log.debug("Adding missing comprobante to faltantes -> {}", finalNumeroComprobante);
-                        faltantesGrupo.add(comprobanteFaltanteService.createOne(negocioId, comprobanteId, fecha, puntoVenta, numeroComprobante));
-                    }
-                }
-                return faltantesGrupo.stream();
-            })
-            .collect(Collectors.toList());
-
-        faltantes = comprobanteFaltanteService.saveAll(faltantes);
-        logFaltantes(faltantes);
+            }
+        }
+        if (!faltantes.isEmpty()) {
+            log.debug("Saving {} ComprobanteFaltante", faltantes.size());
+            comprobanteFaltanteService.saveAll(faltantes);
+        }
 
         return "OK";
     }
 
-    private void logFaltantes(List<ComprobanteFaltante> faltantes) {
-        log.debug("Processing ConsolidadoService.logFaltantes");
+    private void logRangos(List<ComprobanteRango> rangosComprobantes) {
         try {
-            log.debug("Faltantes -> {}", JsonMapper
+            log.debug("Rangos -> {}", JsonMapper
                     .builder()
                     .findAndAddModules()
                     .build()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(faltantes));
+                    .writeValueAsString(rangosComprobantes));
         } catch (JsonProcessingException e) {
-            log.debug("Faltantes jsonify error -> {}", e.getMessage());
+            log.debug("Rangos jsonify error -> {}", e.getMessage());
         }
     }
 
-    private void logClienteMovimiento(ClienteMovimiento minComprobante) {
-        log.debug("Processing ConsolidadoService.logClienteMovimiento");
+    private void logUnicos(List<Comprobante> comprobantesUnicos) {
         try {
-            log.debug("ClienteMovimiento -> {}", JsonMapper
+            log.debug("Comprobantes unicos -> {}", JsonMapper
                     .builder()
                     .findAndAddModules()
                     .build()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(minComprobante));
+                    .writeValueAsString(comprobantesUnicos));
         } catch (JsonProcessingException e) {
-            log.debug("ClienteMovimiento jsonify error -> {}", e.getMessage());
+            log.debug("Comprobantes unicos jsonify error -> {}", e.getMessage());
         }
     }
-
-    private void logGrupos(Map<String, List<ClienteMovimiento>> groupedByLetraAndPrefijo) {
-        log.debug("Processing ConsolidadoService.logGrupos");
-        try {
-            Map<String, Map<String, Long>> gruposResumidos = groupedByLetraAndPrefijo.entrySet().stream()
-                .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> {
-                        List<ClienteMovimiento> movimientos = entry.getValue();
-                        Long min = movimientos.stream()
-                            .mapToLong(ClienteMovimiento::getNumeroComprobante)
-                            .min()
-                            .orElse(0L);
-                        Long max = movimientos.stream()
-                            .mapToLong(ClienteMovimiento::getNumeroComprobante)
-                            .max()
-                            .orElse(0L);
-                        return Map.of("min", min, "max", max);
-                    }
-                ));
-
-            log.debug("Grupos -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(gruposResumidos));
-        } catch (JsonProcessingException e) {
-            log.debug("Grupos jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logFacturados(List<ClienteMovimiento> facturados) {
-        log.debug("Processing ConsolidadoService.logFacturados");
-        try {
-            log.debug("Facturados -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(facturados));
-        } catch (JsonProcessingException e) {
-            log.debug("Facturados jsonify error -> {}", e.getMessage());
-        }
-    }
-
 }
