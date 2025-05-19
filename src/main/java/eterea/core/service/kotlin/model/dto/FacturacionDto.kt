@@ -41,7 +41,10 @@ data class FacturacionDto(
     var asociadoNumeroComprobante: Long? = null,
 
     @JsonProperty(value = "asociado_fecha_comprobante")
-    var asociadoFechaComprobante: String? = null
+    var asociadoFechaComprobante: String? = null,
+
+    @JsonProperty(value = "id_condicion_iva")
+    var idCondicionIva: Int? = null
 
 ) {
     data class Builder(
@@ -63,6 +66,7 @@ data class FacturacionDto(
         var asociadoPuntoVenta: Int? = null,
         var asociadoNumeroComprobante: Long? = null,
         var asociadoFechaComprobante: String? = null,
+        var idCondicionIva: Int? = null
     ) {
         fun tipoDocumento(tipoDocumento: Int) = apply { this.tipoDocumento = tipoDocumento }
         fun documento(documento: String) = apply { this.documento = documento }
@@ -85,6 +89,7 @@ data class FacturacionDto(
 
         fun asociadoFechaComprobante(asociadoFechaComprobante: String?) =
             apply { this.asociadoFechaComprobante = asociadoFechaComprobante }
+        fun idCondicionIva(idCondicionIva: Int?) = apply { this.idCondicionIva = idCondicionIva }
 
         fun build() = FacturacionDto(
             tipoDocumento,
@@ -104,7 +109,8 @@ data class FacturacionDto(
             asociadoTipoAfip,
             asociadoPuntoVenta,
             asociadoNumeroComprobante,
-            asociadoFechaComprobante
+            asociadoFechaComprobante,
+            idCondicionIva,
         )
     }
 }

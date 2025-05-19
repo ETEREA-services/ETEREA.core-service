@@ -8,10 +8,16 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ## [Unreleased] - 2025-05-01
 
 ### Added
-- Agregada relación `comprobanteAfip` en la entidad `Comprobante`
-- Agregado logging en `ConsolidadoController`
+- Implementado nuevo módulo de Posición IVA
+  - Nuevo controlador `PosicionIvaController` para gestión de posiciones IVA
+  - Nueva entidad `PosicionIva` con mapeo JPA
+  - Nuevo servicio `PosicionIvaService` con logging mejorado
+  - Integración de posición IVA en la entidad `Cliente`
+- Agregado campo `idCondicionIva` en `FacturacionDto`
+- Integración de posición IVA en el proceso de facturación
 
 ### Changed
+- Actualizado SpringDoc OpenAPI a 2.8.8
 - Optimizado el proceso de búsqueda de comprobantes faltantes usando Set para búsquedas O(1)
 - Refactorizado el código de `ConsolidadoService` para mejor legibilidad y mantenibilidad
 - Actualizada la versión de Spring Boot a 3.4.5
