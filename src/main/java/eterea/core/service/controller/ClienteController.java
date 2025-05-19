@@ -36,7 +36,7 @@ public class ClienteController {
 
 	@GetMapping("/search/{chain}")
 	public ResponseEntity<List<ClienteSearch>> findAllBySearch(@PathVariable String chain) {
-		return new ResponseEntity<List<ClienteSearch>>(service.findAllBySearch(chain), HttpStatus.OK);
+		return new ResponseEntity<>(service.findAllBySearch(chain), HttpStatus.OK);
 	}
 
 	@GetMapping("/{clienteId}")

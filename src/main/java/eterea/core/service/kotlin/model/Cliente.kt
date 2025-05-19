@@ -1,9 +1,12 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import eterea.core.service.model.PosicionIva
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.time.OffsetDateTime
@@ -77,7 +80,11 @@ data class Cliente(
     var facturarExtranjero: Byte = 0,
 
     var bloqueado: Byte = 0,
-    var discapacitado: Byte = 0
+    var discapacitado: Byte = 0,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "posicion", insertable = false, updatable = false)
+    var posicion: PosicionIva? = null
 
 ) : Auditable() {
     data class Builder(
@@ -106,7 +113,8 @@ data class Cliente(
         var impositivoId: String = "",
         var facturarExtranjero: Byte = 0,
         var bloqueado: Byte = 0,
-        var discapacitado: Byte = 0
+        var discapacitado: Byte = 0,
+        var posicion: PosicionIva? = null
     ) {
         fun clienteId(clienteId: Long?) = apply { this.clienteId = clienteId }
         fun nombre(nombre: String?) = apply { this.nombre = nombre }
@@ -134,13 +142,36 @@ data class Cliente(
         fun facturarExtranjero(facturarExtranjero: Byte) = apply { this.facturarExtranjero = facturarExtranjero }
         fun bloqueado(bloqueado: Byte) = apply { this.bloqueado = bloqueado }
         fun discapacitado(discapacitado: Byte) = apply { this.discapacitado = discapacitado }
+        fun posicion(posicion: PosicionIva?) = apply { this.posicion = posicion }
 
         fun build() = Cliente(
-            clienteId, nombre, negocioId, cuit, razonSocial, nombreFantasia, fechaRestaurant,
-            cantidadPaxs, tipoCliente, domicilio, telefono, fax, email, numeroMovil,
-            posicionIva, constante, documentoId, tipoDocumento, numeroDocumento,
-            limiteCredito, nacionalidad, clienteCategoriaId, impositivoId, facturarExtranjero,
-            bloqueado, discapacitado
+            clienteId,
+            nombre,
+            negocioId,
+            cuit,
+            razonSocial,
+            nombreFantasia,
+            fechaRestaurant,
+            cantidadPaxs,
+            tipoCliente,
+            domicilio,
+            telefono,
+            fax,
+            email,
+            numeroMovil,
+            posicionIva,
+            constante,
+            documentoId,
+            tipoDocumento,
+            numeroDocumento,
+            limiteCredito,
+            nacionalidad,
+            clienteCategoriaId,
+            impositivoId,
+            facturarExtranjero,
+            bloqueado,
+            discapacitado,
+            posicion
         )
     }
 }
