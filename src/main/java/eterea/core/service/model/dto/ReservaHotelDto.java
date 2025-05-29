@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public record ReservaHotelDto(
-        Long clienteId,
+        Integer tipoDocumentoId,
+        String nroDocumento,
         String telefono,
         String email,
         OffsetDateTime fechaIngreso,

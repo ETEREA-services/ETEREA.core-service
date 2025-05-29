@@ -21,5 +21,7 @@ interface VoucherRepository : JpaRepository<Voucher, Long> {
     fun findTopByNumeroVoucherContains(numeroVoucher: String): Optional<Voucher?>?
 
     fun findTopByNumeroVoucherContainsAndFechaTomaAfter(numeroVoucher: String, fechaToma: OffsetDateTime): Optional<Voucher?>?
+
+    fun findAllByNumeroVoucherIn(numerosVoucher: List<String>): List<Voucher?>?
     
 }

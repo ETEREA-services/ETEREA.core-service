@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import eterea.core.service.exception.ArticuloException;
+import eterea.core.service.exception.ClienteMovimientoException;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.ArticuloMovimiento;
@@ -55,9 +56,7 @@ public class ReservaService {
    private final EmpresaService empresaService;
    private final VoucherProductoService voucherProductoService;
    private final PrecioService precioService;
-   private final HabitacionMovimientoService habitacionMovimientoService;
    private final ClienteService clienteService;
-   private final HabitacionService habitacionService;
 
    public ReservaService(ReservaRepository repository,
          ClienteMovimientoService clienteMovimientoService,
@@ -70,9 +69,7 @@ public class ReservaService {
          EmpresaService empresaService,
          VoucherProductoService voucherProductoService,
          PrecioService precioService,
-         HabitacionMovimientoService habitacionMovimientoService,
-         ClienteService clienteService,
-         HabitacionService habitacionService) {
+         ClienteService clienteService) {
       this.repository = repository;
       this.clienteMovimientoService = clienteMovimientoService;
       this.voucherService = voucherService;
@@ -84,9 +81,7 @@ public class ReservaService {
       this.empresaService = empresaService;
       this.voucherProductoService = voucherProductoService;
       this.precioService = precioService;
-      this.habitacionMovimientoService = habitacionMovimientoService;
       this.clienteService = clienteService;
-      this.habitacionService = habitacionService;
    }
 
    public List<Reserva> findTopPendientes() {
@@ -410,7 +405,6 @@ public class ReservaService {
 
    /**
     * @author: sebastian
-    * 
     */
    public Reserva createReserva(CreateReservaDto createReservaDto) {
       // TODO: Decidir que hacer con ReservaHistorial, en VB6 crea un registro por
@@ -436,13 +430,12 @@ public class ReservaService {
          BigDecimal precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(),
                newReserva.getFechaInServicio());
 
-
          reservaArticulo.setArticulo(articulo);
          reservaArticulo.setArticuloId(articulo.getArticuloId());
          reservaArticulo.setPrecioUnitarioSinComision(precioArticulo);
          reservaArticulo.setReservaId(savedReserva.getReservaId());
          reservaArticulo.setNegocioId(savedReserva.getNegocioId());
-         
+
          BigDecimal complemento = BigDecimal.ONE.subtract(reservaArticulo.getComision()).setScale(2,
                RoundingMode.HALF_UP);
          reservaArticulo.setPrecioUnitario(reservaArticulo.getPrecioUnitarioSinComision().multiply(complemento)
@@ -457,4 +450,12 @@ public class ReservaService {
       return repository.findTopByOrderByReservaIdDesc().orElseThrow(() -> new ReservaException("No hay reservas"));
    }
 
+   public boolean isReservaFacturada(Long reservaId) {
+      try {
+         clienteMovimientoService.findFirstClienteMovimientoByReservaId(reservaId);
+         return true;
+      } catch (ClienteMovimientoException e) {
+         return false;
+      }
+   }
 }

@@ -5,12 +5,12 @@ package eterea.core.service.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import eterea.core.service.exception.ProductoException;
 import eterea.core.service.kotlin.model.Producto;
 import eterea.core.service.repository.ProductoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 /**
  * @author daniel

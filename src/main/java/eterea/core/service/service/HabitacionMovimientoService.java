@@ -1,5 +1,6 @@
 package eterea.core.service.service;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import eterea.core.service.kotlin.exception.HabitacionNoDisponibleException;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.exception.ReservaNoEditableException;
+import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.Habitacion;
 import eterea.core.service.kotlin.model.HabitacionMovimiento;
 import eterea.core.service.kotlin.repository.HabitacionMovimientoRepository;
@@ -64,28 +66,15 @@ public class HabitacionMovimientoService {
 
     @Transactional
     public HabitacionMovimientoResponseDto createReservaHabitacion(ReservaHotelDto dto) {
-        // 1. Validate operation date (similar to violacionlimite check in VB6)
-        validarFechaOperacion(dto.fechaOperacion());
-
-        // 2. Validate future date limit
-        validarPlazoFuturo(dto.fechaOperacion());
-
-        // 3. Validate required fields -> TODO: Validate this in the controller
-
-        // 4. Validate dates
-        validarFechas(dto.fechaIngreso(), dto.fechaSalida());
-
-        // 5. Validate PAX counts
-        validarCantidadPax(dto.paxMayor(), dto.paxMenor(), dto.cantidadPax());
-
-        // 6. Check room availability
+        Cliente cliente = clienteService.findByNumeroDocumentoAndDocumentoId(dto.nroDocumento(), dto.tipoDocumentoId());
+        // Check room availability
         if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida(), null)) {
             throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
         }
 
         // 8. Create the reservation
         HabitacionMovimiento reserva = new HabitacionMovimiento.Builder()
-                .cliente(clienteService.findByClienteId(dto.clienteId()))
+                .cliente(cliente)
                 .fechaIngreso(dto.fechaIngreso())
                 .fechaSalida(dto.fechaSalida())
                 .habitacion(habitacionService.findByNumero(dto.numeroHabitacion()))
@@ -95,17 +84,28 @@ public class HabitacionMovimientoService {
                 .cantidadPaxMayor(dto.paxMayor())
                 .cantidadPaxMenor(dto.paxMenor())
                 .tarifaStandard(dto.tarifaStandard() ? (byte) 1 : (byte) 0)
-                .estadoReserva(comprobanteService.findByLetraComprobante(dto.letraComprobante()))
+                .estadoReserva(comprobanteService.findByModuloAndLetraComprobante(11, dto.letraComprobante()))
                 .fechaOperacion(dto.fechaOperacion())
                 .fechaVencimiento(dto.fechaVencimiento())
                 .observaciones(dto.observaciones())
+                .conceptoTarifa("")
+                .precioUnitarioTarifa(BigDecimal.ZERO)
+                .tarifaId(0L)
                 .build();
+
+        HabitacionMovimiento lastHabitacionMovimiento = findLastHabitacionMovimiento();
+        Long lastHabitacionMovimientoId = lastHabitacionMovimiento != null
+                ? lastHabitacionMovimiento.getHabitacionMovimientoId()
+                : null;
+
+        reserva.setHabitacionMovimientoId(lastHabitacionMovimientoId + 1);
+        reserva.setNumeroReserva(lastHabitacionMovimiento.getNumeroReserva() + 1);
 
         HabitacionMovimiento savedReserva = save(reserva);
 
         if (savedReserva.getEstadoReserva().getLetraComprobante().equals("R")) {
             Habitacion habitacion = habitacionService.findByNumero(dto.numeroHabitacion());
-            habitacion.setClienteId(dto.clienteId());
+            habitacion.setClienteId(cliente.getClienteId());
             habitacionService.update(habitacion, habitacion.getNumero());
         }
 
@@ -151,7 +151,7 @@ public class HabitacionMovimientoService {
         }
 
         // 8. Update the reservation
-        existingReserva.setCliente(clienteService.findByClienteId(dto.clienteId()));
+        // existingReserva.setCliente(clienteService.findByClienteId(dto.clienteId()));
         existingReserva.setHabitacion(habitacionService.findByNumero(dto.numeroHabitacion()));
         existingReserva.setFechaIngreso(dto.fechaIngreso());
         existingReserva.setFechaSalida(dto.fechaSalida());
@@ -166,6 +166,10 @@ public class HabitacionMovimientoService {
         existingReserva.setObservaciones(dto.observaciones());
 
         return save(existingReserva);
+    }
+
+    public HabitacionMovimiento findLastHabitacionMovimiento() {
+        return repository.findFirstByOrderByHabitacionMovimientoIdDesc();
     }
 
     private void validarCamposRequeridos(ReservaHotelDto dto) {
@@ -185,7 +189,7 @@ public class HabitacionMovimientoService {
     private void validarPlazoFuturo(OffsetDateTime fechaOperacion) {
     }
 
-    private boolean isHabitacionReservada(Integer numeroHabitacion, OffsetDateTime fechaIngreso,
+    public boolean isHabitacionReservada(Integer numeroHabitacion, OffsetDateTime fechaIngreso,
             OffsetDateTime fechaSalida, Long reservaIdExcluir) {
         List<HabitacionMovimiento> reservasSuperpuestas = findReservasSuperpuestas(
                 numeroHabitacion,

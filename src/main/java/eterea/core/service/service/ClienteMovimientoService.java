@@ -5,14 +5,16 @@ package eterea.core.service.service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 import eterea.core.service.exception.ClienteMovimientoException;
 import eterea.core.service.kotlin.model.ClienteMovimiento;
 import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.repository.ClienteMovimientoRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
 
 /**
  * @author daniel
@@ -119,5 +121,14 @@ public class ClienteMovimientoService {
     public void deleteAll0ByFecha(OffsetDateTime fecha) {
 		repository.deleteAllByFechaComprobanteAndComprobanteIdAndPuntoVentaAndNumeroComprobante(fecha, 0, 0, 0L);
     }
+
+	/*
+ 	* @author Sebastian
+ 	* Metodo existFactura extraido de VB6
+ 	*/
+	 public ClienteMovimiento findFirstClienteMovimientoByReservaId(Long reservaId) {
+		return repository.findFirstClienteMovimientoByReservaId(reservaId)
+				.orElseThrow(() -> new ClienteMovimientoException(reservaId));
+	}
 
 }
