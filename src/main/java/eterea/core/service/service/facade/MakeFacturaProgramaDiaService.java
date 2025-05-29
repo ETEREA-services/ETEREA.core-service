@@ -7,6 +7,7 @@ import eterea.core.service.kotlin.exception.ReservaContextException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
+import eterea.core.service.model.PosicionIva;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -108,6 +109,11 @@ public class MakeFacturaProgramaDiaService {
         logVoucher(voucher);
         Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
         logCliente(cliente);
+        PosicionIva posicionIva = cliente.getPosicion();
+        var idPosicionIvaArca = 5;
+        if (posicionIva != null) {
+            idPosicionIvaArca = posicionIva.getIdPosicionIvaArca();
+        }
 
         int tipoDocumento = 80;
         String documento = cliente.getCuit().replace("-", "").trim();
@@ -192,6 +198,7 @@ public class MakeFacturaProgramaDiaService {
                 .neto105(neto105.setScale(2, RoundingMode.HALF_UP))
                 .iva(iva21.setScale(2, RoundingMode.HALF_UP))
                 .iva105(iva105.setScale(2, RoundingMode.HALF_UP))
+                .idCondicionIva(idPosicionIvaArca)
                 .build();
 
         logFacturacionDto(facturacionDto);

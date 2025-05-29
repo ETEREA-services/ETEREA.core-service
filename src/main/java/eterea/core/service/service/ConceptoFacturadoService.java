@@ -8,6 +8,8 @@ import eterea.core.service.kotlin.model.ConceptoFacturado;
 import eterea.core.service.kotlin.repository.ConceptoFacturadoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 /**
  * @author daniel
  *
@@ -22,7 +24,7 @@ public class ConceptoFacturadoService {
 	}
 
 	public ConceptoFacturado findByArticuloMovimientoId(Long articuloMovimientoId) {
-		return repository.findByArticuloMovimientoId(articuloMovimientoId).orElseThrow(() -> new ConceptoFacturadoException(articuloMovimientoId));
+		return Objects.requireNonNull(repository.findTopByArticuloMovimientoId(articuloMovimientoId)).orElseThrow(() -> new ConceptoFacturadoException(articuloMovimientoId));
 	}
 
 	public ConceptoFacturado add(ConceptoFacturado conceptoFacturado) {
