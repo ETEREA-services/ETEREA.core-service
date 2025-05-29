@@ -450,12 +450,12 @@ public class ReservaService {
       return repository.findTopByOrderByReservaIdDesc().orElseThrow(() -> new ReservaException("No hay reservas"));
    }
 
-   public boolean isReservaFacturada(Long reservaId) {
-      try {
-         clienteMovimientoService.findFirstClienteMovimientoByReservaId(reservaId);
-         return true;
-      } catch (ClienteMovimientoException e) {
-         return false;
-      }
-   }
+//   public boolean isReservaFacturada(Long reservaId) {
+//      try {
+//         clienteMovimientoService.findFirstClienteMovimientoByReservaId(reservaId);
+//         return true;
+//      } catch (ClienteMovimientoException e) {
+//         return false;
+//      }
+//   }
 }

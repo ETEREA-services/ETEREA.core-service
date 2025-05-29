@@ -72,7 +72,6 @@ public class HabitacionMovimientoService {
             throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
         }
 
-        // 8. Create the reservation
         HabitacionMovimiento reserva = new HabitacionMovimiento.Builder()
                 .cliente(cliente)
                 .fechaIngreso(dto.fechaIngreso())
@@ -113,80 +112,63 @@ public class HabitacionMovimientoService {
 
     }
 
-    @Transactional
-    public HabitacionMovimiento updateReservaHabitacion(Long habitacionMovimientoId, ReservaHotelDto dto) {
-
-        OffsetDateTime fechaLimite; // TODO: Traer de la tabla violacionlimite (falta mapear a una clase)
-
-        // 1. Find existing reservation
-        HabitacionMovimiento existingReserva = findById(habitacionMovimientoId)
-                .orElseThrow(() -> new ReservaException(habitacionMovimientoId));
-
-        // 2. Validate operation date
-        validarFechaOperacion(dto.fechaOperacion());
-
-        // 3. Validate future date limit
-        validarPlazoFuturo(dto.fechaOperacion());
-
-        // 4. Validate required fields
-        validarCamposRequeridos(dto);
-
-        // 5. Validate dates
-        validarFechas(dto.fechaIngreso(), dto.fechaSalida());
-
-        // 6. Validate PAX counts
-        validarCantidadPax(dto.paxMayor(), dto.paxMenor(), dto.cantidadPax());
-
-        // 7. Check room availability (excluding current reservation)
-        if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida(),
-                habitacionMovimientoId)) {
-            throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
-        }
-
-        // Check if reservation can be updated
-        if (existingReserva.getEstadoReserva().getLetraComprobante().equals("V")
-                || existingReserva.getEstadoReserva().getLetraComprobante().equals("A")) {
-            throw new ReservaNoEditableException(existingReserva.getHabitacionMovimientoId(),
-                    existingReserva.getEstadoReserva().getLetraComprobante());
-        }
-
-        // 8. Update the reservation
-        // existingReserva.setCliente(clienteService.findByClienteId(dto.clienteId()));
-        existingReserva.setHabitacion(habitacionService.findByNumero(dto.numeroHabitacion()));
-        existingReserva.setFechaIngreso(dto.fechaIngreso());
-        existingReserva.setFechaSalida(dto.fechaSalida());
-        existingReserva.setCantidadPax(dto.cantidadPax().longValue());
-        existingReserva.setCantidadPaxMayor(dto.paxMayor());
-        existingReserva.setCantidadPaxMenor(dto.paxMenor());
-        existingReserva.setFechaOperacion(dto.fechaOperacion());
-        existingReserva.setFechaVencimiento(dto.fechaVencimiento());
-        existingReserva.setTarifaId(dto.tarifaId());
-        existingReserva.setPrecioUnitarioTarifa(dto.precioUnitario());
-        existingReserva.setTarifaStandard(dto.tarifaStandard() ? (byte) 1 : (byte) 0);
-        existingReserva.setObservaciones(dto.observaciones());
-
-        return save(existingReserva);
-    }
+//    @Transactional
+//    public HabitacionMovimiento updateReservaHabitacion(Long habitacionMovimientoId, ReservaHotelDto dto) {
+//
+//        OffsetDateTime fechaLimite; // TODO: Traer de la tabla violacionlimite (falta mapear a una clase)
+//
+//        // 1. Find existing reservation
+//        HabitacionMovimiento existingReserva = findById(habitacionMovimientoId)
+//                .orElseThrow(() -> new ReservaException(habitacionMovimientoId));
+//
+//        // 2. Validate operation date
+//        validarFechaOperacion(dto.fechaOperacion());
+//
+//        // 3. Validate future date limit
+//        validarPlazoFuturo(dto.fechaOperacion());
+//
+//        // 4. Validate required fields
+//        validarCamposRequeridos(dto);
+//
+//        // 5. Validate dates
+//        validarFechas(dto.fechaIngreso(), dto.fechaSalida());
+//
+//        // 6. Validate PAX counts
+//        validarCantidadPax(dto.paxMayor(), dto.paxMenor(), dto.cantidadPax());
+//
+//        // 7. Check room availability (excluding current reservation)
+//        if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida(),
+//                habitacionMovimientoId)) {
+//            throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
+//        }
+//
+//        // Check if reservation can be updated
+//        if (existingReserva.getEstadoReserva().getLetraComprobante().equals("V")
+//                || existingReserva.getEstadoReserva().getLetraComprobante().equals("A")) {
+//            throw new ReservaNoEditableException(existingReserva.getHabitacionMovimientoId(),
+//                    existingReserva.getEstadoReserva().getLetraComprobante());
+//        }
+//
+//        // 8. Update the reservation
+//        // existingReserva.setCliente(clienteService.findByClienteId(dto.clienteId()));
+//        existingReserva.setHabitacion(habitacionService.findByNumero(dto.numeroHabitacion()));
+//        existingReserva.setFechaIngreso(dto.fechaIngreso());
+//        existingReserva.setFechaSalida(dto.fechaSalida());
+//        existingReserva.setCantidadPax(dto.cantidadPax().longValue());
+//        existingReserva.setCantidadPaxMayor(dto.paxMayor());
+//        existingReserva.setCantidadPaxMenor(dto.paxMenor());
+//        existingReserva.setFechaOperacion(dto.fechaOperacion());
+//        existingReserva.setFechaVencimiento(dto.fechaVencimiento());
+//        existingReserva.setTarifaId(dto.tarifaId());
+//        existingReserva.setPrecioUnitarioTarifa(dto.precioUnitario());
+//        existingReserva.setTarifaStandard(dto.tarifaStandard() ? (byte) 1 : (byte) 0);
+//        existingReserva.setObservaciones(dto.observaciones());
+//
+//        return save(existingReserva);
+//    }
 
     public HabitacionMovimiento findLastHabitacionMovimiento() {
         return repository.findFirstByOrderByHabitacionMovimientoIdDesc();
-    }
-
-    private void validarCamposRequeridos(ReservaHotelDto dto) {
-    }
-
-    private void validarFechas(OffsetDateTime fechaIngreso, OffsetDateTime fechaSalida) {
-    }
-
-    private void validarCantidadPax(Integer paxMayor, Integer paxMenor, Integer totalPax) {
-    }
-
-    private void validarFechaOperacion(OffsetDateTime fechaOperacion) {
-        // TODO: Implement violation limit check
-        // This would be similar to: If violacionlimite.fecha >= Me.dtpOperacion.value
-    }
-
-    private void validarPlazoFuturo(OffsetDateTime fechaOperacion) {
     }
 
     public boolean isHabitacionReservada(Integer numeroHabitacion, OffsetDateTime fechaIngreso,
