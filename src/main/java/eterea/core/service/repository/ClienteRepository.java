@@ -25,17 +25,25 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	Optional<Cliente> findTopByOrderByClienteIdDesc();
 
+	Optional<Cliente> findByNumeroDocumentoAndDocumentoId(String numeroDocumento, Integer documentoId);
+
 	@Query("""
 		SELECT
         c
    	FROM
         Cliente c
    	WHERE
-        LOWER(c.razonSocial) LIKE LOWER(CONCAT(:searchTerm, '%'))
+        LOWER(c.razonSocial) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+		  OR
+		  LOWER(c.numeroDocumento) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
         AND
         c.bloqueado = 0
+		  AND
+		  c.numeroDocumento IS NOT NULL
+		  AND
+		  c.numeroDocumento != ''
    	ORDER BY c.razonSocial, c.nombre
 		""")
-	List<Cliente> findByRazonSocialStartingWithIgnoreCase(@Param("searchTerm") String searchTerm);
+	List<Cliente> findByRazonSocialOrNumeroDocumentoContainingIgnoreCase(@Param("searchTerm") String searchTerm);
 
 }

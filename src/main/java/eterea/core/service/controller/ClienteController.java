@@ -72,10 +72,20 @@ public class ClienteController {
 		return new ResponseEntity<>(service.add(cliente), HttpStatus.OK);
 	}
 
+	/*
+	 * @author sebastian
+	 */
+
 	@GetMapping("/buscar/{searchTerm}")
 	public ResponseEntity<List<Cliente>> buscar(@PathVariable String searchTerm) {
 		return new ResponseEntity<>(service.buscar(searchTerm), HttpStatus.OK);
 	}
 
+	@GetMapping("/tipoDocumento/{documentoId}/numeroDocumento/{numeroDocumento}")
+	public ResponseEntity<Cliente> findByNumeroDocumentoAndDocumentoId(@PathVariable Integer documentoId, @PathVariable String numeroDocumento) {
+		return new ResponseEntity<>(service.findByNumeroDocumentoAndDocumentoId(numeroDocumento, documentoId), HttpStatus.OK);
+	}
 
 }
+
+

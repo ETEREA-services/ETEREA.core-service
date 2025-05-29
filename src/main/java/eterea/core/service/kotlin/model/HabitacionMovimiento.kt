@@ -14,7 +14,7 @@ import java.time.OffsetDateTime
 @Table(name = "movhabitaciones")
 data class HabitacionMovimiento(
         @Id @Column(name = "Clave") var habitacionMovimientoId: Long? = null,
-        @Column(name = "NroReserva") var numeroReserva: Long? = null,
+        @Column(name = "nroreserva") var numeroReserva: Long? = null,
         @Column(name = "fechaingreso")
         @JsonFormat(
                 shape = JsonFormat.Shape.STRING,

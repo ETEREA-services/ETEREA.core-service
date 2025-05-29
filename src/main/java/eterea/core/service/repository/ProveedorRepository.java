@@ -50,101 +50,113 @@ public interface ProveedorRepository extends JpaRepository<Proveedor, Integer> {
 	 * prov.codigo;
 	 */
 
-	 @Query("""
-	 SELECT prov
-	 FROM
-		 Grupo g
-		 JOIN GrupoProducto gp
-			 ON g.grupoId = gp.grupoId
-		 JOIN VoucherProducto vp
-			 ON vp.producto.productoId = gp.productoId
-		 JOIN Voucher v
-			 ON vp.voucherId = v.voucherId
-		 JOIN Producto p
-			 ON p.productoId = vp.producto.productoId
-		 JOIN Proveedor prov
-			 ON prov.proveedorId = v.proveedorId
-	 WHERE
-		 v.fechaServicio = :fechaServicio
-		 AND
-		 p.traslado = 1
-		 AND
-		 g.grupoId = :grupoId
-	 GROUP BY
-		 prov.proveedorId
-	 """)
-List<Proveedor> findAllByGrupoIdAndVoucherFechaServicio(@Param("grupoId") Integer grupoId,
-	 @Param("fechaServicio") OffsetDateTime fechaServicio);
+	@Query("""
+			SELECT prov
+			FROM
+			 Grupo g
+			 JOIN GrupoProducto gp
+				 ON g.grupoId = gp.grupoId
+			 JOIN VoucherProducto vp
+				 ON vp.producto.productoId = gp.productoId
+			 JOIN Voucher v
+				 ON vp.voucherId = v.voucherId
+			 JOIN Producto p
+				 ON p.productoId = vp.producto.productoId
+			 JOIN Proveedor prov
+				 ON prov.proveedorId = v.proveedorId
+			WHERE
+			 v.fechaServicio = :fechaServicio
+			 AND
+			 p.traslado = 1
+			 AND
+			 g.grupoId = :grupoId
+			GROUP BY
+			 prov.proveedorId
+			""")
+	List<Proveedor> findAllByGrupoIdAndVoucherFechaServicio(@Param("grupoId") Integer grupoId,
+			@Param("fechaServicio") OffsetDateTime fechaServicio);
 
-/*
-* 
-* SELECT SUM(vp.VPr_Paxs * gp.GrP_Coeficiente ) AS cantidad
-* FROM
-* grupoproducto gp
-* JOIN voucherproducto vp
-* ON vp.VPr_Prd_ID = gp.GrP_Prd_ID
-* JOIN voucher v
-* ON v.Vou_ID = vp.VPr_Vou_ID
-* JOIN producto p
-* ON p.Prd_ID = vp.VPr_Prd_ID
-* JOIN proveedores prov
-* ON prov.codigo = v.Vou_Pro_ID
-* WHERE
-* gp.GrP_Gru_ID = 23 # Por cada Grupo
-* AND
-* v.Vou_FechaIn = '2025-01-27' # Para la fecha seleccionada
-* AND
-* p.traslado = 1
-* AND
-* prov.codigo = 31; # Por cada Proveedor
-*/
-@Query("""
-	 SELECT SUM(vp.cantidadPaxs * gp.coeficiente)
-	 FROM
-		 GrupoProducto gp
-		 JOIN VoucherProducto vp
-			 ON vp.producto.productoId = gp.productoId
-		 JOIN Voucher v
-			 ON v.voucherId = vp.voucherId
-		 JOIN Producto p
-			 ON p.productoId = vp.producto.productoId
-		 JOIN Proveedor prov
-			 ON prov.proveedorId = v.proveedorId
-	 WHERE
-		 gp.grupoId = :grupoId
-		 AND
-		 v.fechaServicio = :fechaServicio
-		 AND
-		 p.traslado = 1
-		 AND
-		 prov.proveedorId = :proveedorId
-	 """)
-BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("proveedorId") Long proveedorId,
-	 @Param("grupoId") Integer grupoId, @Param("fechaServicio") OffsetDateTime fechaServicio);
+	/*
+	 * 
+	 * SELECT SUM(vp.VPr_Paxs * gp.GrP_Coeficiente ) AS cantidad
+	 * FROM
+	 * grupoproducto gp
+	 * JOIN voucherproducto vp
+	 * ON vp.VPr_Prd_ID = gp.GrP_Prd_ID
+	 * JOIN voucher v
+	 * ON v.Vou_ID = vp.VPr_Vou_ID
+	 * JOIN producto p
+	 * ON p.Prd_ID = vp.VPr_Prd_ID
+	 * JOIN proveedores prov
+	 * ON prov.codigo = v.Vou_Pro_ID
+	 * WHERE
+	 * gp.GrP_Gru_ID = 23 # Por cada Grupo
+	 * AND
+	 * v.Vou_FechaIn = '2025-01-27' # Para la fecha seleccionada
+	 * AND
+	 * p.traslado = 1
+	 * AND
+	 * prov.codigo = 31; # Por cada Proveedor
+	 */
+	@Query("""
+			SELECT SUM(vp.cantidadPaxs * gp.coeficiente)
+			FROM
+			 GrupoProducto gp
+			 JOIN VoucherProducto vp
+				 ON vp.producto.productoId = gp.productoId
+			 JOIN Voucher v
+				 ON v.voucherId = vp.voucherId
+			 JOIN Producto p
+				 ON p.productoId = vp.producto.productoId
+			 JOIN Proveedor prov
+				 ON prov.proveedorId = v.proveedorId
+			WHERE
+			 gp.grupoId = :grupoId
+			 AND
+			 v.fechaServicio = :fechaServicio
+			 AND
+			 p.traslado = 1
+			 AND
+			 prov.proveedorId = :proveedorId
+			""")
+	BigDecimal totalVentasByProveedorIdAndGrupoIdAndVoucherFechaServicio(@Param("proveedorId") Long proveedorId,
+			@Param("grupoId") Integer grupoId, @Param("fechaServicio") OffsetDateTime fechaServicio);
 
-	 @Query("""
+	@Query("""
 			SELECT DISTINCT
-            new eterea.core.service.model.dto.programadia.ProgramaDiaVentasProveedorDto(
-                prov.razonSocial,
-                p.productoId,
-                SUM(vp.cantidadPaxs * gp.coeficiente)
-            )
-        FROM
-            GrupoProducto gp
-            JOIN VoucherProducto vp ON vp.producto.productoId = gp.productoId
-            JOIN Voucher v ON v.voucherId = vp.voucherId
-            JOIN Producto p ON p.productoId = vp.producto.productoId
-            JOIN Proveedor prov ON prov.proveedorId = v.proveedorId
-        WHERE
-            gp.grupoId = :grupoId
-            AND v.fechaServicio = :fechaServicio
-            AND p.traslado = 1
-            AND prov.proveedorId = :proveedorId
-        GROUP BY
-            prov.razonSocial,
-            p.productoId
+			         new eterea.core.service.model.dto.programadia.ProgramaDiaVentasProveedorDto(
+			             prov.razonSocial,
+			             p.productoId,
+			             SUM(vp.cantidadPaxs * gp.coeficiente)
+			         )
+			     FROM
+			         GrupoProducto gp
+			         JOIN VoucherProducto vp ON vp.producto.productoId = gp.productoId
+			         JOIN Voucher v ON v.voucherId = vp.voucherId
+			         JOIN Producto p ON p.productoId = vp.producto.productoId
+			         JOIN Proveedor prov ON prov.proveedorId = v.proveedorId
+			     WHERE
+			         gp.grupoId = :grupoId
+			         AND v.fechaServicio = :fechaServicio
+			         AND p.traslado = 1
+			         AND prov.proveedorId = :proveedorId
+			     GROUP BY
+			         prov.razonSocial,
+			         p.productoId
 			""")
 	List<ProgramaDiaVentasProveedorDto> findVentasPorGrupoPorProveedor(@Param("grupoId") Integer grupoId,
-																				 @Param("fechaServicio") OffsetDateTime fechaServicio, @Param("proveedorId") Long proveedorId);
+			@Param("fechaServicio") OffsetDateTime fechaServicio, @Param("proveedorId") Long proveedorId);
 
+	/*
+	 * sql = "SELECT " & ddl.table & ".* FROM " & ddl.table
+	 * sql = sql & " WHERE " & ddl.transporte & " = 1"
+	 * sql = sql & ";"
+	 */
+
+	@Query("""
+			SELECT prov
+			FROM Proveedor prov
+			WHERE prov.transporte = 1
+			""")
+	List<Proveedor> findAllByTransporte();
 }

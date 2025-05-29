@@ -101,4 +101,8 @@ public class ProveedorService {
 			.toList();
 	}
 
+	public List<Proveedor> findAllByTransporte() {
+		return repository.findAllByTransporte();
+	}
+
 }

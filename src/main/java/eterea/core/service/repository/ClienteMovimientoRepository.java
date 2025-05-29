@@ -11,6 +11,7 @@ import eterea.core.service.kotlin.model.ClienteMovimiento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -42,5 +43,19 @@ public interface ClienteMovimientoRepository extends JpaRepository<ClienteMovimi
 																					  Integer comprobanteId,
 																					  Integer puntoVenta,
 																					  Long numeroComprobante);
+
+	/*
+	 * @author Sebastian
+	 * Metodo existReserva extraido de VB6
+	 */
+    @Query("""
+        SELECT cm 
+        FROM ClienteMovimiento cm
+        INNER JOIN cm.comprobante c
+        WHERE cm.reservaId = :reservaId
+        AND c.debita = 1
+        AND cm.anulada = 0
+    """)
+    Optional<ClienteMovimiento> findFirstClienteMovimientoByReservaId(@Param("reservaId") Long reservaId);
 
 }

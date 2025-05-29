@@ -1,29 +1,61 @@
 package eterea.core.service.service.facade;
 
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+
 import eterea.core.service.exception.ClienteException;
+import eterea.core.service.exception.ProductoException;
 import eterea.core.service.kotlin.exception.FeriadoException;
 import eterea.core.service.kotlin.exception.ProductoSkuException;
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
-import eterea.core.service.kotlin.model.*;
+import eterea.core.service.kotlin.model.Cliente;
+import eterea.core.service.kotlin.model.Negocio;
+import eterea.core.service.kotlin.model.Producto;
+import eterea.core.service.kotlin.model.ProductoSku;
+import eterea.core.service.kotlin.model.ProductoWeb;
+import eterea.core.service.kotlin.model.ProductoWebProducto;
+import eterea.core.service.kotlin.model.Reserva;
+import eterea.core.service.kotlin.model.ReservaArticulo;
+import eterea.core.service.kotlin.model.ReservaContext;
+import eterea.core.service.kotlin.model.TipoDia;
+import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.kotlin.model.VoucherProducto;
 import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
 import eterea.core.service.model.dto.PregenerarReservaDto;
-import eterea.core.service.service.*;
+import eterea.core.service.model.dto.voucher.CreateVoucherDto;
+import eterea.core.service.service.ArticuloService;
+import eterea.core.service.service.ClienteService;
+import eterea.core.service.service.EmpresaService;
+import eterea.core.service.service.FeriadoService;
+import eterea.core.service.service.NegocioService;
+import eterea.core.service.service.ProductoService;
+import eterea.core.service.service.ProductoSkuService;
+import eterea.core.service.service.ProductoWebProductoService;
+import eterea.core.service.service.ProductoWebService;
+import eterea.core.service.service.ReservaContextService;
+import eterea.core.service.service.ReservaService;
+import eterea.core.service.service.TipoDiaService;
+import eterea.core.service.service.TipoPaxService;
+import eterea.core.service.service.VoucherProductoService;
+import eterea.core.service.service.VoucherService;
 import eterea.core.service.service.extern.OrderNoteService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.time.DayOfWeek;
-import java.time.OffsetDateTime;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -45,6 +77,7 @@ public class VouchersService {
     private final ProductoWebService productoWebService;
     private final ArticuloService articuloService;
     private final PrecioService precioService;
+    private final ProductoService productoService;
 
     private record PersonType(int cantidad, String descripcion) {
     }
@@ -55,7 +88,7 @@ public class VouchersService {
             ReservaContextService reservaContextService, VoucherProductoService voucherProductoService,
             ReservaService reservaService, ProductoWebProductoService productoWebProductoService,
             TipoDiaService tipoDiaService, TipoPaxService tipoPaxService, ProductoWebService productoWebService,
-            ArticuloService articuloService, PrecioService precioService) {
+            ArticuloService articuloService, PrecioService precioService, ProductoService productoService) {
         this.empresaService = empresaService;
         this.negocioService = negocioService;
         this.orderNoteService = orderNoteService;
@@ -72,6 +105,7 @@ public class VouchersService {
         this.productoWebService = productoWebService;
         this.articuloService = articuloService;
         this.precioService = precioService;
+        this.productoService = productoService;
     }
 
     @Transactional
@@ -400,7 +434,7 @@ public class VouchersService {
 
     /*
      * 
-     * 
+     * @author: sebastian
      * --------------- Métodos intermedios para generar reservas ---------------
      * 
      * 
@@ -577,6 +611,52 @@ public class VouchersService {
                 .toList();
 
         return new PregenerarReservaDto(voucher, voucherProductos, reserva, reservaArticulos);
+    }
+
+    /**
+     * @author: sebastian
+     */
+    @Transactional
+    public Voucher createVoucher(CreateVoucherDto createVoucherDto) {
+        Cliente cliente = clienteService.findByNumeroDocumento(createVoucherDto.clienteNumeroDocumento());
+        Voucher newVoucher = createVoucherDto.voucher();
+        newVoucher.setClienteId(cliente.getClienteId());
+        newVoucher.setCliente(cliente);
+
+        if (newVoucher.getVoucherId() != null) {
+            voucherProductoService.deleteAllByVoucherId(newVoucher.getVoucherId());
+        }
+        List<Integer> productoIds = createVoucherDto.voucherProductos().stream()
+                .map(VoucherProducto::getProductoId)
+                .toList();
+        List<Producto> productos = productoService.findAllByIds(productoIds);
+
+        List<VoucherProducto> voucherProductos = createVoucherDto.voucherProductos();
+        for (VoucherProducto voucherProducto : voucherProductos) {
+            Producto producto = productos.stream()
+                    .filter(p -> p.getProductoId().equals(voucherProducto.getProductoId()))
+                    .findFirst()
+                    .orElseThrow(() -> new ProductoException(voucherProducto.getProductoId()));
+
+            voucherProducto.setProducto(producto);
+        }
+
+        log.debug("voucherProductos={}", voucherProductos);
+        newVoucher.setProductos(cadenaResumen(voucherProductos));
+        Voucher savedVoucher = voucherService.save(newVoucher);
+
+        for (VoucherProducto voucherProducto : voucherProductos) {
+            voucherProducto.setVoucherId(savedVoucher.getVoucherId());
+        }
+        voucherProductos = voucherProductoService.saveAll(voucherProductos);
+
+        if (savedVoucher.getReservaId() == null) {
+            Reserva reserva = generarReserva(savedVoucher, voucherProductos);
+            savedVoucher.setReservaId(reserva.getReservaId());
+            savedVoucher = voucherService.save(savedVoucher);
+        }
+
+        return savedVoucher;
     }
 
     private ProgramaDiaDto validateOrderNote(OrderNote orderNote) {

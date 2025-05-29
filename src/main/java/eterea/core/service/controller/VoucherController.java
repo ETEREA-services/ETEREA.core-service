@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.service.VoucherService;
@@ -63,6 +64,11 @@ public class VoucherController {
         } catch (VoucherException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @GetMapping("/byNumeroVoucherIn")
+    public ResponseEntity<List<Voucher>> findAllByNumeroVoucherIn(@RequestParam List<String> numerosVoucher) {
+        return new ResponseEntity<>(service.findAllByNumeroVoucherIn(numerosVoucher), HttpStatus.OK);
     }
 
 }

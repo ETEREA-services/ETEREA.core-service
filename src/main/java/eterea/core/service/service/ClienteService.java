@@ -52,8 +52,15 @@ public class ClienteService {
 	}
 
 	// NUEVO METODO PARA BUSCAR CLIENTES CON "LIKE"
+	// TODO: Agregar reemplazo de caracteres especiales
 	public List<Cliente> buscar(String searchTerm) {
-		return repository.findByRazonSocialStartingWithIgnoreCase(searchTerm);
+		searchTerm = searchTerm.trim();
+		return repository.findByRazonSocialOrNumeroDocumentoContainingIgnoreCase(searchTerm);
+	}
+
+	public Cliente findByNumeroDocumentoAndDocumentoId(String numeroDocumento, Integer documentoId) {
+		return repository.findByNumeroDocumentoAndDocumentoId(numeroDocumento, documentoId)
+				.orElseThrow(() -> new ClienteException(numeroDocumento, documentoId));
 	}
 
 }

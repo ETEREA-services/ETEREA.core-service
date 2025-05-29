@@ -1,8 +1,11 @@
 package eterea.core.service.kotlin.repository
 
 import eterea.core.service.kotlin.model.Reserva
+import eterea.core.service.kotlin.model.ClienteMovimiento
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -23,4 +26,5 @@ interface ReservaRepository : JpaRepository<Reserva, Long> {
     ): List<Reserva?>?
 
     fun findTopByOrderByReservaIdDesc(): Optional<Reserva?>?
+
 }

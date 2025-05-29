@@ -54,4 +54,7 @@ interface HabitacionMovimientoRepository : JpaRepository<HabitacionMovimiento, L
         fechaSalidaMenosUnDia: OffsetDateTime,
         idExcluir: Long
     ): List<HabitacionMovimiento>
+
+    fun findFirstByOrderByHabitacionMovimientoIdDesc(): HabitacionMovimiento?
+
 }

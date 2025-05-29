@@ -23,6 +23,10 @@ public class ClienteException extends RuntimeException {
 		super(MessageFormat.format("Cannot find Cliente {0}", numeroDocumento));
 	}
 
+	public ClienteException(String numeroDocumento, Integer documentoId) {
+		super(MessageFormat.format("Cannot find Cliente with numeroDocumento: {0} and documentoId {1}", numeroDocumento, documentoId));
+	}
+
 	public ClienteException() {
 		super("Cannot find Cliente");
 	}
