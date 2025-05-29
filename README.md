@@ -1,6 +1,13 @@
 # ETEREA.core.api.rest
 
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
+[![Java](https://img.shields.io/badge/Java-21-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.20-blueviolet.svg)](https://kotlinlang.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2024.0.1-green.svg)](https://spring.io/projects/spring-cloud)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.6-blue.svg)](https://springdoc.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-9.2.0-orange.svg)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 
 ## Descripción
 
@@ -10,14 +17,16 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 - Control de movimientos contables y valores
 - Administración de cotizaciones de monedas
 - Gestión de artículos y rubros con listas de precios
+- Control de comprobantes faltantes
+- Facturación electrónica
 
 ## Stack Tecnológico
 
 ### Backend
 - Java 21
-- Kotlin 2.1.10
-- Spring Boot 3.4.3
-- Spring Cloud 2024.0.0
+- Kotlin 2.1.20
+- Spring Boot 3.4.4
+- Spring Cloud 2024.0.1
   - Netflix Eureka Client
   - OpenFeign
 - Spring Security
@@ -32,11 +41,11 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 - ZXing 3.5.3 (Códigos de Barras y QR)
 - Lombok
 - ModelMapper 3.2.2
-- Caffeine Cache 3.2.0
+- Caffeine Cache
 - MySQL Connector 9.2.0
 
 ### Documentación
-- SpringDoc OpenAPI UI 2.8.5
+- SpringDoc OpenAPI UI 2.8.6
 
 ## Arquitectura
 
@@ -51,6 +60,7 @@ El proyecto utiliza una arquitectura mixta:
 - **Cotizaciones**: Administración de cotizaciones de monedas
 - **Artículos**: Gestión de artículos y sus listas de precios
 - **Rubros**: Categorización y gestión de rubros comerciales
+- **Facturación**: Control de comprobantes y facturación electrónica
 
 ## Configuración del Proyecto
 
@@ -71,6 +81,15 @@ mvn clean install
 mvn spring-boot:run
 ```
 
+### Docker
+```bash
+# Construir imagen
+docker build -t eterea/core-service .
+
+# Ejecutar contenedor
+docker run -p 8080:8080 eterea/core-service
+```
+
 ## Documentación API
 
 La documentación de la API está disponible en:
@@ -83,6 +102,7 @@ La documentación de la API está disponible en:
 
 - [Documentación del Proyecto](https://eterea-services.github.io/ETEREA.core-service/)
 - [Wiki del Proyecto](https://github.com/ETEREA-services/ETEREA.core-service/wiki)
+- [CHANGELOG](CHANGELOG.md)
 
 ## Contribución
 
@@ -95,6 +115,10 @@ La documentación de la API está disponible en:
 ## Estado del Proyecto
 
 El proyecto está en desarrollo activo. Ver [GitHub Projects](https://github.com/ETEREA-services/ETEREA.core-service/projects) para el roadmap.
+
+## Licencia
+
+Este proyecto es privado y de uso exclusivo de Termalia S.A.
 
 ## Características
 

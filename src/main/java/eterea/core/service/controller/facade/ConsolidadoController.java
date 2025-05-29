@@ -1,6 +1,7 @@
 package eterea.core.service.controller.facade;
 
 import eterea.core.service.service.facade.ConsolidadoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import java.time.OffsetDateTime;
 
 @RestController
 @RequestMapping({"/api/core/consolidado", "/consolidado"})
+@Slf4j
 public class ConsolidadoController {
 
     private final ConsolidadoService service;
@@ -22,6 +24,7 @@ public class ConsolidadoController {
 
     @GetMapping("/faltantes/fecha/{fecha}")
     public ResponseEntity<String> fillFaltantesFecha(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime fecha) {
+        log.debug("Processing ConsolidadoController.fillFaltantesFecha with fecha: {}", fecha);
         return ResponseEntity.ok(service.fillFaltantesFecha(fecha));
     }
 

@@ -91,6 +91,10 @@ data class Comprobante(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "tco_cgocontable", insertable = false, updatable = false)
-    var cuenta: Cuenta? = null
+    var cuenta: Cuenta? = null,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "tco_tipoafip", insertable = false, updatable = false)
+    var comprobanteAfip: ComprobanteAfip? = null
 
 ) : Auditable()
