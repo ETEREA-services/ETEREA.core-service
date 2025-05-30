@@ -38,6 +38,11 @@ public class ProductoController {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
 
+	@GetMapping("/habilitados")
+	public ResponseEntity<List<Producto>> findAllHabilitados() {
+		return new ResponseEntity<>(service.findAllHabilitados(), HttpStatus.OK);
+	}
+
 	@GetMapping("/ventainternet/{habilitado}")
 	public ResponseEntity<List<Producto>> findAllByVentaInternet(@PathVariable Byte habilitado) {
 		return new ResponseEntity<>(service.findAllByVentaInternet(habilitado), HttpStatus.OK);

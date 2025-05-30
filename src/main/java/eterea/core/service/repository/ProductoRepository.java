@@ -59,4 +59,6 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 			   )
 			""")
 	List<Producto> findByExactArticuloIds(List<String> articuloIds, int totalArticulos);
+
+   List<Producto> findAllByDeshabilitado(int i);
 }

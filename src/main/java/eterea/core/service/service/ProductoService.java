@@ -70,4 +70,8 @@ public class ProductoService {
 	public List<Producto> findByExactArticuloIds(List<String> articuloIds) {
 		return repository.findByExactArticuloIds(articuloIds, articuloIds.size());
 	}
+
+	public List<Producto> findAllHabilitados() {
+		return repository.findAllByDeshabilitado(0);
+	}
 }

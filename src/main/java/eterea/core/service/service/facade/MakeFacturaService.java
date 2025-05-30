@@ -29,6 +29,7 @@ import eterea.core.service.kotlin.model.ReservaContext;
 import eterea.core.service.kotlin.model.Valor;
 import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
+import eterea.core.service.model.PosicionIva;
 import eterea.core.service.service.ArticuloService;
 import eterea.core.service.service.ClienteService;
 import eterea.core.service.service.ComprobanteService;
@@ -128,13 +129,15 @@ public class MakeFacturaService {
          }
          return null;
       }
-      Voucher voucher = null;
-      if (reserva.getVoucherId() != null && reserva.getVoucherId() != 0) {
-         voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-         logVoucher(voucher);
-      }
+      Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
+      logVoucher(voucher);
       Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
       logCliente(cliente);
+      PosicionIva posicionIva = cliente.getPosicion();
+      var idPosicionIvaArca = 5; // TODO: Ver que significa este valor
+      if (posicionIva != null && posicionIva.getIdPosicionIvaArca() != null) {
+         idPosicionIvaArca = posicionIva.getIdPosicionIvaArca();
+      }
 
       int tipoDocumento = 80;
       String documento = cliente.getCuit().replace("-", "").trim();
@@ -183,23 +186,21 @@ public class MakeFacturaService {
 
       // actualiza reserva_context
       ReservaContext reservaContext = null;
-      if (voucher != null) {
-         try {
-            reservaContext = reservaContextService.findByVoucherId(reserva.getVoucherId());
-            reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
-         } catch (ReservaContextException e) {
-            log.debug("creando reserva_context");
-            reservaContext = new ReservaContext.Builder()
-                  .reservaId(reserva.getReservaId())
-                  .voucherId(reserva.getVoucherId())
-                  .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
-                  .facturaPendiente((byte) 1)
-                  .envioPendiente((byte) 1)
-                  .build();
-            reservaContext = reservaContextService.add(reservaContext);
-         }
-         logReservaContext(reservaContext);
+      try {
+         reservaContext = reservaContextService.findByVoucherId(reserva.getVoucherId());
+         reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
+      } catch (ReservaContextException e) {
+         log.debug("creando reserva_context");
+         reservaContext = new ReservaContext.Builder()
+               .reservaId(reserva.getReservaId())
+               .voucherId(reserva.getVoucherId())
+               .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
+               .facturaPendiente((byte) 1)
+               .envioPendiente((byte) 1)
+               .build();
+         reservaContext = reservaContextService.add(reservaContext);
       }
+      logReservaContext(reservaContext);
 
       BigDecimal coeficienteIva1 = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
       BigDecimal neto21 = total21.divide(BigDecimal.ONE.add(coeficienteIva1), 5, RoundingMode.HALF_UP);
@@ -233,22 +234,17 @@ public class MakeFacturaService {
          logFacturacionDto(facturacionDto);
       } catch (WebClientResponseException e) {
          log.info("Servicio de Facturación NO disponible");
-         if (reservaContext != null) {
-            reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-         }
+         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
          return null;
       }
 
       if (!facturacionDto.getResultado().equals("A")) {
-         if (reservaContext != null) {
-            reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-         }
+         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
          return null;
       }
 
-      if (reservaContext != null) {
-         reservaContext.setFacturaPendiente((byte) 0);
-      }
+      reservaContext.setFacturaPendiente((byte) 0);
+
       // Convierte fechas
       SimpleDateFormat formatoInDate = new SimpleDateFormat("yyyyMMdd");
       SimpleDateFormat formatoOutDate = new SimpleDateFormat("ddMMyyyy");
@@ -286,6 +282,7 @@ public class MakeFacturaService {
       ClienteMovimiento clienteMovimiento = facturacionService.registraTransaccionFactura(reserva,
             facturacionDto, comprobante, valor, empresa, cliente, parametro, reservaContext);
 
+      // Omito el envío de correo por ahora
       if (clienteMovimiento != null) {
          return clienteMovimiento.getClienteMovimientoId();
       }
@@ -314,6 +311,175 @@ public class MakeFacturaService {
 
       return null;
 
+   }
+
+   // Diferente metodo porque por ahora hotel no tiene voucher y por ende tampoco reservaContext
+   public Long facturaReservaHotel(Long reservaId, Integer comprobanteId, Integer valorId) {
+      Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
+      if (comprobante.getFacturaElectronica() == 0) {
+         return null;
+      }
+      logComprobante(comprobante);
+      Empresa empresa = empresaService.findTop();
+      logEmpresa(empresa);
+      Parametro parametro = parametroService.findTop();
+      logParametro(parametro);
+      String moneda = "PES";
+      Reserva reserva = reservaService.findByReservaId(reservaId);
+      logReserva(reserva);
+      if (reserva.getFacturada() == (byte) 1) {
+         log.debug("reserva facturada={}", reserva.getReservaId());
+         return null;
+      }
+      
+      Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
+      logCliente(cliente);
+      PosicionIva posicionIva = cliente.getPosicion();
+      var idPosicionIvaArca = 5; // TODO: Ver que significa este valor
+      if (posicionIva != null && posicionIva.getIdPosicionIvaArca() != null) {
+         idPosicionIvaArca = posicionIva.getIdPosicionIvaArca();
+      }
+
+      int tipoDocumento = 80;
+      String documento = cliente.getCuit().replace("-", "").trim();
+      log.debug("tipo_documento={} - numero_documento={} (1)", tipoDocumento, documento);
+      if (documento.isEmpty()) {
+         documento = "0";
+      }
+      log.debug("tipo_documento={} - numero_documento={} (2)", tipoDocumento, documento);
+      if (cliente.getTipoDocumento().trim().toUpperCase().startsWith("PAS")) {
+         tipoDocumento = 94;
+         documento = ToolService.onlyNumbers(cliente.getNumeroDocumento());
+         log.debug("tipo_documento={} - numero_documento={} (3)", tipoDocumento, documento);
+      } else {
+         if (Long.parseLong(documento) == 0) {
+            tipoDocumento = 96;
+            documento = ToolService.onlyNumbers(cliente.getNumeroDocumento());
+            documento = documento.substring(0, Math.min(documento.length(), 8));
+            log.debug("tipo_documento={} - numero_documento={} (4)", tipoDocumento, documento);
+         }
+
+         if (Long.parseLong(documento) == 0) {
+            tipoDocumento = 99;
+            documento = "0";
+            log.debug("tipo_documento={} - numero_documento={} (5)", tipoDocumento, documento);
+         }
+      }
+
+      BigDecimal total = BigDecimal.ZERO;
+      BigDecimal total21 = BigDecimal.ZERO;
+      BigDecimal total105 = BigDecimal.ZERO;
+      BigDecimal exento = BigDecimal.ZERO;
+      for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reservaId)) {
+         reservaArticulo.setArticulo(articuloService.findByArticuloId(reservaArticulo.getArticuloId()));
+         logReservaArticulo(reservaArticulo);
+         BigDecimal subtotal = reservaArticulo.getPrecioUnitario()
+               .multiply(new BigDecimal(reservaArticulo.getCantidad()));
+         total = total.add(subtotal);
+         if (Objects.requireNonNull(reservaArticulo.getArticulo()).getExento() == (byte) 1) {
+            exento = exento.add(subtotal);
+         } else if (reservaArticulo.getArticulo().getIva105() == (byte) 1) {
+            total105 = total105.add(subtotal);
+         } else {
+            total21 = total21.add(subtotal);
+         }
+      }
+
+      BigDecimal coeficienteIva1 = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
+      BigDecimal neto21 = total21.divide(BigDecimal.ONE.add(coeficienteIva1), 5, RoundingMode.HALF_UP);
+      BigDecimal coeficienteIva2 = parametro.getIva2().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
+      BigDecimal neto105 = total105.divide(BigDecimal.ONE.add(coeficienteIva2), 5, RoundingMode.HALF_UP);
+      BigDecimal iva21 = neto21.multiply(coeficienteIva1).setScale(5, RoundingMode.HALF_UP);
+      log.debug("total21={} - neto21={} - coeficienteIva1={} - iva21={}", total21, neto21, coeficienteIva1, iva21);
+      BigDecimal iva105 = neto105.multiply(coeficienteIva2).setScale(5, RoundingMode.HALF_UP);
+      log.debug("total105={} - neto105={} - coeficienteIva2={} - iva105={}", total105, neto105, coeficienteIva2,
+            iva105);
+
+      assert comprobante.getComprobanteAfipId() != null;
+      FacturacionDto facturacionDto = new FacturacionDto.Builder()
+            .tipoDocumento(tipoDocumento)
+            .documento(documento)
+            .tipoAfip(comprobante.getComprobanteAfipId())
+            .puntoVenta(comprobante.getPuntoVenta())
+            .total(total.setScale(2, RoundingMode.HALF_UP))
+            .exento(exento.setScale(2, RoundingMode.HALF_UP))
+            .neto(neto21.setScale(2, RoundingMode.HALF_UP))
+            .neto105(neto105.setScale(2, RoundingMode.HALF_UP))
+            .iva(iva21.setScale(2, RoundingMode.HALF_UP))
+            .iva105(iva105.setScale(2, RoundingMode.HALF_UP))
+            .build();
+
+      logFacturacionDto(facturacionDto);
+
+      try {
+         facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto);
+         log.info("After makeFactura");
+         logFacturacionDto(facturacionDto);
+      } catch (WebClientResponseException e) {
+         log.info("Servicio de Facturación NO disponible");
+         return null;
+      }
+
+      if (!facturacionDto.getResultado().equals("A")) {
+         return null;
+      }
+
+      // Convierte fechas
+      SimpleDateFormat formatoInDate = new SimpleDateFormat("yyyyMMdd");
+      SimpleDateFormat formatoOutDate = new SimpleDateFormat("ddMMyyyy");
+      Date vencimientoCae = null;
+      try {
+         vencimientoCae = formatoInDate.parse(facturacionDto.getVencimientoCae());
+      } catch (ParseException e) {
+         log.error("Error al parsear vencimientoCae", e);
+      }
+      DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+      // Registra el resultado de la AFIP
+      RegistroCae registroCae = new RegistroCae.Builder()
+            .comprobanteId(comprobanteId)
+            .puntoVenta(facturacionDto.getPuntoVenta())
+            .numeroComprobante(facturacionDto.getNumeroComprobante())
+            .clienteId(cliente.getClienteId())
+            .cuit("")
+            .total(facturacionDto.getTotal())
+            .exento(facturacionDto.getExento())
+            .neto(facturacionDto.getNeto())
+            .neto105(facturacionDto.getNeto105())
+            .iva(facturacionDto.getIva())
+            .iva105(facturacionDto.getIva105())
+            .cae(facturacionDto.getCae())
+            .fecha(ToolService.dateAbsoluteArgentina().format(dateTimeFormatter))
+            .caeVencimiento(formatoOutDate.format(vencimientoCae))
+            .tipoDocumento(facturacionDto.getTipoDocumento())
+            .numeroDocumento(new BigDecimal(facturacionDto.getDocumento()))
+            .build();
+      registroCae = registroCaeService.add(registroCae);
+      logRegistroCae(registroCae);
+
+      Valor valor = valorService.findByValorId(valorId);
+
+      ClienteMovimiento clienteMovimiento = facturacionService.registraTransaccionFacturaHotel(reserva,
+            facturacionDto, comprobante, valor, empresa, cliente, parametro);
+
+      // Omito el envío de correo por ahora
+      if (clienteMovimiento != null) {
+         return clienteMovimiento.getClienteMovimientoId();
+      }
+
+      var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
+      if (enableSendEmail) {
+         if (clienteMovimiento.getClienteMovimientoId() != null) {
+            try {
+               log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(),
+                     "daniel.quinterospinto@gmail.com"));
+               return clienteMovimiento.getClienteMovimientoId();
+            } catch (MessagingException e) {
+               log.debug("Error sending email", e);
+            }
+         }
+      }
+
+      return null;
    }
 
    private void logFacturacionDto(FacturacionDto facturacionDto) {
