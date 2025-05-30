@@ -37,4 +37,11 @@ public class MakeFacturaController {
                 HttpStatus.OK);
     }
 
+    @PostMapping("/reserva-hotel/{reservaId}/comprobante/{comprobanteId}/valor/{valorId}")
+    public ResponseEntity<Long> makeFacturaHotel(@PathVariable Long reservaId, @PathVariable Integer comprobanteId,
+            @PathVariable Integer valorId) {
+        return new ResponseEntity<>(makeFacturaService.facturaReservaHotel(reservaId, comprobanteId, valorId),
+                HttpStatus.OK);
+    }
+
 }
