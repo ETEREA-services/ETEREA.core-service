@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.kotlin.model.VoucherProducto;
 import eterea.core.service.kotlin.repository.VoucherRepository;
 import eterea.core.service.tool.ToolService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,11 @@ import lombok.extern.slf4j.Slf4j;
 public class VoucherService {
 
     private final VoucherRepository repository;
+    private final VoucherProductoService voucherProductoService;
 
-    public VoucherService(VoucherRepository repository) {
+    public VoucherService(VoucherRepository repository, VoucherProductoService voucherProductoService) {
         this.repository = repository;
+        this.voucherProductoService = voucherProductoService;
     }
 
     public List<Voucher> findAllByUserToday(String login) {
@@ -135,6 +138,10 @@ public class VoucherService {
 
     public List<Voucher> findAllByNumeroVoucherIn(List<String> numerosVoucher) {
         return repository.findAllByNumeroVoucherIn(numerosVoucher);
+    }
+
+    public List<VoucherProducto> findAllVoucherProductos(Long voucherId) {
+        return voucherProductoService.findAllByVoucherId(voucherId);
     }
 
 }

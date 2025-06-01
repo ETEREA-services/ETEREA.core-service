@@ -1,5 +1,6 @@
 package eterea.core.service.model.dto.programadia.mapper;
 
+import java.util.Collections;
 import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
@@ -19,7 +20,8 @@ public class ReservaToDtoMapper implements Function<Reserva, ReservaDto> {
             reserva.getObservaciones(),
             reserva.getFacturada() == 1,
             reserva.getCliente().getEmail(),
-            reserva.getComentarios(),
+            // reserva.getComentarios(),
+            Collections.emptyList(),
             reserva.getFechaToma(),
             reserva.getFechaInServicio(),
             reserva.getFechaOutServicio(),

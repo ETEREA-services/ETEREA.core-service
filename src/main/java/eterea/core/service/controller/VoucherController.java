@@ -6,8 +6,6 @@ package eterea.core.service.controller;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import eterea.core.service.kotlin.exception.VoucherException;
-import eterea.core.service.kotlin.model.Voucher;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -17,9 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import eterea.core.service.service.VoucherService;
 import org.springframework.web.server.ResponseStatusException;
+
+import eterea.core.service.kotlin.exception.VoucherException;
+import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.kotlin.model.VoucherProducto;
+import eterea.core.service.service.VoucherService;
 
 /**
  * @author daniel
@@ -70,5 +71,10 @@ public class VoucherController {
     public ResponseEntity<List<Voucher>> findAllByNumeroVoucherIn(@RequestParam List<String> numerosVoucher) {
         return new ResponseEntity<>(service.findAllByNumeroVoucherIn(numerosVoucher), HttpStatus.OK);
     }
+
+	@GetMapping("/{voucherId}/productos")
+	public ResponseEntity<List<VoucherProducto>> findAllVoucherProductos(@PathVariable Long voucherId) {
+		return new ResponseEntity<>(service.findAllVoucherProductos(voucherId), HttpStatus.OK);
+	}
 
 }
