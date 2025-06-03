@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import eterea.core.service.exception.PasswordValidationException;
 import eterea.core.service.model.dto.LoginDto;
 import eterea.core.service.service.AuthService;
 
@@ -21,15 +22,21 @@ public class AuthController {
 
    @PostMapping("/login")
    public ResponseEntity<Void> login(@RequestBody LoginDto loginDto) {
-      boolean isValid = authService.login(loginDto.username(), loginDto.password());
-      if (isValid) {
+      try {
+         boolean isValid = authService.login(loginDto.username(), loginDto.password());
+         if (isValid) {
+            return ResponseEntity
+                  .status(HttpStatus.OK)
+                  .build();
+         } else {
+            return ResponseEntity
+                  .status(HttpStatus.UNAUTHORIZED)
+                  .build();
+         }
+      } catch (PasswordValidationException e) {
          return ResponseEntity
-              .status(HttpStatus.OK)
-              .build();
-      } else {
-         return ResponseEntity
-              .status(HttpStatus.UNAUTHORIZED)
-              .build();
+               .status(HttpStatus.UNPROCESSABLE_ENTITY)
+               .build();
       }
    }
 }
