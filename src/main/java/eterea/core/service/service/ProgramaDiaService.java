@@ -167,11 +167,13 @@ public class ProgramaDiaService {
                 .map(voucher -> {
                     List<VoucherProducto> voucherProductos = voucherProductosMap.getOrDefault(voucher.getVoucherId(),
                             new ArrayList<>());
-
+        
                     Map<Integer, List<Articulo>> voucherArticulosByProducto = voucherProductos.stream()
+                            .map(vp -> vp.getProducto())
+                            .distinct()
                             .collect(Collectors.toMap(
-                                    vp -> vp.getProducto().getProductoId(),
-                                    vp -> globalArticulosByProducto.getOrDefault(vp.getProducto().getProductoId(),
+                                    Producto::getProductoId,
+                                    producto -> globalArticulosByProducto.getOrDefault(producto.getProductoId(),
                                             new ArrayList<>())));
 
                     List<VentasPorGrupoDto> ventasPorGrupo = grupos.stream()
@@ -185,6 +187,7 @@ public class ProgramaDiaService {
                                 }
 
                                 Map<Integer, List<Articulo>> grupoArticulosByProducto = productos.stream()
+                                        .distinct()
                                         .collect(Collectors.toMap(
                                                 Producto::getProductoId,
                                                 producto -> globalArticulosByProducto

@@ -278,14 +278,15 @@ public class MakeFacturaService {
       logRegistroCae(registroCae);
 
       Valor valor = valorService.findByValorId(valorId);
+      log.debug("Valor FacturaReserva = {}", valor);
 
       ClienteMovimiento clienteMovimiento = facturacionService.registraTransaccionFactura(reserva,
             facturacionDto, comprobante, valor, empresa, cliente, parametro, reservaContext);
 
-      // Omito el envío de correo por ahora
-      if (clienteMovimiento != null) {
-         return clienteMovimiento.getClienteMovimientoId();
-      }
+      // // Omito el envío de correo por ahora
+      // if (clienteMovimiento != null) {
+      //    return clienteMovimiento.getClienteMovimientoId();
+      // }
 
       var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
       if (enableSendEmail) {
@@ -458,13 +459,14 @@ public class MakeFacturaService {
 
       Valor valor = valorService.findByValorId(valorId);
 
+      // TODO: Ver si puedo enviar cada valor a este metodo y funciona bien
       ClienteMovimiento clienteMovimiento = facturacionService.registraTransaccionFacturaHotel(reserva,
             facturacionDto, comprobante, valor, empresa, cliente, parametro);
 
-      // Omito el envío de correo por ahora
-      if (clienteMovimiento != null) {
-         return clienteMovimiento.getClienteMovimientoId();
-      }
+      // // Omito el envío de correo por ahora
+      // if (clienteMovimiento != null) {
+      //    return clienteMovimiento.getClienteMovimientoId();
+      // }
 
       var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
       if (enableSendEmail) {

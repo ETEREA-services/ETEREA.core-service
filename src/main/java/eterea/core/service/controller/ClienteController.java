@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,6 +85,16 @@ public class ClienteController {
 	@GetMapping("/tipoDocumento/{documentoId}/numeroDocumento/{numeroDocumento}")
 	public ResponseEntity<Cliente> findByNumeroDocumentoAndDocumentoId(@PathVariable Integer documentoId, @PathVariable String numeroDocumento) {
 		return new ResponseEntity<>(service.findByNumeroDocumentoAndDocumentoId(numeroDocumento, documentoId), HttpStatus.OK);
+	}
+
+	@PostMapping("/createOrGet")
+	public ResponseEntity<Cliente> createOrGet(@RequestBody Cliente cliente) {
+		return new ResponseEntity<>(service.createOrGet(cliente), HttpStatus.OK);
+	}
+
+	@PutMapping("/{clienteId}")
+	public ResponseEntity<Cliente> update(@PathVariable Long clienteId, @RequestBody Cliente cliente) {
+		return new ResponseEntity<>(service.update(clienteId, cliente), HttpStatus.OK);
 	}
 
 }
