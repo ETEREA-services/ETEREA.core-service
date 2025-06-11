@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.service.ReservaService;
@@ -60,5 +61,10 @@ public class ReservaController {
 	@GetMapping("/last")
 	public ResponseEntity<Reserva> findLastReserva() {
 		return new ResponseEntity<>(service.findLastReserva(), HttpStatus.OK);
+	}
+
+	@GetMapping("/no-facturadas")
+	public ResponseEntity<List<Reserva>> findLastDaysConfirmadasAndNoFacturadas(@RequestParam(defaultValue = "7") int days) {
+		return new ResponseEntity<>(service.findLastDaysConfirmadasAndNoFacturadas(days), HttpStatus.OK);
 	}
 }

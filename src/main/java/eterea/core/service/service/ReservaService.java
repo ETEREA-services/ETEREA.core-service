@@ -5,6 +5,7 @@ package eterea.core.service.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -450,12 +451,30 @@ public class ReservaService {
       return repository.findTopByOrderByReservaIdDesc().orElseThrow(() -> new ReservaException("No hay reservas"));
    }
 
-//   public boolean isReservaFacturada(Long reservaId) {
-//      try {
-//         clienteMovimientoService.findFirstClienteMovimientoByReservaId(reservaId);
-//         return true;
-//      } catch (ClienteMovimientoException e) {
-//         return false;
-//      }
-//   }
+   public boolean isReservaFacturada(Long reservaId) {
+      try {
+         clienteMovimientoService.findFirstClienteMovimientoByReservaId(reservaId);
+         return true;
+      } catch (ClienteMovimientoException e) {
+         return false;
+      }
+   }
+
+   public List<Reserva> findLastDaysConfirmadas(int days) {
+      return repository.findAllByFechaTomaBetweenAndConfirmada(
+            OffsetDateTime.now().minusDays(days), OffsetDateTime.now(), (byte) 1);
+   }
+
+   public List<Reserva> findLastDaysConfirmadasAndNoFacturadas(int days) {
+      List<Reserva> reservas = findLastDaysConfirmadas(days);
+      log.debug("Reservas ultimos {} dias confirmadas: {}", days, reservas);
+      List<Long> reservaIds = reservas.stream().map(Reserva::getReservaId).toList();
+      List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findAllByReservaIds(reservaIds);
+      List<Reserva> reservasNoFacturadas = reservas.stream()
+            .filter(reserva -> !clienteMovimientos.stream()
+                  .anyMatch(cm -> cm.getReservaId().equals(reserva.getReservaId())))
+            .toList();
+      log.debug("Reservas ultimos {} dias confirmadas y no facturadas: {}", days, reservasNoFacturadas);
+      return reservasNoFacturadas;
+   }
 }
