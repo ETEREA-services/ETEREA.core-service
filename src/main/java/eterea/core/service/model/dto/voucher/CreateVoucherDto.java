@@ -8,7 +8,8 @@ import eterea.core.service.kotlin.model.VoucherProducto;
 public record CreateVoucherDto(
    Voucher voucher,
    List<VoucherProducto> voucherProductos,
-   String clienteNumeroDocumento
+   String clienteNumeroDocumento,
+   String estadoReservaNombre
 ) {
    
 }
