@@ -460,21 +460,22 @@ public class ReservaService {
       }
    }
 
-   public List<Reserva> findLastDaysConfirmadas(int days) {
-      return repository.findAllByFechaTomaBetweenAndConfirmada(
-            OffsetDateTime.now().minusDays(days), OffsetDateTime.now(), (byte) 1);
+   public List<Reserva> findLastDaysVerificadas(int days) {
+      OffsetDateTime now = OffsetDateTime.now();
+      OffsetDateTime minusDays = now.minusDays(days);
+      return repository.findAllByFechaTomaBetweenAndVerificada(minusDays, now, (byte) 1);
    }
 
-   public List<Reserva> findLastDaysConfirmadasAndNoFacturadas(int days) {
-      List<Reserva> reservas = findLastDaysConfirmadas(days);
-      log.debug("Reservas ultimos {} dias confirmadas: {}", days, reservas);
+   public List<Reserva> findLastDaysVerificadasAndNoFacturadas(int days) {
+      List<Reserva> reservas = findLastDaysVerificadas(days);
+      log.debug("Reservas ultimos {} dias verificadas: {}", days, reservas);
       List<Long> reservaIds = reservas.stream().map(Reserva::getReservaId).toList();
       List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findAllByReservaIds(reservaIds);
       List<Reserva> reservasNoFacturadas = reservas.stream()
             .filter(reserva -> !clienteMovimientos.stream()
                   .anyMatch(cm -> cm.getReservaId().equals(reserva.getReservaId())))
             .toList();
-      log.debug("Reservas ultimos {} dias confirmadas y no facturadas: {}", days, reservasNoFacturadas);
+      log.debug("Reservas ultimos {} dias verificadas y no facturadas: {}", days, reservasNoFacturadas);
       return reservasNoFacturadas;
    }
 }
