@@ -59,6 +59,9 @@ spring:
       allowed-headers: "*"
       allow-credentials: true
       max-age: 3600
+  output:
+    ansi:
+      enabled: always
 
 logging:
   level:

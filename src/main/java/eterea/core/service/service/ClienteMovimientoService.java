@@ -127,7 +127,7 @@ public class ClienteMovimientoService {
  	* Metodo existFactura extraido de VB6
  	*/
 	 public ClienteMovimiento findFirstClienteMovimientoByReservaId(Long reservaId) {
-		return repository.findFirstClienteMovimientoByReservaId(reservaId)
+		return repository.findFirstByReservaId(reservaId)
 				.orElseThrow(() -> new ClienteMovimientoException(reservaId));
 	}
 

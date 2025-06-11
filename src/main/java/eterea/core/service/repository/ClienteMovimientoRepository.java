@@ -56,6 +56,16 @@ public interface ClienteMovimientoRepository extends JpaRepository<ClienteMovimi
         AND c.debita = 1
         AND cm.anulada = 0
     """)
-    Optional<ClienteMovimiento> findFirstClienteMovimientoByReservaId(@Param("reservaId") Long reservaId);
+    Optional<ClienteMovimiento> findFirstByReservaId(@Param("reservaId") Long reservaId);
+
+	 @Query("""
+		SELECT cm 
+		FROM ClienteMovimiento cm
+		INNER JOIN cm.comprobante c
+		WHERE cm.reservaId IN :reservaIds
+		AND c.debita = 1
+		AND cm.anulada = 0
+	 """)
+	 List<ClienteMovimiento> findAllByReservaIdsIn(@Param("reservaIds") List<Long> reservaIds);
 
 }
