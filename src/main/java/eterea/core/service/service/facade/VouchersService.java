@@ -652,6 +652,32 @@ public class VouchersService {
 
         if (savedVoucher.getReservaId() == null) {
             Reserva reserva = generarReserva(savedVoucher, voucherProductos);
+            if (createVoucherDto.estadoReservaNombre() != null) {
+                switch (createVoucherDto.estadoReservaNombre()) {
+                    case "pendiente":
+                        reserva.setPendiente((byte) 1);
+                        break;
+                    case "confirmada":
+                        reserva.setConfirmada((byte) 1);
+                        break;
+                    case "anulada":
+                        reserva.setAnulada((byte) 1);
+                        break;
+                    case "eliminada":
+                        reserva.setEliminada((byte) 1);
+                        break;
+                    case "verificada":
+                        reserva.setVerificada((byte) 1);
+                        break;
+                    case "facturada":
+                        reserva.setFacturada((byte) 1);
+                        break;
+                    case "facturada_fuera":
+                        reserva.setFacturadoFuera((byte) 1);
+                        break;
+                }
+            }
+            reserva = reservaService.update(reserva, reserva.getReservaId());
             savedVoucher.setReservaId(reserva.getReservaId());
             savedVoucher = voucherService.save(savedVoucher);
         }
