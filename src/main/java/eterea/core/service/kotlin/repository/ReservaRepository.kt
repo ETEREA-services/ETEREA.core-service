@@ -28,6 +28,6 @@ interface ReservaRepository : JpaRepository<Reserva, Long> {
 
     fun findTopByOrderByReservaIdDesc(): Optional<Reserva?>?
 
-    fun findAllByFechaTomaBetweenAndConfirmada(desde: OffsetDateTime?, hasta: OffsetDateTime?, confirmada: Byte): List<Reserva?>?
+    fun findAllByFechaTomaBetweenAndVerificada(desde: OffsetDateTime?, hasta: OffsetDateTime?, verificada: Byte): List<Reserva?>?
 
 }

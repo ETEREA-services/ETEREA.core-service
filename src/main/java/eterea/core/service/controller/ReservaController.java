@@ -64,7 +64,7 @@ public class ReservaController {
 	}
 
 	@GetMapping("/no-facturadas")
-	public ResponseEntity<List<Reserva>> findLastDaysConfirmadasAndNoFacturadas(@RequestParam(defaultValue = "7") int days) {
-		return new ResponseEntity<>(service.findLastDaysConfirmadasAndNoFacturadas(days), HttpStatus.OK);
+	public ResponseEntity<List<Reserva>> findLastDaysVerificadasAndNoFacturadas(@RequestParam(defaultValue = "7") int days) {
+		return new ResponseEntity<>(service.findLastDaysVerificadasAndNoFacturadas(days), HttpStatus.OK);
 	}
 }
