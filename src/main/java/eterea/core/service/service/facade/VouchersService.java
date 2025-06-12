@@ -677,6 +677,7 @@ public class VouchersService {
                         break;
                 }
             }
+            reserva.setVerificada((byte) 1);
             reserva = reservaService.update(reserva, reserva.getReservaId());
             savedVoucher.setReservaId(reserva.getReservaId());
             savedVoucher = voucherService.save(savedVoucher);
