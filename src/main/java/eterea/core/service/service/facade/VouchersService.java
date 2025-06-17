@@ -677,7 +677,7 @@ public class VouchersService {
                         break;
                 }
             }
-            reserva = reservaService.update(reserva, reserva.getReservaId());
+            // reserva = reservaService.update(reserva, reserva.getReservaId());
             savedVoucher.setReservaId(reserva.getReservaId());
             savedVoucher = voucherService.save(savedVoucher);
         }

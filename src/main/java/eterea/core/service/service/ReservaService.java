@@ -478,4 +478,32 @@ public class ReservaService {
       log.debug("Reservas ultimos {} dias verificadas y no facturadas: {}", days, reservasNoFacturadas);
       return reservasNoFacturadas;
    }
+
+   public Reserva verificarReserva(Long reservaId) {
+      Reserva reserva = findByReservaId(reservaId);
+      if (reserva.getFacturada() == 1) {
+         throw new ReservaException("Reserva facturada");
+      }
+
+      if (reserva.getAnulada() == 1) {
+         throw new ReservaException("Reserva anulada");
+      }
+
+      if (reserva.getEliminada() == 1) {
+         throw new ReservaException("Reserva eliminada");
+      }
+
+      if (reserva.getVerificada() == 0) {
+         reserva.setVerificada((byte) 1);
+         reserva = update(reserva, reservaId);
+      }
+
+      if (reserva.getPendiente() == 1) {
+         reserva.setPendiente((byte) 0);
+         reserva = update(reserva, reservaId);
+      }
+
+      return reserva;
+   }
+
 }
