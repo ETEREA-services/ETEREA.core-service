@@ -73,4 +73,10 @@ public class ReservaController {
 		service.verificarReserva(reservaId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+
+	@PutMapping("/{reservaId}/tipo-pendiente/{tipoPendienteId}")
+	public ResponseEntity<Void> cambiarTipoPendiente(@PathVariable Long reservaId, @PathVariable byte tipoPendienteId) {
+		service.cambiarTipoPendiente(reservaId, tipoPendienteId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
 }

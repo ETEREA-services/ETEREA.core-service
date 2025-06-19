@@ -506,4 +506,30 @@ public class ReservaService {
       return reserva;
    }
 
+   public Reserva cambiarTipoPendiente(Long reservaId, byte tipoPendienteId) {
+      Reserva reserva = findByReservaId(reservaId);
+      if (reserva.getPendiente() != 1) {
+         throw new ReservaException("Reserva no pendiente");
+      }
+
+      if (reserva.getFacturada() == 1) {
+         throw new ReservaException("Reserva facturada");
+      }
+
+      if (reserva.getAnulada() == 1) {
+         throw new ReservaException("Reserva anulada");
+      }
+
+      if (reserva.getEliminada() == 1) {
+         throw new ReservaException("Reserva eliminada");
+      }
+
+      if (reserva.getVerificada() == 0) {
+         reserva.setVerificada(tipoPendienteId);
+         reserva = update(reserva, reservaId);
+      }
+
+      return reserva;
+   }
+
 }

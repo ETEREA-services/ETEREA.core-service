@@ -115,5 +115,9 @@ public class ClienteService {
 		return repository.save(existentClient);
 	}
 
+	public List<Cliente> findAllByIds(List<Long> clienteIds) {
+		return repository.findAllByClienteIdIn(clienteIds);
+	}
+
 }
 
