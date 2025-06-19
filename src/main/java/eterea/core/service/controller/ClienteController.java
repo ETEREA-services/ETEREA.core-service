@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -95,6 +96,11 @@ public class ClienteController {
 	@PutMapping("/{clienteId}")
 	public ResponseEntity<Cliente> update(@PathVariable Long clienteId, @RequestBody Cliente cliente) {
 		return new ResponseEntity<>(service.update(clienteId, cliente), HttpStatus.OK);
+	}
+
+	@GetMapping("/byIds")
+	public ResponseEntity<List<Cliente>> findAllByIds(@RequestParam List<Long> clienteIds) {
+		return new ResponseEntity<>(service.findAllByIds(clienteIds), HttpStatus.OK);
 	}
 
 }

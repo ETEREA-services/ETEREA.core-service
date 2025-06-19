@@ -46,4 +46,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 		""")
 	List<Cliente> findByRazonSocialOrNumeroDocumentoContainingIgnoreCase(@Param("searchTerm") String searchTerm);
 
+	List<Cliente> findAllByClienteIdIn(List<Long> clienteIds);
+
 }

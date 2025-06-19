@@ -15,6 +15,7 @@ interface ReservaRepository : JpaRepository<Reserva, Long> {
 
     fun findByReservaId(reservaId: Long?): Optional<Reserva?>?
 
+    
     fun findTop100ByVerificadaAndFacturadaAndEliminadaAndPagaCacheutaAndFacturadoFueraAndAnuladaAndClienteIdGreaterThan(
         verificada: Byte?,
         facturada: Byte?,
