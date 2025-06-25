@@ -508,9 +508,9 @@ public class ReservaService {
 
    public Reserva cambiarTipoPendiente(Long reservaId, byte tipoPendienteId) {
       Reserva reserva = findByReservaId(reservaId);
-      if (reserva.getPendiente() != 1) {
-         throw new ReservaException("Reserva no pendiente");
-      }
+      // if (reserva.getPendiente() != 1) {
+      //    throw new ReservaException("Reserva no pendiente");
+      // }
 
       if (reserva.getFacturada() == 1) {
          throw new ReservaException("Reserva facturada");
