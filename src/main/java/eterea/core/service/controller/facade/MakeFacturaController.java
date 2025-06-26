@@ -45,14 +45,14 @@ public class MakeFacturaController {
    //          HttpStatus.OK);
    // }
 
-   @PostMapping("/reserva/{reservaId}/multipago")
+   @PostMapping("/reserva/{reservaId}")
    public ResponseEntity<Long> makeFacturaMultipago(@PathVariable Long reservaId,
          @RequestBody FacturaMakeRequestDto facturaMakeRequestDto) {
       return new ResponseEntity<>(makeFacturaService.facturaReservaMultipago(reservaId,
             facturaMakeRequestDto), HttpStatus.OK);
    }
 
-   @PostMapping("/reserva-hotel/{reservaId}/multipago")
+   @PostMapping("/reserva-hotel/{reservaId}")
    public ResponseEntity<Long> makeFacturaHotelMultipago(@PathVariable Long reservaId,
          @RequestBody FacturaMakeRequestDto facturaMakeRequestDto) {
       return new ResponseEntity<>(makeFacturaService.facturaReservaHotelMultipago(reservaId,
