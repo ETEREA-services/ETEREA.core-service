@@ -150,7 +150,7 @@ public class VouchersService {
         ReservaContext reservaContext = new ReservaContext.Builder()
                 .reservaId(voucher.getReservaId())
                 .voucherId(voucher.getVoucherId())
-                .orderNumberId(Long.valueOf(voucher.getNumeroVoucher()))
+                .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
                 .facturaPendiente((byte) 1)
                 .envioPendiente((byte) 1)
                 .diferenciaWeb(BigDecimal.ZERO)
