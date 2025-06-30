@@ -2,12 +2,13 @@
 
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
 [![Java](https://img.shields.io/badge/Java-21-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.20-blueviolet.svg)](https://kotlinlang.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-green.svg)](https://spring.io/projects/spring-boot)
-[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2024.0.1-green.svg)](https://spring.io/projects/spring-cloud)
-[![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.6-blue.svg)](https://springdoc.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-9.2.0-orange.svg)](https://www.mysql.com/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-blueviolet.svg)](https://kotlinlang.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-green.svg)](https://spring.io/projects/spring-cloud)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.9-blue.svg)](https://springdoc.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-9.3.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-0.1.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -19,14 +20,15 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 - Gestión de artículos y rubros con listas de precios
 - Control de comprobantes faltantes
 - Facturación electrónica
+- **Gestión de Posiciones IVA**
 
 ## Stack Tecnológico
 
 ### Backend
 - Java 21
-- Kotlin 2.1.20
-- Spring Boot 3.4.4
-- Spring Cloud 2024.0.1
+- Kotlin 2.1.21
+- Spring Boot 3.5.3
+- Spring Cloud 2025.0.0
   - Netflix Eureka Client
   - OpenFeign
 - Spring Security
@@ -37,15 +39,15 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 - Log4j2
 
 ### Utilidades
-- OpenPDF 2.0.3 (Generación de PDFs)
+- OpenPDF 2.2.3 (Generación de PDFs)
 - ZXing 3.5.3 (Códigos de Barras y QR)
 - Lombok
-- ModelMapper 3.2.2
+- ModelMapper 3.2.4
 - Caffeine Cache
-- MySQL Connector 9.2.0
+- MySQL Connector 9.3.0
 
 ### Documentación
-- SpringDoc OpenAPI UI 2.8.6
+- SpringDoc OpenAPI UI 2.8.9
 
 ## Arquitectura
 
@@ -61,13 +63,14 @@ El proyecto utiliza una arquitectura mixta:
 - **Artículos**: Gestión de artículos y sus listas de precios
 - **Rubros**: Categorización y gestión de rubros comerciales
 - **Facturación**: Control de comprobantes y facturación electrónica
+- **Posición IVA**: Gestión de las posiciones de IVA de clientes
 
 ## Configuración del Proyecto
 
 ### Requisitos
 - JDK 21
 - Maven 3.8+
-- MySQL 9.2+
+- MySQL 9.3+
 
 ### Instalación
 ```bash
@@ -126,6 +129,7 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - Documentación API con OpenAPI 3.0
 - Soporte para transacciones distribuidas
 - Integración con Eureka Service Discovery
+- **Gestión de Posiciones IVA**
 
 ## Notas Importantes
 
