@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
+import eterea.core.service.model.Snapshot;
+import eterea.core.service.model.dto.snapshot.ProgramaDiaSnapshot;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.tool.ToolService;
@@ -17,6 +19,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -32,6 +35,7 @@ public class FacturacionService {
     private final ArticuloMovimientoService articuloMovimientoService;
     private final ReservaService reservaService;
     private final ContabilidadService contabilidadService;
+    private final SnapshotService snapshotService;
 
     public FacturacionService(VoucherService voucherService,
                               OrderNoteService orderNoteService,
@@ -42,7 +46,7 @@ public class FacturacionService {
                               ReservaArticuloService reservaArticuloService,
                               ArticuloMovimientoService articuloMovimientoService,
                               ReservaService reservaService,
-                              ContabilidadService contabilidadService) {
+                              ContabilidadService contabilidadService, SnapshotService snapshotService) {
         this.voucherService = voucherService;
         this.orderNoteService = orderNoteService;
         this.valorService = valorService;
@@ -53,14 +57,25 @@ public class FacturacionService {
         this.articuloMovimientoService = articuloMovimientoService;
         this.reservaService = reservaService;
         this.contabilidadService = contabilidadService;
+        this.snapshotService = snapshotService;
     }
 
     @Transactional
     public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext) {
+        var programaDiaSnapshot = ProgramaDiaSnapshot.builder()
+                .reserva(reserva)
+                .facturacionDto(facturacionDTO)
+                .cliente(cliente)
+                .comprobante(comprobante)
+                .reservaContext(reservaContext)
+                .build();
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
         logVoucher(voucher);
+        programaDiaSnapshot.setVoucher(voucher);
         OrderNote orderNote = orderNoteService.findByOrderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())));
         logOrderNote(orderNote);
+        programaDiaSnapshot.setOrderNote(orderNote);
+
         int valorId = switch (Objects.requireNonNull(Objects.requireNonNull(orderNote.getPayment()).getMarcaTarjeta())) {
             case "American Express" -> 64;
             case "Cabal" -> 67;
@@ -74,9 +89,12 @@ public class FacturacionService {
             default -> 0;
         };
         Valor valor = valorService.findByValorId(valorId);
+        programaDiaSnapshot.setValor(valor);
 
         String observaciones = "Pedido web #" + orderNote.getOrderNumberId() + " - Reserva #" + reserva.getReservaId();
-        // Registra clienteMovimiento
+        programaDiaSnapshot.setObservaciones(observaciones);
+
+        // Construye clienteMovimiento
         ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
                 .negocioId(empresa.getNegocioId())
                 .empresaId(empresa.getEmpresaId())
@@ -101,13 +119,8 @@ public class FacturacionService {
                 .letras(ToolService.number_2_text(facturacionDTO.getTotal()))
                 .observaciones(observaciones)
                 .build();
-        clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
+        programaDiaSnapshot.setClienteMovimiento(clienteMovimiento);
 
-        // Registra reservaContext
-        reservaContext.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
-        reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-
-        // Registra valorMovimiento
         ValorMovimiento valorMovimiento = new ValorMovimiento.Builder()
                 .negocioId(empresa.getNegocioId())
                 .clienteId(cliente.getClienteId())
@@ -119,7 +132,6 @@ public class FacturacionService {
                 .numeroComprobante(0L)
                 .importe(facturacionDTO.getTotal())
                 .numeroCuenta(valor.getNumeroCuenta())
-                .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
                 .proveedorMovimientoId(0L)
                 .titular("")
                 .banco("")
@@ -128,13 +140,16 @@ public class FacturacionService {
                 .cierreCajaId(0L)
                 .observaciones(observaciones)
                 .build();
-        valorMovimiento = valorMovimientoService.add(valorMovimiento);
+        programaDiaSnapshot.setValorMovimiento(valorMovimiento);
 
         List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
+        var reservaArticulos = reservaArticuloService.findAllByReservaId(reserva.getReservaId());
+        programaDiaSnapshot.setReservaArticulos(reservaArticulos);
+        logReservaArticulos(reservaArticulos);
+
         int item = 1;
-        for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reserva.getReservaId())) {
+        for (ReservaArticulo reservaArticulo : reservaArticulos) {
             articuloMovimientos.add(new ArticuloMovimiento.Builder()
-                    .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
                     .centroStockId(Objects.requireNonNull(reservaArticulo.getArticulo()).getCentroStockId())
                     .comprobanteId(comprobante.getComprobanteId())
                     .item(item++)
@@ -152,16 +167,56 @@ public class FacturacionService {
                     .precioCompra(reservaArticulo.getArticulo().getPrecioCompra())
                     .build());
         }
-        articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
+        programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
 
-        List<CuentaMovimiento> clienteMovimientos = contabilidadService.registraContabilidadProgramaDia(clienteMovimiento, valorMovimiento, valor, articuloMovimientos, facturacionDTO, comprobante, parametro);
+        var snapshot = Snapshot.builder()
+                .uuid(UUID.randomUUID().toString())
+                .descripcion("transaccion-factura-programa-dia-pre")
+                .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
+                .build();
+        snapshot = snapshotService.add(snapshot);
+
+        // Comienza registro en la db
+        // Registra clienteMovimiento
+        clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
+        logClienteMovimiento(clienteMovimiento);
+        programaDiaSnapshot.setClienteMovimiento(clienteMovimiento);
+
+        // Registra reservaContext
+        reservaContext.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
+        reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+        programaDiaSnapshot.setReservaContext(reservaContext);
+
+        // Registra valorMovimiento
+        valorMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
+        valorMovimiento = valorMovimientoService.add(valorMovimiento);
+        programaDiaSnapshot.setValorMovimiento(valorMovimiento);
+
+        // Registra articuloMovimientos
+        for (ArticuloMovimiento articuloMovimiento : articuloMovimientos) {
+            articuloMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
+        }
+        articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
+        programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
+
+        List<CuentaMovimiento> cuentaMovimientos = contabilidadService.registraContabilidadProgramaDia(clienteMovimiento, valorMovimiento, valor, articuloMovimientos, facturacionDTO, comprobante, parametro);
+        programaDiaSnapshot.setCuentaMovimientos(cuentaMovimientos);
 
         reserva.setFacturada((byte) 1);
         reserva.setVerificada((byte) 1);
         reserva = reservaService.update(reserva, reserva.getReservaId());
+        programaDiaSnapshot.setReserva(reserva);
 
         voucher.setConfirmado((byte) 1);
         voucher = voucherService.update(voucher, voucher.getVoucherId());
+        programaDiaSnapshot.setVoucher(voucher);
+
+        snapshot = Snapshot.builder()
+                .uuid(UUID.randomUUID().toString())
+                .descripcion("transaccion-factura-programa-dia-post")
+                .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
+                .build();
+        snapshot = snapshotService.add(snapshot);
 
         return clienteMovimiento;
 
@@ -192,42 +247,83 @@ public class FacturacionService {
         return precioUnitarioSinIva.setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void logOrderNote(OrderNote orderNote) {
+    private String logValorMovimiento(ValorMovimiento valorMovimiento) {
         try {
-            log.debug("orderNote={}", JsonMapper
+            var json = JsonMapper
                     .builder()
                     .findAndAddModules()
                     .build()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(orderNote));
+                    .writeValueAsString(valorMovimiento);
+            log.debug("valorMovimiento={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("valorMovimiento jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String logReservaContext(ReservaContext reservaContext) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(reservaContext);
+            log.debug("reservaContext={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("reservaContext jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String logOrderNote(OrderNote orderNote) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(orderNote);
+            log.debug("orderNote={}", json);
+            return json;
         } catch (JsonProcessingException e) {
             log.debug("orderNote jsonify error {}", e.getMessage());
+            return null;
         }
     }
 
-    private void logVoucher(Voucher voucher) {
+    private String logVoucher(Voucher voucher) {
         try {
-            log.debug("voucher={}", JsonMapper
+            var json = JsonMapper
                     .builder()
                     .findAndAddModules()
                     .build()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(voucher));
+                    .writeValueAsString(voucher);
+            log.debug("voucher={}", json);
+            return json;
         } catch (JsonProcessingException e) {
             log.debug("voucher jsonify error {}", e.getMessage());
+            return null;
         }
     }
 
-    private void logClienteMovimiento(ClienteMovimiento clienteMovimiento) {
+    private String logClienteMovimiento(ClienteMovimiento clienteMovimiento) {
         try {
-            log.debug("clienteMovimiento={}", JsonMapper
+            var json = JsonMapper
                     .builder()
                     .findAndAddModules()
                     .build()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(clienteMovimiento));
+                    .writeValueAsString(clienteMovimiento);
+            log.debug("clienteMovimiento={}", json);
+            return json;
         } catch (JsonProcessingException e) {
             log.debug("clienteMovimiento jsonify error {}", e.getMessage());
+            return null;
         }
     }
 
@@ -244,4 +340,101 @@ public class FacturacionService {
         }
     }
 
+    private String logReserva(Reserva reserva) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(reserva);
+            log.debug("reserva={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("reserva jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String logArticuloMovimientos(List<ArticuloMovimiento> articuloMovimientos) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(articuloMovimientos);
+            log.debug("articuloMovimientos={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("articuloMovimientos jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String logReservaArticulos(List<ReservaArticulo> reservaArticulos) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(reservaArticulos);
+            log.debug("reservaArticulos={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("reservaArticulos jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String logCuentaMovimientos(List<CuentaMovimiento> cuentaMovimientos) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(cuentaMovimientos);
+            log.debug("cuentaMovimientos={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("cuentaMovimientos jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String logCliente(Cliente cliente) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(cliente);
+            log.debug("cliente={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("cliente jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String logProgramaDiaSnapshot(ProgramaDiaSnapshot programaDiaSnapshot) {
+        try {
+            var json = JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(programaDiaSnapshot);
+            log.debug("programaDiaSnapshot={}", json);
+            return json;
+        } catch (JsonProcessingException e) {
+            log.debug("programaDiaSnapshot jsonify error {}", e.getMessage());
+            return null;
+        }
+    }
+
 }
+

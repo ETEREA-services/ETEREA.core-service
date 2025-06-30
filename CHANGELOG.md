@@ -5,7 +5,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2025-05-01
+## [0.1.0] - 2025-06-30
 
 ### Added
 - Implementado nuevo módulo de Posición IVA
@@ -27,6 +27,8 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ### Removed
 - Eliminados métodos de logging redundantes en `ConsolidadoService`
 - Eliminada lógica antigua de agrupación por letra y punto de venta
+
+## [Unreleased] - 2025-06-30
 
 ## [0.0.2] - 2025-03-24
 
