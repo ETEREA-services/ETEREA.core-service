@@ -83,6 +83,7 @@ data class ValorMovimiento(
     var nivel: Int = 0,
 
     var observaciones: String? = null,
+    var trackUuid: String? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "codigo", insertable = false, updatable = false)
@@ -122,6 +123,7 @@ data class ValorMovimiento(
         var cierreCajaId: Long? = null,
         var nivel: Int = 0,
         var observaciones: String? = null,
+        var trackUuid: String? = null,
         var valor: Valor? = null,
         var cuenta: Cuenta? = null
     ) {
@@ -152,6 +154,7 @@ data class ValorMovimiento(
         fun cierreCajaId(cierreCajaId: Long?) = apply { this.cierreCajaId = cierreCajaId }
         fun nivel(nivel: Int) = apply { this.nivel = nivel }
         fun observaciones(observaciones: String?) = apply { this.observaciones = observaciones }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
 
         fun valor(valor: Valor?) = apply { this.valor = valor }
         fun cuenta(cuenta: Cuenta?) = apply { this.cuenta = cuenta }
@@ -161,7 +164,11 @@ data class ValorMovimiento(
             fechaEmision, fechaVencimiento, comprobanteId, numeroComprobante,
             importe, numeroCuenta, fechaContable, ordenContable, proveedorMovimientoId,
             clienteMovimientoId, titular, banco, receptor, estadoId,
-            fechaEntrega, tanda, tandaIndex, cierreCajaId, nivel, observaciones, valor, cuenta
+            fechaEntrega, tanda, tandaIndex, cierreCajaId, nivel,
+            observaciones,
+            trackUuid,
+            valor,
+            cuenta
         )
     }
 }

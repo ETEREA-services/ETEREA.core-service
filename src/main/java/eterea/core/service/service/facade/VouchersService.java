@@ -10,6 +10,7 @@ import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
+import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
 import jakarta.transaction.Transactional;
@@ -36,10 +37,11 @@ public class VouchersService {
     private final ReservaContextService reservaContextService;
     private final VoucherProductoService voucherProductoService;
     private final ReservaService reservaService;
+    private final TrackService trackService;
 
     private record PersonType(int cantidad, String descripcion) {}
 
-    public VouchersService(EmpresaService empresaService, NegocioService negocioService, OrderNoteService orderNoteService, VoucherService voucherService, ClienteService clienteService, FeriadoService feriadoService, ProductoSkuService productoSkuService, ReservaContextService reservaContextService, VoucherProductoService voucherProductoService, ReservaService reservaService) {
+    public VouchersService(EmpresaService empresaService, NegocioService negocioService, OrderNoteService orderNoteService, VoucherService voucherService, ClienteService clienteService, FeriadoService feriadoService, ProductoSkuService productoSkuService, ReservaContextService reservaContextService, VoucherProductoService voucherProductoService, ReservaService reservaService, TrackService trackService) {
         this.empresaService = empresaService;
         this.negocioService = negocioService;
         this.orderNoteService = orderNoteService;
@@ -50,9 +52,9 @@ public class VouchersService {
         this.reservaContextService = reservaContextService;
         this.voucherProductoService = voucherProductoService;
         this.reservaService = reservaService;
+        this.trackService = trackService;
     }
 
-    @Transactional
     public ProgramaDiaDto importOneFromWeb(Long orderNumberId) {
         log.debug("Processing importOneFromWeb");
         OrderNote orderNote = getOrderNoteById(orderNumberId);
@@ -135,15 +137,18 @@ public class VouchersService {
     }
 
     @Transactional
-    public Voucher registrarVoucher(Voucher voucher, List<VoucherProducto> voucherProductos) {
+    public Voucher registrarVoucher(Voucher voucher, List<VoucherProducto> voucherProductos, Track track) {
         log.debug("Processing registrarVoucher");
-        voucher = voucherService.save(voucher);
-        voucherProductos = saveVoucherProductos(voucher.getVoucherId(), voucherProductos);
+        if (track == null) {
+            track = trackService.startTracking("registro-voucher");
+        }
+        voucher = voucherService.save(voucher, track);
+        voucherProductos = saveVoucherProductos(voucher.getVoucherId(), voucherProductos, track);
         voucher.setProductos(cadenaResumen(voucherProductos));
-        voucher = voucherService.save(voucher);
+        voucher = voucherService.save(voucher, track);
 
         if (voucher.getReservaId() == null) {
-            Reserva reserva = generarReserva(voucher, voucherProductos);
+            Reserva reserva = generarReserva(voucher, voucherProductos, track);
             voucher.setReservaId(reserva.getReservaId());
         }
 
@@ -161,11 +166,16 @@ public class VouchersService {
     }
 
     @Transactional
-    public List<VoucherProducto> saveVoucherProductos(Long voucherId, List<VoucherProducto> voucherProductos) {
+    public List<VoucherProducto> saveVoucherProductos(Long voucherId, List<VoucherProducto> voucherProductos, Track track) {
         log.debug("Processing saveVoucherProductos");
         voucherProductoService.deleteAllByVoucherId(voucherId);
         for (var voucherProducto : voucherProductos) {
+            if (track != null) {
+                voucherProducto.setTrackUuid(track.getUuid());
+            }
             voucherProducto.setVoucherId(voucherId);
+            assert track != null;
+            voucherProducto.setTrackUuid(track.getUuid());
         }
         return voucherProductoService.saveAll(voucherProductos);
     }
@@ -197,18 +207,18 @@ public class VouchersService {
     }
 
     @Transactional
-    public Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos) {
+    public Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos, Track track) {
         log.debug("Processing generarReserva");
         Reserva reserva = reservaService.copyFromVoucher(voucher);
         reserva.setNegocioId(empresaService.findTop().getNegocioId());
         reserva.setUsuario("admin");
-        reserva = reservaService.add(reserva);
+        reserva = reservaService.add(reserva, track);
 
         voucher.setReservaId(reserva.getReservaId());
         voucher = voucherService.update(voucher, voucher.getVoucherId());
         logVoucher(voucher);
 
-        reservaService.generarReservaArticulo(reserva, voucherProductos);
+        reservaService.generarReservaArticulo(reserva, voucherProductos, track);
 
         return reserva;
     }
@@ -225,6 +235,7 @@ public class VouchersService {
     @Transactional
     public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio) {
         log.debug("Processing facturaUnProducto");
+        var track = trackService.startTracking("factura-un-producto");
         String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
         var cliente = determinaCliente(orderNote, fullName, negocio);
         OffsetDateTime fechaServicio = product.getBookingStart();
@@ -294,8 +305,11 @@ public class VouchersService {
                 .cliente(cliente)
                 .subeEn(product.getPuntoDeEncuentro())
                 .build();
+        if (track != null) {
+            voucher.setTrackUuid(track.getUuid());
+        }
 
-        voucher = registrarVoucher(voucher, voucherProductos);
+        voucher = registrarVoucher(voucher, voucherProductos, track);
         logVoucher(voucher);
 
         return new ProgramaDiaDto.Builder()

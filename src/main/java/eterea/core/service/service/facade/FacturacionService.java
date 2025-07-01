@@ -6,6 +6,7 @@ import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.Snapshot;
+import eterea.core.service.model.Track;
 import eterea.core.service.model.dto.snapshot.ProgramaDiaSnapshot;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -36,6 +37,7 @@ public class FacturacionService {
     private final ReservaService reservaService;
     private final ContabilidadService contabilidadService;
     private final SnapshotService snapshotService;
+    private final TrackService trackService;
 
     public FacturacionService(VoucherService voucherService,
                               OrderNoteService orderNoteService,
@@ -46,7 +48,7 @@ public class FacturacionService {
                               ReservaArticuloService reservaArticuloService,
                               ArticuloMovimientoService articuloMovimientoService,
                               ReservaService reservaService,
-                              ContabilidadService contabilidadService, SnapshotService snapshotService) {
+                              ContabilidadService contabilidadService, SnapshotService snapshotService, TrackService trackService) {
         this.voucherService = voucherService;
         this.orderNoteService = orderNoteService;
         this.valorService = valorService;
@@ -58,10 +60,14 @@ public class FacturacionService {
         this.reservaService = reservaService;
         this.contabilidadService = contabilidadService;
         this.snapshotService = snapshotService;
+        this.trackService = trackService;
     }
 
     @Transactional
-    public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext) {
+    public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext, Track track, Snapshot snapshot) {
+        if (track == null) {
+            track = trackService.startTracking("transaccion-factura-programa-dia");
+        }
         var programaDiaSnapshot = ProgramaDiaSnapshot.builder()
                 .reserva(reserva)
                 .facturacionDto(facturacionDTO)
@@ -118,6 +124,7 @@ public class FacturacionService {
                 .cotizacion(BigDecimal.ONE)
                 .letras(ToolService.number_2_text(facturacionDTO.getTotal()))
                 .observaciones(observaciones)
+                .trackUuid(track.getUuid())
                 .build();
         programaDiaSnapshot.setClienteMovimiento(clienteMovimiento);
 
@@ -139,6 +146,7 @@ public class FacturacionService {
                 .estadoId(0)
                 .cierreCajaId(0L)
                 .observaciones(observaciones)
+                .trackUuid(track.getUuid())
                 .build();
         programaDiaSnapshot.setValorMovimiento(valorMovimiento);
 
@@ -165,16 +173,20 @@ public class FacturacionService {
                     .fechaMovimiento(clienteMovimiento.getFechaComprobante())
                     .fechaFactura(clienteMovimiento.getFechaComprobante())
                     .precioCompra(reservaArticulo.getArticulo().getPrecioCompra())
+                    .trackUuid(track.getUuid())
                     .build());
         }
         programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
 
-        var snapshot = Snapshot.builder()
+        snapshot = Snapshot.builder()
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("transaccion-factura-programa-dia-pre")
                 .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
                 .build();
-        snapshot = snapshotService.add(snapshot);
+        if (snapshot != null) {
+            snapshot.setPreviousUuid(track.getUuid());
+        }
+        snapshot = snapshotService.add(snapshot, track);
 
         // Comienza registro en la db
         // Registra clienteMovimiento
@@ -199,7 +211,7 @@ public class FacturacionService {
         articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
         programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
 
-        List<CuentaMovimiento> cuentaMovimientos = contabilidadService.registraContabilidadProgramaDia(clienteMovimiento, valorMovimiento, valor, articuloMovimientos, facturacionDTO, comprobante, parametro);
+        List<CuentaMovimiento> cuentaMovimientos = contabilidadService.registraContabilidadProgramaDia(clienteMovimiento, valorMovimiento, valor, articuloMovimientos, facturacionDTO, comprobante, parametro, track);
         programaDiaSnapshot.setCuentaMovimientos(cuentaMovimientos);
 
         reserva.setFacturada((byte) 1);
@@ -215,8 +227,12 @@ public class FacturacionService {
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("transaccion-factura-programa-dia-post")
                 .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
+                .trackUuid(track.getUuid())
+                .previousUuid(snapshot.getUuid())
                 .build();
-        snapshot = snapshotService.add(snapshot);
+        snapshot = snapshotService.add(snapshot, track);
+
+        track = trackService.endTracking(track);
 
         return clienteMovimiento;
 
