@@ -63,6 +63,7 @@ data class CuentaMovimiento(
 
     var ejercicioId: Int? = null,
     var inflacion: Byte = 0,
+    var trackUuid: String? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cuenta", insertable = false, updatable = false)
@@ -101,6 +102,7 @@ data class CuentaMovimiento(
         var articuloMovimientoId: Long = 0,
         var ejercicioId: Int? = null,
         var inflacion: Byte = 0,
+        var trackUuid: String? = null,
         var cuenta: Cuenta? = null,
         var comprobante: Comprobante? = null,
         var negocio: Negocio? = null
@@ -127,6 +129,7 @@ data class CuentaMovimiento(
 
         fun ejercicioId(ejercicioId: Int?) = apply { this.ejercicioId = ejercicioId }
         fun inflacion(inflacion: Byte) = apply { this.inflacion = inflacion }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
         fun cuenta(cuenta: Cuenta?) = apply { this.cuenta = cuenta }
         fun comprobante(comprobante: Comprobante?) = apply { this.comprobante = comprobante }
         fun negocio(negocio: Negocio?) = apply { this.negocio = negocio }
@@ -135,7 +138,12 @@ data class CuentaMovimiento(
             cuentaMovimientoId, fecha, orden, item, debita, negocioId, numeroCuenta,
             comprobanteId, concepto, importe, subrubroId, proveedorId, clienteId,
             cierreCajaId, nivel, firma, tipoAsientoId, articuloMovimientoId,
-            ejercicioId, inflacion, cuenta, comprobante, negocio
+            ejercicioId,
+            inflacion,
+            trackUuid,
+            cuenta,
+            comprobante,
+            negocio
         )
     }
 }

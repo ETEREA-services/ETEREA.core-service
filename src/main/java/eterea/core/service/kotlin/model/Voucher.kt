@@ -2,8 +2,8 @@ package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
-import java.time.OffsetDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 
 @Entity
 @Table
@@ -107,6 +107,7 @@ data class Voucher(
 
     var fechaAbierta: Byte = 0,
     var ventaInternet: Byte = 0,
+    var trackUuid: String? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "vou_usuario", insertable = false, updatable = false)
@@ -162,6 +163,7 @@ data class Voucher(
         var reservaOrigenId: Int? = null,
         var fechaAbierta: Byte = 0,
         var ventaInternet: Byte = 0,
+        var trackUuid: String? = null,
         var user: Usuario? = null,
         var cliente: Cliente? = null,
         var hotel: Hotel? = null,
@@ -200,6 +202,7 @@ data class Voucher(
         fun reservaOrigenId(reservaOrigenId: Int?) = apply { this.reservaOrigenId = reservaOrigenId }
         fun fechaAbierta(fechaAbierta: Byte) = apply { this.fechaAbierta = fechaAbierta }
         fun ventaInternet(ventaInternet: Byte) = apply { this.ventaInternet = ventaInternet }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
         fun user(user: Usuario?) = apply { this.user = user }
         fun cliente(cliente: Cliente?) = apply { this.cliente = cliente }
         fun hotel(hotel: Hotel?) = apply { this.hotel = hotel }
@@ -211,6 +214,7 @@ data class Voucher(
             productos, tieneVoucher, clienteId, observaciones, confirmado, pagaCacheuta, hotelId, contacto,
             paxsReales, proveedorId, planilla, reservaId, numeroVoucher, usuario, fechaRecepcion, fechaEmision,
             numero, cantidadPax, nombre, conTraslado, paxsNoShow, reservaOrigenId, fechaAbierta, ventaInternet,
+            trackUuid,
             user, cliente, hotel, proveedor, reserva
         )
     }

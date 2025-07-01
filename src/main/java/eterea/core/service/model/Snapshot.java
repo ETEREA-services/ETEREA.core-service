@@ -1,8 +1,7 @@
 package eterea.core.service.model;
 
 import eterea.core.service.kotlin.model.Auditable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Data
@@ -16,7 +15,11 @@ public class Snapshot extends Auditable {
     @Id
     private String uuid;
 
+    private String trackUuid;
+    private String previousUuid;
     private String descripcion;
+
+    @Lob
     private String payload;
 
 }

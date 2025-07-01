@@ -53,7 +53,7 @@ public class BalanceService {
             byte debita = (byte) (diferencia.compareTo(BigDecimal.ZERO) < 0 ? 0 : 1);
             Long numeroCuenta = 44106000L;
             CuentaMovimiento lastByAsiento = cuentaMovimientoService.findLastByAsiento(asientoView.getFecha(), asientoView.getOrden());
-            CuentaMovimiento cuentaMovimiento = new CuentaMovimiento(null, lastByAsiento.getFecha(), lastByAsiento.getOrden(), 1 + lastByAsiento.getItem(), debita, lastByAsiento.getNegocioId(), numeroCuenta, lastByAsiento.getComprobanteId(), lastByAsiento.getConcepto(), diferencia.abs(), lastByAsiento.getSubrubroId(), lastByAsiento.getProveedorId(), lastByAsiento.getClienteId(), lastByAsiento.getCierreCajaId(), lastByAsiento.getNivel(), lastByAsiento.getFirma(), lastByAsiento.getTipoAsientoId(), lastByAsiento.getArticuloMovimientoId(), lastByAsiento.getEjercicioId(), lastByAsiento.getInflacion(), null, null, null);
+            CuentaMovimiento cuentaMovimiento = new CuentaMovimiento(null, lastByAsiento.getFecha(), lastByAsiento.getOrden(), 1 + lastByAsiento.getItem(), debita, lastByAsiento.getNegocioId(), numeroCuenta, lastByAsiento.getComprobanteId(), lastByAsiento.getConcepto(), diferencia.abs(), lastByAsiento.getSubrubroId(), lastByAsiento.getProveedorId(), lastByAsiento.getClienteId(), lastByAsiento.getCierreCajaId(), lastByAsiento.getNivel(), lastByAsiento.getFirma(), lastByAsiento.getTipoAsientoId(), lastByAsiento.getArticuloMovimientoId(), lastByAsiento.getEjercicioId(), lastByAsiento.getInflacion(), null, null, null, null);
             cuentaMovimientos.add(cuentaMovimiento);
         }
         cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);

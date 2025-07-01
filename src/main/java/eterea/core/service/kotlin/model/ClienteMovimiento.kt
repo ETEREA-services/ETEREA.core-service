@@ -120,6 +120,7 @@ data class ClienteMovimiento(
     var cotizacion: BigDecimal = BigDecimal.ZERO,
 
     var observaciones: String? = null,
+    var trackUuid: String? = null,
 
     @Column(name = "clavev")
     var clienteMovimientoIdSlave: Long = 0,
@@ -178,6 +179,7 @@ data class ClienteMovimiento(
         var monedaId: Int? = null
         var cotizacion: BigDecimal = BigDecimal.ZERO
         var observaciones: String? = null
+        var trackUuid: String? = null
         var clienteMovimientoIdSlave: Long = 0
         var comprobante: Comprobante? = null
         var cliente: Cliente? = null
@@ -224,6 +226,7 @@ data class ClienteMovimiento(
         fun monedaId(monedaId: Int?) = apply { this.monedaId = monedaId }
         fun cotizacion(cotizacion: BigDecimal) = apply { this.cotizacion = cotizacion }
         fun observaciones(observaciones: String?) = apply { this.observaciones = observaciones }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
         fun clienteMovimientoIdSlave(clienteMovimientoIdSlave: Long) =
             apply { this.clienteMovimientoIdSlave = clienteMovimientoIdSlave }
 
@@ -237,7 +240,12 @@ data class ClienteMovimiento(
             reintegroTurista, fechaContable, ordenContable, recibo, asignado, anulada, decreto104316, letraComprobante,
             montoExento, reservaId, montoCuentaCorriente, cierreCajaId, cierreRestaurantId, nivel, eliminar,
             cuentaCorriente, letras, cae, caeVencimiento, codigoBarras, participacion, monedaId, cotizacion,
-            observaciones, clienteMovimientoIdSlave, comprobante, cliente, moneda
+            observaciones,
+            trackUuid,
+            clienteMovimientoIdSlave,
+            comprobante,
+            cliente,
+            moneda
         )
     }
 }

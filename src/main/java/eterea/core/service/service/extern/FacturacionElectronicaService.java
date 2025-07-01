@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.client.afip.FacturacionAfipClient;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.Snapshot;
+import eterea.core.service.model.Track;
 import eterea.core.service.service.NegocioService;
 import eterea.core.service.service.SnapshotService;
+import eterea.core.service.service.TrackService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -22,22 +24,30 @@ public class FacturacionElectronicaService {
 
     private final FacturacionAfipClient facturacionAfipClient;
     private final SnapshotService snapshotService;
+    private final TrackService trackService;
 
-    public FacturacionElectronicaService(FacturacionAfipClient facturacionAfipClient, SnapshotService snapshotService) {
+    public FacturacionElectronicaService(FacturacionAfipClient facturacionAfipClient, SnapshotService snapshotService, TrackService trackService) {
         this.facturacionAfipClient = facturacionAfipClient;
         this.snapshotService = snapshotService;
+        this.trackService = trackService;
     }
 
-    public FacturacionDto makeFactura(FacturacionDto facturacionDto) {
+    public FacturacionDto makeFactura(FacturacionDto facturacionDto, Track track, Snapshot snapshot) {
         log.debug("Processing FactuacionElectronicaService.makeFactura");
         var json = logFacturacion(facturacionDto);
-        var snapshot = Snapshot.builder()
+        if (track == null) {
+            track = trackService.startTracking("make-factura");
+        }
+        snapshot = Snapshot.builder()
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("make-factura-facturacion-pre")
                 .payload(json)
                 .build();
+        if (snapshot != null) {
+            snapshot.setPreviousUuid(snapshot.getUuid());
+        }
         logSnapshot(snapshot);
-        snapshot = snapshotService.add(snapshot);
+        snapshot = snapshotService.add(snapshot, track);
         logSnapshot(snapshot);
         facturacionDto = facturacionAfipClient.facturador(facturacionDto);
         json = logFacturacion(facturacionDto);
@@ -45,9 +55,10 @@ public class FacturacionElectronicaService {
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("make-factura-facturacion-post")
                 .payload(json)
+                .previousUuid(snapshot.getUuid())
                 .build();
         logSnapshot(snapshot);
-        snapshot = snapshotService.add(snapshot);
+        snapshot = snapshotService.add(snapshot, track);
         logSnapshot(snapshot);
         return facturacionDto;
     }
