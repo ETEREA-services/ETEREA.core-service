@@ -105,6 +105,8 @@ data class Reserva(
     @Column(name = "fecha_abierta")
     var fechaAbierta: Byte = 0,
 
+    var trackUuid: String? = null,
+
     @OneToOne
     @JoinColumn(name = "res_cli_id", insertable = false, updatable = false)
     var cliente: Cliente? = null
@@ -141,6 +143,7 @@ data class Reserva(
         var reservaOrigenId: Int? = null,
         var facturarExtranjero: Byte = 0,
         var fechaAbierta: Byte = 0,
+        var trackUuid: String? = null,
         var cliente: Cliente? = null
     ) {
         fun reservaId(reservaId: Long?) = apply { this.reservaId = reservaId }
@@ -175,6 +178,7 @@ data class Reserva(
         fun reservaOrigenId(reservaOrigenId: Int?) = apply { this.reservaOrigenId = reservaOrigenId }
         fun facturarExtranjero(facturarExtranjero: Byte) = apply { this.facturarExtranjero = facturarExtranjero }
         fun fechaAbierta(fechaAbierta: Byte) = apply { this.fechaAbierta = fechaAbierta }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
         fun cliente(cliente: Cliente?) = apply { this.cliente = cliente }
 
         fun build() = Reserva(
@@ -208,6 +212,7 @@ data class Reserva(
             reservaOrigenId,
             facturarExtranjero,
             fechaAbierta,
+            trackUuid,
             cliente
         )
     }

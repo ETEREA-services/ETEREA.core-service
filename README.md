@@ -8,7 +8,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.9-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.3.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.1.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.2.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -20,7 +20,8 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 - Gestión de artículos y rubros con listas de precios
 - Control de comprobantes faltantes
 - Facturación electrónica
-- **Gestión de Posiciones IVA**
+- Gestión de Posiciones IVA
+- **Módulo de Snapshots para el registro de transacciones**
 
 ## Stack Tecnológico
 
@@ -64,6 +65,7 @@ El proyecto utiliza una arquitectura mixta:
 - **Rubros**: Categorización y gestión de rubros comerciales
 - **Facturación**: Control de comprobantes y facturación electrónica
 - **Posición IVA**: Gestión de las posiciones de IVA de clientes
+- **Snapshot**: Registro de estados de transacciones.
 
 ## Configuración del Proyecto
 
@@ -111,7 +113,7 @@ La documentación de la API está disponible en:
 
 1. Fork el repositorio
 2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit tus cambios (`git commit -am 'Agrega nueva funcionalidad'`)
+3. Commit tus cambios (`git commit -am '''Agrega nueva funcionalidad'''`)
 4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
 5. Crea un Pull Request
 
@@ -129,7 +131,8 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - Documentación API con OpenAPI 3.0
 - Soporte para transacciones distribuidas
 - Integración con Eureka Service Discovery
-- **Gestión de Posiciones IVA**
+- Gestión de Posiciones IVA
+- **Módulo de Snapshots**
 
 ## Notas Importantes
 

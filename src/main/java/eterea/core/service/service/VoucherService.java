@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.kotlin.repository.VoucherRepository;
+import eterea.core.service.model.Track;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -74,7 +75,10 @@ public class VoucherService {
         return Objects.requireNonNull(repository.findTopByNumeroVoucherContainsAndFechaTomaAfter(numeroVoucher, OffsetDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC))).orElseThrow(() -> new VoucherException(numeroVoucher));
     }
 
-    public Voucher save(Voucher voucher) {
+    public Voucher save(Voucher voucher, Track track) {
+        if (track != null) {
+            voucher.setTrackUuid(track.getUuid());
+        }
         if (voucher.getVoucherId() == null) {
             voucher = add(voucher);
         } else {

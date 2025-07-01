@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.repository.ReservaRepository;
+import eterea.core.service.model.Track;
 import eterea.core.service.service.facade.PrecioService;
 import jakarta.transaction.Transactional;
 
@@ -222,7 +223,10 @@ public class ReservaService {
                 .build();
     }
 
-    public Reserva add(Reserva reserva) {
+    public Reserva add(Reserva reserva, Track track) {
+        if (track != null) {
+            reserva.setTrackUuid(track.getUuid());
+        }
         return repository.save(reserva);
     }
 
@@ -265,7 +269,7 @@ public class ReservaService {
     }
 
     @Transactional
-    public void generarReservaArticulo(Reserva reserva, List<VoucherProducto> voucherProductos) {
+    public void generarReservaArticulo(Reserva reserva, List<VoucherProducto> voucherProductos, Track track) {
         Empresa empresa = empresaService.findTop();
         // Proceso que depura los artículos a eliminar y agregar
         // Para eliminar parto de todos los que ya están guardados y sacaré los que hay que guardar que ya estaban, los que queden serán eliminados
@@ -304,7 +308,9 @@ public class ReservaService {
                     .precioUnitarioSinComision(precioArticulo)
                     .articulo(articulo)
                     .build());
-
+            if (track != null) {
+                reservaArticulos.getLast().setTrackUuid(track.getUuid());
+            }
         }
         reservaArticulos = reservaArticuloService.saveAll(reservaArticulos);
 

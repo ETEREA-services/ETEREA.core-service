@@ -8,6 +8,7 @@ import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.PosicionIva;
+import eterea.core.service.model.Snapshot;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -45,6 +46,7 @@ public class MakeFacturaProgramaDiaService {
     private final Environment environment;
     private final VoucherService voucherService;
     private final FacturacionService facturacionService;
+    private final TrackService trackService;
 
     public MakeFacturaProgramaDiaService(ComprobanteService comprobanteService,
                                          ReservaService reservaService,
@@ -60,7 +62,7 @@ public class MakeFacturaProgramaDiaService {
                                          MakeFacturaReportClient makeFacturaReportClient,
                                          Environment environment,
                                          VoucherService voucherService,
-                                         FacturacionService facturacionService) {
+                                         FacturacionService facturacionService, TrackService trackService) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;
@@ -76,9 +78,11 @@ public class MakeFacturaProgramaDiaService {
         this.environment = environment;
         this.voucherService = voucherService;
         this.facturacionService = facturacionService;
+        this.trackService = trackService;
     }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId) {
+        var track = trackService.startTracking("factura-reserva");
         Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
         if (comprobante.getFacturaElectronica() == 0) {
             return false;
@@ -113,6 +117,11 @@ public class MakeFacturaProgramaDiaService {
         var idPosicionIvaArca = 5;
         if (posicionIva != null) {
             idPosicionIvaArca = posicionIva.getIdPosicionIvaArca();
+        }
+
+        // Excepción propia de TSA
+        if (idPosicionIvaArca == 6) {
+            idPosicionIvaArca = 5;
         }
 
         int tipoDocumento = 80;
@@ -203,8 +212,9 @@ public class MakeFacturaProgramaDiaService {
 
         logFacturacionDto(facturacionDto);
 
+        Snapshot snapshot = null;
         try {
-            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto);
+            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto, track, snapshot);
             log.debug("After makeFactura");
             logFacturacionDto(facturacionDto);
         } catch (WebClientResponseException e) {
@@ -252,24 +262,32 @@ public class MakeFacturaProgramaDiaService {
                 .tipoDocumento(facturacionDto.getTipoDocumento())
                 .numeroDocumento(new BigDecimal(facturacionDto.getDocumento()))
                 .build();
-        registroCae = registroCaeService.add(registroCae);
+        registroCae = registroCaeService.add(registroCae, track);
         logRegistroCae(registroCae);
 
-        ClienteMovimiento clienteMovimiento = facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext);
+        ClienteMovimiento clienteMovimiento = null;
+        try {
+            clienteMovimiento = facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext, track, snapshot);
+            track = trackService.endTracking(track);
+        } catch (Exception e) {
+            track = trackService.failedTracking(track);
+        }
 
-        var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
-        if (enableSendEmail) {
-            if (clienteMovimiento.getClienteMovimientoId() != null) {
-                logReservaContext(reservaContext);
+        if (clienteMovimiento != null) {
+            var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
+            if (enableSendEmail) {
+                if (clienteMovimiento.getClienteMovimientoId() != null) {
+                    logReservaContext(reservaContext);
 
-                try {
-                    reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
-                    log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), "daniel.quinterospinto@gmail.com"));
-                    reservaContext.setEnvioPendiente((byte) 0);
-                    reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-                    return true;
-                } catch (MessagingException e) {
-                    reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                    try {
+                        reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
+                        log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), "daniel.quinterospinto@gmail.com"));
+                        reservaContext.setEnvioPendiente((byte) 0);
+                        reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                        return true;
+                    } catch (MessagingException e) {
+                        reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                    }
                 }
             }
         }
