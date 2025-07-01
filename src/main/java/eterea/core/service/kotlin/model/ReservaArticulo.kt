@@ -42,6 +42,8 @@ data class ReservaArticulo(
     @Column(name = "rar_observaciones")
     var observaciones: String = "",
 
+    var trackUuid: String? = null,
+
     @OneToOne(optional = true)
     @JoinColumn(name = "rar_art_id", insertable = false, updatable = false)
     var articulo: Articulo? = null
@@ -59,6 +61,7 @@ data class ReservaArticulo(
         var precioUnitario: BigDecimal = BigDecimal.ZERO,
         var precioCompra: BigDecimal = BigDecimal.ZERO,
         var observaciones: String = "",
+        var trackUuid: String? = null,
         var articulo: Articulo? = null,
     ) {
         fun reservaArticuloId(reservaArticuloId: Long?) = apply { this.reservaArticuloId = reservaArticuloId }
@@ -74,11 +77,23 @@ data class ReservaArticulo(
         fun precioUnitario(precioUnitario: BigDecimal) = apply { this.precioUnitario = precioUnitario }
         fun precioCompra(precioCompra: BigDecimal) = apply { this.precioCompra = precioCompra }
         fun observaciones(observaciones: String) = apply { this.observaciones = observaciones }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
         fun articulo(articulo: Articulo?) = apply {this.articulo = articulo}
 
         fun build() = ReservaArticulo(
-            reservaArticuloId, negocioId, reservaId, voucherId, articuloId, cantidad, comision,
-            precioUnitarioSinComision, precioUnitario, precioCompra, observaciones, articulo
+            reservaArticuloId,
+            negocioId,
+            reservaId,
+            voucherId,
+            articuloId,
+            cantidad,
+            comision,
+            precioUnitarioSinComision,
+            precioUnitario,
+            precioCompra,
+            observaciones,
+            trackUuid,
+            articulo
         )
     }
 }

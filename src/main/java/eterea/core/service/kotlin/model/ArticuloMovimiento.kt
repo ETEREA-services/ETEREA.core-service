@@ -88,6 +88,8 @@ data class ArticuloMovimiento(
     @Column(name = "dea_comision")
     var comision: BigDecimal? = BigDecimal.ZERO,
 
+    var trackUuid: String? = null,
+
     @Transient
     var total: BigDecimal? = BigDecimal.ZERO,
 
@@ -123,6 +125,7 @@ data class ArticuloMovimiento(
         var precioValuacion: BigDecimal? = BigDecimal.ZERO
         var mozoId: Long = 0
         var comision: BigDecimal? = BigDecimal.ZERO
+        var trackUuid: String? = null
         var total: BigDecimal? = BigDecimal.ZERO
         var articulo: Articulo? = null
 
@@ -159,6 +162,7 @@ data class ArticuloMovimiento(
         fun precioValuacion(precioValuacion: BigDecimal?) = apply { this.precioValuacion = precioValuacion }
         fun mozoId(mozoId: Long) = apply { this.mozoId = mozoId }
         fun comision(comision: BigDecimal?) = apply { this.comision = comision }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
         fun total(total: BigDecimal?) = apply { this.total = total }
         fun articulo(articulo: Articulo?) = apply { this.articulo = articulo }
 
@@ -166,7 +170,11 @@ data class ArticuloMovimiento(
             articuloMovimientoId, clienteMovimientoId, stockMovimientoId, tenenciaMovimientoId, centroStockId,
             comprobanteId, item, articuloId, negocioId, cantidad, precioUnitario, precioUnitarioSinIva,
             precioUnitarioConIva, numeroCuenta, iva105, exento, fechaMovimiento, fechaFactura, nivel, cierreCajaId,
-            cierreRestaurantId, precioCompra, precioValuacion, mozoId, comision, total, articulo
+            cierreRestaurantId, precioCompra, precioValuacion, mozoId,
+            comision,
+            trackUuid,
+            total,
+            articulo
         )
     }
 }

@@ -67,7 +67,9 @@ data class RegistroCae(
     var numeroDocumento: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "cliente_movimiento_id_asociado")
-    var clienteMovimientoIdAsociado: Long? = null
+    var clienteMovimientoIdAsociado: Long? = null,
+
+    var trackUuid: String? = null
 
 ) : Auditable() {
 
@@ -91,6 +93,7 @@ data class RegistroCae(
         var tipoDocumento: Int? = null
         var numeroDocumento: BigDecimal = BigDecimal.ZERO
         var clienteMovimientoIdAsociado: Long? = null
+        var trackUuid: String? = null
 
         fun registroCaeId(registroCaeId: Long?) = apply { this.registroCaeId = registroCaeId }
         fun comprobanteId(comprobanteId: Int?) = apply { this.comprobanteId = comprobanteId }
@@ -112,10 +115,29 @@ data class RegistroCae(
         fun numeroDocumento(numeroDocumento: BigDecimal) = apply { this.numeroDocumento = numeroDocumento }
         fun clienteMovimientoIdAsociado(clienteMovimientoIdAsociado: Long?) =
             apply { this.clienteMovimientoIdAsociado = clienteMovimientoIdAsociado }
+        fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
 
         fun build() = RegistroCae(
-            registroCaeId, comprobanteId, puntoVenta, numeroComprobante, clienteId, cuit, total, exento, neto, neto105,
-            iva, iva105, cae, fecha, caeVencimiento, barras, tipoDocumento, numeroDocumento, clienteMovimientoIdAsociado
+            registroCaeId,
+            comprobanteId,
+            puntoVenta,
+            numeroComprobante,
+            clienteId,
+            cuit,
+            total,
+            exento,
+            neto,
+            neto105,
+            iva,
+            iva105,
+            cae,
+            fecha,
+            caeVencimiento,
+            barras,
+            tipoDocumento,
+            numeroDocumento,
+            clienteMovimientoIdAsociado,
+            trackUuid
         )
     }
 }

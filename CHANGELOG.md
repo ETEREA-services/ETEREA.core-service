@@ -5,6 +5,17 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.2.0] - 2025-07-01
+
+### Added
+- **Módulo Snapshot:** Implementado para registrar estados de transacciones clave del sistema.
+
+### Changed
+- **Dependencias:** Actualizadas las versiones de Spring Boot (3.5.3), Spring Cloud (2025.0.0), Kotlin (2.1.21), OpenPDF (2.2.3), SpringDoc OpenAPI (2.8.9) y ModelMapper (3.2.4).
+- **Documentación:** Actualizado `README.md` y `CHANGELOG.md` para reflejar los nuevos cambios y versiones.
+
 ## [0.1.0] - 2025-06-30
 
 ### Added

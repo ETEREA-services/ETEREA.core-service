@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
+import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -24,17 +25,22 @@ public class ContabilidadService {
     private final ValorMovimientoService valorMovimientoService;
     private final ParametroService parametroService;
     private final ComprobanteService comprobanteService;
+    private final TrackService trackService;
 
-    public ContabilidadService(CuentaMovimientoService cuentaMovimientoService, ClienteMovimientoService clienteMovimientoService, ValorMovimientoService valorMovimientoService, ParametroService parametroService, ComprobanteService comprobanteService) {
+    public ContabilidadService(CuentaMovimientoService cuentaMovimientoService, ClienteMovimientoService clienteMovimientoService, ValorMovimientoService valorMovimientoService, ParametroService parametroService, ComprobanteService comprobanteService, TrackService trackService) {
         this.cuentaMovimientoService = cuentaMovimientoService;
         this.clienteMovimientoService = clienteMovimientoService;
         this.valorMovimientoService = valorMovimientoService;
         this.parametroService = parametroService;
         this.comprobanteService = comprobanteService;
+        this.trackService = trackService;
     }
 
     @Transactional
-    public List<CuentaMovimiento> registraContabilidadProgramaDia(ClienteMovimiento clienteMovimiento, ValorMovimiento valorMovimiento, Valor valor, List<ArticuloMovimiento> articuloMovimientos, FacturacionDto facturacionDTO, Comprobante comprobante, Parametro parametro) {
+    public List<CuentaMovimiento> registraContabilidadProgramaDia(ClienteMovimiento clienteMovimiento, ValorMovimiento valorMovimiento, Valor valor, List<ArticuloMovimiento> articuloMovimientos, FacturacionDto facturacionDTO, Comprobante comprobante, Parametro parametro, Track track) {
+        if (track == null) {
+            track = trackService.startTracking("registra-contabilidad-programa-dia");
+        }
         List<CuentaMovimiento> cuentaMovimientos = new ArrayList<>();
         int ordenContable = cuentaMovimientoService.nextOrdenContable(clienteMovimiento.getFechaComprobante());
         // Agrego asiento contable a clienteMovimiento
@@ -60,6 +66,7 @@ public class ContabilidadService {
                 .clienteId(clienteMovimiento.getClienteId())
                 .subrubroId(2L)
                 .concepto(concepto)
+                .trackUuid(track.getUuid())
                 .build());
         // Registro iva 21
         if (facturacionDTO.getIva().compareTo(BigDecimal.ZERO) > 0) {
@@ -75,6 +82,7 @@ public class ContabilidadService {
                     .clienteId(clienteMovimiento.getClienteId())
                     .subrubroId(2L)
                     .concepto(concepto)
+                    .trackUuid(track.getUuid())
                     .build());
         }
         // Registro iva 10.5
@@ -91,6 +99,7 @@ public class ContabilidadService {
                     .clienteId(clienteMovimiento.getClienteId())
                     .subrubroId(2L)
                     .concepto(concepto)
+                    .trackUuid(track.getUuid())
                     .build());
         }
         // Registro de artículos
@@ -108,6 +117,7 @@ public class ContabilidadService {
                     .clienteId(clienteMovimiento.getClienteId())
                     .subrubroId(2L)
                     .concepto(concepto)
+                    .trackUuid(track.getUuid())
                     .articuloMovimientoId(articuloMovimiento.getArticuloMovimientoId())
                     .build());
         }
