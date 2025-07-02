@@ -36,7 +36,6 @@ public class ContabilidadService {
         this.trackService = trackService;
     }
 
-    @Transactional
     public List<CuentaMovimiento> registraContabilidadProgramaDia(ClienteMovimiento clienteMovimiento, ValorMovimiento valorMovimiento, Valor valor, List<ArticuloMovimiento> articuloMovimientos, FacturacionDto facturacionDTO, Comprobante comprobante, Parametro parametro, Track track) {
         if (track == null) {
             track = trackService.startTracking("registra-contabilidad-programa-dia");

@@ -55,7 +55,7 @@ public class VouchersService {
         this.trackService = trackService;
     }
 
-    public ProgramaDiaDto importOneFromWeb(Long orderNumberId) {
+    public ProgramaDiaDto importOneFromWeb(Long orderNumberId, Track track) {
         log.debug("Processing importOneFromWeb");
         OrderNote orderNote = getOrderNoteById(orderNumberId);
         if (orderNote == null || !isOrderCompleted(orderNote)) {
@@ -78,7 +78,7 @@ public class VouchersService {
 
         Product product = orderNote.getProducts().getFirst();
         assert product != null;
-        return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findTop().getNegocioId()));
+        return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findTop().getNegocioId()), track);
     }
 
     private OrderNote getOrderNoteById(Long orderNumberId) {
@@ -116,20 +116,20 @@ public class VouchersService {
         return new ProgramaDiaDto.Builder().errorMessage(message).build();
     }
 
-    private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio) {
+    private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio, Track track) {
         log.debug("Processing processProduct");
         switch (product.getSku()) {
             case "parque_termal":
             case "tarde_termaspa":
-                return facturaUnProducto(orderNote, 130, 475, product, negocio);
+                return facturaUnProducto(orderNote, 130, 475, product, negocio, track);
             case "termaspa_fullday":
                 if (product.getServiciosAdicionales().isEmpty()) {
-                    return facturaUnProducto(orderNote, 130, 475, product, negocio);
+                    return facturaUnProducto(orderNote, 130, 475, product, negocio, track);
                 }
                 break;
             case "parque_termal_traslado":
                 if (product.getServiciosAdicionales().isEmpty()) {
-                    return facturaUnProducto(orderNote, 31, 475, product, negocio);
+                    return facturaUnProducto(orderNote, 31, 475, product, negocio, track);
                 }
                 break;
         }
@@ -233,9 +233,11 @@ public class VouchersService {
     }
 
     @Transactional
-    public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio) {
+    public ProgramaDiaDto facturaUnProducto(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio, Track track) {
         log.debug("Processing facturaUnProducto");
-        var track = trackService.startTracking("factura-un-producto");
+        if (track == null) {
+            track = trackService.startTracking("factura-un-producto");
+        }
         String fullName = orderNote.getBillingLastName().toUpperCase() + ", " + orderNote.getBillingFirstName().toUpperCase();
         var cliente = determinaCliente(orderNote, fullName, negocio);
         OffsetDateTime fechaServicio = product.getBookingStart();

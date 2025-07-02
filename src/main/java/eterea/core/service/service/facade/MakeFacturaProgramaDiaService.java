@@ -9,6 +9,7 @@ import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.PosicionIva;
 import eterea.core.service.model.Snapshot;
+import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -81,8 +82,10 @@ public class MakeFacturaProgramaDiaService {
         this.trackService = trackService;
     }
 
-    public boolean facturaReserva(Long reservaId, Integer comprobanteId) {
-        var track = trackService.startTracking("factura-reserva");
+    public boolean facturaReserva(Long reservaId, Integer comprobanteId, Track track) {
+        if (track == null) {
+            track = trackService.startTracking("factura-reserva");
+        }
         Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
         if (comprobante.getFacturaElectronica() == 0) {
             return false;
@@ -212,9 +215,8 @@ public class MakeFacturaProgramaDiaService {
 
         logFacturacionDto(facturacionDto);
 
-        Snapshot snapshot = null;
         try {
-            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto, track, snapshot);
+            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto, track);
             log.debug("After makeFactura");
             logFacturacionDto(facturacionDto);
         } catch (WebClientResponseException e) {
@@ -267,7 +269,7 @@ public class MakeFacturaProgramaDiaService {
 
         ClienteMovimiento clienteMovimiento = null;
         try {
-            clienteMovimiento = facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext, track, snapshot);
+            clienteMovimiento = facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext, track);
             track = trackService.endTracking(track);
         } catch (Exception e) {
             track = trackService.failedTracking(track);

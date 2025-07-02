@@ -8,7 +8,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.9-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.3.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.2.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.3.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -22,6 +22,8 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 - Facturación electrónica
 - Gestión de Posiciones IVA
 - **Módulo de Snapshots para el registro de transacciones**
+- **Implementación de HATEOAS**
+- **Sistema de replicación de códigos de barras**
 
 ## Stack Tecnológico
 
@@ -133,6 +135,8 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - Integración con Eureka Service Discovery
 - Gestión de Posiciones IVA
 - **Módulo de Snapshots**
+- **Implementación de HATEOAS**
+- **Sistema de replicación de códigos de barras**
 
 ## Notas Importantes
 
