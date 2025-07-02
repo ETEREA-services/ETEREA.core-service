@@ -32,20 +32,18 @@ public class FacturacionElectronicaService {
         this.trackService = trackService;
     }
 
-    public FacturacionDto makeFactura(FacturacionDto facturacionDto, Track track, Snapshot snapshot) {
+    public FacturacionDto makeFactura(FacturacionDto facturacionDto, Track track) {
         log.debug("Processing FactuacionElectronicaService.makeFactura");
         var json = logFacturacion(facturacionDto);
         if (track == null) {
             track = trackService.startTracking("make-factura");
         }
-        snapshot = Snapshot.builder()
+        var snapshot = Snapshot.builder()
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("make-factura-facturacion-pre")
                 .payload(json)
+                .previousUuid(null)
                 .build();
-        if (snapshot != null) {
-            snapshot.setPreviousUuid(snapshot.getUuid());
-        }
         logSnapshot(snapshot);
         snapshot = snapshotService.add(snapshot, track);
         logSnapshot(snapshot);

@@ -63,8 +63,7 @@ public class FacturacionService {
         this.trackService = trackService;
     }
 
-    @Transactional
-    public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext, Track track, Snapshot snapshot) {
+    public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext, Track track) {
         if (track == null) {
             track = trackService.startTracking("transaccion-factura-programa-dia");
         }
@@ -178,14 +177,12 @@ public class FacturacionService {
         }
         programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
 
-        snapshot = Snapshot.builder()
+        var snapshot = Snapshot.builder()
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("transaccion-factura-programa-dia-pre")
                 .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
+                .previousUuid(null)
                 .build();
-        if (snapshot != null) {
-            snapshot.setPreviousUuid(track.getUuid());
-        }
         snapshot = snapshotService.add(snapshot, track);
 
         // Comienza registro en la db
