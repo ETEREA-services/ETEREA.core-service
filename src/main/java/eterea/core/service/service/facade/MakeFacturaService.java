@@ -491,11 +491,14 @@ public class MakeFacturaService {
                return clienteMovimiento.getClienteMovimientoId();
             } catch (MessagingException e) {
                log.debug("Error sending email", e);
+            } catch (FeignException e) {
+               log.error("Error al enviar correo para factura={} correspondiente a reserva {}",
+                     clienteMovimiento.getClienteMovimientoId(), reserva.getReservaId());
             }
          }
       }
 
-      return null;
+      return clienteMovimiento.getClienteMovimientoId();
    }
 
    private void logFacturacionDto(FacturacionDto facturacionDto) {
