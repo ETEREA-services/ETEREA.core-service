@@ -144,7 +144,11 @@ public class MakeFacturaService {
       logCliente(cliente);
       PosicionIva posicionIva = cliente.getPosicion();
       var idPosicionIvaArca = 5;
-      if (posicionIva != null && posicionIva.getIdPosicionIvaArca() != null) {
+      // Ignora posicion_iva_arca=6, que es para monotributistas pero falla al hacer
+      // Factura B, por eso lo dejamos como
+      // consumidor final (5)
+      if (posicionIva != null && posicionIva.getIdPosicionIvaArca() != null
+            && posicionIva.getIdPosicionIvaArca() != 6) {
          idPosicionIvaArca = posicionIva.getIdPosicionIvaArca();
       }
 
@@ -204,8 +208,10 @@ public class MakeFacturaService {
                .reservaId(reserva.getReservaId())
                .voucherId(reserva.getVoucherId())
                .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
-               .facturaPendiente((byte) 1)
-               .envioPendiente((byte) 1)
+               // TODO: TEMPORAL, por ahora todas las cargadas por eterea online
+               // cargan reserva_context con facturaPendiente=0 y envioPendiente=0
+               .facturaPendiente((byte) 0)
+               .envioPendiente((byte) 0)
                .build();
          reservaContext = reservaContextService.add(reservaContext);
       }
@@ -352,7 +358,11 @@ public class MakeFacturaService {
       logCliente(cliente);
       PosicionIva posicionIva = cliente.getPosicion();
       var idPosicionIvaArca = 5;
-      if (posicionIva != null && posicionIva.getIdPosicionIvaArca() != null) {
+      // Ignora posicion_iva_arca=6, que es para monotributistas pero falla al hacer
+      // Factura B, por eso lo dejamos como
+      // consumidor final (5)
+      if (posicionIva != null && posicionIva.getIdPosicionIvaArca() != null
+            && posicionIva.getIdPosicionIvaArca() != 6) {
          idPosicionIvaArca = posicionIva.getIdPosicionIvaArca();
       }
 
