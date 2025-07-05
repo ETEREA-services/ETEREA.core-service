@@ -1,0 +1,48 @@
+classDiagram
+    direction LR
+
+    class ClienteController {
+        +findAllBySearch(String): ResponseEntity
+        +findByClienteId(Long): ResponseEntity
+        +findByNumeroDocumento(String): ResponseEntity
+        +findLast(): ResponseEntity
+        +add(Cliente): ResponseEntity
+    }
+
+    class ClienteService {
+        +findAllBySearch(String): List~ClienteSearch~
+        +findByClienteId(Long): Cliente
+        +findByNumeroDocumento(String): Cliente
+        +findLast(): Cliente
+        +add(Cliente): Cliente
+    }
+
+    class ClienteRepository {
+        +findByClienteId(Long): Optional~Cliente~
+        +findTopByNumeroDocumento(String): Optional~Cliente~
+        +findTopByOrderByClienteIdDesc(): Optional~Cliente~
+        +save(Cliente): Cliente
+    }
+
+    class Cliente {
+        <<Kotlin Data Class>>
+        +clienteId: Long
+        +nombre: String
+        +cuit: String
+        +razonSocial: String
+        +email: String
+        +numeroMovil: String
+        +limiteCredito: BigDecimal
+        +posicionIva: Int
+        +posicion: PosicionIva
+    }
+
+    class PosicionIva {
+        +posicionId: Integer
+        +nombre: String
+    }
+
+    ClienteController --> ClienteService
+    ClienteService --> ClienteRepository
+    ClienteRepository --> Cliente
+    Cliente "1" -- "1" PosicionIva

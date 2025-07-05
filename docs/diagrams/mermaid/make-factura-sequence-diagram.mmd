@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant C as Cliente
+    participant API as "API REST (ComprobanteController)"
+    participant SVC as "Servicio (ComprobanteService)"
+    participant REPO as "Repositorio (ComprobanteRepository)"
+    participant DB as "Base de Datos"
+
+    C->>+API: POST /api/comprobantes (datos de la factura)
+    API->>+SVC: crearFactura(comprobanteDTO)
+    SVC->>+REPO: save(comprobante)
+    REPO->>+DB: INSERT en Comprobantes, etc.
+    DB-->>-REPO: Comprobante con ID
+    REPO-->>-SVC: Comprobante guardado
+    SVC-->>-API: Comprobante guardado
+    API-->>-C: 201 Created (factura con ID)

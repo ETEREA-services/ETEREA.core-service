@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User as "Usuario/Cliente API"
+    participant RC as "ReservaController"
+    participant RS as "ReservaService"
+    participant RR as "ReservaRepository"
+    participant DB as "Base de Datos"
+
+    User->>+RC: POST /api/core/reserva (body: Reserva)
+    RC->>+RS: add(reserva, track)
+    RS->>+RR: save(reserva)
+    RR->>+DB: INSERT INTO reservas (...)
+    DB-->>-RR: Reserva (con ID generado)
+    RR-->>-RS: Reserva guardada
+    RS-->>-RC: Reserva guardada
+    RC-->>-User: 200 OK (body: Reserva)
