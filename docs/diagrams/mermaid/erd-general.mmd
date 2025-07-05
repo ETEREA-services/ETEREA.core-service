@@ -1,0 +1,68 @@
+erDiagram
+    CLIENTE ||--o{ RESERVA : "realiza"
+    CLIENTE ||--o{ COMPROBANTE : "recibe"
+    
+    RESERVA ||--|{ HABITacion : "ocupa"
+    RESERVA }o--|| HOTEL : "es en"
+    RESERVA ||--o{ ARTICULO_MOVIMIENTO : "genera"
+
+    COMPROBANTE ||--|{ ARTICULO_MOVIMIENTO : "detalla"
+    
+    ARTICULO_MOVIMIENTO }o--|| ARTICULO : "mueve"
+    
+    INVENTARIO ||--|{ ARTICULO : "registra stock de"
+
+    CLIENTE {
+        Long clienteId PK
+        String nombre
+        String cuit
+        String email
+    }
+
+    RESERVA {
+        Long reservaId PK
+        Long clienteId FK
+        Int hotelId FK
+        OffsetDateTime fechaInServicio
+        OffsetDateTime fechaOutServicio
+        Int cantidadPaxs
+    }
+
+    HABITACION {
+        Int numero PK
+        Long reservaId FK
+    }
+
+    HOTEL {
+        Int hotelId PK
+        String nombre
+    }
+
+    COMPROBANTE {
+        Long comprobanteId PK
+        Long clienteId FK
+        Date fecha
+        BigDecimal total
+    }
+
+    ARTICULO_MOVIMIENTO {
+        Long articuloMovimientoId PK
+        String articuloId FK
+        Long comprobanteId FK
+        Long reservaId FK
+        BigDecimal cantidad
+        BigDecimal precioUnitario
+    }
+
+    ARTICULO {
+        String articuloId PK
+        String descripcion
+        BigDecimal precioVentaConIva
+    }
+
+    INVENTARIO {
+        Long inventarioId PK
+        String articuloId FK
+        OffsetDateTime fecha
+        BigDecimal conteo
+    }

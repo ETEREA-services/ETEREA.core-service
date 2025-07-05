@@ -1,0 +1,328 @@
+name: Generate Documentation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  issues: read
+  pull-requests: read
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Generate Dependency Tree
+        run: mvn dependency:tree -DoutputFile=docs/dependency-tree.txt
+
+      - name: Generate Project Documentation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Fetching project information from GitHub API..."
+          curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/milestones" > milestones.json
+          curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/issues?state=all&per_page=100" > issues.json
+          curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/pulls?state=all&per_page=100" > prs.json
+          
+          cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="es">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Eterea Core Service - Documentación del Proyecto</title>
+              <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+              <style>
+                  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f5f5f5; }
+                  a { color: #667eea; text-decoration: none; }
+                  a:hover { text-decoration: underline; }
+                  .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                  .section { background: white; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                  .item { background: #f8f9fa; padding: 1rem; margin: 0.5rem 0; border-left: 4px solid #667eea; border-radius: 4px; }
+                  .label { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.85rem; margin-right: 0.5rem; color: black; }
+                  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+                  .stat-card { background: white; padding: 1.5rem; border-radius: 8px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                  .stat-number { font-size: 2rem; font-weight: bold; color: #667eea; }
+                  .progress-bar { width: 100%; height: 20px; background: #e9ecef; border-radius: 10px; overflow: hidden; }
+                  .progress-fill { height: 100%; background: #28a745; transition: width 0.3s ease; }
+                  pre { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 1rem; white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; }
+              </style>
+          </head>
+          <body>
+              <div class="header">
+                  <h1>📋 Eterea Core Service - Documentación del Proyecto</h1>
+                  <p>Servicio encargado de la lógica de negocio central de Eterea.</p>
+                  <p>Última actualización: <span id="update-date"></span></p>
+              </div>
+              <div id="stats" class="stats"></div>
+
+              <div class="section">
+                  <h2>Arquitectura General</h2>
+                  <div id="component-diagram"></div>
+                  <div id="erd-general" style="margin-top: 2rem;"></div>
+              </div>
+
+              <div class="section">
+                  <h2>Dominio: Facturación</h2>
+                  <div id="make-factura-class-diagram"></div>
+                  <div id="make-factura-sequence-diagram" style="margin-top: 2rem;"></div>
+              </div>
+
+              <div class="section">
+                  <h2>Dominio: Gestión de Clientes</h2>
+                  <div id="cliente-class-diagram"></div>
+                  <div id="cliente-sequence-diagram" style="margin-top: 2rem;"></div>
+              </div>
+
+              <div class="section">
+                  <h2>Dominio: Gestión de Artículos y Stock</h2>
+                  <div id="articulo-class-diagram"></div>
+                  <div id="inventario-sequence-diagram" style="margin-top: 2rem;"></div>
+              </div>
+
+              <div class="section">
+                  <h2>Dominio: Gestión de Reservas de Hotel</h2>
+                  <div id="reserva-class-diagram"></div>
+                  <div id="reserva-sequence-diagram" style="margin-top: 2rem;"></div>
+              </div>
+              
+              <div id="dependencies" class="section">
+                  <h2>🌳 Grafo de Dependencias</h2>
+                  <p>El siguiente es el árbol de dependencias completo del proyecto, generado por Maven.</p>
+                  <pre id="dependency-tree-content">Cargando...</pre>
+              </div>
+              <div id="milestones" class="section"></div>
+              <div id="pull-requests" class="section"></div>
+              
+              <script>mermaid.initialize({startOnLoad:true});</script>
+              <script>
+                  document.getElementById('update-date').textContent = new Date().toLocaleString('es-AR');
+              </script>
+          </body>
+          </html>
+          EOF
+          
+          cat > docs/data.js << EOF
+          const milestonesData = $(cat milestones.json);
+          const issuesData = $(cat issues.json);
+          const prsData = $(cat prs.json);
+          EOF
+          
+          cat >> docs/index.html << 'EOF'
+          <script src="data.js"></script>
+          <script>
+              document.addEventListener('DOMContentLoaded', async () => {
+                  // --- Dependency Tree ---
+                  try {
+                      const depResponse = await fetch('dependency-tree.txt');
+                      const depData = await depResponse.text();
+                      document.getElementById('dependency-tree-content').textContent = depData;
+                  } catch (error) {
+                      document.getElementById('dependency-tree-content').textContent = 'Error al cargar el árbol de dependencias.';
+                      console.error('Error fetching dependency tree:', error);
+                  }
+
+                  // --- Statistics ---
+                  const totalIssues = issuesData.length;
+                  const openIssues = issuesData.filter(i => i.state === 'open').length;
+                  const closedIssues = issuesData.filter(i => i.state === 'closed').length;
+                  const progress = totalIssues > 0 ? Math.round((closedIssues / totalIssues) * 100) : 0;
+                  const statsHTML = `
+                      <div class="stat-card"><div class="stat-number">${totalIssues}</div><div>Total Issues</div></div>
+                      <div class="stat-card"><div class="stat-number">${openIssues}</div><div>Issues Abiertos</div></div>
+                      <div class="stat-card"><div class="stat-number">${closedIssues}</div><div>Issues Cerrados</div></div>
+                      <div class="stat-card"><div class="stat-number">${progress}%</div><div>Progreso</div><div class="progress-bar" style="margin-top: 10px;"><div class="progress-fill" style="width: ${progress}%"></div></div></div>
+                  `;
+                  document.getElementById('stats').innerHTML = statsHTML;
+
+                  // --- Diagrams ---
+                  const diagramConfigs = [
+                      // General Architecture
+                      { id: 'component-diagram', path: 'diagrams/mermaid/component-diagram.mmd', title: '🏛️ Diagrama de Componentes' },
+                      { id: 'erd-general', path: 'diagrams/mermaid/erd-general.mmd', title: '🌐 Diagrama de Entidad-Relación General' },
+                      // Billing Domain
+                      { id: 'make-factura-class-diagram', path: 'diagrams/mermaid/make-factura-class-diagram.mmd', title: 'UML Diagrama de Clases de Facturación' },
+                      { id: 'make-factura-sequence-diagram', path: 'diagrams/mermaid/make-factura-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Factura' },
+                      // Customer Domain
+                      { id: 'cliente-class-diagram', path: 'diagrams/mermaid/cliente-class-diagram.mmd', title: 'UML Diagrama de Clases de Clientes' },
+                      { id: 'cliente-sequence-diagram', path: 'diagrams/mermaid/cliente-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Cliente' },
+                      // Stock Domain
+                      { id: 'articulo-class-diagram', path: 'diagrams/mermaid/articulo-class-diagram.mmd', title: 'UML Diagrama de Clases de Artículos' },
+                      { id: 'inventario-sequence-diagram', path: 'diagrams/mermaid/inventario-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Registro de Inventario' },
+                      // Hotel Booking Domain
+                      { id: 'reserva-class-diagram', path: 'diagrams/mermaid/reserva-class-diagram.mmd', title: 'UML Diagrama de Clases de Reservas' },
+                      { id: 'reserva-sequence-diagram', path: 'diagrams/mermaid/reserva-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Reserva' }
+                  ];
+
+                  // Insert titles and mermaid divs first
+                  diagramConfigs.forEach(config => {
+                      const container = document.getElementById(config.id);
+                      if (container) {
+                          container.innerHTML = `<h2>${config.title}</h2><div class="mermaid" id="mermaid-${config.id}">Cargando diagrama...</div>`;
+                      }
+                  });
+
+                  // Fetch all diagram contents in parallel
+                  try {
+                      const responses = await Promise.all(diagramConfigs.map(config => fetch(config.path)));
+                      const texts = await Promise.all(responses.map(res => res.text()));
+
+                      // Populate divs with fetched content
+                      texts.forEach((text, index) => {
+                          const config = diagramConfigs[index];
+                          const mermaidContainer = document.getElementById(`mermaid-${config.id}`);
+                          if (mermaidContainer) {
+                              mermaidContainer.textContent = text;
+                          }
+                      });
+
+                      // Now, render all diagrams at once
+                      await mermaid.run();
+
+                  } catch (error) {
+                      console.error('Error loading or rendering diagrams:', error);
+                      diagramConfigs.forEach(config => {
+                          const mermaidContainer = document.getElementById(`mermaid-${config.id}`);
+                          if (mermaidContainer) {
+                              mermaidContainer.textContent = `Error al cargar el diagrama desde ${config.path}.`;
+                          }
+                      });
+                  }
+
+                  // --- Milestones ---
+                  let milestonesHTML = '<h2>🎯 Milestones</h2>';
+                  if (milestonesData.length > 0) {
+                      milestonesData.forEach(milestone => {
+                          const milestoneIssues = issuesData.filter(i => i.milestone && i.milestone.id === milestone.id);
+                          const openCount = milestoneIssues.filter(i => i.state === 'open').length;
+                          const totalCount = milestoneIssues.length;
+                          milestonesHTML += `
+                              <div class="section">
+                                  <h3><a href="${milestone.html_url}" target="_blank">${milestone.title}</a></h3>
+                                  <p>${milestone.description || 'Sin descripción'}</p>
+                                  <p><strong>Fecha límite:</strong> ${milestone.due_on ? new Date(milestone.due_on).toLocaleDateString('es-AR') : 'No definida'}</p>
+                                  <p><strong>Progreso:</strong> ${totalCount - openCount} de ${totalCount} completados</p>
+                                  <div class="progress-bar"><div class="progress-fill" style="width: ${totalCount > 0 ? ((totalCount - openCount) / totalCount * 100) : 0}%"></div></div>
+                                  <h4>Issues:</h4>
+                                  ${milestoneIssues.map(issue => `
+                                      <div class="item">
+                                          <strong><a href="${issue.html_url}" target="_blank">#${issue.number} - ${issue.title}</a></strong>
+                                          ${issue.labels.map(label => `<span class="label" style="background-color: #${label.color};">${label.name}</span>`).join('')}
+                                          <span style="float: right; color: ${issue.state === 'open' ? '#dc3545' : '#28a745'}">${issue.state === 'open' ? '🔴 Abierto' : '✅ Cerrado'}</span>
+                                      </div>
+                                  `).join('')}
+                              </div>
+                          `;
+                      });
+                  } else {
+                      milestonesHTML += '<p>No hay milestones definidos para este proyecto.</p>';
+                  }
+                  document.getElementById('milestones').innerHTML = milestonesHTML;
+
+                  // --- Pull Requests ---
+                  let prsHTML = '<h2>🔄 Pull Requests</h2>';
+                  if (prsData.length > 0) {
+                      prsData.forEach(pr => {
+                          prsHTML += `
+                              <div class="item">
+                                  <strong><a href="${pr.html_url}" target="_blank">#${pr.number} - ${pr.title}</a></strong>
+                                  <p style="margin: 0; font-size: 0.9rem;">Creado por: ${pr.user.login}</p>
+                                  <span style="float: right; color: ${pr.state === 'open' ? '#dc3545' : '#28a745'}">${pr.state === 'open' ? '🔴 Abierto' : '✅ Cerrado'}</span>
+                              </div>
+                          `;
+                      });
+                  } else {
+                      prsHTML += '<p>No hay Pull Requests para mostrar.</p>';
+                  }
+                  document.getElementById('pull-requests').innerHTML = prsHTML;
+              });
+          </script>
+          EOF
+
+      - name: Generate Wiki Content
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          
+          git clone https://github.com/${{ github.repository }}.wiki.git wiki || {
+              mkdir wiki
+              cd wiki
+              git init
+              git remote add origin https://github.com/${{ github.repository }}.wiki.git
+              git checkout -b master
+              cd ..
+          }
+          
+          cd wiki
+          
+          # Create a simple Home.md as a portal
+          cat > Home.md << EOF
+          # 📋 Wiki del Proyecto Eterea Core Service
+
+          Esta wiki sirve como un portal de acceso rápido a los recursos más importantes del proyecto.
+          
+          Toda la **documentación detallada, interactiva y actualizada** se encuentra en nuestro sitio de **GitHub Pages**.
+
+          ## ➡️ [Acceder a la Documentación Principal](https://$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]').github.io/$(echo ${{ github.repository }} | cut -d'/' -f2)/)
+
+          ---
+
+          ### Accesos Directos a GitHub
+
+          *   **[Issues](https://github.com/${{ github.repository }}/issues)**: Ver todos los issues, abiertos y cerrados.
+          *   **[Pull Requests](https://github.com/${{ github.repository }}/pulls)**: Ver todos los Pull Requests.
+          *   **[Milestones](https://github.com/${{ github.repository }}/milestones)**: Ver el progreso de los hitos del proyecto.
+          EOF
+
+          # Clean up old, now-unused wiki pages
+          rm -f "Estado-del-Proyecto.md" "Pull-Requests.md"
+
+          git add .
+          git commit -m "Update wiki to act as a portal to the main documentation" || echo "No changes to commit"
+          
+          if [[ "${{ github.event.pull_request.head.repo.full_name }}" == "${{ github.repository }}" ]] || [[ "${{ github.event_name }}" == "push" ]]; then
+            git push --set-upstream https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git master
+          fi
+
+      - name: Prepare artifact for deployment
+        run: |
+          mkdir -p _site
+          mv docs/* _site/
+      - name: Upload artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy-pages:
+    needs: generate-docs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

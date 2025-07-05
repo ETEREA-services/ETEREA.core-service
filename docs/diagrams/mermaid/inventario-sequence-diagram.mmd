@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant User as "Usuario/Sistema Externo"
+    participant IC as "InventarioController"
+    participant IS as "InventarioService"
+    participant ASF as "ArticuloSaldoFechaService"
+    participant IR as "InventarioRepository"
+    participant DB as "Base de Datos"
+
+    User->>+IC: POST /api/core/inventario/all (body: List~Inventario~)
+    IC->>+IS: addAll(inventarios)
+    loop para cada Inventario en la lista
+        IS->>+ASF: calculateSaldo(centroStockId, articuloId, fecha)
+        ASF-->>-IS: saldoActual
+        IS->>IS: inventario.setStock(saldoActual)
+    end
+    IS->>+IR: saveAll(inventarios)
+    IR->>+DB: INSERT/UPDATE en inventarios
+    DB-->>-IR: Inventarios guardados
+    IR-->>-IS: List~Inventario~
+    IS-->>-IC: List~Inventario~
+    IC-->>-User: 200 OK (body: List~Inventario~)

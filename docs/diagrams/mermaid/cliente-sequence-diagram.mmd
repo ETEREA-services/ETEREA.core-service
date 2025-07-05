@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User as "Usuario/Cliente API"
+    participant CC as "ClienteController"
+    participant CS as "ClienteService"
+    participant CR as "ClienteRepository"
+    participant DB as "Base de Datos"
+
+    User->>+CC: POST /api/core/cliente (body: Cliente)
+    CC->>+CS: add(cliente)
+    CS->>+CR: save(cliente)
+    CR->>+DB: INSERT INTO clientes (...)
+    DB-->>-CR: Cliente (con ID generado)
+    CR-->>-CS: Cliente guardado
+    CS-->>-CC: Cliente guardado
+    CC-->>-User: 200 OK (body: Cliente)

@@ -1,0 +1,59 @@
+classDiagram
+    direction BT
+    
+    class ReservaController {
+        +findTopPendientes(): ResponseEntity
+        +findByReservaId(Long): ResponseEntity
+    }
+
+    class ReservaService {
+        +findTopPendientes(): List~Reserva~
+        +findByReservaId(Long): Reserva
+        +add(Reserva, Track): Reserva
+        +update(Reserva, Long): Reserva
+    }
+
+    class HabitacionController {
+        +findByNumero(Integer): ResponseEntity
+    }
+
+    class HotelController {
+        +findAll(): ResponseEntity
+        +findById(Integer): ResponseEntity
+    }
+
+    class Reserva {
+        <<Kotlin Data Class>>
+        +reservaId: Long
+        +clienteId: Long
+        +fechaInServicio: OffsetDateTime
+        +fechaOutServicio: OffsetDateTime
+        +nombrePax: String
+        +cantidadPaxs: Int
+        +cliente: Cliente
+    }
+
+    class Habitacion {
+        <<Kotlin Data Class>>
+        +numero: Int
+        +habitacionTipoId: Int
+        +clienteId: Long
+    }
+
+    class Hotel {
+        <<Kotlin Data Class>>
+        +hotelId: Int
+        +nombre: String
+    }
+
+    ReservaController --> ReservaService
+    HabitacionController --> HabitacionService
+    HotelController --> HotelService
+
+    ReservaService --> Reserva
+    HabitacionService --> Habitacion
+    HotelService --> Hotel
+
+    Reserva "1" -- "1" Cliente
+    Reserva "1" -- "1" Hotel
+    Reserva "1" -- "many" Habitacion

@@ -1,0 +1,63 @@
+classDiagram
+    direction LR
+
+    class ArticuloController {
+        +add(Articulo): ResponseEntity
+        +update(Articulo, String): ResponseEntity
+        +findByArticuloId(String): ResponseEntity
+    }
+
+    class ArticuloService {
+        +add(Articulo): Articulo
+        +update(Articulo, String): Articulo
+        +findByArticuloId(String): Articulo
+    }
+
+    class InventarioController {
+        +addAll(List~Inventario~): ResponseEntity
+    }
+
+    class InventarioService {
+        +addAll(List~Inventario~): List~Inventario~
+    }
+
+    class ArticuloMovimientoController {
+        +findAllByClienteMovimientoId(Long): ResponseEntity
+    }
+
+    class Articulo {
+        <<Kotlin Data Class>>
+        +articuloId: String
+        +descripcion: String
+        +precioVentaConIva: BigDecimal
+        +stockMinimo: BigDecimal
+        +controlaStock: Byte
+    }
+
+    class ArticuloMovimiento {
+        <<Kotlin Data Class>>
+        +articuloMovimientoId: Long
+        +articuloId: String
+        +cantidad: BigDecimal
+        +clienteMovimientoId: Long
+    }
+
+    class Inventario {
+        <<Kotlin Data Class>>
+        +inventarioId: Long
+        +articuloId: String
+        +fecha: OffsetDateTime
+        +stock: BigDecimal
+        +conteo: BigDecimal
+    }
+
+    ArticuloController --> ArticuloService
+    InventarioController --> InventarioService
+    ArticuloMovimientoController --> ArticuloMovimientoService
+
+    ArticuloService --> Articulo
+    InventarioService --> Inventario
+    ArticuloMovimientoService --> ArticuloMovimiento
+
+    Inventario --|> Articulo : relates
+    ArticuloMovimiento --|> Articulo : relates

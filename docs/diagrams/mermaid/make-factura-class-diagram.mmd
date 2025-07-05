@@ -1,0 +1,41 @@
+classDiagram
+    class ComprobanteController {
+        +crearFactura(ComprobanteDTO): ResponseEntity
+    }
+    class ComprobanteService {
+        +crearFactura(ComprobanteDTO): Comprobante
+    }
+    class ComprobanteRepository {
+        +save(Comprobante): Comprobante
+    }
+    class Comprobante {
+        -id: Long
+        -fecha: Date
+        -total: BigDecimal
+        -cliente: Cliente
+        -items: List~ComprobanteItem~
+    }
+    class Cliente {
+        -id: Long
+        -nombre: String
+        -cuit: String
+    }
+    class ComprobanteItem {
+        -id: Long
+        -articulo: Articulo
+        -cantidad: BigDecimal
+        -precioUnitario: BigDecimal
+        -subtotal: BigDecimal
+    }
+    class Articulo {
+        -id: Long
+        -descripcion: String
+        -precio: BigDecimal
+    }
+
+    ComprobanteController --> ComprobanteService
+    ComprobanteService --> ComprobanteRepository
+    ComprobanteRepository --> Comprobante
+    Comprobante "1" *-- "many" ComprobanteItem
+    Comprobante "1" -- "1" Cliente
+    ComprobanteItem "1" -- "1" Articulo

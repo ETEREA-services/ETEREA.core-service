@@ -1,0 +1,12 @@
+graph TD
+    subgraph "Eterea Core Service"
+        A[API REST] --> B{Controladores};
+        B --> C{Servicios};
+        C --> D{Repositorios};
+        D --> E[Base de Datos];
+    end
+
+    subgraph "Clientes Externos"
+        F[Frontend Web] --> A;
+        G[Aplicación Móvil] --> A;
+    end
