@@ -17,10 +17,7 @@ public class SnapshotService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Snapshot add(Snapshot snapshot, Track track) {
-        if (track != null) {
-            snapshot.setTrackUuid(track.getUuid());
-        }
+    public Snapshot add(Snapshot snapshot) {
         return repository.save(snapshot);
     }
 

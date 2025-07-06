@@ -263,6 +263,7 @@ public class MakeFacturaProgramaDiaService {
                 .caeVencimiento(formatoOutDate.format(vencimientoCae))
                 .tipoDocumento(facturacionDto.getTipoDocumento())
                 .numeroDocumento(new BigDecimal(facturacionDto.getDocumento()))
+                .trackUuid(track.getUuid())
                 .build();
         registroCae = registroCaeService.add(registroCae, track);
         logRegistroCae(registroCae);
