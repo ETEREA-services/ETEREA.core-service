@@ -168,11 +168,11 @@ public class VouchersService {
     @Transactional
     public List<VoucherProducto> saveVoucherProductos(Long voucherId, List<VoucherProducto> voucherProductos, Track track) {
         log.debug("Processing saveVoucherProductos");
+        if (track == null) {
+            track = trackService.startTracking("save-voucher-productos");
+        }
         voucherProductoService.deleteAllByVoucherId(voucherId);
         for (var voucherProducto : voucherProductos) {
-            if (track != null) {
-                voucherProducto.setTrackUuid(track.getUuid());
-            }
             voucherProducto.setVoucherId(voucherId);
             assert track != null;
             voucherProducto.setTrackUuid(track.getUuid());
@@ -209,12 +209,17 @@ public class VouchersService {
     @Transactional
     public Reserva generarReserva(Voucher voucher, List<VoucherProducto> voucherProductos, Track track) {
         log.debug("Processing generarReserva");
+        if (track == null) {
+            track = trackService.startTracking("generar-reserva");
+        }
         Reserva reserva = reservaService.copyFromVoucher(voucher);
         reserva.setNegocioId(empresaService.findTop().getNegocioId());
         reserva.setUsuario("admin");
+        reserva.setTrackUuid(track.getUuid());
         reserva = reservaService.add(reserva, track);
 
         voucher.setReservaId(reserva.getReservaId());
+        voucher.setTrackUuid(track.getUuid());
         voucher = voucherService.update(voucher, voucher.getVoucherId());
         logVoucher(voucher);
 
@@ -306,10 +311,8 @@ public class VouchersService {
                 .ventaInternet((byte) 1)
                 .cliente(cliente)
                 .subeEn(product.getPuntoDeEncuentro())
+                .trackUuid(track.getUuid())
                 .build();
-        if (track != null) {
-            voucher.setTrackUuid(track.getUuid());
-        }
 
         voucher = registrarVoucher(voucher, voucherProductos, track);
         logVoucher(voucher);

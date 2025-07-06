@@ -42,10 +42,11 @@ public class FacturacionElectronicaService {
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("make-factura-facturacion-pre")
                 .payload(json)
+                .trackUuid(track.getUuid())
                 .previousUuid(null)
                 .build();
         logSnapshot(snapshot);
-        snapshot = snapshotService.add(snapshot, track);
+        snapshot = snapshotService.add(snapshot);
         logSnapshot(snapshot);
         facturacionDto = facturacionAfipClient.facturador(facturacionDto);
         json = logFacturacion(facturacionDto);
@@ -53,10 +54,11 @@ public class FacturacionElectronicaService {
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("make-factura-facturacion-post")
                 .payload(json)
+                .trackUuid(track.getUuid())
                 .previousUuid(snapshot.getUuid())
                 .build();
         logSnapshot(snapshot);
-        snapshot = snapshotService.add(snapshot, track);
+        snapshot = snapshotService.add(snapshot);
         logSnapshot(snapshot);
         return facturacionDto;
     }

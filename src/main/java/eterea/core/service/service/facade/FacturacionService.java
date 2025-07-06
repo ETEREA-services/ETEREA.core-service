@@ -181,9 +181,10 @@ public class FacturacionService {
                 .uuid(UUID.randomUUID().toString())
                 .descripcion("transaccion-factura-programa-dia-pre")
                 .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
+                .trackUuid(track.getUuid())
                 .previousUuid(null)
                 .build();
-        snapshot = snapshotService.add(snapshot, track);
+        snapshot = snapshotService.add(snapshot);
 
         // Comienza registro en la db
         // Registra clienteMovimiento
@@ -227,7 +228,7 @@ public class FacturacionService {
                 .trackUuid(track.getUuid())
                 .previousUuid(snapshot.getUuid())
                 .build();
-        snapshot = snapshotService.add(snapshot, track);
+        snapshot = snapshotService.add(snapshot);
 
         track = trackService.endTracking(track);
 

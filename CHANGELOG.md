@@ -1,3 +1,8 @@
+## [0.4.1] - 2025-07-06
+
+### Fixed
+- fix(docs): restaurar pipeline y diagramas de documentación
+
 ## [0.4.0] - 2025-07-05
 
 ### Added
