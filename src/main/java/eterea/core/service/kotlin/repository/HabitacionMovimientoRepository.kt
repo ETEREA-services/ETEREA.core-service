@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.time.OffsetDateTime
+import java.util.Optional
 
 
 @Repository
@@ -56,5 +57,7 @@ interface HabitacionMovimientoRepository : JpaRepository<HabitacionMovimiento, L
     ): List<HabitacionMovimiento>
 
     fun findFirstByOrderByHabitacionMovimientoIdDesc(): HabitacionMovimiento?
+
+    fun findByNumeroReserva(numeroReserva: Long): Optional<HabitacionMovimiento>
 
 }

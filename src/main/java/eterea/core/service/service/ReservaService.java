@@ -509,7 +509,7 @@ public class ReservaService {
    public Reserva cambiarTipoPendiente(Long reservaId, byte tipoPendienteId) {
       Reserva reserva = findByReservaId(reservaId);
       // if (reserva.getPendiente() != 1) {
-      //    throw new ReservaException("Reserva no pendiente");
+      // throw new ReservaException("Reserva no pendiente");
       // }
 
       if (reserva.getFacturada() == 1) {
@@ -530,6 +530,16 @@ public class ReservaService {
       }
 
       return reserva;
+   }
+
+   public void appendToObservaciones(Long reservaId, String observacion) {
+      Reserva reserva = findByReservaId(reservaId);
+      if (reserva.getObservaciones() == null) {
+         reserva.setObservaciones(observacion);
+      } else {
+         reserva.setObservaciones(reserva.getObservaciones() + "\n" + observacion);
+      }
+      update(reserva, reservaId);
    }
 
 }
