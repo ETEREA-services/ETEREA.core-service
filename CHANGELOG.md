@@ -1,3 +1,8 @@
+## [0.4.2] - 2025-07-08
+
+### Docs
+- Eliminar información de contacto personal del README.
+
 ## [0.4.1] - 2025-07-06
 
 ### Fixed

@@ -5,6 +5,7 @@ package eterea.core.service.controller;
 
 import java.util.List;
 
+import eterea.core.service.exception.ClienteMovimientoException;
 import eterea.core.service.kotlin.model.ClienteMovimiento;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.service.ClienteMovimientoService;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * @author daniel
@@ -58,10 +60,22 @@ public class ClienteMovimientoController {
 		return new ResponseEntity<>(service.nextNumeroFactura(puntoVenta, letraComprobante), HttpStatus.OK);
 	}
 
+	@GetMapping("/consulta/comprobante/{comprobanteId}/{puntoVenta}/{numeroComprobante}")
+	public ResponseEntity<ClienteMovimiento> findByComprobante(@PathVariable Integer comprobanteId, @PathVariable Integer puntoVenta, @PathVariable Long numeroComprobante) {
+		try {
+			return ResponseEntity.ok(service.findByComprobante(comprobanteId, puntoVenta, numeroComprobante));
+		} catch (ClienteMovimientoException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+	}
+
 	@GetMapping("/{clienteMovimientoId}")
 	public ResponseEntity<ClienteMovimiento> findByClienteMovimientoId(@PathVariable Long clienteMovimientoId) {
-		return new ResponseEntity<>(service.findByClienteMovimientoId(clienteMovimientoId),
-				HttpStatus.OK);
+		try {
+			return ResponseEntity.ok(service.findByClienteMovimientoId(clienteMovimientoId));
+		} catch (ClienteMovimientoException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
 	}
 
 }
