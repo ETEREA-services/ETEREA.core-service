@@ -63,7 +63,14 @@ public class FacturacionService {
         this.trackService = trackService;
     }
 
-    public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva, FacturacionDto facturacionDTO, Comprobante comprobante, Empresa empresa, Cliente cliente, Parametro parametro, ReservaContext reservaContext, Track track) {
+    public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva,
+                                                                   FacturacionDto facturacionDTO,
+                                                                   Comprobante comprobante,
+                                                                   Empresa empresa,
+                                                                   Cliente cliente,
+                                                                   Parametro parametro,
+                                                                   ReservaContext reservaContext,
+                                                                   Track track) {
         if (track == null) {
             track = trackService.startTracking("transaccion-factura-programa-dia");
         }
