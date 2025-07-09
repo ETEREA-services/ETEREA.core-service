@@ -3,8 +3,8 @@ package eterea.core.service.service.facade;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.*;
+import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,9 +50,9 @@ public class TransaccionFacturaProgramaDiaService {
         logParametro(parametro);
         var reservaContext = reservaContextService.findByReservaId(voucher.getReservaId());
         logReservaContext(reservaContext);
-        var track = trackService.startTracking("transaccion-factura-programa-dia");
-        logTrack(track);
         if (dryRun == false) {
+            var track = trackService.startTracking("transaccion-factura-programa-dia");
+            logTrack(track);
             facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext, track);
         }
     }

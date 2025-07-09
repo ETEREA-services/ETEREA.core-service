@@ -3,10 +3,9 @@ package eterea.core.service.service.facade;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.Track;
+import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,16 @@ public class ContabilidadService {
         this.trackService = trackService;
     }
 
-    public List<CuentaMovimiento> registraContabilidadProgramaDia(ClienteMovimiento clienteMovimiento, ValorMovimiento valorMovimiento, Valor valor, List<ArticuloMovimiento> articuloMovimientos, FacturacionDto facturacionDTO, Comprobante comprobante, Parametro parametro, Track track) {
+    public List<CuentaMovimiento> registraContabilidadProgramaDia(
+            ClienteMovimiento clienteMovimiento,
+            ValorMovimiento valorMovimiento,
+            Valor valor,
+            List<ArticuloMovimiento> articuloMovimientos,
+            FacturacionDto facturacionDto,
+            Comprobante comprobante,
+            Parametro parametro,
+            Track track
+    ) {
         if (track == null) {
             track = trackService.startTracking("registra-contabilidad-programa-dia");
         }
@@ -51,13 +59,13 @@ public class ContabilidadService {
         valorMovimiento.setOrdenContable(ordenContable);
         valorMovimiento = valorMovimientoService.update(valorMovimiento, valorMovimiento.getValorMovimientoId());
         int item = 1;
-        String concepto = String.format("Nro: %04d %06d", facturacionDTO.getPuntoVenta(), facturacionDTO.getNumeroComprobante());
+        String concepto = String.format("Nro: %04d %06d", facturacionDto.getPuntoVenta(), facturacionDto.getNumeroComprobante());
         // Registro total valores
         cuentaMovimientos.add(new CuentaMovimiento.Builder()
                 .negocioId(clienteMovimiento.getNegocioId())
                 .numeroCuenta(valor.getNumeroCuenta())
                 .debita(comprobante.getDebita())
-                .importe(facturacionDTO.getTotal())
+                .importe(facturacionDto.getTotal())
                 .item(item++)
                 .fecha(clienteMovimiento.getFechaComprobante())
                 .comprobanteId(comprobante.getComprobanteId())
@@ -68,12 +76,12 @@ public class ContabilidadService {
                 .trackUuid(track.getUuid())
                 .build());
         // Registro iva 21
-        if (facturacionDTO.getIva().compareTo(BigDecimal.ZERO) > 0) {
+        if (facturacionDto.getIva().compareTo(BigDecimal.ZERO) > 0) {
             cuentaMovimientos.add(new CuentaMovimiento.Builder()
                     .negocioId(clienteMovimiento.getNegocioId())
                     .numeroCuenta(parametro.getCuentaIvaVentas())
                     .debita((byte) (1 - comprobante.getDebita()))
-                    .importe(facturacionDTO.getIva())
+                    .importe(facturacionDto.getIva())
                     .item(item++)
                     .fecha(clienteMovimiento.getFechaComprobante())
                     .comprobanteId(comprobante.getComprobanteId())
@@ -85,12 +93,12 @@ public class ContabilidadService {
                     .build());
         }
         // Registro iva 10.5
-        if (facturacionDTO.getIva105().compareTo(BigDecimal.ZERO) > 0) {
+        if (facturacionDto.getIva105().compareTo(BigDecimal.ZERO) > 0) {
             cuentaMovimientos.add(new CuentaMovimiento.Builder()
                     .negocioId(clienteMovimiento.getNegocioId())
                     .numeroCuenta(parametro.getCuentaIvaRniVentas())
                     .debita((byte) (1 - comprobante.getDebita()))
-                    .importe(facturacionDTO.getIva105())
+                    .importe(facturacionDto.getIva105())
                     .item(item++)
                     .fecha(clienteMovimiento.getFechaComprobante())
                     .comprobanteId(comprobante.getComprobanteId())

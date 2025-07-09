@@ -6,10 +6,9 @@ import eterea.core.service.client.report.MakeFacturaReportClient;
 import eterea.core.service.kotlin.exception.ReservaContextException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.PosicionIva;
-import eterea.core.service.model.Snapshot;
 import eterea.core.service.model.Track;
+import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -199,7 +198,7 @@ public class MakeFacturaProgramaDiaService {
         log.debug("total105={} - neto105={} - coeficienteIva2={} - iva105={}", total105, neto105, coeficienteIva2, iva105);
 
         assert comprobante.getComprobanteAfipId() != null;
-        FacturacionDto facturacionDto = new FacturacionDto.Builder()
+        FacturacionDto facturacionDto = FacturacionDto.builder()
                 .tipoDocumento(tipoDocumento)
                 .documento(documento)
                 .tipoAfip(comprobante.getComprobanteAfipId())
@@ -245,6 +244,16 @@ public class MakeFacturaProgramaDiaService {
             log.error("Error al parsear vencimientoCae", e);
         }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+
+        String fechaComprobanteString;
+        try {
+            Date fechaComprobante = formatoInDate.parse(facturacionDto.getFechaComprobante());
+            fechaComprobanteString = formatoOutDate.format(fechaComprobante);
+        } catch (ParseException | NullPointerException e) {
+            fechaComprobanteString = ToolService.dateAbsoluteArgentina().format(dateTimeFormatter);
+            log.warn("No se pudo parsear fechaComprobante de facturacionDto. Usando fecha actual. " + e.getMessage());
+        }
+
         // Registra el resultado de la AFIP
         RegistroCae registroCae = new RegistroCae.Builder()
                 .comprobanteId(comprobanteId)
@@ -259,7 +268,7 @@ public class MakeFacturaProgramaDiaService {
                 .iva(facturacionDto.getIva())
                 .iva105(facturacionDto.getIva105())
                 .cae(facturacionDto.getCae())
-                .fecha(ToolService.dateAbsoluteArgentina().format(dateTimeFormatter))
+                .fecha(fechaComprobanteString)
                 .caeVencimiento(formatoOutDate.format(vencimientoCae))
                 .tipoDocumento(facturacionDto.getTipoDocumento())
                 .numeroDocumento(new BigDecimal(facturacionDto.getDocumento()))
@@ -270,7 +279,16 @@ public class MakeFacturaProgramaDiaService {
 
         ClienteMovimiento clienteMovimiento = null;
         try {
-            clienteMovimiento = facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext, track);
+            clienteMovimiento = facturacionService.registraTransaccionFacturaProgramaDia(
+                    reserva,
+                    facturacionDto,
+                    comprobante,
+                    empresa,
+                    cliente,
+                    parametro,
+                    reservaContext,
+                    track
+            );
             track = trackService.endTracking(track);
         } catch (Exception e) {
             track = trackService.failedTracking(track);

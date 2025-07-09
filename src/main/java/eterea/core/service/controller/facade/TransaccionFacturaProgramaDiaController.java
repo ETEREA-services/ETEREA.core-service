@@ -1,6 +1,6 @@
 package eterea.core.service.controller.facade;
 
-import eterea.core.service.kotlin.model.dto.FacturacionDto;
+import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.facade.TransaccionFacturaProgramaDiaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
