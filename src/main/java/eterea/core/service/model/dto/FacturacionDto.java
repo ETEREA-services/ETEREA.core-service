@@ -54,8 +54,9 @@ public class FacturacionDto {
     @JsonProperty(value = "numero_comprobante")
     private Long numeroComprobante = 0L;
 
+    @Builder.Default
     @JsonProperty(value = "fecha_comprobante")
-    private String fechaComprobante;
+    private String fechaComprobante = "";
 
     // Comprobante Asociado
     @JsonProperty(value = "asociado_tipo_afip")

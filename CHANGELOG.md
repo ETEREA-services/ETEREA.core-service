@@ -5,6 +5,7 @@
 
 ### Changed
 - refactor(controller): improve error handling in ClienteMovimiento
+- refactor(billing): migrar FacturacionDto a Java y mejorar lógica
 
 ### Docs
 - update CHANGELOG, README, and Dockerfile for new version
