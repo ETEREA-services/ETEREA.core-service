@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.Snapshot;
 import eterea.core.service.model.Track;
+import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.model.dto.snapshot.ProgramaDiaSnapshot;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -64,7 +68,7 @@ public class FacturacionService {
     }
 
     public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva,
-                                                                   FacturacionDto facturacionDTO,
+                                                                   FacturacionDto facturacionDto,
                                                                    Comprobante comprobante,
                                                                    Empresa empresa,
                                                                    Cliente cliente,
@@ -76,7 +80,7 @@ public class FacturacionService {
         }
         var programaDiaSnapshot = ProgramaDiaSnapshot.builder()
                 .reserva(reserva)
-                .facturacionDto(facturacionDTO)
+                .facturacionDto(facturacionDto)
                 .cliente(cliente)
                 .comprobante(comprobante)
                 .reservaContext(reservaContext)
@@ -106,29 +110,42 @@ public class FacturacionService {
         String observaciones = "Pedido web #" + orderNote.getOrderNumberId() + " - Reserva #" + reserva.getReservaId();
         programaDiaSnapshot.setObservaciones(observaciones);
 
+        // Convierte fecha de comprobante a UTC
+        OffsetDateTime fechaComprobante;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            LocalDate localDate = LocalDate.parse(facturacionDto.getFechaComprobante(), formatter);
+            // Se convierte a UTC
+            ZoneId utcZone = ZoneId.of("UTC");
+            fechaComprobante = localDate.atStartOfDay(utcZone).toOffsetDateTime();
+        } catch (Exception e) {
+            log.warn("No se pudo parsear fechaComprobante de facturacionDto. Usando fecha actual en UTC. " + e.getMessage());
+            fechaComprobante = ToolService.dateAbsoluteArgentina();
+        }
+
         // Construye clienteMovimiento
         ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
                 .negocioId(empresa.getNegocioId())
                 .empresaId(empresa.getEmpresaId())
                 .clienteId(cliente.getClienteId())
                 .comprobanteId(comprobante.getComprobanteId())
-                .fechaComprobante(ToolService.dateAbsoluteArgentina())
-                .fechaVencimiento(ToolService.dateAbsoluteArgentina())
-                .importe(facturacionDTO.getTotal())
-                .cancelado(facturacionDTO.getTotal())  // contado
+                .fechaComprobante(fechaComprobante)
+                .fechaVencimiento(fechaComprobante)
+                .importe(facturacionDto.getTotal())
+                .cancelado(facturacionDto.getTotal())  // contado
                 .puntoVenta(comprobante.getPuntoVenta())
-                .numeroComprobante(facturacionDTO.getNumeroComprobante())
-                .montoIva(facturacionDTO.getIva())
-                .montoIvaRni(facturacionDTO.getIva105())
-                .neto(facturacionDTO.getNeto())
+                .numeroComprobante(facturacionDto.getNumeroComprobante())
+                .montoIva(facturacionDto.getIva())
+                .montoIvaRni(facturacionDto.getIva105())
+                .neto(facturacionDto.getNeto())
                 .letraComprobante(comprobante.getLetraComprobante())
-                .montoExento(facturacionDTO.getExento())
+                .montoExento(facturacionDto.getExento())
                 .reservaId(reserva.getReservaId())
-                .cae(facturacionDTO.getCae())
-                .caeVencimiento(facturacionDTO.getVencimientoCae())
+                .cae(facturacionDto.getCae())
+                .caeVencimiento(facturacionDto.getVencimientoCae())
                 .monedaId(1)
                 .cotizacion(BigDecimal.ONE)
-                .letras(ToolService.number_2_text(facturacionDTO.getTotal()))
+                .letras(ToolService.number_2_text(facturacionDto.getTotal()))
                 .observaciones(observaciones)
                 .trackUuid(track.getUuid())
                 .build();
@@ -143,7 +160,7 @@ public class FacturacionService {
                 .fechaVencimiento(clienteMovimiento.getFechaComprobante())
                 .valorId(valorId)
                 .numeroComprobante(0L)
-                .importe(facturacionDTO.getTotal())
+                .importe(facturacionDto.getTotal())
                 .numeroCuenta(valor.getNumeroCuenta())
                 .proveedorMovimientoId(0L)
                 .titular("")
@@ -171,7 +188,14 @@ public class FacturacionService {
                     .negocioId(clienteMovimiento.getNegocioId())
                     .cantidad(new BigDecimal(-1 * reservaArticulo.getCantidad()))
                     .precioUnitario(reservaArticulo.getPrecioUnitario())
-                    .precioUnitarioSinIva(calcularPrecioSinIva(reservaArticulo.getPrecioUnitario(), reservaArticulo.getArticulo().getIva105(), reservaArticulo.getArticulo().getExento(), parametro))
+                    .precioUnitarioSinIva(
+                            calcularPrecioSinIva(
+                                    reservaArticulo.getPrecioUnitario(),
+                                    reservaArticulo.getArticulo().getIva105(),
+                                    reservaArticulo.getArticulo().getExento(),
+                                    parametro
+                            )
+                    )
                     .precioUnitarioConIva(reservaArticulo.getPrecioUnitario())
                     .numeroCuenta(reservaArticulo.getArticulo().getCuentaVentas())
                     .iva105(reservaArticulo.getArticulo().getIva105())
@@ -216,7 +240,16 @@ public class FacturacionService {
         articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
         programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
 
-        List<CuentaMovimiento> cuentaMovimientos = contabilidadService.registraContabilidadProgramaDia(clienteMovimiento, valorMovimiento, valor, articuloMovimientos, facturacionDTO, comprobante, parametro, track);
+        List<CuentaMovimiento> cuentaMovimientos = contabilidadService.registraContabilidadProgramaDia(
+                clienteMovimiento,
+                valorMovimiento,
+                valor,
+                articuloMovimientos,
+                facturacionDto,
+                comprobante,
+                parametro,
+                track
+        );
         programaDiaSnapshot.setCuentaMovimientos(cuentaMovimientos);
 
         reserva.setFacturada((byte) 1);

@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant User as "Usuario/Cliente API"
+    participant TFPC as "TransaccionFacturaProgramaDiaController"
+    participant TFPS as "TransaccionFacturaProgramaDiaService"
+    participant VS as "VoucherService"
+    participant CS as "ComprobanteService"
+    participant FS as "FacturacionService"
+    participant DB as "Base de Datos"
+
+    User->>+TFPC: POST /api/core/transaccion-factura-programa-dia/registro/{orderNumberId}/dry-run/{dryRun} (body: FacturacionDto)
+    TFPC->>+TFPS: registroTransaccionFacturaProgramaDia(orderNumberId, facturacionDto, dryRun)
+    TFPS->>+VS: findByOrderNumberId(orderNumberId)
+    VS-->>-TFPS: Voucher
+    TFPS->>+CS: save(comprobante)
+    CS->>+DB: INSERT INTO comprobantes (...)
+    DB-->>-CS: Comprobante (con ID generado)
+    CS-->>-TFPS: Comprobante guardado
+    TFPS->>+FS: facturar(comprobante)
+    FS-->>-TFPS: Factura generada
+    TFPS-->>-TFPC: void
+    TFPC-->>-User: 200 OK

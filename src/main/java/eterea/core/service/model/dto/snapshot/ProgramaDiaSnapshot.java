@@ -2,7 +2,7 @@ package eterea.core.service.model.dto.snapshot;
 
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.model.dto.FacturacionDto;
+import eterea.core.service.model.dto.FacturacionDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

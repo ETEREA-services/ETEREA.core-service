@@ -1,6 +1,6 @@
 package eterea.core.service.controller.facade;
 
-import eterea.core.service.kotlin.model.dto.FacturacionDto;
+import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

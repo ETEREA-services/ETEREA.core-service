@@ -1,3 +1,14 @@
+## [0.5.0] - 2025-07-09
+
+### Added
+- feat(billing): add endpoint for transaction registration
+
+### Changed
+- refactor(controller): improve error handling in ClienteMovimiento
+
+### Docs
+- update CHANGELOG, README, and Dockerfile for new version
+
 ## [0.4.2] - 2025-07-08
 
 ### Docs
