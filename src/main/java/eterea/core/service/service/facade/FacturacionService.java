@@ -113,7 +113,7 @@ public class FacturacionService {
         // Convierte fecha de comprobante a UTC
         OffsetDateTime fechaComprobante;
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate localDate = LocalDate.parse(facturacionDto.getFechaComprobante(), formatter);
             // Se convierte a UTC
             ZoneId utcZone = ZoneId.of("UTC");
@@ -149,6 +149,8 @@ public class FacturacionService {
                 .observaciones(observaciones)
                 .trackUuid(track.getUuid())
                 .build();
+        log.debug("Construye clienteMovimiento");
+        logClienteMovimiento(clienteMovimiento);
         programaDiaSnapshot.setClienteMovimiento(clienteMovimiento);
 
         ValorMovimiento valorMovimiento = new ValorMovimiento.Builder()
@@ -219,7 +221,10 @@ public class FacturacionService {
 
         // Comienza registro en la db
         // Registra clienteMovimiento
+        log.debug("Antes de grabar clienteMovimiento");
+        logClienteMovimiento(clienteMovimiento);
         clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
+        log.debug("Después de grabar clienteMovimiento");
         logClienteMovimiento(clienteMovimiento);
         programaDiaSnapshot.setClienteMovimiento(clienteMovimiento);
 
