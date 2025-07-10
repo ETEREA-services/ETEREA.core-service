@@ -27,7 +27,8 @@ public class ClienteService {
 	private final ClienteSearchService clienteSearchService;
 	private final PosicionIvaService posicionIvaService;
 
-	public ClienteService(ClienteRepository repository, ClienteSearchService clienteSearchService, PosicionIvaService posicionIvaService) {
+	public ClienteService(ClienteRepository repository, ClienteSearchService clienteSearchService,
+			PosicionIvaService posicionIvaService) {
 		this.repository = repository;
 		this.clienteSearchService = clienteSearchService;
 		this.posicionIvaService = posicionIvaService;
@@ -119,5 +120,8 @@ public class ClienteService {
 		return repository.findAllByClienteIdIn(clienteIds);
 	}
 
-}
+	public Cliente findByCuit(String cuit) {
+		return repository.findByCuit(cuit).orElseThrow(() -> new ClienteException(cuit));
+	}
 
+}

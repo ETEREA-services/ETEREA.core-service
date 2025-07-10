@@ -48,4 +48,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	List<Cliente> findAllByClienteIdIn(List<Long> clienteIds);
 
+	Optional<Cliente> findByCuit(String cuit);
+
+
 }

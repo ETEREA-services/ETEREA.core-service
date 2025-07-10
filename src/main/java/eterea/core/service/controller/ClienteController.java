@@ -27,7 +27,7 @@ import eterea.core.service.service.ClienteService;
  *
  */
 @RestController
-@RequestMapping({"/api/core/cliente", "/cliente"})
+@RequestMapping({ "/api/core/cliente", "/cliente" })
 public class ClienteController {
 
 	private final ClienteService service;
@@ -40,7 +40,6 @@ public class ClienteController {
 	public ResponseEntity<List<ClienteSearch>> findAllBySearch(@PathVariable String chain) {
 		return new ResponseEntity<>(service.findAllBySearch(chain), HttpStatus.OK);
 	}
-
 
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> findByClienteId(@PathVariable Long clienteId) {
@@ -84,8 +83,15 @@ public class ClienteController {
 	}
 
 	@GetMapping("/tipoDocumento/{documentoId}/numeroDocumento/{numeroDocumento}")
-	public ResponseEntity<Cliente> findByNumeroDocumentoAndDocumentoId(@PathVariable Integer documentoId, @PathVariable String numeroDocumento) {
-		return new ResponseEntity<>(service.findByNumeroDocumentoAndDocumentoId(numeroDocumento, documentoId), HttpStatus.OK);
+	public ResponseEntity<Cliente> findByNumeroDocumentoAndDocumentoId(@PathVariable Integer documentoId,
+			@PathVariable String numeroDocumento) {
+		try {
+			return new ResponseEntity<>(
+					service.findByNumeroDocumentoAndDocumentoId(numeroDocumento, documentoId),
+					HttpStatus.OK);
+		} catch (ClienteException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
 	}
 
 	@PostMapping("/createOrGet")
@@ -103,6 +109,13 @@ public class ClienteController {
 		return new ResponseEntity<>(service.findAllByIds(clienteIds), HttpStatus.OK);
 	}
 
+	@GetMapping("/cuit/{cuit}")
+	public ResponseEntity<Cliente> findByCuit(@PathVariable String cuit) {
+		try {
+			return new ResponseEntity<>(service.findByCuit(cuit), HttpStatus.OK);
+		} catch (ClienteException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+	}
+
 }
-
-
