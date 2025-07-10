@@ -38,6 +38,7 @@ public class TransaccionFacturaProgramaDiaService {
     }
 
     public void registroTransaccionFacturaProgramaDia(Long orderNumberId, FacturacionDto facturacionDto, Boolean dryRun) {
+        logFacturacionDto(facturacionDto);
         var voucher = voucherService.findByNumeroVoucher(String.valueOf(orderNumberId));
         logVoucher(voucher);
         var reserva = voucher.getReserva();
@@ -54,6 +55,19 @@ public class TransaccionFacturaProgramaDiaService {
             var track = trackService.startTracking("transaccion-factura-programa-dia");
             logTrack(track);
             facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext, track);
+        }
+    }
+
+    private void logFacturacionDto(FacturacionDto facturacionDto) {
+        try {
+            log.debug("FacturacionDto -> {}", JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(facturacionDto));
+        } catch (JsonProcessingException e) {
+            log.debug("FacturacionDto jsonify error -> {}", e.getMessage());
         }
     }
 

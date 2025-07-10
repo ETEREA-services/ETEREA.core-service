@@ -1,3 +1,11 @@
+## [0.5.1] - 2025-07-10
+
+### Changed
+- refactor(billing): migrar FacturacionDto a Java y mejorar lógica
+
+### Docs
+- docs(release): actualizar CHANGELOG y refactorizar DTO
+
 ## [0.5.0] - 2025-07-09
 
 ### Added
