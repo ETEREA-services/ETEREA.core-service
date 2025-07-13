@@ -1,8 +1,8 @@
 package eterea.core.service.service;
 
 import eterea.core.service.kotlin.exception.ReservaContextException;
-import eterea.core.service.kotlin.model.ReservaContext;
 import eterea.core.service.kotlin.repository.ReservaContextRepository;
+import eterea.core.service.model.ReservaContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class ReservaContextService {
 
     public ReservaContext update(ReservaContext newReservaContext, Long reservaContextId) {
         return repository.findByReservaContextId(reservaContextId).map(reservaContext -> {
-            reservaContext = new ReservaContext.Builder()
+            reservaContext = ReservaContext.builder()
                     .reservaContextId(reservaContextId)
                     .reservaId(newReservaContext.getReservaId())
                     .voucherId(newReservaContext.getVoucherId())

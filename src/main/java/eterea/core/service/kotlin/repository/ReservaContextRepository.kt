@@ -1,6 +1,6 @@
 package eterea.core.service.kotlin.repository
 
-import eterea.core.service.kotlin.model.ReservaContext
+import eterea.core.service.model.ReservaContext
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.Optional
 
