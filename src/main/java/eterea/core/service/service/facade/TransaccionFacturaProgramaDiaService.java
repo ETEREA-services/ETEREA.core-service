@@ -37,7 +37,7 @@ public class TransaccionFacturaProgramaDiaService {
         this.trackService = trackService;
     }
 
-    public void registroTransaccionFacturaProgramaDia(Long orderNumberId, FacturacionDto facturacionDto, Boolean dryRun) {
+    public void registroTransaccionFacturaProgramaDia(Long orderNumberId, FacturacionDto facturacionDto, Boolean soloFactura, Boolean dryRun) {
         logFacturacionDto(facturacionDto);
         var voucher = voucherService.findByNumeroVoucher(String.valueOf(orderNumberId));
         logVoucher(voucher);
@@ -54,7 +54,17 @@ public class TransaccionFacturaProgramaDiaService {
         if (dryRun == false) {
             var track = trackService.startTracking("transaccion-factura-programa-dia");
             logTrack(track);
-            facturacionService.registraTransaccionFacturaProgramaDia(reserva, facturacionDto, comprobante, empresa, cliente, parametro, reservaContext, track);
+            facturacionService.registraTransaccionFacturaProgramaDia(
+                    reserva,
+                    facturacionDto,
+                    comprobante,
+                    empresa,
+                    cliente,
+                    parametro,
+                    reservaContext,
+                    track,
+                    soloFactura
+            );
         }
     }
 

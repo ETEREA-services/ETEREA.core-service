@@ -1,3 +1,16 @@
+## [0.6.0] - 2025-07-13
+
+### Added
+- feat(tracking): Add support for transaction tracking with Track entity
+- feat(billing): Add findByComprobante endpoint to ClienteMovimientoController
+
+### Changed
+- refactor(billing): Migrate FacturacionDto from Kotlin to Java
+- fix(billing): Improve error handling in ClienteMovimientoController
+
+### Docs
+- docs(diagram): Add sequence diagram for transaction tracking
+
 ## [0.5.1] - 2025-07-10
 
 ### Changed

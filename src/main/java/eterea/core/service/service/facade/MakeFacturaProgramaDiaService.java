@@ -7,6 +7,7 @@ import eterea.core.service.kotlin.exception.ReservaContextException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.PosicionIva;
+import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
@@ -177,7 +178,7 @@ public class MakeFacturaProgramaDiaService {
             reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
         } catch (ReservaContextException e) {
             log.debug("creando reserva_context");
-            reservaContext = new ReservaContext.Builder()
+            reservaContext = ReservaContext.builder()
                     .reservaId(reserva.getReservaId())
                     .voucherId(reserva.getVoucherId())
                     .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
@@ -215,7 +216,7 @@ public class MakeFacturaProgramaDiaService {
         logFacturacionDto(facturacionDto);
 
         try {
-            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto, track);
+            facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto);
             log.debug("After makeFactura");
             logFacturacionDto(facturacionDto);
         } catch (WebClientResponseException e) {
@@ -287,7 +288,8 @@ public class MakeFacturaProgramaDiaService {
                     cliente,
                     parametro,
                     reservaContext,
-                    track
+                    track,
+                    false
             );
             track = trackService.endTracking(track);
         } catch (Exception e) {

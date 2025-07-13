@@ -1,6 +1,6 @@
 package eterea.core.service.controller;
 
-import eterea.core.service.kotlin.model.ReservaContext;
+import eterea.core.service.model.ReservaContext;
 import eterea.core.service.service.ReservaContextService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.model.Snapshot;
+import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
 import eterea.core.service.model.dto.FacturacionDto;
-import eterea.core.service.model.dto.snapshot.ProgramaDiaSnapshot;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.tool.ToolService;
@@ -15,16 +14,11 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -35,36 +29,35 @@ public class FacturacionService {
     private final ValorService valorService;
     private final ClienteMovimientoService clienteMovimientoService;
     private final ReservaContextService reservaContextService;
-    private final ValorMovimientoService valorMovimientoService;
     private final ReservaArticuloService reservaArticuloService;
     private final ArticuloMovimientoService articuloMovimientoService;
     private final ReservaService reservaService;
     private final ContabilidadService contabilidadService;
-    private final SnapshotService snapshotService;
     private final TrackService trackService;
+    private final RegistraFacturaService registraFacturaService;
 
     public FacturacionService(VoucherService voucherService,
                               OrderNoteService orderNoteService,
                               ValorService valorService,
                               ClienteMovimientoService clienteMovimientoService,
                               ReservaContextService reservaContextService,
-                              ValorMovimientoService valorMovimientoService,
                               ReservaArticuloService reservaArticuloService,
                               ArticuloMovimientoService articuloMovimientoService,
                               ReservaService reservaService,
-                              ContabilidadService contabilidadService, SnapshotService snapshotService, TrackService trackService) {
+                              ContabilidadService contabilidadService,
+                              TrackService trackService,
+                              RegistraFacturaService registraFacturaService) {
         this.voucherService = voucherService;
         this.orderNoteService = orderNoteService;
         this.valorService = valorService;
         this.clienteMovimientoService = clienteMovimientoService;
         this.reservaContextService = reservaContextService;
-        this.valorMovimientoService = valorMovimientoService;
         this.reservaArticuloService = reservaArticuloService;
         this.articuloMovimientoService = articuloMovimientoService;
         this.reservaService = reservaService;
         this.contabilidadService = contabilidadService;
-        this.snapshotService = snapshotService;
         this.trackService = trackService;
+        this.registraFacturaService = registraFacturaService;
     }
 
     public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva,
@@ -74,23 +67,15 @@ public class FacturacionService {
                                                                    Cliente cliente,
                                                                    Parametro parametro,
                                                                    ReservaContext reservaContext,
-                                                                   Track track) {
+                                                                   Track track,
+                                                                   Boolean soloFactura) {
         if (track == null) {
             track = trackService.startTracking("transaccion-factura-programa-dia");
         }
-        var programaDiaSnapshot = ProgramaDiaSnapshot.builder()
-                .reserva(reserva)
-                .facturacionDto(facturacionDto)
-                .cliente(cliente)
-                .comprobante(comprobante)
-                .reservaContext(reservaContext)
-                .build();
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
         logVoucher(voucher);
-        programaDiaSnapshot.setVoucher(voucher);
         OrderNote orderNote = orderNoteService.findByOrderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())));
         logOrderNote(orderNote);
-        programaDiaSnapshot.setOrderNote(orderNote);
 
         int valorId = switch (Objects.requireNonNull(Objects.requireNonNull(orderNote.getPayment()).getMarcaTarjeta())) {
             case "American Express" -> 64;
@@ -105,10 +90,8 @@ public class FacturacionService {
             default -> 0;
         };
         Valor valor = valorService.findByValorId(valorId);
-        programaDiaSnapshot.setValor(valor);
 
         String observaciones = "Pedido web #" + orderNote.getOrderNumberId() + " - Reserva #" + reserva.getReservaId();
-        programaDiaSnapshot.setObservaciones(observaciones);
 
         // Convierte fecha de comprobante a UTC
         OffsetDateTime fechaComprobante;
@@ -123,157 +106,35 @@ public class FacturacionService {
             fechaComprobante = ToolService.dateAbsoluteArgentina();
         }
 
-        // Construye clienteMovimiento
-        ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
-                .negocioId(empresa.getNegocioId())
-                .empresaId(empresa.getEmpresaId())
-                .clienteId(cliente.getClienteId())
-                .comprobanteId(comprobante.getComprobanteId())
-                .fechaComprobante(fechaComprobante)
-                .fechaVencimiento(fechaComprobante)
-                .importe(facturacionDto.getTotal())
-                .cancelado(facturacionDto.getTotal())  // contado
-                .puntoVenta(comprobante.getPuntoVenta())
-                .numeroComprobante(facturacionDto.getNumeroComprobante())
-                .montoIva(facturacionDto.getIva())
-                .montoIvaRni(facturacionDto.getIva105())
-                .neto(facturacionDto.getNeto())
-                .letraComprobante(comprobante.getLetraComprobante())
-                .montoExento(facturacionDto.getExento())
-                .reservaId(reserva.getReservaId())
-                .cae(facturacionDto.getCae())
-                .caeVencimiento(facturacionDto.getVencimientoCae())
-                .monedaId(1)
-                .cotizacion(BigDecimal.ONE)
-                .letras(ToolService.number_2_text(facturacionDto.getTotal()))
-                .observaciones(observaciones)
-                .trackUuid(track.getUuid())
-                .build();
-        log.debug("Construye clienteMovimiento");
-        logClienteMovimiento(clienteMovimiento);
-        programaDiaSnapshot.setClienteMovimiento(clienteMovimiento);
-
-        ValorMovimiento valorMovimiento = new ValorMovimiento.Builder()
-                .negocioId(empresa.getNegocioId())
-                .clienteId(cliente.getClienteId())
-                .proveedorId(0L)
-                .comprobanteId(comprobante.getComprobanteId())
-                .fechaEmision(clienteMovimiento.getFechaComprobante())
-                .fechaVencimiento(clienteMovimiento.getFechaComprobante())
-                .valorId(valorId)
-                .numeroComprobante(0L)
-                .importe(facturacionDto.getTotal())
-                .numeroCuenta(valor.getNumeroCuenta())
-                .proveedorMovimientoId(0L)
-                .titular("")
-                .banco("")
-                .receptor("")
-                .estadoId(0)
-                .cierreCajaId(0L)
-                .observaciones(observaciones)
-                .trackUuid(track.getUuid())
-                .build();
-        programaDiaSnapshot.setValorMovimiento(valorMovimiento);
-
-        List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
         var reservaArticulos = reservaArticuloService.findAllByReservaId(reserva.getReservaId());
-        programaDiaSnapshot.setReservaArticulos(reservaArticulos);
-        logReservaArticulos(reservaArticulos);
 
-        int item = 1;
-        for (ReservaArticulo reservaArticulo : reservaArticulos) {
-            articuloMovimientos.add(new ArticuloMovimiento.Builder()
-                    .centroStockId(Objects.requireNonNull(reservaArticulo.getArticulo()).getCentroStockId())
-                    .comprobanteId(comprobante.getComprobanteId())
-                    .item(item++)
-                    .articuloId(reservaArticulo.getArticuloId())
-                    .negocioId(clienteMovimiento.getNegocioId())
-                    .cantidad(new BigDecimal(-1 * reservaArticulo.getCantidad()))
-                    .precioUnitario(reservaArticulo.getPrecioUnitario())
-                    .precioUnitarioSinIva(
-                            calcularPrecioSinIva(
-                                    reservaArticulo.getPrecioUnitario(),
-                                    reservaArticulo.getArticulo().getIva105(),
-                                    reservaArticulo.getArticulo().getExento(),
-                                    parametro
-                            )
-                    )
-                    .precioUnitarioConIva(reservaArticulo.getPrecioUnitario())
-                    .numeroCuenta(reservaArticulo.getArticulo().getCuentaVentas())
-                    .iva105(reservaArticulo.getArticulo().getIva105())
-                    .exento(reservaArticulo.getArticulo().getExento())
-                    .fechaMovimiento(clienteMovimiento.getFechaComprobante())
-                    .fechaFactura(clienteMovimiento.getFechaComprobante())
-                    .precioCompra(reservaArticulo.getArticulo().getPrecioCompra())
-                    .trackUuid(track.getUuid())
-                    .build());
+        var clienteMovimiento = registraFacturaService.registraFacturaCompleta(
+                empresa,
+                cliente,
+                comprobante,
+                fechaComprobante,
+                facturacionDto,
+                reserva,
+                observaciones,
+                track,
+                valor,
+                reservaArticulos,
+                parametro
+        );
+        if (soloFactura == true) {
+            return clienteMovimiento;
         }
-        programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
-
-        var snapshot = Snapshot.builder()
-                .uuid(UUID.randomUUID().toString())
-                .descripcion("transaccion-factura-programa-dia-pre")
-                .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
-                .trackUuid(track.getUuid())
-                .previousUuid(null)
-                .build();
-        snapshot = snapshotService.add(snapshot);
-
-        // Comienza registro en la db
-        // Registra clienteMovimiento
-        log.debug("Antes de grabar clienteMovimiento");
-        logClienteMovimiento(clienteMovimiento);
-        clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
-        log.debug("Después de grabar clienteMovimiento");
-        logClienteMovimiento(clienteMovimiento);
-        programaDiaSnapshot.setClienteMovimiento(clienteMovimiento);
 
         // Registra reservaContext
         reservaContext.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-        programaDiaSnapshot.setReservaContext(reservaContext);
-
-        // Registra valorMovimiento
-        valorMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
-        valorMovimiento = valorMovimientoService.add(valorMovimiento);
-        programaDiaSnapshot.setValorMovimiento(valorMovimiento);
-
-        // Registra articuloMovimientos
-        for (ArticuloMovimiento articuloMovimiento : articuloMovimientos) {
-            articuloMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
-        }
-        articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
-        programaDiaSnapshot.setArticuloMovimientos(articuloMovimientos);
-
-        List<CuentaMovimiento> cuentaMovimientos = contabilidadService.registraContabilidadProgramaDia(
-                clienteMovimiento,
-                valorMovimiento,
-                valor,
-                articuloMovimientos,
-                facturacionDto,
-                comprobante,
-                parametro,
-                track
-        );
-        programaDiaSnapshot.setCuentaMovimientos(cuentaMovimientos);
 
         reserva.setFacturada((byte) 1);
         reserva.setVerificada((byte) 1);
         reserva = reservaService.update(reserva, reserva.getReservaId());
-        programaDiaSnapshot.setReserva(reserva);
 
         voucher.setConfirmado((byte) 1);
         voucher = voucherService.update(voucher, voucher.getVoucherId());
-        programaDiaSnapshot.setVoucher(voucher);
-
-        snapshot = Snapshot.builder()
-                .uuid(UUID.randomUUID().toString())
-                .descripcion("transaccion-factura-programa-dia-post")
-                .payload(logProgramaDiaSnapshot(programaDiaSnapshot))
-                .trackUuid(track.getUuid())
-                .previousUuid(snapshot.getUuid())
-                .build();
-        snapshot = snapshotService.add(snapshot);
 
         track = trackService.endTracking(track);
 
@@ -294,51 +155,7 @@ public class FacturacionService {
         return clienteMovimiento;
     }
 
-    private BigDecimal calcularPrecioSinIva(BigDecimal precioUnitario, byte iva105, byte exento, Parametro parametro) {
-        if (exento == 1) {
-            return precioUnitario;
-        }
-        var coeficiente = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
-        if (iva105 == 1) {
-            coeficiente = parametro.getIva2().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
-        }
-        var precioUnitarioSinIva = precioUnitario.divide(BigDecimal.ONE.add(coeficiente), 5, RoundingMode.HALF_UP);
-        return precioUnitarioSinIva.setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private String logValorMovimiento(ValorMovimiento valorMovimiento) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(valorMovimiento);
-            log.debug("valorMovimiento={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("valorMovimiento jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logReservaContext(ReservaContext reservaContext) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(reservaContext);
-            log.debug("reservaContext={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("reservaContext jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logOrderNote(OrderNote orderNote) {
+    private void logOrderNote(OrderNote orderNote) {
         try {
             var json = JsonMapper
                     .builder()
@@ -347,14 +164,12 @@ public class FacturacionService {
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(orderNote);
             log.debug("orderNote={}", json);
-            return json;
         } catch (JsonProcessingException e) {
             log.debug("orderNote jsonify error {}", e.getMessage());
-            return null;
         }
     }
 
-    private String logVoucher(Voucher voucher) {
+    private void logVoucher(Voucher voucher) {
         try {
             var json = JsonMapper
                     .builder()
@@ -363,26 +178,8 @@ public class FacturacionService {
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(voucher);
             log.debug("voucher={}", json);
-            return json;
         } catch (JsonProcessingException e) {
             log.debug("voucher jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logClienteMovimiento(ClienteMovimiento clienteMovimiento) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(clienteMovimiento);
-            log.debug("clienteMovimiento={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("clienteMovimiento jsonify error {}", e.getMessage());
-            return null;
         }
     }
 
@@ -399,99 +196,17 @@ public class FacturacionService {
         }
     }
 
-    private String logReserva(Reserva reserva) {
+    private void logClienteMovimiento(ClienteMovimiento clienteMovimiento) {
         try {
             var json = JsonMapper
                     .builder()
                     .findAndAddModules()
                     .build()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(reserva);
-            log.debug("reserva={}", json);
-            return json;
+                    .writeValueAsString(clienteMovimiento);
+            log.debug("clienteMovimiento={}", json);
         } catch (JsonProcessingException e) {
-            log.debug("reserva jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logArticuloMovimientos(List<ArticuloMovimiento> articuloMovimientos) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(articuloMovimientos);
-            log.debug("articuloMovimientos={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("articuloMovimientos jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logReservaArticulos(List<ReservaArticulo> reservaArticulos) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(reservaArticulos);
-            log.debug("reservaArticulos={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("reservaArticulos jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logCuentaMovimientos(List<CuentaMovimiento> cuentaMovimientos) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(cuentaMovimientos);
-            log.debug("cuentaMovimientos={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("cuentaMovimientos jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logCliente(Cliente cliente) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(cliente);
-            log.debug("cliente={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("cliente jsonify error {}", e.getMessage());
-            return null;
-        }
-    }
-
-    private String logProgramaDiaSnapshot(ProgramaDiaSnapshot programaDiaSnapshot) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(programaDiaSnapshot);
-            log.debug("programaDiaSnapshot={}", json);
-            return json;
-        } catch (JsonProcessingException e) {
-            log.debug("programaDiaSnapshot jsonify error {}", e.getMessage());
-            return null;
+            log.debug("clienteMovimiento jsonify error {}", e.getMessage());
         }
     }
 

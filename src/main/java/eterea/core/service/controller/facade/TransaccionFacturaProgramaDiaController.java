@@ -15,9 +15,9 @@ public class TransaccionFacturaProgramaDiaController {
         this.service = service;
     }
 
-    @PostMapping("/registro/{orderNumberId}/dry-run/{dryRun}")
-    public ResponseEntity<Void> registroTransaccionFacturaProgramaDia(@PathVariable Long orderNumberId, @PathVariable Boolean dryRun, @RequestBody FacturacionDto facturacionDto) {
-        service.registroTransaccionFacturaProgramaDia(orderNumberId, facturacionDto, dryRun);
+    @PostMapping("/registro/{orderNumberId}/solo-factura/{soloFactura}/dry-run/{dryRun}")
+    public ResponseEntity<Void> registroTransaccionFacturaProgramaDia(@PathVariable Long orderNumberId, @PathVariable Boolean soloFactura, @PathVariable Boolean dryRun, @RequestBody FacturacionDto facturacionDto) {
+        service.registroTransaccionFacturaProgramaDia(orderNumberId, facturacionDto, soloFactura, dryRun);
         return ResponseEntity.ok().build();
     }
 }

@@ -10,6 +10,7 @@ import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
+import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -152,7 +153,7 @@ public class VouchersService {
             voucher.setReservaId(reserva.getReservaId());
         }
 
-        ReservaContext reservaContext = new ReservaContext.Builder()
+        ReservaContext reservaContext = ReservaContext.builder()
                 .reservaId(voucher.getReservaId())
                 .voucherId(voucher.getVoucherId())
                 .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
