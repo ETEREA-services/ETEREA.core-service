@@ -8,7 +8,7 @@ import java.util.List;
 import eterea.core.service.kotlin.model.HabitacionMovimiento;
 import eterea.core.service.kotlin.model.Reserva;
 import eterea.core.service.kotlin.model.ReservaArticulo;
-import eterea.core.service.model.dto.ReservaHotelDto;
+import eterea.core.service.model.dto.CreateHabitacionMovimientoDto;
 import eterea.core.service.model.dto.reserva.CreateReservaDto;
 
 import org.springframework.http.HttpStatus;

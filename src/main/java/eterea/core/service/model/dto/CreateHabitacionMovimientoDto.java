@@ -3,11 +3,10 @@ package eterea.core.service.model.dto;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-public record ReservaHotelDto(
+public record CreateHabitacionMovimientoDto(
         Integer tipoDocumentoId,
+        String cuit,
         String nroDocumento,
-        String telefono,
-        String email,
         OffsetDateTime fechaIngreso,
         OffsetDateTime fechaSalida,
         Integer numeroHabitacion,

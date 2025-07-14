@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import eterea.core.service.exception.ArticuloException;
+import eterea.core.service.exception.ClienteException;
 import eterea.core.service.exception.ClienteMovimientoException;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.Articulo;
@@ -410,7 +411,22 @@ public class ReservaService {
    public Reserva createReserva(CreateReservaDto createReservaDto) {
       // TODO: Decidir que hacer con ReservaHistorial, en VB6 crea un registro por
       // cada reserva
-      Cliente cliente = clienteService.findByNumeroDocumento(createReservaDto.clienteNumeroDocumento());
+      boolean isAgencia = createReservaDto.clienteCuit() != null
+            && !createReservaDto.clienteCuit().equals("00-00000000-0")
+            && !createReservaDto.clienteCuit().isBlank();
+
+      Cliente cliente = null;
+      if (isAgencia) {
+         cliente = clienteService.findByCuit(createReservaDto.clienteCuit());
+      } else {
+         try {
+            cliente = clienteService.findByNumeroDocumentoAndDocumentoId(
+                  createReservaDto.clienteNumeroDocumento(),
+                  createReservaDto.tipoDocumentoId());
+         } catch (ClienteException e) {
+            cliente = clienteService.findByNumeroDocumento(createReservaDto.clienteNumeroDocumento());
+         }
+      }
       Reserva newReserva = createReservaDto.reserva();
 
       newReserva.setClienteId(cliente.getClienteId());

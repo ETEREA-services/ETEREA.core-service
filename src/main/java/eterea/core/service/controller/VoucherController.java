@@ -58,6 +58,15 @@ public class VoucherController {
         }
     }
 
+    @GetMapping("/byNumeroVoucherAlreadyRegistered/{numeroVoucher}")
+    public ResponseEntity<Voucher> findByNumeroVoucherAlreadyRegistered(@PathVariable String numeroVoucher) {
+        try {
+            return new ResponseEntity<>(service.findByNumeroVoucherAlreadyRegistered(numeroVoucher), HttpStatus.OK);
+        } catch (VoucherException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
     @GetMapping("/{voucherId}")
     public ResponseEntity<Voucher> findByVoucherId(@PathVariable Long voucherId) {
         try {

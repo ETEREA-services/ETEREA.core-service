@@ -618,7 +618,22 @@ public class VouchersService {
      */
     @Transactional
     public Voucher createVoucher(CreateVoucherDto createVoucherDto) {
-        Cliente cliente = clienteService.findByNumeroDocumento(createVoucherDto.clienteNumeroDocumento());
+        boolean isAgencia = createVoucherDto.clienteCuit() != null
+                && !createVoucherDto.clienteCuit().equals("00-00000000-0")
+                && !createVoucherDto.clienteCuit().isBlank();
+
+        Cliente cliente = null;
+        if (isAgencia) {
+            cliente = clienteService.findByCuit(createVoucherDto.clienteCuit());
+        } else {
+            try {
+                cliente = clienteService.findByNumeroDocumentoAndDocumentoId(
+                        createVoucherDto.clienteNumeroDocumento(),
+                        createVoucherDto.tipoDocumentoId());
+            } catch (ClienteException e) {
+                cliente = clienteService.findByNumeroDocumento(createVoucherDto.clienteNumeroDocumento());
+            }
+        }
         Voucher newVoucher = createVoucherDto.voucher();
         newVoucher.setClienteId(cliente.getClienteId());
         newVoucher.setCliente(cliente);

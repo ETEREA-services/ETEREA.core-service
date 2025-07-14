@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.model.dto.HabitacionMovimientoObservacionRequestDto;
 import eterea.core.service.model.dto.HabitacionMovimientoResponseDto;
-import eterea.core.service.model.dto.ReservaHotelDto;
+import eterea.core.service.model.dto.CreateHabitacionMovimientoDto;
 import eterea.core.service.service.HabitacionMovimientoService;
 
 @RestController
@@ -36,7 +36,7 @@ public class HabitacionMovimientoController {
    }
 
    @PostMapping
-   public ResponseEntity<HabitacionMovimientoResponseDto> createReservaHabitacion(@RequestBody ReservaHotelDto dto) {
+   public ResponseEntity<HabitacionMovimientoResponseDto> createReservaHabitacion(@RequestBody CreateHabitacionMovimientoDto dto) {
       return ResponseEntity.ok(service.createReservaHabitacion(dto));
    }
 

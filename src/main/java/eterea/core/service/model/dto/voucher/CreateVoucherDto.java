@@ -9,6 +9,8 @@ public record CreateVoucherDto(
    Voucher voucher,
    List<VoucherProducto> voucherProductos,
    String clienteNumeroDocumento,
+   String clienteCuit,
+   Integer tipoDocumentoId,
    String estadoReservaNombre
 ) {
    

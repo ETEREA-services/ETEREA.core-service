@@ -8,6 +8,8 @@ import eterea.core.service.kotlin.model.ReservaArticulo;
 public record CreateReservaDto(
       Reserva reserva,
       List<ReservaArticulo> reservaArticulos,
-      String clienteNumeroDocumento
+      String clienteNumeroDocumento,
+      String clienteCuit,
+      Integer tipoDocumentoId
 ) {
 }

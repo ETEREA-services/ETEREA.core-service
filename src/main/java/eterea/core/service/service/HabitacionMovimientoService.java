@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import eterea.core.service.exception.ClienteException;
 import eterea.core.service.exception.view.HabitacionMovimientoExtendedException;
 import eterea.core.service.kotlin.exception.HabitacionNoDisponibleException;
 import eterea.core.service.kotlin.model.Cliente;
@@ -16,7 +17,7 @@ import eterea.core.service.kotlin.model.Habitacion;
 import eterea.core.service.kotlin.model.HabitacionMovimiento;
 import eterea.core.service.kotlin.repository.HabitacionMovimientoRepository;
 import eterea.core.service.model.dto.HabitacionMovimientoResponseDto;
-import eterea.core.service.model.dto.ReservaHotelDto;
+import eterea.core.service.model.dto.CreateHabitacionMovimientoDto;
 import eterea.core.service.model.dto.mapper.HabitacionMovimientoToDtoMapper;
 import jakarta.transaction.Transactional;
 
@@ -72,8 +73,23 @@ public class HabitacionMovimientoService {
     }
 
     @Transactional
-    public HabitacionMovimientoResponseDto createReservaHabitacion(ReservaHotelDto dto) {
-        Cliente cliente = clienteService.findByNumeroDocumentoAndDocumentoId(dto.nroDocumento(), dto.tipoDocumentoId());
+    public HabitacionMovimientoResponseDto createReservaHabitacion(CreateHabitacionMovimientoDto dto) {
+        boolean isAgencia = dto.cuit() != null
+                && !dto.cuit().equals("00-00000000-0")
+                && !dto.cuit().isBlank();
+
+        Cliente cliente = null;
+        if (isAgencia) {
+            cliente = clienteService.findByCuit(dto.cuit());
+        } else {
+            try {
+                cliente = clienteService.findByNumeroDocumentoAndDocumentoId(
+                        dto.nroDocumento(),
+                        dto.tipoDocumentoId());
+            } catch (ClienteException e) {
+                cliente = clienteService.findByNumeroDocumento(dto.nroDocumento());
+            }
+        }
         // Check room availability
         if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida(), null)) {
             throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
