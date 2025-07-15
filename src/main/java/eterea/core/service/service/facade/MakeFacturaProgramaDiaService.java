@@ -1,10 +1,7 @@
 package eterea.core.service.service.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.client.report.MakeFacturaReportClient;
 import eterea.core.service.kotlin.exception.ReservaContextException;
-import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.PosicionIva;
 import eterea.core.service.model.ReservaContext;
@@ -48,6 +45,7 @@ public class MakeFacturaProgramaDiaService {
     private final VoucherService voucherService;
     private final FacturacionService facturacionService;
     private final TrackService trackService;
+    private final RegistraFacturaService registraFacturaService;
 
     public MakeFacturaProgramaDiaService(ComprobanteService comprobanteService,
                                          ReservaService reservaService,
@@ -63,7 +61,7 @@ public class MakeFacturaProgramaDiaService {
                                          MakeFacturaReportClient makeFacturaReportClient,
                                          Environment environment,
                                          VoucherService voucherService,
-                                         FacturacionService facturacionService, TrackService trackService) {
+                                         FacturacionService facturacionService, TrackService trackService, RegistraFacturaService registraFacturaService) {
         this.comprobanteService = comprobanteService;
         this.reservaService = reservaService;
         this.empresaService = empresaService;
@@ -80,6 +78,7 @@ public class MakeFacturaProgramaDiaService {
         this.voucherService = voucherService;
         this.facturacionService = facturacionService;
         this.trackService = trackService;
+        this.registraFacturaService = registraFacturaService;
     }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId, Track track) {
@@ -90,14 +89,12 @@ public class MakeFacturaProgramaDiaService {
         if (comprobante.getFacturaElectronica() == 0) {
             return false;
         }
-        logComprobante(comprobante);
+        log.debug("Comprobante -> {}", comprobante.jsonify());
         Empresa empresa = empresaService.findTop();
-        logEmpresa(empresa);
         Parametro parametro = parametroService.findTop();
-        logParametro(parametro);
         String moneda = "PES";
         Reserva reserva = reservaService.findByReservaId(reservaId);
-        logReserva(reserva);
+        log.debug("Reserva -> {}", reserva.jsonify());
         if (reserva.getFacturada() == (byte) 1) {
             log.debug("reserva facturada={}", reserva.getReservaId());
             try {
@@ -106,16 +103,15 @@ public class MakeFacturaProgramaDiaService {
                 reservaContext.setFacturaPendiente((byte) 0);
                 reservaContext.setEnvioPendiente((byte) 0);
                 reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-                logReservaContext(reservaContext);
+                log.debug("ReservaContext -> {}", reservaContext.jsonify());
             } catch (ReservaContextException e) {
                 log.debug("No hay reserva_context para esta reserva");
             }
             return false;
         }
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-        logVoucher(voucher);
+        log.debug("Voucher -> {}", voucher.jsonify());
         Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
-        logCliente(cliente);
         PosicionIva posicionIva = cliente.getPosicion();
         var idPosicionIvaArca = 5;
         if (posicionIva != null) {
@@ -159,7 +155,7 @@ public class MakeFacturaProgramaDiaService {
         BigDecimal exento = BigDecimal.ZERO;
         for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reservaId)) {
             reservaArticulo.setArticulo(articuloService.findByArticuloId(reservaArticulo.getArticuloId()));
-            logReservaArticulo(reservaArticulo);
+            log.debug("ReservaArticulo -> {}", reservaArticulo.jsonify());
             BigDecimal subtotal = reservaArticulo.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad()));
             total = total.add(subtotal);
             if (Objects.requireNonNull(reservaArticulo.getArticulo()).getExento() == (byte) 1) {
@@ -172,7 +168,7 @@ public class MakeFacturaProgramaDiaService {
         }
 
         // actualiza reserva_context
-        ReservaContext reservaContext = null;
+        ReservaContext reservaContext;
         try {
             reservaContext = reservaContextService.findByVoucherId(reserva.getVoucherId());
             reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
@@ -187,7 +183,13 @@ public class MakeFacturaProgramaDiaService {
                     .build();
             reservaContext = reservaContextService.add(reservaContext);
         }
-        logReservaContext(reservaContext);
+        log.debug("ReservaContext -> {}", reservaContext.jsonify());
+
+        // Chequeo si la reserva ya pasó por ARCA
+        if (reservaContext.getFacturaArca() == (byte) 1) {
+            log.info("Reserva {} Order Number {} facturada en ARCA sin registro", reservaId, reservaContext.getOrderNumberId());
+            return false;
+        }
 
         BigDecimal coeficienteIva1 = parametro.getIva1().divide(new BigDecimal(100), 3, RoundingMode.HALF_UP);
         BigDecimal neto21 = total21.divide(BigDecimal.ONE.add(coeficienteIva1), 5, RoundingMode.HALF_UP);
@@ -212,29 +214,29 @@ public class MakeFacturaProgramaDiaService {
                 .iva105(iva105.setScale(2, RoundingMode.HALF_UP))
                 .idCondicionIva(idPosicionIvaArca)
                 .build();
-
-        logFacturacionDto(facturacionDto);
+        log.debug("FacturacionDto -> {}", facturacionDto.jsonify());
 
         try {
             facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto);
-            log.debug("After makeFactura");
-            logFacturacionDto(facturacionDto);
+            log.debug("After makeFactura -> {}", facturacionDto.jsonify());
         } catch (WebClientResponseException e) {
             log.debug("Servicio de Facturación NO disponible");
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+            log.debug("ReservaContext -> {}", reservaContext.jsonify());
             return false;
         }
 
         if (!facturacionDto.getResultado().equals("A")) {
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+            log.debug("Facturación NO Aprobada por ARCA -> {}", reservaContext.jsonify());
             return false;
         }
 
         var orderNote = orderNoteService.findByOrderNumberId(reservaContext.getOrderNumberId());
-        logOrderNote(orderNote);
+        log.debug("Recuperando order_note -> {}", orderNote.jsonify());
 
-        reservaContext.setFacturaPendiente((byte) 0);
-        reservaContext.setDiferenciaWeb(orderNote.getOrderTotal().subtract(facturacionDto.getTotal()).setScale(2, RoundingMode.HALF_UP));
+        reservaContext = registraFacturaService.markReservaContextFacturada(reservaContext, orderNote, facturacionDto);
+
         // Convierte fechas
         SimpleDateFormat formatoInDate = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat formatoOutDate = new SimpleDateFormat("ddMMyyyy");
@@ -275,8 +277,8 @@ public class MakeFacturaProgramaDiaService {
                 .numeroDocumento(new BigDecimal(facturacionDto.getDocumento()))
                 .trackUuid(track.getUuid())
                 .build();
-        registroCae = registroCaeService.add(registroCae, track);
-        logRegistroCae(registroCae);
+        registroCae = registroCaeService.add(registroCae);
+        log.debug("RegistroCae -> {}", registroCae.jsonify());
 
         ClienteMovimiento clienteMovimiento = null;
         try {
@@ -292,24 +294,26 @@ public class MakeFacturaProgramaDiaService {
                     false
             );
             track = trackService.endTracking(track);
+            log.debug("Track -> {}", track.jsonify());
         } catch (Exception e) {
             track = trackService.failedTracking(track);
+            log.debug("Track -> {}", track.jsonify());
         }
 
         if (clienteMovimiento != null) {
             var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
             if (enableSendEmail) {
                 if (clienteMovimiento.getClienteMovimientoId() != null) {
-                    logReservaContext(reservaContext);
-
                     try {
                         reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
                         log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), "daniel.quinterospinto@gmail.com"));
                         reservaContext.setEnvioPendiente((byte) 0);
                         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                        log.debug("Ok send ReservaContext -> {}", reservaContext.jsonify());
                         return true;
                     } catch (MessagingException e) {
                         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+                        log.debug("Error send ReservaContext -> {}", reservaContext.jsonify());
                     }
                 }
             }
@@ -317,94 +321,6 @@ public class MakeFacturaProgramaDiaService {
 
         return false;
 
-    }
-
-    private void logOrderNote(OrderNote orderNote) {
-        try {
-            log.debug("order_note={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(orderNote));
-        } catch (JsonProcessingException e) {
-            log.debug("order_note=null");
-        }
-    }
-
-    private void logFacturacionDto(FacturacionDto facturacionDto) {
-        try {
-            log.debug("facturacionDto={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(facturacionDto));
-        } catch (JsonProcessingException e) {
-            log.debug("facturacionDto=null");
-        }
-    }
-
-    private void logRegistroCae(RegistroCae registroCae) {
-        try {
-            log.debug("registroCae={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(registroCae));
-        } catch (JsonProcessingException e) {
-            log.debug("registroCae=null");
-        }
-    }
-
-    private void logReservaArticulo(ReservaArticulo reservaArticulo) {
-        try {
-            log.debug("reservaArticulo={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
-        } catch (JsonProcessingException e) {
-            log.debug("reservaArticulo=null");
-        }
-    }
-
-    private void logCliente(Cliente cliente) {
-        try {
-            log.debug("cliente={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(cliente));
-        } catch (JsonProcessingException e) {
-            log.debug("cliente=null");
-        }
-    }
-
-    private void logVoucher(Voucher voucher) {
-        try {
-            log.debug("voucher={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(voucher));
-        } catch (JsonProcessingException e) {
-            log.debug("voucher=null");
-        }
-    }
-
-    private void logReservaContext(ReservaContext reservaContext) {
-        try {
-            log.debug("reserva_context={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaContext));
-        } catch (JsonProcessingException e) {
-            log.debug("reserva_context=null");
-        }
-    }
-
-    private void logReserva(Reserva reserva) {
-        try {
-            log.debug("reserva={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reserva));
-        } catch (JsonProcessingException e) {
-            log.debug("reserva=null");
-        }
-    }
-
-    private void logParametro(Parametro parametro) {
-        try {
-            log.debug("parametro={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(parametro));
-        } catch (JsonProcessingException e) {
-            log.debug("parametro=null");
-        }
-    }
-
-    private void logEmpresa(Empresa empresa) {
-        try {
-            log.debug("empresa={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(empresa));
-        } catch (JsonProcessingException e) {
-            log.debug("empresa=null");
-        }
-    }
-
-    private void logComprobante(Comprobante comprobante) {
-        try {
-            log.debug("comprobante={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
-        } catch (JsonProcessingException e) {
-            log.debug("comprobante=null");
-        }
     }
 
 }

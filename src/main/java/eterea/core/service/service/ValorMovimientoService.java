@@ -39,36 +39,36 @@ public class ValorMovimientoService {
     }
 
     public ValorMovimiento update(ValorMovimiento newValorMovimiento, Long valorMovimientoId) {
-        return repository.findByValorMovimientoId(valorMovimientoId).map(valorMovimiento -> {
-            valorMovimiento = new ValorMovimiento.Builder()
-                    .valorMovimientoId(valorMovimientoId)
-                    .negocioId(newValorMovimiento.getNegocioId())
-                    .valorId(newValorMovimiento.getValorId())
-                    .proveedorId(newValorMovimiento.getProveedorId())
-                    .clienteId(newValorMovimiento.getClienteId())
-                    .fechaEmision(newValorMovimiento.getFechaEmision())
-                    .fechaVencimiento(newValorMovimiento.getFechaVencimiento())
-                    .comprobanteId(newValorMovimiento.getComprobanteId())
-                    .numeroComprobante(newValorMovimiento.getNumeroComprobante())
-                    .importe(newValorMovimiento.getImporte())
-                    .numeroCuenta(newValorMovimiento.getNumeroCuenta())
-                    .fechaContable(newValorMovimiento.getFechaContable())
-                    .ordenContable(newValorMovimiento.getOrdenContable())
-                    .proveedorMovimientoId(newValorMovimiento.getProveedorMovimientoId())
-                    .clienteMovimientoId(newValorMovimiento.getClienteMovimientoId())
-                    .titular(newValorMovimiento.getTitular())
-                    .banco(newValorMovimiento.getBanco())
-                    .receptor(newValorMovimiento.getReceptor())
-                    .estadoId(newValorMovimiento.getEstadoId())
-                    .fechaEntrega(newValorMovimiento.getFechaEntrega())
-                    .tanda(newValorMovimiento.getTanda())
-                    .tandaIndex(newValorMovimiento.getTandaIndex())
-                    .cierreCajaId(newValorMovimiento.getCierreCajaId())
-                    .nivel(newValorMovimiento.getNivel())
-                    .observaciones(newValorMovimiento.getObservaciones())
-                    .build();
-            return repository.save(valorMovimiento);
-        }).orElseThrow(() -> new ValorMovimientoException(valorMovimientoId));
+        ValorMovimiento valorMovimiento = repository.findByValorMovimientoId(valorMovimientoId)
+                .orElseThrow(() -> new ValorMovimientoException(valorMovimientoId));
+
+        valorMovimiento.setNegocioId(newValorMovimiento.getNegocioId());
+        valorMovimiento.setValorId(newValorMovimiento.getValorId());
+        valorMovimiento.setProveedorId(newValorMovimiento.getProveedorId());
+        valorMovimiento.setClienteId(newValorMovimiento.getClienteId());
+        valorMovimiento.setFechaEmision(newValorMovimiento.getFechaEmision());
+        valorMovimiento.setFechaVencimiento(newValorMovimiento.getFechaVencimiento());
+        valorMovimiento.setComprobanteId(newValorMovimiento.getComprobanteId());
+        valorMovimiento.setNumeroComprobante(newValorMovimiento.getNumeroComprobante());
+        valorMovimiento.setImporte(newValorMovimiento.getImporte());
+        valorMovimiento.setNumeroCuenta(newValorMovimiento.getNumeroCuenta());
+        valorMovimiento.setFechaContable(newValorMovimiento.getFechaContable());
+        valorMovimiento.setOrdenContable(newValorMovimiento.getOrdenContable());
+        valorMovimiento.setProveedorMovimientoId(newValorMovimiento.getProveedorMovimientoId());
+        valorMovimiento.setClienteMovimientoId(newValorMovimiento.getClienteMovimientoId());
+        valorMovimiento.setTitular(newValorMovimiento.getTitular());
+        valorMovimiento.setBanco(newValorMovimiento.getBanco());
+        valorMovimiento.setReceptor(newValorMovimiento.getReceptor());
+        valorMovimiento.setEstadoId(newValorMovimiento.getEstadoId());
+        valorMovimiento.setFechaEntrega(newValorMovimiento.getFechaEntrega());
+        valorMovimiento.setTanda(newValorMovimiento.getTanda());
+        valorMovimiento.setTandaIndex(newValorMovimiento.getTandaIndex());
+        valorMovimiento.setCierreCajaId(newValorMovimiento.getCierreCajaId());
+        valorMovimiento.setNivel(newValorMovimiento.getNivel());
+        valorMovimiento.setObservaciones(newValorMovimiento.getObservaciones());
+        valorMovimiento.setTrackUuid(newValorMovimiento.getTrackUuid());
+
+        return repository.save(valorMovimiento);
     }
 
     public List<ValorMovimientoDto> findAllMovimientos(LocalDate desde,

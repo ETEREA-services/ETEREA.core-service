@@ -48,22 +48,22 @@ public class ReservaArticuloService {
 	}
 
     public ReservaArticulo update(ReservaArticulo newReservaArticulo, Long reservaArticuloId) {
-		return repository.findByReservaArticuloId(reservaArticuloId).map(reservaArticulo -> {
-			reservaArticulo = new ReservaArticulo.Builder()
-					.reservaArticuloId(reservaArticuloId)
-					.negocioId(newReservaArticulo.getNegocioId())
-					.reservaId(newReservaArticulo.getReservaId())
-					.voucherId(newReservaArticulo.getVoucherId())
-					.articuloId(newReservaArticulo.getArticuloId())
-					.cantidad(newReservaArticulo.getCantidad())
-					.comision(newReservaArticulo.getComision())
-					.precioUnitarioSinComision(newReservaArticulo.getPrecioUnitarioSinComision())
-					.precioUnitario(newReservaArticulo.getPrecioUnitario())
-					.precioCompra(newReservaArticulo.getPrecioCompra())
-					.observaciones(newReservaArticulo.getObservaciones())
-					.build();
-			return reservaArticulo;
-		}).orElseThrow(() -> new ReservaArticuloException(reservaArticuloId));
+		ReservaArticulo reservaArticulo = repository.findByReservaArticuloId(reservaArticuloId)
+				.orElseThrow(() -> new ReservaArticuloException(reservaArticuloId));
+
+		reservaArticulo.setNegocioId(newReservaArticulo.getNegocioId());
+		reservaArticulo.setReservaId(newReservaArticulo.getReservaId());
+		reservaArticulo.setVoucherId(newReservaArticulo.getVoucherId());
+		reservaArticulo.setArticuloId(newReservaArticulo.getArticuloId());
+		reservaArticulo.setCantidad(newReservaArticulo.getCantidad());
+		reservaArticulo.setComision(newReservaArticulo.getComision());
+		reservaArticulo.setPrecioUnitarioSinComision(newReservaArticulo.getPrecioUnitarioSinComision());
+		reservaArticulo.setPrecioUnitario(newReservaArticulo.getPrecioUnitario());
+		reservaArticulo.setPrecioCompra(newReservaArticulo.getPrecioCompra());
+		reservaArticulo.setObservaciones(newReservaArticulo.getObservaciones());
+		reservaArticulo.setTrackUuid(newReservaArticulo.getTrackUuid());
+
+		return repository.save(reservaArticulo);
     }
 
 }

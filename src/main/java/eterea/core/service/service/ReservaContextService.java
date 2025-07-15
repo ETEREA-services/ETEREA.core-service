@@ -6,6 +6,7 @@ import eterea.core.service.model.ReservaContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservaContextService {
@@ -21,7 +22,7 @@ public class ReservaContextService {
     }
 
     public ReservaContext findByVoucherId(Long voucherId) {
-        return repository.findByVoucherId(voucherId).orElseThrow(() -> new ReservaContextException("voucher", voucherId));
+        return Objects.requireNonNull(repository.findByVoucherId(voucherId)).orElseThrow(() -> new ReservaContextException("voucher", voucherId));
     }
 
     public ReservaContext findByReservaId(Long reservaId) {
@@ -33,21 +34,23 @@ public class ReservaContextService {
     }
 
     public ReservaContext update(ReservaContext newReservaContext, Long reservaContextId) {
-        return repository.findByReservaContextId(reservaContextId).map(reservaContext -> {
-            reservaContext = ReservaContext.builder()
-                    .reservaContextId(reservaContextId)
-                    .reservaId(newReservaContext.getReservaId())
-                    .voucherId(newReservaContext.getVoucherId())
-                    .clienteMovimientoId(newReservaContext.getClienteMovimientoId())
-                    .orderNumberId(newReservaContext.getOrderNumberId())
-                    .facturadoFuera(newReservaContext.getFacturadoFuera())
-                    .facturaPendiente(newReservaContext.getFacturaPendiente())
-                    .facturaTries(newReservaContext.getFacturaTries())
-                    .envioPendiente(newReservaContext.getEnvioPendiente())
-                    .envioTries(newReservaContext.getEnvioTries())
-                    .build();
-            return repository.save(reservaContext);
-        }).orElseThrow(() -> new ReservaContextException(reservaContextId));
+        ReservaContext reservaContext = repository.findByReservaContextId(reservaContextId)
+                .orElseThrow(() -> new ReservaContextException(reservaContextId));
+
+        reservaContext.setReservaId(newReservaContext.getReservaId());
+        reservaContext.setVoucherId(newReservaContext.getVoucherId());
+        reservaContext.setClienteMovimientoId(newReservaContext.getClienteMovimientoId());
+        reservaContext.setOrderNumberId(newReservaContext.getOrderNumberId());
+        reservaContext.setFacturadoFuera(newReservaContext.getFacturadoFuera());
+        reservaContext.setFacturaPendiente(newReservaContext.getFacturaPendiente());
+        reservaContext.setFacturaTries(newReservaContext.getFacturaTries());
+        reservaContext.setEnvioPendiente(newReservaContext.getEnvioPendiente());
+        reservaContext.setEnvioTries(newReservaContext.getEnvioTries());
+        reservaContext.setDiferenciaWeb(newReservaContext.getDiferenciaWeb());
+        reservaContext.setFacturaArca(newReservaContext.getFacturaArca());
+        reservaContext.setPayloadArca(newReservaContext.getPayloadArca());
+
+        return repository.save(reservaContext);
     }
 
 }

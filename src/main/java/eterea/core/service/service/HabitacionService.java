@@ -26,11 +26,13 @@ public class HabitacionService {
 	}
 
 	public Habitacion update(Habitacion newHabitacion, Integer numero) {
-		return repository.findByNumero(numero).map(habitacion -> {
-			habitacion = new Habitacion(numero, newHabitacion.getHabitacionTipoId(), newHabitacion.getClienteId());
-			habitacion = repository.save(habitacion);
-			return habitacion;
-		}).orElseThrow(() -> new HabitacionException(numero));
+		Habitacion habitacion = repository.findByNumero(numero)
+				.orElseThrow(() -> new HabitacionException(numero));
+
+		habitacion.setHabitacionTipoId(newHabitacion.getHabitacionTipoId());
+		habitacion.setClienteId(newHabitacion.getClienteId());
+
+		return repository.save(habitacion);
 	}
 
 }

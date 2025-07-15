@@ -1,5 +1,7 @@
 package eterea.core.service.kotlin.model
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.persistence.*
 
 @Entity
@@ -97,4 +99,19 @@ data class Comprobante(
     @JoinColumn(name = "tco_tipoafip", insertable = false, updatable = false)
     var comprobanteAfip: ComprobanteAfip? = null
 
-) : Auditable()
+) : Auditable() {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error: " + e.message
+        }
+    }
+
+}

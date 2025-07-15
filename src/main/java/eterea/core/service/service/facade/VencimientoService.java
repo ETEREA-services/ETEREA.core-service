@@ -10,7 +10,8 @@ import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.service.view.UsuarioVencimientoService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,22 @@ public class VencimientoService {
 	private final UsuarioVencimientoService usuarioVencimientoService;
 	private final JavaMailSender sender;
 
-	public VencimientoService(VoucherService voucherService, UsuarioVencimientoService usuarioVencimientoService, JavaMailSender sender) {
+	@Value("${app.enable-send-email:false}")
+	private boolean IS_EMAIL_ENABLED;
+
+	public VencimientoService(VoucherService voucherService,
+							  UsuarioVencimientoService usuarioVencimientoService,
+							  @Autowired(required = false) JavaMailSender sender) {
 		this.voucherService = voucherService;
 		this.usuarioVencimientoService = usuarioVencimientoService;
 		this.sender = sender;
 	}
 
 	public String notificaciondia() {
+
+		if(!IS_EMAIL_ENABLED){
+			return "Mail Ok!";
+		}
 
 		for (UsuarioVencimiento usuarioVencimiento : usuarioVencimientoService.findAllToday()) {
 			log.debug("UsuarioVencimiento -> {}", usuarioVencimiento);

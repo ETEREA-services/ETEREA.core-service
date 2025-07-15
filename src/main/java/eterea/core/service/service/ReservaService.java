@@ -231,41 +231,41 @@ public class ReservaService {
     }
 
     public Reserva update(Reserva newReserva, Long reservaId) {
-        return repository.findByReservaId(reservaId).map(reserva -> {
-            reserva = new Reserva.Builder()
-                    .reservaId(reservaId)
-                    .negocioId(newReserva.getNegocioId())
-                    .clienteId(newReserva.getClienteId())
-                    .fechaToma(newReserva.getFechaToma())
-                    .fechaInServicio(newReserva.getFechaInServicio())
-                    .fechaOutServicio(newReserva.getFechaOutServicio())
-                    .fechaVencimiento(newReserva.getFechaVencimiento())
-                    .horaVencimiento(newReserva.getHoraVencimiento())
-                    .avisoMail(newReserva.getAvisoMail())
-                    .pendiente(newReserva.getPendiente())
-                    .confirmada(newReserva.getConfirmada())
-                    .facturada(newReserva.getFacturada())
-                    .anulada(newReserva.getAnulada())
-                    .eliminada(newReserva.getEliminada())
-                    .verificada(newReserva.getVerificada())
-                    .nombrePax(newReserva.getNombrePax())
-                    .cantidadPaxs(newReserva.getCantidadPaxs())
-                    .observaciones(newReserva.getObservaciones())
-                    .voucherId(newReserva.getVoucherId())
-                    .pagaComision(newReserva.getPagaComision())
-                    .observacionesComision(newReserva.getObservacionesComision())
-                    .comisionPagada(newReserva.getComisionPagada())
-                    .pagaCacheuta(newReserva.getPagaCacheuta())
-                    .facturadoFuera(newReserva.getFacturadoFuera())
-                    .reservaArticulos(newReserva.getReservaArticulos())
-                    .usuario(newReserva.getUsuario())
-                    .contacto(newReserva.getContacto())
-                    .reservaOrigenId(newReserva.getReservaOrigenId())
-                    .facturarExtranjero(newReserva.getFacturarExtranjero())
-                    .fechaAbierta(newReserva.getFechaAbierta())
-                    .build();
-            return repository.save(reserva);
-        }).orElseThrow(() -> new ReservaException(reservaId));
+        Reserva reserva = repository.findByReservaId(reservaId)
+                .orElseThrow(() -> new ReservaException(reservaId));
+
+        reserva.setNegocioId(newReserva.getNegocioId());
+        reserva.setClienteId(newReserva.getClienteId());
+        reserva.setFechaToma(newReserva.getFechaToma());
+        reserva.setFechaInServicio(newReserva.getFechaInServicio());
+        reserva.setFechaOutServicio(newReserva.getFechaOutServicio());
+        reserva.setFechaVencimiento(newReserva.getFechaVencimiento());
+        reserva.setHoraVencimiento(newReserva.getHoraVencimiento());
+        reserva.setAvisoMail(newReserva.getAvisoMail());
+        reserva.setPendiente(newReserva.getPendiente());
+        reserva.setConfirmada(newReserva.getConfirmada());
+        reserva.setFacturada(newReserva.getFacturada());
+        reserva.setAnulada(newReserva.getAnulada());
+        reserva.setEliminada(newReserva.getEliminada());
+        reserva.setVerificada(newReserva.getVerificada());
+        reserva.setNombrePax(newReserva.getNombrePax());
+        reserva.setCantidadPaxs(newReserva.getCantidadPaxs());
+        reserva.setObservaciones(newReserva.getObservaciones());
+        reserva.setVoucherId(newReserva.getVoucherId());
+        reserva.setPagaComision(newReserva.getPagaComision());
+        reserva.setObservacionesComision(newReserva.getObservacionesComision());
+        reserva.setComisionPagada(newReserva.getComisionPagada());
+        reserva.setPagaCacheuta(newReserva.getPagaCacheuta());
+        reserva.setFacturadoFuera(newReserva.getFacturadoFuera());
+        reserva.setReservaArticulos(newReserva.getReservaArticulos());
+        reserva.setUsuario(newReserva.getUsuario());
+        reserva.setContacto(newReserva.getContacto());
+        reserva.setReservaOrigenId(newReserva.getReservaOrigenId());
+        reserva.setFacturarExtranjero(newReserva.getFacturarExtranjero());
+        reserva.setFechaAbierta(newReserva.getFechaAbierta());
+        reserva.setTrackUuid(newReserva.getTrackUuid());
+
+        return repository.save(reserva);
     }
 
     @Transactional

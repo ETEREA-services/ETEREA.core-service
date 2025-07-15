@@ -21,10 +21,7 @@ public class RegistroCaeService {
         return Objects.requireNonNull(repository.findByComprobanteIdAndPuntoVentaAndNumeroComprobante(comprobanteId, puntoVenta, numeroComprobante)).orElseThrow(() -> new RegistroCaeException(comprobanteId, puntoVenta, numeroComprobante));
     }
 
-    public RegistroCae add(RegistroCae registroCae, Track track) {
-        if (track != null) {
-            registroCae.setTrackUuid(track.getUuid());
-        }
+    public RegistroCae add(RegistroCae registroCae) {
         return repository.save(registroCae);
     }
 
