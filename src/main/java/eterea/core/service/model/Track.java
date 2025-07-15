@@ -1,5 +1,7 @@
 package eterea.core.service.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +26,19 @@ public class Track extends Auditable {
     @Column(nullable = false)
     @ColumnDefault("'IN_PROGRESS'")
     private Status status = Status.IN_PROGRESS;
+
+    public String jsonify() {
+        try {
+            return JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "jsonify error: " + e.getMessage();
+        }
+    }
 
     public enum Status {
         IN_PROGRESS,

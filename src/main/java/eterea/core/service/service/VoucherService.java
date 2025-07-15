@@ -92,43 +92,43 @@ public class VoucherService {
     }
 
     public Voucher update(Voucher newVoucher, Long voucherId) {
-        return repository.findByVoucherId(voucherId).map(voucher -> {
-            voucher = new Voucher.Builder()
-                    .voucherId(voucherId)
-                    .fechaToma(newVoucher.getFechaToma())
-                    .fechaServicio(newVoucher.getFechaServicio())
-                    .fechaVencimiento(newVoucher.getFechaVencimiento())
-                    .horaVencimiento(newVoucher.getHoraVencimiento())
-                    .nombrePax(newVoucher.getNombrePax())
-                    .paxs(newVoucher.getPaxs())
-                    .subeEn(newVoucher.getSubeEn())
-                    .productos(newVoucher.getProductos())
-                    .tieneVoucher(newVoucher.getTieneVoucher())
-                    .clienteId(newVoucher.getClienteId())
-                    .observaciones(newVoucher.getObservaciones())
-                    .confirmado(newVoucher.getConfirmado())
-                    .pagaCacheuta(newVoucher.getPagaCacheuta())
-                    .hotelId(newVoucher.getHotelId())
-                    .contacto(newVoucher.getContacto())
-                    .paxsReales(newVoucher.getPaxsReales())
-                    .proveedorId(newVoucher.getProveedorId())
-                    .planilla(newVoucher.getPlanilla())
-                    .reservaId(newVoucher.getReservaId())
-                    .numeroVoucher(newVoucher.getNumeroVoucher())
-                    .usuario(newVoucher.getUsuario())
-                    .fechaRecepcion(newVoucher.getFechaRecepcion())
-                    .fechaEmision(newVoucher.getFechaEmision())
-                    .numero(newVoucher.getNumero())
-                    .cantidadPax(newVoucher.getCantidadPax())
-                    .nombre(newVoucher.getNombre())
-                    .conTraslado(newVoucher.getConTraslado())
-                    .paxsNoShow(newVoucher.getPaxsNoShow())
-                    .reservaOrigenId(newVoucher.getReservaOrigenId())
-                    .fechaAbierta(newVoucher.getFechaAbierta())
-                    .ventaInternet(newVoucher.getVentaInternet())
-                    .build();
-            return repository.save(voucher);
-        }).orElseThrow(() -> new VoucherException(voucherId, "Programa por el Dia"));
+        Voucher voucher = repository.findByVoucherId(voucherId)
+                .orElseThrow(() -> new VoucherException(voucherId, "Programa por el Dia"));
+
+        voucher.setFechaToma(newVoucher.getFechaToma());
+        voucher.setFechaServicio(newVoucher.getFechaServicio());
+        voucher.setFechaVencimiento(newVoucher.getFechaVencimiento());
+        voucher.setHoraVencimiento(newVoucher.getHoraVencimiento());
+        voucher.setNombrePax(newVoucher.getNombrePax());
+        voucher.setPaxs(newVoucher.getPaxs());
+        voucher.setSubeEn(newVoucher.getSubeEn());
+        voucher.setProductos(newVoucher.getProductos());
+        voucher.setTieneVoucher(newVoucher.getTieneVoucher());
+        voucher.setClienteId(newVoucher.getClienteId());
+        voucher.setObservaciones(newVoucher.getObservaciones());
+        voucher.setConfirmado(newVoucher.getConfirmado());
+        voucher.setPagaCacheuta(newVoucher.getPagaCacheuta());
+        voucher.setHotelId(newVoucher.getHotelId());
+        voucher.setContacto(newVoucher.getContacto());
+        voucher.setPaxsReales(newVoucher.getPaxsReales());
+        voucher.setProveedorId(newVoucher.getProveedorId());
+        voucher.setPlanilla(newVoucher.getPlanilla());
+        voucher.setReservaId(newVoucher.getReservaId());
+        voucher.setNumeroVoucher(newVoucher.getNumeroVoucher());
+        voucher.setUsuario(newVoucher.getUsuario());
+        voucher.setFechaRecepcion(newVoucher.getFechaRecepcion());
+        voucher.setFechaEmision(newVoucher.getFechaEmision());
+        voucher.setNumero(newVoucher.getNumero());
+        voucher.setCantidadPax(newVoucher.getCantidadPax());
+        voucher.setNombre(newVoucher.getNombre());
+        voucher.setConTraslado(newVoucher.getConTraslado());
+        voucher.setPaxsNoShow(newVoucher.getPaxsNoShow());
+        voucher.setReservaOrigenId(newVoucher.getReservaOrigenId());
+        voucher.setFechaAbierta(newVoucher.getFechaAbierta());
+        voucher.setVentaInternet(newVoucher.getVentaInternet());
+        voucher.setTrackUuid(newVoucher.getTrackUuid());
+
+        return repository.save(voucher);
     }
 
 }

@@ -1,5 +1,7 @@
 package eterea.core.service.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.Auditable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +41,18 @@ public class ReservaContext extends Auditable {
     @Builder.Default
     private Byte facturaArca = 0;
     private String payloadArca;
+
+    public String jsonify() {
+        try {
+            return JsonMapper
+                    .builder()
+                    .findAndAddModules()
+                    .build()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "jsonify error: " + e.getMessage();
+        }
+    }
 
 }

@@ -1,5 +1,7 @@
 package eterea.core.service.kotlin.extern
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
@@ -45,4 +47,19 @@ data class OrderNote(
     var products: List<Product?>? = null,
     var payment: Payment? = null
 
-)
+) {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error: " + e.message;
+        }
+    }
+
+}

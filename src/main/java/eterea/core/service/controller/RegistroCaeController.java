@@ -29,7 +29,7 @@ public class RegistroCaeController {
 
     @PostMapping("/")
     public ResponseEntity<RegistroCae> create(@RequestBody RegistroCae registroCae) {
-        return new ResponseEntity<>(service.add(registroCae, null), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.add(registroCae), HttpStatus.CREATED);
     }
 
 }

@@ -88,47 +88,45 @@ public class ArticuloService {
 
 	public Articulo update(Articulo newArticulo, String articuloId) {
 		log.debug("Processing update");
-		return Objects.requireNonNull(repository.findByArticuloId(articuloId)).map(articulo -> {
-			articulo = new Articulo.Builder()
-					.articuloId(articuloId)
-					.negocioId(newArticulo.getNegocioId())
-					.descripcion(newArticulo.getDescripcion())
-					.leyendaVoucher(newArticulo.getLeyendaVoucher())
-					.precioVentaSinIva(newArticulo.getPrecioVentaSinIva())
-					.precioVentaConIva(newArticulo.getPrecioVentaConIva())
-					.cuentaVentas(newArticulo.getCuentaVentas())
-					.cuentaCompras(newArticulo.getCuentaCompras())
-					.cuentaGastos(newArticulo.getCuentaGastos())
-					.centroStockId(newArticulo.getCentroStockId())
-					.rubroId(newArticulo.getRubroId())
-					.subRubroId(newArticulo.getSubRubroId())
-					.precioCompra(newArticulo.getPrecioCompra())
-					.iva105(newArticulo.getIva105())
-					.precioCompraNeto(newArticulo.getPrecioCompraNeto())
-					.exento(newArticulo.getExento())
-					.stockMinimo(newArticulo.getStockMinimo())
-					.stockOptimo(newArticulo.getStockOptimo())
-					.bloqueoCompras(newArticulo.getBloqueoCompras())
-					.bloqueoStock(newArticulo.getBloqueoStock())
-					.bloqueoVentas(newArticulo.getBloqueoVentas())
-					.unidadMedidaId(newArticulo.getUnidadMedidaId())
-					.conDecimales(newArticulo.getConDecimales())
-					.ventas(newArticulo.getVentas())
-					.compras(newArticulo.getCompras())
-					.unidadMedida(newArticulo.getUnidadMedida())
-					.conversionId(newArticulo.getConversionId())
-					.ventaSinStock(newArticulo.getVentaSinStock())
-					.controlaStock(newArticulo.getControlaStock())
-					.asientoCostos(newArticulo.getAsientoCostos())
-					.mascaraBalanza(newArticulo.getMascaraBalanza())
-					.habilitaIngreso(newArticulo.getHabilitaIngreso())
-					.comision(newArticulo.getComision())
-					.prestadorId(newArticulo.getPrestadorId())
-					.autoNumericoId(newArticulo.getAutoNumericoId())
-					.build();
-			return repository.save(articulo);
-        }).orElseThrow(() -> new ArticuloException(articuloId));
+		Articulo articulo = repository.findByArticuloId(articuloId)
+				.orElseThrow(() -> new ArticuloException(articuloId));
 
+		articulo.setNegocioId(newArticulo.getNegocioId());
+		articulo.setDescripcion(newArticulo.getDescripcion());
+		articulo.setLeyendaVoucher(newArticulo.getLeyendaVoucher());
+		articulo.setPrecioVentaSinIva(newArticulo.getPrecioVentaSinIva());
+		articulo.setPrecioVentaConIva(newArticulo.getPrecioVentaConIva());
+		articulo.setCuentaVentas(newArticulo.getCuentaVentas());
+		articulo.setCuentaCompras(newArticulo.getCuentaCompras());
+		articulo.setCuentaGastos(newArticulo.getCuentaGastos());
+		articulo.setCentroStockId(newArticulo.getCentroStockId());
+		articulo.setRubroId(newArticulo.getRubroId());
+		articulo.setSubRubroId(newArticulo.getSubRubroId());
+		articulo.setPrecioCompra(newArticulo.getPrecioCompra());
+		articulo.setIva105(newArticulo.getIva105());
+		articulo.setPrecioCompraNeto(newArticulo.getPrecioCompraNeto());
+		articulo.setExento(newArticulo.getExento());
+		articulo.setStockMinimo(newArticulo.getStockMinimo());
+		articulo.setStockOptimo(newArticulo.getStockOptimo());
+		articulo.setBloqueoCompras(newArticulo.getBloqueoCompras());
+		articulo.setBloqueoStock(newArticulo.getBloqueoStock());
+		articulo.setBloqueoVentas(newArticulo.getBloqueoVentas());
+		articulo.setUnidadMedidaId(newArticulo.getUnidadMedidaId());
+		articulo.setConDecimales(newArticulo.getConDecimales());
+		articulo.setVentas(newArticulo.getVentas());
+		articulo.setCompras(newArticulo.getCompras());
+		articulo.setUnidadMedida(newArticulo.getUnidadMedida());
+		articulo.setConversionId(newArticulo.getConversionId());
+		articulo.setVentaSinStock(newArticulo.getVentaSinStock());
+		articulo.setControlaStock(newArticulo.getControlaStock());
+		articulo.setAsientoCostos(newArticulo.getAsientoCostos());
+		articulo.setMascaraBalanza(newArticulo.getMascaraBalanza());
+		articulo.setHabilitaIngreso(newArticulo.getHabilitaIngreso());
+		articulo.setComision(newArticulo.getComision());
+		articulo.setPrestadorId(newArticulo.getPrestadorId());
+		articulo.setAutoNumericoId(newArticulo.getAutoNumericoId());
+
+		return repository.save(articulo);
 	}
 
 }

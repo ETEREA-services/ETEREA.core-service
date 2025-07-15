@@ -1,7 +1,5 @@
 package eterea.core.service.service.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.Track;
 import eterea.core.service.model.dto.FacturacionDto;
@@ -130,7 +128,6 @@ public class ContabilidadService {
         }
 
         cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);
-        logCuentaMovimientos(cuentaMovimientos);
         return cuentaMovimientos;
     }
 
@@ -144,7 +141,7 @@ public class ContabilidadService {
         clienteMovimiento.setFechaContable(clienteMovimiento.getFechaComprobante());
         clienteMovimiento.setOrdenContable(ordenContable);
         clienteMovimiento = clienteMovimientoService.update(clienteMovimiento, clienteMovimiento.getClienteMovimientoId());
-        logClienteMovimiento(clienteMovimiento);
+        log.debug("ClienteMovimiento -> {}", clienteMovimiento);
         int item = 1;
         String concepto = String.format("Nro: %04d %06d", clienteMovimiento.getPuntoVenta(), clienteMovimiento.getNumeroComprobante());
         // Registro total deudores por ventas
@@ -211,35 +208,6 @@ public class ContabilidadService {
                 .build());
 
         cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);
-        logCuentaMovimientos(cuentaMovimientos);
-    }
-
-    private void logCuentaMovimientos(List<CuentaMovimiento> cuentaMovimientos) {
-        log.debug("Processing ContabilidadService.logCuentaMovimientos");
-        try {
-            log.debug("cuentaMovimientos={}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(cuentaMovimientos));
-        } catch (JsonProcessingException e) {
-            log.debug("cuentaMovimientos jsonify error {}", e.getMessage());
-        }
-    }
-
-    private void logClienteMovimiento(ClienteMovimiento clienteMovimiento) {
-        log.debug("Processing ContabilidadService.logClienteMovimiento");
-        try {
-            log.debug("clienteMovimiento={}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(clienteMovimiento));
-        } catch (JsonProcessingException e) {
-            log.debug("clienteMovimiento jsonify error {}", e.getMessage());
-        }
     }
 
 }

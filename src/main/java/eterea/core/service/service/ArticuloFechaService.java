@@ -36,12 +36,15 @@ public class ArticuloFechaService {
     }
 
     public ArticuloFecha update(ArticuloFecha newarticulofecha, Long articuloFechaId) {
-        return repository.findByArticuloFechaId(articuloFechaId).map(articulofecha -> {
-            articulofecha = new ArticuloFecha(articuloFechaId, newarticulofecha.getArticuloId(),
-                    newarticulofecha.getFecha(), newarticulofecha.getPrecioUsd(), newarticulofecha.getPrecioArs());
-            repository.save(articulofecha);
-            return articulofecha;
-        }).orElseThrow(() -> new ArticuloFechaException(articuloFechaId));
+        ArticuloFecha articulofecha = repository.findByArticuloFechaId(articuloFechaId)
+                .orElseThrow(() -> new ArticuloFechaException(articuloFechaId));
+
+        articulofecha.setArticuloId(newarticulofecha.getArticuloId());
+        articulofecha.setFecha(newarticulofecha.getFecha());
+        articulofecha.setPrecioUsd(newarticulofecha.getPrecioUsd());
+        articulofecha.setPrecioArs(newarticulofecha.getPrecioArs());
+
+        return repository.save(articulofecha);
     }
 
     public List<ArticuloFecha> findAllByArticuloIdAndPeriodo(String articuloId, OffsetDateTime fechaInicio, OffsetDateTime fechaFin) {

@@ -2,11 +2,14 @@ package eterea.core.service.service.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
+import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.ArticuloMovimientoService;
 import eterea.core.service.service.ClienteMovimientoService;
+import eterea.core.service.service.ReservaContextService;
 import eterea.core.service.service.ValorMovimientoService;
 import eterea.core.service.tool.ToolService;
 import jakarta.transaction.Transactional;
@@ -28,12 +31,14 @@ public class RegistraFacturaService {
     private final ValorMovimientoService valorMovimientoService;
     private final ArticuloMovimientoService articuloMovimientoService;
     private final ContabilidadService contabilidadService;
+    private final ReservaContextService reservaContextService;
 
-    public RegistraFacturaService(ClienteMovimientoService clienteMovimientoService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, ContabilidadService contabilidadService) {
+    public RegistraFacturaService(ClienteMovimientoService clienteMovimientoService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, ContabilidadService contabilidadService, ReservaContextService reservaContextService) {
         this.clienteMovimientoService = clienteMovimientoService;
         this.valorMovimientoService = valorMovimientoService;
         this.articuloMovimientoService = articuloMovimientoService;
         this.contabilidadService = contabilidadService;
+        this.reservaContextService = reservaContextService;
     }
 
     @Transactional
@@ -193,5 +198,20 @@ public class RegistraFacturaService {
             log.debug("clienteMovimiento jsonify error {}", e.getMessage());
         }
     }
+
+    @Transactional
+    public ReservaContext markReservaContextFacturada(ReservaContext reservaContext, OrderNote orderNote, FacturacionDto facturacionDto) {
+        log.debug("Processing RegistraFacturaService.markReservaContextFacturada");
+        log.debug("FacturacionDto -> {}", facturacionDto.jsonify());
+        reservaContext.setFacturaPendiente((byte) 0);
+        reservaContext.setDiferenciaWeb(orderNote.getOrderTotal().subtract(facturacionDto.getTotal()).setScale(2, RoundingMode.HALF_UP));
+        reservaContext.setFacturaArca((byte) 1);
+        reservaContext.setPayloadArca(facturacionDto.jsonify());
+        reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+        log.debug("ReservaContext -> {}", reservaContext.jsonify());
+        return reservaContext;
+    }
+
+
 
 }

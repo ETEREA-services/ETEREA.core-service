@@ -1,15 +1,28 @@
-## [0.6.0] - 2025-07-13
+## [0.6.0] - 2025-07-15
 
-### Added
-- feat(tracking): Add support for transaction tracking with Track entity
-- feat(billing): Add findByComprobante endpoint to ClienteMovimientoController
+### Features
+- **Gestión de Cotizaciones:** Implementado sistema para la gestión de cotizaciones de monedas y conversión de valores.
+- **Facturación y Transacciones:**
+    - Añadido endpoint para el registro de transacciones.
+    - Implementado módulo de "snapshots" para el estado de las transacciones.
+    - Mejorado el control de comprobantes faltantes.
+    - Añadido campo `diferenciaWeb` para control de montos en facturas web.
+- **Artículos y Productos:**
+    - Implementada la replicación de códigos de barras y la actualización de artículos.
+    - Añadida lógica para priorizar tarifas de feriados en la determinación de SKUs.
+- **Informes y Consultas:**
+    - Añadido endpoint para obtener un resumen diario de asientos contables.
+- **Gestión de Feriados:** Implementado CRUD para la entidad `Feriado`.
 
-### Changed
-- refactor(billing): Migrate FacturacionDto from Kotlin to Java
-- fix(billing): Improve error handling in ClienteMovimientoController
+### Fixes
+- **Cálculos y Precisión:** Corregidos problemas con el cálculo de decimales en la facturación.
+- **Validaciones:** Añadida validación de nulos para productos infantiles.
+- **Precios:** Corregido el cálculo del precio de artículos basado en la fecha.
+- **Configuración:** Ajustada la configuración de CORS.
 
-### Docs
-- docs(diagram): Add sequence diagram for transaction tracking
+### Refactor
+- **Facturación:** Refactorización profunda del sistema de facturación, incluyendo la migración de DTOs a Java y la reorganización de la lógica de negocio.
+- **Cotizaciones:** Optimizado el manejo de cotizaciones para mejorar la precisión y el rendimiento.
 
 ## [0.5.1] - 2025-07-10
 

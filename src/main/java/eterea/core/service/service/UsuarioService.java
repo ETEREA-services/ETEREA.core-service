@@ -29,21 +29,19 @@ public class UsuarioService {
     }
 
     public Usuario update(String login, Usuario newUsuario) {
-        return repository.findByLogin(login)
-                .map(usuario -> {
-                    usuario = new Usuario.Builder()
-                            .login(login)
-                            .descripcion(newUsuario.getDescripcion())
-                            .password(newUsuario.getPassword())
-                            .email(newUsuario.getEmail())
-                            .nivel(newUsuario.getNivel())
-                            .pin(newUsuario.getPin())
-                            .cierreRecipientType(newUsuario.getCierreRecipientType())
-                            .consolidadoRecipientType(newUsuario.getConsolidadoRecipientType())
-                            .usuarioId(newUsuario.getUsuarioId())
-                            .build();
-                    return repository.save(usuario);
-                }).orElseThrow(() -> new UsuarioException(login));
+        Usuario usuario = repository.findByLogin(login)
+                .orElseThrow(() -> new UsuarioException(login));
+
+        usuario.setDescripcion(newUsuario.getDescripcion());
+        usuario.setPassword(newUsuario.getPassword());
+        usuario.setEmail(newUsuario.getEmail());
+        usuario.setNivel(newUsuario.getNivel());
+        usuario.setPin(newUsuario.getPin());
+        usuario.setCierreRecipientType(newUsuario.getCierreRecipientType());
+        usuario.setConsolidadoRecipientType(newUsuario.getConsolidadoRecipientType());
+        usuario.setUsuarioId(newUsuario.getUsuarioId());
+
+        return repository.save(usuario);
     }
 
     public void delete(String login) {

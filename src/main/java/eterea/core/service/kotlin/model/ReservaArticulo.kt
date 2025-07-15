@@ -1,5 +1,7 @@
 package eterea.core.service.kotlin.model
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.persistence.*
 import java.math.BigDecimal
 
@@ -49,6 +51,20 @@ data class ReservaArticulo(
     var articulo: Articulo? = null
 
 ) : Auditable() {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error: " + e.message;
+        }
+    }
+
     data class Builder(
         var reservaArticuloId: Long? = null,
         var negocioId: Int? = null,

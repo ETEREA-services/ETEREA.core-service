@@ -66,51 +66,51 @@ public class ClienteMovimientoService {
 	}
 
 	public ClienteMovimiento update(ClienteMovimiento newClienteMovimiento, Long clienteMovimientoId) {
-		return repository.findByClienteMovimientoId(clienteMovimientoId).map(clienteMovimiento -> {
-			clienteMovimiento = new ClienteMovimiento.Builder()
-					.clienteMovimientoId(clienteMovimientoId)
-					.comprobanteId(newClienteMovimiento.getComprobanteId())
-					.puntoVenta(newClienteMovimiento.getPuntoVenta())
-					.numeroComprobante(newClienteMovimiento.getNumeroComprobante())
-					.fechaComprobante(newClienteMovimiento.getFechaComprobante())
-					.clienteId(newClienteMovimiento.getClienteId())
-					.fechaVencimiento(newClienteMovimiento.getFechaVencimiento())
-					.negocioId(newClienteMovimiento.getNegocioId())
-					.empresaId(newClienteMovimiento.getEmpresaId())
-					.importe(newClienteMovimiento.getImporte())
-					.cancelado(newClienteMovimiento.getCancelado())
-					.neto(newClienteMovimiento.getNeto())
-					.netoCancelado(newClienteMovimiento.getNetoCancelado())
-					.montoIva(newClienteMovimiento.getMontoIva())
-					.montoIvaRni(newClienteMovimiento.getMontoIvaRni())
-					.reintegroTurista(newClienteMovimiento.getReintegroTurista())
-					.fechaContable(newClienteMovimiento.getFechaContable())
-					.ordenContable(newClienteMovimiento.getOrdenContable())
-					.recibo(newClienteMovimiento.getRecibo())
-					.asignado(newClienteMovimiento.getAsignado())
-					.anulada(newClienteMovimiento.getAnulada())
-					.decreto104316(newClienteMovimiento.getDecreto104316())
-					.letraComprobante(newClienteMovimiento.getLetraComprobante())
-					.montoExento(newClienteMovimiento.getMontoExento())
-					.reservaId(newClienteMovimiento.getReservaId())
-					.montoCuentaCorriente(newClienteMovimiento.getMontoCuentaCorriente())
-					.cierreCajaId(newClienteMovimiento.getCierreCajaId())
-					.cierreRestaurantId(newClienteMovimiento.getCierreRestaurantId())
-					.nivel(newClienteMovimiento.getNivel())
-					.eliminar(newClienteMovimiento.getEliminar())
-					.cuentaCorriente(newClienteMovimiento.getCuentaCorriente())
-					.letras(newClienteMovimiento.getLetras())
-					.cae(newClienteMovimiento.getCae())
-					.caeVencimiento(newClienteMovimiento.getCaeVencimiento())
-					.codigoBarras(newClienteMovimiento.getCodigoBarras())
-					.participacion(newClienteMovimiento.getParticipacion())
-					.monedaId(newClienteMovimiento.getMonedaId())
-					.cotizacion(newClienteMovimiento.getCotizacion())
-					.observaciones(newClienteMovimiento.getObservaciones())
-					.clienteMovimientoIdSlave(newClienteMovimiento.getClienteMovimientoIdSlave())
-					.build();
-			return repository.save(clienteMovimiento);
-		}).orElseThrow(() -> new ClienteMovimientoException(clienteMovimientoId));
+		ClienteMovimiento clienteMovimiento = repository.findByClienteMovimientoId(clienteMovimientoId)
+				.orElseThrow(() -> new ClienteMovimientoException(clienteMovimientoId));
+
+		clienteMovimiento.setComprobanteId(newClienteMovimiento.getComprobanteId());
+		clienteMovimiento.setPuntoVenta(newClienteMovimiento.getPuntoVenta());
+		clienteMovimiento.setNumeroComprobante(newClienteMovimiento.getNumeroComprobante());
+		clienteMovimiento.setFechaComprobante(newClienteMovimiento.getFechaComprobante());
+		clienteMovimiento.setClienteId(newClienteMovimiento.getClienteId());
+		clienteMovimiento.setFechaVencimiento(newClienteMovimiento.getFechaVencimiento());
+		clienteMovimiento.setNegocioId(newClienteMovimiento.getNegocioId());
+		clienteMovimiento.setEmpresaId(newClienteMovimiento.getEmpresaId());
+		clienteMovimiento.setImporte(newClienteMovimiento.getImporte());
+		clienteMovimiento.setCancelado(newClienteMovimiento.getCancelado());
+		clienteMovimiento.setNeto(newClienteMovimiento.getNeto());
+		clienteMovimiento.setNetoCancelado(newClienteMovimiento.getNetoCancelado());
+		clienteMovimiento.setMontoIva(newClienteMovimiento.getMontoIva());
+		clienteMovimiento.setMontoIvaRni(newClienteMovimiento.getMontoIvaRni());
+		clienteMovimiento.setReintegroTurista(newClienteMovimiento.getReintegroTurista());
+		clienteMovimiento.setFechaContable(newClienteMovimiento.getFechaContable());
+		clienteMovimiento.setOrdenContable(newClienteMovimiento.getOrdenContable());
+		clienteMovimiento.setRecibo(newClienteMovimiento.getRecibo());
+		clienteMovimiento.setAsignado(newClienteMovimiento.getAsignado());
+		clienteMovimiento.setAnulada(newClienteMovimiento.getAnulada());
+		clienteMovimiento.setDecreto104316(newClienteMovimiento.getDecreto104316());
+		clienteMovimiento.setLetraComprobante(newClienteMovimiento.getLetraComprobante());
+		clienteMovimiento.setMontoExento(newClienteMovimiento.getMontoExento());
+		clienteMovimiento.setReservaId(newClienteMovimiento.getReservaId());
+		clienteMovimiento.setMontoCuentaCorriente(newClienteMovimiento.getMontoCuentaCorriente());
+		clienteMovimiento.setCierreCajaId(newClienteMovimiento.getCierreCajaId());
+		clienteMovimiento.setCierreRestaurantId(newClienteMovimiento.getCierreRestaurantId());
+		clienteMovimiento.setNivel(newClienteMovimiento.getNivel());
+		clienteMovimiento.setEliminar(newClienteMovimiento.getEliminar());
+		clienteMovimiento.setCuentaCorriente(newClienteMovimiento.getCuentaCorriente());
+		clienteMovimiento.setLetras(newClienteMovimiento.getLetras());
+		clienteMovimiento.setCae(newClienteMovimiento.getCae());
+		clienteMovimiento.setCaeVencimiento(newClienteMovimiento.getCaeVencimiento());
+		clienteMovimiento.setCodigoBarras(newClienteMovimiento.getCodigoBarras());
+		clienteMovimiento.setParticipacion(newClienteMovimiento.getParticipacion());
+		clienteMovimiento.setMonedaId(newClienteMovimiento.getMonedaId());
+		clienteMovimiento.setCotizacion(newClienteMovimiento.getCotizacion());
+		clienteMovimiento.setObservaciones(newClienteMovimiento.getObservaciones());
+		clienteMovimiento.setClienteMovimientoIdSlave(newClienteMovimiento.getClienteMovimientoIdSlave());
+		clienteMovimiento.setTrackUuid(newClienteMovimiento.getTrackUuid());
+
+		return repository.save(clienteMovimiento);
 	}
 
 	public Long nextNumeroFactura(Integer puntoVenta, String letraComprobante) {
