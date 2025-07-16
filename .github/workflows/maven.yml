@@ -41,7 +41,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=sha
-            latest-jvm
+            latest
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
