@@ -53,6 +53,7 @@ public class RegistraFacturaService {
                                 Valor valor,
                                 List<ReservaArticulo> reservaArticulos,
                                 Parametro parametro) {
+        log.debug("Processing RegistraFacturaService.registraFacturaCompleta");
         ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
                 .negocioId(empresa.getNegocioId())
                 .empresaId(empresa.getEmpresaId())
@@ -78,6 +79,7 @@ public class RegistraFacturaService {
                 .observaciones(observaciones)
                 .trackUuid(track.getUuid())
                 .build();
+        log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
 
         ValorMovimiento valorMovimiento = new ValorMovimiento.Builder()
                 .negocioId(empresa.getNegocioId())
@@ -99,6 +101,7 @@ public class RegistraFacturaService {
                 .observaciones(observaciones)
                 .trackUuid(track.getUuid())
                 .build();
+        log.debug("ValorMovimiento -> {}", valorMovimiento.jsonify());
 
         int item = 1;
         List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
@@ -128,21 +131,23 @@ public class RegistraFacturaService {
                     .precioCompra(reservaArticulo.getArticulo().getPrecioCompra())
                     .trackUuid(track.getUuid())
                     .build());
+            log.debug("ArticuloMovimiento -> {}", articuloMovimientos.getLast().jsonify());
         }
 
         // Comienza registro en la db
         // Registra clienteMovimiento
         clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
-        logClienteMovimiento(clienteMovimiento);
+        log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
 
         // Registra valorMovimiento
         valorMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
         valorMovimiento = valorMovimientoService.add(valorMovimiento);
-        logValorMovimiento(valorMovimiento);
+        log.debug("ValorMovimiento -> {}", valorMovimiento.jsonify());
 
         // Registra articuloMovimientos
         for (ArticuloMovimiento articuloMovimiento : articuloMovimientos) {
             articuloMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
+            log.debug("ArticuloMovimiento para registrar -> {}", articuloMovimiento.jsonify());
         }
         articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
 
@@ -171,34 +176,6 @@ public class RegistraFacturaService {
         return precioUnitarioSinIva.setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void logValorMovimiento(ValorMovimiento valorMovimiento) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(valorMovimiento);
-            log.debug("valorMovimiento={}", json);
-        } catch (JsonProcessingException e) {
-            log.debug("valorMovimiento jsonify error {}", e.getMessage());
-        }
-    }
-
-    private void logClienteMovimiento(ClienteMovimiento clienteMovimiento) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(clienteMovimiento);
-            log.debug("clienteMovimiento={}", json);
-        } catch (JsonProcessingException e) {
-            log.debug("clienteMovimiento jsonify error {}", e.getMessage());
-        }
-    }
-
     @Transactional
     public ReservaContext markReservaContextFacturada(ReservaContext reservaContext, OrderNote orderNote, FacturacionDto facturacionDto) {
         log.debug("Processing RegistraFacturaService.markReservaContextFacturada");
@@ -211,7 +188,5 @@ public class RegistraFacturaService {
         log.debug("ReservaContext -> {}", reservaContext.jsonify());
         return reservaContext;
     }
-
-
 
 }

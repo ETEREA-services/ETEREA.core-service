@@ -69,27 +69,39 @@ public class FacturacionService {
                                                                    ReservaContext reservaContext,
                                                                    Track track,
                                                                    Boolean soloFactura) {
+        log.debug("Processing FacturacionService.registraTransaccionFacturaProgramaDia");
         if (track == null) {
             track = trackService.startTracking("transaccion-factura-programa-dia");
         }
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-        logVoucher(voucher);
+        log.debug("Voucher -> {}", voucher.jsonify());
         OrderNote orderNote = orderNoteService.findByOrderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())));
-        logOrderNote(orderNote);
+        log.debug("OrderNote -> {}", orderNote.jsonify());
 
-        int valorId = switch (Objects.requireNonNull(Objects.requireNonNull(orderNote.getPayment()).getMarcaTarjeta())) {
-            case "American Express" -> 64;
-            case "Cabal" -> 67;
-            case "Cabal Du00e9bito" -> 66;
-            case "Maestro" -> 61;
-            case "MasterCard" -> 62;
-            case "MasterCard Debito" -> 61;
-            case "Tarjeta Naranja" -> 60;
-            case "Visa Cru00e9dito" -> 60;
-            case "Visa Debito" -> 59;
-            default -> 0;
+        // Mapea las formas de pago
+        int valorId = 0;
+        var payment = orderNote.getPayment();
+        assert payment != null;
+        if (Objects.equals(payment.getMedioPago(), "0")) {
+            // Pago QR
+            valorId = 72;
+        } else {
+            valorId = switch (payment.getMarcaTarjeta()) {
+                case "American Express" -> 64;
+                case "Cabal" -> 67;
+                case "Cabal Du00e9bito" -> 66;
+                case "Maestro" -> 61;
+                case "MasterCard" -> 62;
+                case "MasterCard Debito" -> 61;
+                case "Tarjeta Naranja" -> 60;
+                case "Visa Cru00e9dito" -> 60;
+                case "Visa Debito" -> 59;
+                case null -> 0;
+                default -> 0;
+            };
         };
         Valor valor = valorService.findByValorId(valorId);
+        log.debug("Valor -> {}", valor.jsonify());
 
         String observaciones = "Pedido web #" + orderNote.getOrderNumberId() + " - Reserva #" + reserva.getReservaId();
 
@@ -107,6 +119,7 @@ public class FacturacionService {
         }
 
         var reservaArticulos = reservaArticuloService.findAllByReservaId(reserva.getReservaId());
+        log.debug("Reserva Articulos cargados");
 
         var clienteMovimiento = registraFacturaService.registraFacturaCompleta(
                 empresa,
@@ -121,6 +134,8 @@ public class FacturacionService {
                 reservaArticulos,
                 parametro
         );
+        log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
+
         if (soloFactura == true) {
             return clienteMovimiento;
         }
@@ -128,15 +143,19 @@ public class FacturacionService {
         // Registra reservaContext
         reservaContext.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
+        log.debug("ReservaContext -> {}", reservaContext.jsonify());
 
         reserva.setFacturada((byte) 1);
         reserva.setVerificada((byte) 1);
         reserva = reservaService.update(reserva, reserva.getReservaId());
+        log.debug("Reserva -> {}", reserva.jsonify());
 
         voucher.setConfirmado((byte) 1);
         voucher = voucherService.update(voucher, voucher.getVoucherId());
+        log.debug("Voucher -> {}", voucher.jsonify());
 
         track = trackService.endTracking(track);
+        log.debug("Track -> {}", track.jsonify());
 
         return clienteMovimiento;
 
@@ -147,67 +166,12 @@ public class FacturacionService {
                                                                 ArticuloMovimiento articuloMovimiento) {
         log.debug("Processing FacturacionService.registraTransaccionFacturaFaltante");
         clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
-        logClienteMovimiento(clienteMovimiento);
+        log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
         articuloMovimiento.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
         articuloMovimiento = articuloMovimientoService.add(articuloMovimiento);
-        logArticuloMovimiento(articuloMovimiento);
+        log.debug("ArticuloMovimiento -> {}", articuloMovimiento.jsonify());
         contabilidadService.registraFacturaFaltanteCuentaCorriente(clienteMovimiento, articuloMovimiento);
         return clienteMovimiento;
-    }
-
-    private void logOrderNote(OrderNote orderNote) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(orderNote);
-            log.debug("orderNote={}", json);
-        } catch (JsonProcessingException e) {
-            log.debug("orderNote jsonify error {}", e.getMessage());
-        }
-    }
-
-    private void logVoucher(Voucher voucher) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(voucher);
-            log.debug("voucher={}", json);
-        } catch (JsonProcessingException e) {
-            log.debug("voucher jsonify error {}", e.getMessage());
-        }
-    }
-
-    private void logArticuloMovimiento(ArticuloMovimiento articuloMovimiento) {
-        try {
-            log.debug("articuloMovimiento={}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(articuloMovimiento));
-        } catch (JsonProcessingException e) {
-            log.debug("articuloMovimiento jsonify error {}", e.getMessage());
-        }
-    }
-
-    private void logClienteMovimiento(ClienteMovimiento clienteMovimiento) {
-        try {
-            var json = JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(clienteMovimiento);
-            log.debug("clienteMovimiento={}", json);
-        } catch (JsonProcessingException e) {
-            log.debug("clienteMovimiento jsonify error {}", e.getMessage());
-        }
     }
 
 }

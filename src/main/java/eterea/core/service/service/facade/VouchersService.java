@@ -1,7 +1,5 @@
 package eterea.core.service.service.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
@@ -44,8 +42,7 @@ public class VouchersService {
         if (orderNote == null || !isOrderCompleted(orderNote)) {
             return createErrorResponse("Error: Order Note pendiente de PAGO");
         }
-
-        logOrderNote(orderNote);
+        log.debug("OrderNote -> {}", orderNote.jsonify());
 
         if (isVoucherAlreadyRegistered(orderNumberId)) {
             return createErrorResponse("Error: Programa por el Día YA registrado");
@@ -74,15 +71,6 @@ public class VouchersService {
         return Arrays.asList("Completado", "Completed").contains(orderNote.getOrderStatus());
     }
 
-    private void logOrderNote(OrderNote orderNote) {
-        log.debug("Processing logOrderNote");
-        try {
-            log.debug("order_note={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(orderNote));
-        } catch (JsonProcessingException e) {
-            log.debug("order_note=NOT_FOUND");
-        }
-    }
-
     private boolean isVoucherAlreadyRegistered(Long orderNumberId) {
         log.debug("Processing isVoucherAlreadyRegistered");
         try {
@@ -100,7 +88,7 @@ public class VouchersService {
     }
 
     private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio, Track track) {
-        log.debug("Processing processProduct");
+        log.debug("Processing VouchersService.processProduct");
         switch (product.getSku()) {
             case "parque_termal":
             case "tarde_termaspa":
@@ -118,7 +106,7 @@ public class VouchersService {
             case null:
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + product.getSku());
+                break;
         }
         return createErrorResponse("Error: no corresponde a un producto facturable");
     }

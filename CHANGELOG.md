@@ -1,3 +1,11 @@
+
+## [0.6.1] - 2025-07-17
+### Changed
+- refactor: Centralización de la serialización JSON en entidades de dominio (`jsonify()` en modelos Kotlin).
+- refactor: Simplificación y mejora del logging en servicios de facturación y contabilidad.
+- chore: Eliminación de métodos privados de logging redundantes en servicios Java.
+- chore: Ajuste de niveles de log y trazabilidad en operaciones críticas.
+
 ## [0.6.0] - 2025-07-15
 
 ### Features
