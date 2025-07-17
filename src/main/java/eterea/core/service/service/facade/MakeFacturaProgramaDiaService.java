@@ -294,10 +294,10 @@ public class MakeFacturaProgramaDiaService {
                     false
             );
             track = trackService.endTracking(track);
-            log.debug("Track -> {}", track.jsonify());
+            log.info("Track -> {}", track.jsonify());
         } catch (Exception e) {
             track = trackService.failedTracking(track);
-            log.debug("Track -> {}", track.jsonify());
+            log.info("Track -> {}", track.jsonify());
         }
 
         if (clienteMovimiento != null) {

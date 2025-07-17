@@ -1,6 +1,8 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.persistence.*
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
@@ -81,6 +83,19 @@ data class CuentaMovimiento(
     var negocio: Negocio? = null
 
 ) : Auditable() {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error " + e.message
+        }
+    }
+
     data class Builder(
         var cuentaMovimientoId: Long? = null,
         var fecha: OffsetDateTime? = null,

@@ -43,6 +43,7 @@ public class ContabilidadService {
             Parametro parametro,
             Track track
     ) {
+        log.debug("Processing ContabilidadService.registraContabilidadProgramaDia");
         if (track == null) {
             track = trackService.startTracking("registra-contabilidad-programa-dia");
         }
@@ -52,10 +53,12 @@ public class ContabilidadService {
         clienteMovimiento.setFechaContable(clienteMovimiento.getFechaComprobante());
         clienteMovimiento.setOrdenContable(ordenContable);
         clienteMovimiento = clienteMovimientoService.update(clienteMovimiento, clienteMovimiento.getClienteMovimientoId());
+        log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
         // Agrego asiento contable a valorMovimiento
         valorMovimiento.setFechaContable(clienteMovimiento.getFechaContable());
         valorMovimiento.setOrdenContable(ordenContable);
         valorMovimiento = valorMovimientoService.update(valorMovimiento, valorMovimiento.getValorMovimientoId());
+        log.debug("ValorMovimiento -> {}", valorMovimiento.jsonify());
         int item = 1;
         String concepto = String.format("Nro: %04d %06d", facturacionDto.getPuntoVenta(), facturacionDto.getNumeroComprobante());
         // Registro total valores
@@ -73,6 +76,7 @@ public class ContabilidadService {
                 .concepto(concepto)
                 .trackUuid(track.getUuid())
                 .build());
+        log.debug("CuentaMovimiento -> {}", cuentaMovimientos.getLast().jsonify());
         // Registro iva 21
         if (facturacionDto.getIva().compareTo(BigDecimal.ZERO) > 0) {
             cuentaMovimientos.add(new CuentaMovimiento.Builder()
@@ -89,6 +93,7 @@ public class ContabilidadService {
                     .concepto(concepto)
                     .trackUuid(track.getUuid())
                     .build());
+            log.debug("CuentaMovimiento -> {}", cuentaMovimientos.getLast().jsonify());
         }
         // Registro iva 10.5
         if (facturacionDto.getIva105().compareTo(BigDecimal.ZERO) > 0) {
@@ -106,6 +111,7 @@ public class ContabilidadService {
                     .concepto(concepto)
                     .trackUuid(track.getUuid())
                     .build());
+            log.debug("CuentaMovimiento -> {}", cuentaMovimientos.getLast().jsonify());
         }
         // Registro de artículos
         for (ArticuloMovimiento articuloMovimiento : articuloMovimientos) {
@@ -125,6 +131,7 @@ public class ContabilidadService {
                     .trackUuid(track.getUuid())
                     .articuloMovimientoId(articuloMovimiento.getArticuloMovimientoId())
                     .build());
+            log.debug("CuentaMovimiento -> {}", cuentaMovimientos.getLast().jsonify());
         }
 
         cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);

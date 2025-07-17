@@ -1,5 +1,7 @@
 package eterea.core.service.kotlin.model
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -65,4 +67,18 @@ data class Valor(
     var restaurant: Byte = 0,
     var tarjeta: Byte = 0
 
-) : Auditable()
+) : Auditable() {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error " + e.message
+        }
+    }
+
+}
