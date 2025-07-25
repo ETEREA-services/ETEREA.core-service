@@ -1,9 +1,12 @@
+
 graph TD
     subgraph "Eterea Core Service"
-        A[API REST] --> B{Controladores};
+        A[API REST] --> S[Security Layer];
+        S --> B{Controladores};
         B --> C{Servicios};
         C --> D{Repositorios};
         D --> E[Base de Datos];
+        A --> CONSUL[(Consul Service Discovery)];
     end
 
     subgraph "Clientes Externos"

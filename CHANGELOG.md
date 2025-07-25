@@ -1,4 +1,25 @@
 
+## [0.7.0] - 2025-07-24
+### Features
+- feat: Integración de Spring Security y configuración de seguridad básica.
+- feat: Migración de Eureka a Consul para service discovery (dependencias, configuración y código).
+- feat: Incorporación de Jacoco para cobertura de tests.
+- feat: Nuevos servicios de consulta (`ClienteSearchService`, `SaldoArticuloService`, `SaldoFechaService`).
+- feat: Integración de SonarCloud en CI/CD.
+
+### Changed
+- refactor: Migración y reorganización de servicios y repositorios de `api.rest` a `core.service`.
+- refactor: Centralización y mejora de utilidades en `ToolService`.
+- refactor: Mejora de logging y trazabilidad en servicios críticos.
+- refactor: Actualización de dependencias principales (`spring-boot-starter-actuator`, `spring-cloud-starter-consul-discovery`, `commons-lang3`).
+
+### Removed
+- chore: Eliminación de archivos y configuraciones obsoletas (`logback-spring.xml`, `application.yml`, `Dockerfile.local`, scripts de Maven Wrapper).
+- chore: Eliminación de anotaciones y configuraciones de Eureka.
+
+### Docs
+- docs: Actualización de diagramas y documentación para reflejar la migración a Consul y la integración de seguridad.
+
 ## [0.6.1] - 2025-07-17
 ### Changed
 - refactor: Centralización de la serialización JSON en entidades de dominio (`jsonify()` en modelos Kotlin).
