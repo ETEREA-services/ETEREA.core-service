@@ -85,3 +85,6 @@ management:
     web:
       exposure:
         include: scheduledtasks,env,health
+  health:
+    mail:
+      enabled: false
