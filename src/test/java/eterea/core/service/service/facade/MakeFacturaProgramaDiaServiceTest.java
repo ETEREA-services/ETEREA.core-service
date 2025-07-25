@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.ContextConfiguration;
@@ -39,6 +41,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource(properties = {"app.enable-send-email=false"})
+@EnableAutoConfiguration(exclude = {ConsulAutoServiceRegistrationAutoConfiguration.class})
 class MakeFacturaProgramaDiaServiceTest {
 
     @MockitoBean
