@@ -11,6 +11,10 @@ import eterea.core.service.kotlin.model.ReservaArticulo;
 import eterea.core.service.model.dto.CreateHabitacionMovimientoDto;
 import eterea.core.service.model.dto.reserva.CreateReservaDto;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +33,7 @@ import eterea.core.service.service.ReservaService;
  *
  */
 @RestController
-@RequestMapping({"/api/core/reserva", "/reserva"})
+@RequestMapping({ "/api/core/reserva", "/reserva" })
 public class ReservaController {
 
 	private final ReservaService service;
@@ -64,7 +68,8 @@ public class ReservaController {
 	}
 
 	@GetMapping("/no-facturadas")
-	public ResponseEntity<List<Reserva>> findLastDaysVerificadasAndNoFacturadas(@RequestParam(defaultValue = "5") int days) {
+	public ResponseEntity<List<Reserva>> findLastDaysVerificadasAndNoFacturadas(
+			@RequestParam(defaultValue = "5") int days) {
 		return new ResponseEntity<>(service.findLastDaysVerificadasAndNoFacturadas(days), HttpStatus.OK);
 	}
 
@@ -78,5 +83,15 @@ public class ReservaController {
 	public ResponseEntity<Void> cambiarTipoPendiente(@PathVariable Long reservaId, @PathVariable byte tipoPendienteId) {
 		service.cambiarTipoPendiente(reservaId, tipoPendienteId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@GetMapping("/pendientes/sliced")
+	public ResponseEntity<Slice<Reserva>> findPendientesSliced(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "50") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Slice<Reserva> sliceResult = service.findPendientesSliced(pageable);
+
+		return ResponseEntity.ok(sliceResult);
 	}
 }

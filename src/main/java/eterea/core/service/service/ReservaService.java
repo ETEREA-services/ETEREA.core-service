@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -493,6 +497,27 @@ public class ReservaService {
             .toList();
       log.debug("Reservas ultimos {} dias verificadas y no facturadas: {}", days, reservasNoFacturadas);
       return reservasNoFacturadas;
+   }
+
+   public Slice<Reserva> findPendientesSliced(Pageable pageable) {
+      Sort sort = Sort.by("fechaToma").descending().and(Sort.by("clienteId"));
+
+      Pageable pageableWithSort = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            sort);
+
+      return repository
+            .findSliceByVerificadaAndFacturadaAndEliminadaAndPagaCacheutaAndFacturadoFueraAndAnuladaAndClienteIdGreaterThan(
+                  (byte) 0, // verificada
+                  (byte) 0, // facturada
+                  (byte) 0, // eliminada
+                  (byte) 0, // pagaCacheuta
+                  (byte) 0, // facturadoFuera
+                  (byte) 0, // anulada
+                  0L, // clienteId
+                  pageableWithSort);
+
    }
 
    public Reserva verificarReserva(Long reservaId) {
