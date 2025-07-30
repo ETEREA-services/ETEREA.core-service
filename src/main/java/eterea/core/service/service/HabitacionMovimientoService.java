@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import eterea.core.service.exception.ClienteException;
 import eterea.core.service.exception.view.HabitacionMovimientoExtendedException;
 import eterea.core.service.kotlin.exception.HabitacionNoDisponibleException;
+import eterea.core.service.kotlin.exception.ReservaNoEditableException;
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.Habitacion;
 import eterea.core.service.kotlin.model.HabitacionMovimiento;
@@ -223,5 +224,17 @@ public class HabitacionMovimientoService {
         }
         var savedReserva = save(habitacionMovimiento);
         log.info("Reserva guardada: {}", savedReserva);
+    }
+
+    public void darDeBaja(Long habitacionMovimientoId) {
+        HabitacionMovimiento habitacionMovimiento = findByNumeroReserva(habitacionMovimientoId);
+        if (habitacionMovimiento.getEstadoReserva().getLetraComprobante().equals("V")
+                || habitacionMovimiento.getEstadoReserva().getLetraComprobante().equals("A")) {
+            throw new ReservaNoEditableException(habitacionMovimiento.getHabitacionMovimientoId(),
+                    habitacionMovimiento.getEstadoReserva().getLetraComprobante());
+        }
+        habitacionMovimiento.setEstadoReserva(
+                comprobanteService.findByModuloAndLetraComprobante(11, "Z"));
+        save(habitacionMovimiento);
     }
 }
