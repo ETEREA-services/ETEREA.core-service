@@ -3,8 +3,6 @@
  */
 package eterea.core.service.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.Negocio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,11 +32,7 @@ public class NegocioController {
 	@GetMapping("/{negocioId}")
 	public ResponseEntity<Negocio> findByNegocioId(@PathVariable Integer negocioId) {
 		var negocio = service.findByNegocioId(negocioId);
-        try {
-            log.debug("Negocio -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(negocio));
-        } catch (JsonProcessingException e) {
-            log.debug("Negocio -> null");
-        }
+        log.debug("Negocio -> {}", negocio.jsonify());
         return new ResponseEntity<>(negocio, HttpStatus.OK);
 	}
 }

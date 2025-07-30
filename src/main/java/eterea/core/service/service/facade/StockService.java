@@ -1,16 +1,11 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.kotlin.exception.ArticuloCentroException;
-import eterea.core.service.kotlin.exception.ArticuloSaldoFechaException;
 import eterea.core.service.kotlin.exception.StockMovimientoException;
-import eterea.core.service.kotlin.exception.view.SaldoArticuloException;
-import eterea.core.service.kotlin.exception.view.SaldoFechaException;
 import eterea.core.service.kotlin.model.ArticuloCentro;
 import eterea.core.service.kotlin.model.ArticuloMovimiento;
 import eterea.core.service.kotlin.model.ArticuloSaldoFecha;
 import eterea.core.service.kotlin.model.StockMovimiento;
 import eterea.core.service.kotlin.model.dto.StockAndArticulosDto;
-import eterea.core.service.kotlin.model.view.SaldoFecha;
 import eterea.core.service.service.ArticuloCentroService;
 import eterea.core.service.service.ArticuloMovimientoService;
 import eterea.core.service.service.ArticuloSaldoFechaService;
@@ -21,9 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

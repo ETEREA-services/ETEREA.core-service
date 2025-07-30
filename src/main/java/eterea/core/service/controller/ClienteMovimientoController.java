@@ -47,9 +47,13 @@ public class ClienteMovimientoController {
 	}
 
 	@GetMapping("/rango/facturas/{letraComprobante}/{debita}/{puntoVenta}/{numeroComprobanteDesde}/{numeroComprobanteHasta}")
-	public ResponseEntity<List<ClienteMovimiento>> findAllFacturasByRango(@PathVariable String letraComprobante,
-			@PathVariable Byte debita, @PathVariable Integer puntoVenta,
-			@PathVariable Long numeroComprobanteDesde, @PathVariable Long numeroComprobanteHasta) {
+	public ResponseEntity<List<ClienteMovimiento>> findAllFacturasByRango(
+			@PathVariable String letraComprobante,
+			@PathVariable Byte debita,
+			@PathVariable Integer puntoVenta,
+			@PathVariable Long numeroComprobanteDesde,
+			@PathVariable Long numeroComprobanteHasta
+	) {
 		return new ResponseEntity<>(service.findAllFacturasByRango(letraComprobante, debita, puntoVenta, numeroComprobanteDesde,
 				numeroComprobanteHasta), HttpStatus.OK);
 	}
@@ -64,6 +68,20 @@ public class ClienteMovimientoController {
 	public ResponseEntity<ClienteMovimiento> findByComprobante(@PathVariable Integer comprobanteId, @PathVariable Integer puntoVenta, @PathVariable Long numeroComprobante) {
 		try {
 			return ResponseEntity.ok(service.findByComprobante(comprobanteId, puntoVenta, numeroComprobante));
+		} catch (ClienteMovimientoException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+	}
+
+	@GetMapping("/consulta/factura/{letraComprobante}/{debita}/{puntoVenta}/{numeroComprobante}")
+	public ResponseEntity<ClienteMovimiento> findByFactura(
+			@PathVariable String letraComprobante,
+			@PathVariable Byte debita,
+			@PathVariable Integer puntoVenta,
+			@PathVariable Long numeroComprobante
+	) {
+		try {
+			return ResponseEntity.ok(service.findByFactura(letraComprobante, debita, puntoVenta, numeroComprobante));
 		} catch (ClienteMovimientoException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}

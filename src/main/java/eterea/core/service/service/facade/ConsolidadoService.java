@@ -33,6 +33,20 @@ public class ConsolidadoService {
             Long minimoNumeroComprobante,
             Long maximoNumeroComprobante
     ) {
+
+        public String jsonify() {
+            try {
+                return JsonMapper
+                        .builder()
+                        .findAndAddModules()
+                        .build()
+                        .writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                return "jsonify error -> " + e.getMessage();
+            }
+        }
+
     }
 
     public ConsolidadoService(ComprobanteFaltanteService comprobanteFaltanteService,
@@ -58,7 +72,7 @@ public class ConsolidadoService {
                 .filter(Objects::nonNull)
                 .distinct()
                 .toList();
-        logUnicos(comprobantesUnicos);
+        comprobantesUnicos.forEach(comprobante -> log.debug("Unico -> {}", comprobante.jsonify()));
 
         // Procesa los comprobantes para obtener los rangos
         List<ComprobanteRango> rangosComprobantes = comprobantesFacturadosByFecha.stream()
@@ -87,7 +101,7 @@ public class ConsolidadoService {
                 .values()
                 .stream()
                 .toList();
-        logRangos(rangosComprobantes);
+        rangosComprobantes.forEach(rango -> log.debug("Rango -> {}", rango.jsonify()));
 
         List<ComprobanteFaltante> faltantes = new ArrayList<>();
         for (ComprobanteRango rango : rangosComprobantes) {
@@ -124,29 +138,4 @@ public class ConsolidadoService {
         return "OK";
     }
 
-    private void logRangos(List<ComprobanteRango> rangosComprobantes) {
-        try {
-            log.debug("Rangos -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(rangosComprobantes));
-        } catch (JsonProcessingException e) {
-            log.debug("Rangos jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logUnicos(List<Comprobante> comprobantesUnicos) {
-        try {
-            log.debug("Comprobantes unicos -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(comprobantesUnicos));
-        } catch (JsonProcessingException e) {
-            log.debug("Comprobantes unicos jsonify error -> {}", e.getMessage());
-        }
-    }
 }

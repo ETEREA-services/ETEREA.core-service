@@ -32,7 +32,7 @@ public class ProveedorController {
 	@GetMapping("/{proveedorId}")
 	public ResponseEntity<Proveedor> findByProveedorId(@PathVariable Integer proveedorId) {
 		try {
-			return new ResponseEntity<Proveedor>(service.findByProveedorId(proveedorId), HttpStatus.OK);
+			return new ResponseEntity<>(service.findByProveedorId(proveedorId), HttpStatus.OK);
 		} catch (ProveedorException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}

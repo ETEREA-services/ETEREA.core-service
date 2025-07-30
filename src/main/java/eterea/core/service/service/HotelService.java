@@ -36,17 +36,18 @@ public class HotelService {
 		return repository.findAllByPuntoEncuentro(puntoencuentro, Sort.by("nombre").ascending());
 	}
 
-	public Hotel findById(Integer hotelId) {
-		return repository.findById(hotelId).orElseThrow(() -> new HotelException(hotelId));
+	public Hotel findByHotelId(Integer hotelId) {
+		return repository.findByHotelId(hotelId).orElseThrow(() -> new HotelException(hotelId));
 	}
 
-	public Hotel update(Hotel newhotel, Integer hotelId) {
-		return repository.findById(hotelId).map(hotel -> {
-			hotel.setNombre(newhotel.getNombre());
-			hotel.setExtras(newhotel.getExtras());
-			hotel.setParadaTraslado(newhotel.getParadaTraslado());
-			hotel.setPuntoEncuentro(newhotel.getPuntoEncuentro());
+	public Hotel update(Hotel newHotel, Integer hotelId) {
+		return repository.findByHotelId(hotelId).map(hotel -> {
+			hotel.setNombre(newHotel.getNombre());
+			hotel.setExtras(newHotel.getExtras());
+			hotel.setParadaTraslado(newHotel.getParadaTraslado());
+			hotel.setPuntoEncuentro(newHotel.getPuntoEncuentro());
 			return repository.save(hotel);
 		}).orElseThrow(() -> new HotelException(hotelId));
 	}
+
 }

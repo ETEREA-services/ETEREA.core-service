@@ -1,5 +1,7 @@
 package eterea.core.service.kotlin.model.dto
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import java.math.BigDecimal
 
 data class ArticuloDto (
@@ -40,6 +42,20 @@ data class ArticuloDto (
     val prestadorId: Int?,
     val autoNumericoId: Long?
 ) {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error -> ${e.message}"
+        }
+    }
+
     class Builder {
         private var articuloId: String? = null
         private var negocioId: Int? = null

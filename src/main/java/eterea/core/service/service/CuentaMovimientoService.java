@@ -92,8 +92,11 @@ public class CuentaMovimientoService {
     }
 
     public int nextOrdenContable(OffsetDateTime fechaContable) {
+        log.debug("Processing CuentaMovimientoService.nextOrdenContable");
         try {
-            return 1 + findLastByFecha(fechaContable).getOrden();
+            var ordenContable = 1 + findLastByFecha(fechaContable).getOrden();
+            log.debug("OrdenContable -> {}", ordenContable);
+            return ordenContable;
         } catch (CuentaMovimientoException e) {
             log.debug("sin asientos");
         }

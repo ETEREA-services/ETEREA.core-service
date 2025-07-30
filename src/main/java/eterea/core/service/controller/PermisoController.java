@@ -31,4 +31,5 @@ public class PermisoController {
 	public ResponseEntity<Permiso> findByPermiso(@PathVariable String usuario, @PathVariable String opcion) {
 		return new ResponseEntity<>(service.findByPermiso(usuario, opcion), HttpStatus.OK);
 	}
+
 }

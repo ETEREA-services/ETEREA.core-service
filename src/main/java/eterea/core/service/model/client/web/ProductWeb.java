@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eterea.core.service.model.client;
+package eterea.core.service.model.client.web;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

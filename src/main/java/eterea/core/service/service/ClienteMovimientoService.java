@@ -61,6 +61,21 @@ public class ClienteMovimientoService {
 				.orElseThrow(() -> new ClienteMovimientoException(comprobanteId, puntoVenta, numeroComprobante));
 	}
 
+	public ClienteMovimiento findByFactura(
+			String letraComprobante,
+			Byte debita,
+			Integer puntoVenta,
+			Long numeroComprobante
+	) {
+		return repository.findByLetraComprobanteAndReciboAndPuntoVentaAndNumeroComprobanteAndComprobanteDebita(
+				letraComprobante,
+				(byte) 0,
+				puntoVenta,
+				numeroComprobante,
+				debita
+		).orElseThrow(() -> new ClienteMovimientoException(letraComprobante, debita, puntoVenta, numeroComprobante));
+	}
+
 	public ClienteMovimiento add(ClienteMovimiento clienteMovimiento) {
 		return repository.save(clienteMovimiento);
 	}

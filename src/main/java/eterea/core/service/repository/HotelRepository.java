@@ -4,6 +4,7 @@
 package eterea.core.service.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import eterea.core.service.kotlin.model.Hotel;
 import org.springframework.data.domain.Sort;
@@ -20,4 +21,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Integer> {
     List<Hotel> findAllByParadaTraslado(Byte paradaTraslado, Sort sort);
 
     List<Hotel> findAllByPuntoEncuentro(Byte puntoEncuentro, Sort sort);
+
+    Optional<Hotel> findByHotelId(Integer hotelId);
+
 }

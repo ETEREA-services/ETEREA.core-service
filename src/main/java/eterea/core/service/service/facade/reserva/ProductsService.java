@@ -131,7 +131,7 @@ public class ProductsService {
                 .build();
 
         voucher = registrarVoucher(voucher, voucherProductos, track);
-        logVoucher(voucher);
+        log.debug("Voucher -> {}", voucher.jsonify());
 
         return new ProgramaDiaDto.Builder()
                 .vouchers(Collections.singletonList(voucher))
@@ -163,7 +163,7 @@ public class ProductsService {
                     .producto(productoPaxInfante)
                     .build());
         }
-        logVoucherProductos(voucherProductos);
+        voucherProductos.forEach(voucherProducto -> log.debug("VoucherProducto -> {}", voucherProducto.jsonify()));
         return voucherProductos;
     }
 
@@ -173,7 +173,8 @@ public class ProductsService {
         try {
             return clienteService.findByNumeroDocumento(orderNote.getBillingDniPasaporte());
         } catch (ClienteException e) {
-            Long clienteId = 1 + clienteService.findLast().getClienteId();
+            var cliente = clienteService.findLast();
+            Long clienteId = 1 + cliente.getClienteId();
             return clienteService.add(new Cliente.Builder()
                     .clienteId(clienteId)
                     .nombre(fullName)
@@ -277,7 +278,7 @@ public class ProductsService {
         voucher.setReservaId(reserva.getReservaId());
         voucher.setTrackUuid(track.getUuid());
         voucher = voucherService.update(voucher, voucher.getVoucherId());
-        logVoucher(voucher);
+        log.debug("Voucher -> {}", voucher.jsonify());
 
         reservaService.generarReservaArticulo(reserva, voucherProductos, track);
 
@@ -287,34 +288,6 @@ public class ProductsService {
     private ProgramaDiaDto createErrorResponse() {
         log.debug("Processing createErrorResponse");
         return new ProgramaDiaDto.Builder().errorMessage("Error: SKU sin asociación de Productos").build();
-    }
-
-    private void logVoucherProductos(ArrayList<VoucherProducto> voucherProductos) {
-        log.debug("Processing logVoucherProductos");
-        try {
-            log.debug("VoucherProductos -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(voucherProductos));
-        } catch (JsonProcessingException e) {
-            log.debug("VoucherProductos - error -> {}", e.getMessage());
-        }
-    }
-
-    private void logVoucher(Voucher voucher) {
-        log.debug("Processing logVoucher");
-        try {
-            log.debug("Voucher -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(voucher));
-        } catch (JsonProcessingException e) {
-            log.debug("Voucher error -> {}", e.getMessage());
-        }
     }
 
 }

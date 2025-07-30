@@ -1,5 +1,7 @@
 package eterea.core.service.kotlin.model
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.persistence.*
 
 @Entity
@@ -27,6 +29,20 @@ data class VoucherProducto(
     var producto: Producto? = null
 
 ) : Auditable() {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error ${e.message}"
+        }
+    }
+
     data class Builder(
         var voucherProductoId: Long? = null,
         var voucherId: Long? = null,

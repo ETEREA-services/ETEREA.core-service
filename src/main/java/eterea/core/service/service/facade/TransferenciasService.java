@@ -44,7 +44,7 @@ public class TransferenciasService {
                 .valorMovimientos(valorMovimientoService.findAllByContable(transferenciaDto.getFecha(), transferenciaDto.getOrdenContable()))
                 .cuentaMovimientos(cuentaMovimientoService.findAllByContable(transferenciaDto.getFecha(), transferenciaDto.getOrdenContable()))
                 .build();
-        logTransferenciaWrapper(transferenciaWrapper);
+        log.debug("TransferenciaWrapper -> {}", transferenciaWrapper.jsonify());
         return transferenciaWrapper;
     }
 
@@ -52,12 +52,10 @@ public class TransferenciasService {
     public String regenerate(TransferenciaWrapperDto transferenciaWrapper) {
         log.debug("Processing TransferenciasService.regenerate");
         var transferenciaExterna = transferenciaWrapper.getTransferencia();
-        log.debug("Transferencia Externa");
         assert transferenciaExterna != null;
-        logTransferencia(transferenciaExterna.toEntity());
+        log.debug("Transferencia Externa -> {}", transferenciaExterna.toEntity().jsonify());
         var transferenciaLocal = transferenciaService.findByUnique(Objects.requireNonNull(transferenciaWrapper.getTransferencia()).getNegocioIdDesde(), transferenciaWrapper.getTransferencia().getNegocioIdHasta(), transferenciaWrapper.getTransferencia().getNumeroTransferencia());
-        log.debug("Transferencia Local");
-        logTransferencia(transferenciaLocal);
+        log.debug("Transferencia Local -> {}", transferenciaLocal.jsonify());
         var fechaContableLocal = transferenciaLocal.getFecha();
         var ordenContableLocal = transferenciaLocal.getOrdenContable();
         var cuentaMovimientoFirmaLocal = cuentaMovimientoFirmaService.findByAsiento(fechaContableLocal, ordenContableLocal);
@@ -66,7 +64,7 @@ public class TransferenciasService {
         var cuentaPuente = Objects.requireNonNull(Objects.requireNonNull(transferenciaWrapper.getTransferencia().getComprobante()).getCuenta()).getCuentaMaestro();
         log.debug("Cuenta Maestro -> {}", cuentaPuente);
         var cuentaPuenteLocal = cuentaService.findByCuentaMaestro(cuentaPuente);
-        logCuenta(cuentaPuenteLocal);
+        log.debug("Cuenta Puente Local -> {}", cuentaPuenteLocal.jsonify());
         var valorLocals = valorService.findAll().stream().collect(Collectors.toMap(Valor::getValorId, valor -> valor));
         // Eliminar valores asociados
         valorMovimientoService.deleteAllByContable(fechaContableLocal, ordenContableLocal);
@@ -174,84 +172,6 @@ public class TransferenciasService {
         valorMovimientoService.saveAll(valorMovimientoLocales);
         log.debug("Valores grabados");
         return "Reenviado";
-    }
-
-    private void logCuentaMovimiento(CuentaMovimiento cuentaMovimiento) {
-        try {
-            log.debug("CuentaMovimiento -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(cuentaMovimiento));
-        } catch (JsonProcessingException e) {
-            log.debug("CuentaMovimiento jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logValor(Valor valor) {
-        try {
-            log.debug("Valor -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(valor));
-        } catch (JsonProcessingException e) {
-            log.debug("Valor jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logValorMovimiento(ValorMovimiento valorMovimiento) {
-        try {
-            log.debug("ValorMovimiento -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(valorMovimiento));
-        } catch (JsonProcessingException e) {
-            log.debug("ValorMovimiento jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logCuenta(Cuenta cuenta) {
-        try {
-            log.debug("Cuenta -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(cuenta));
-        } catch (JsonProcessingException e) {
-            log.debug("Cuenta jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logTransferencia(Transferencia transferencia) {
-        try {
-            log.debug("Transferencia -> {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(transferencia));
-        } catch (JsonProcessingException e) {
-            log.debug("Transferencia jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logTransferenciaWrapper(TransferenciaWrapperDto transferenciaWrapper) {
-        try {
-            log.debug("TransferenciaWrapperDto  {}", JsonMapper
-                    .builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(transferenciaWrapper));
-        } catch (JsonProcessingException e) {
-            log.debug("TransferenciaWrapperDto jsonify error -> {}", e.getMessage());
-        }
     }
 
 }

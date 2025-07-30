@@ -38,8 +38,8 @@ public class HotelController {
 	}
 	
 	@GetMapping("/{hotelId}")
-	public ResponseEntity<Hotel> findById(@PathVariable Integer hotelId) {
-		return new ResponseEntity<>(service.findById(hotelId), HttpStatus.OK);
+	public ResponseEntity<Hotel> findByHotelId(@PathVariable Integer hotelId) {
+		return new ResponseEntity<>(service.findByHotelId(hotelId), HttpStatus.OK);
 	}
 
 	@GetMapping("/paradatraslado/{paradatraslado}")
@@ -57,8 +57,4 @@ public class HotelController {
 		return new ResponseEntity<>(service.update(hotel, hotelId), HttpStatus.OK);
 	}
 	
-	@GetMapping("/update")
-	public ResponseEntity<Hotel> updateByGet(@RequestParam("hotelID") Integer hotelId, @RequestParam("nombre") String nombre, @RequestParam("extras") Byte extras, @RequestParam("paradatraslado") Byte paradatraslado, @RequestParam("puntoencuentro") Byte puntoencuentro) {
-		return update(new Hotel(hotelId, nombre, extras, paradatraslado, puntoencuentro), hotelId);
-	}
 }

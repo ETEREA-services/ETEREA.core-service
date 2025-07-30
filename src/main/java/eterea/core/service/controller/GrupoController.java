@@ -58,4 +58,5 @@ public class GrupoController {
 			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fecha) {
 		return new ResponseEntity<>(service.findAllByVoucherFechaServicio(fecha), HttpStatus.OK);
 	}
+
 }

@@ -1,6 +1,8 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.OffsetDateTime
@@ -36,4 +38,19 @@ data class ClienteMovimientoPrevio(
     @JoinColumn(name = "clientemovimientoprevio_id", insertable = false, updatable = false)
     var articuloMovimientoPrevios: List<ArticuloMovimientoPrevio>? = null
 
-) : Auditable()
+) : Auditable() {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e: JsonProcessingException) {
+            return "jsonify error -> ${e.message}"
+        }
+    }
+
+}

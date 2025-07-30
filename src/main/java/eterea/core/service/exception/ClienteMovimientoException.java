@@ -22,4 +22,8 @@ public class ClienteMovimientoException extends RuntimeException {
 		super("Cannot find ClienteMovimiento " + comprobanteId + "." + puntoVenta + "." + numeroComprobante);
 	}
 
+    public ClienteMovimientoException(String letraComprobante, Byte debita, Integer puntoVenta, Long numeroComprobante) {
+		super("Cannot find ClienteMovimiento " + letraComprobante + "." + debita + "." + puntoVenta + "." + numeroComprobante);
+    }
+
 }

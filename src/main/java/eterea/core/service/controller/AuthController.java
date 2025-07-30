@@ -13,6 +13,7 @@ import eterea.core.service.service.AuthService;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+
    private final AuthService authService;
 
    public AuthController(AuthService authService) {
@@ -32,4 +33,5 @@ public class AuthController {
               .build();
       }
    }
+
 }
