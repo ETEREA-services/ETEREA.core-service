@@ -1,7 +1,5 @@
 package eterea.core.service.service.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.ReservaContext;
@@ -42,7 +40,8 @@ public class RegistraFacturaService {
     }
 
     @Transactional
-    public ClienteMovimiento registraFacturaCompleta(Empresa empresa,
+    public ClienteMovimiento registraFacturaCompleta(
+                                Empresa empresa,
                                 Cliente cliente,
                                 Comprobante comprobante,
                                 OffsetDateTime fechaComprobante,
@@ -52,7 +51,8 @@ public class RegistraFacturaService {
                                 Track track,
                                 Valor valor,
                                 List<ReservaArticulo> reservaArticulos,
-                                Parametro parametro) {
+                                Parametro parametro
+    ) {
         log.debug("Processing RegistraFacturaService.registraFacturaCompleta");
         ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
                 .negocioId(empresa.getNegocioId())

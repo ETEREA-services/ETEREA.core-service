@@ -145,6 +145,7 @@ data class ClienteMovimiento(
         try {
             return JsonMapper
                 .builder()
+                .findAndAddModules()
                 .build()
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(this)

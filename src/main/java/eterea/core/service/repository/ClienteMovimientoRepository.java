@@ -38,6 +38,14 @@ public interface ClienteMovimientoRepository extends JpaRepository<ClienteMovimi
 	Optional<ClienteMovimiento> findTopByReciboAndPuntoVentaAndLetraComprobanteOrderByNumeroComprobanteDesc(Byte recibo,
 			Integer puntoVenta, String letraComprobante);
 
+	Optional<ClienteMovimiento> findByLetraComprobanteAndReciboAndPuntoVentaAndNumeroComprobanteAndComprobanteDebita(
+			String letraComprobante,
+			Byte recibo,
+			Integer puntoVenta,
+			Long numeroComprobante,
+			Byte debita
+	);
+
 	@Modifying
 	@Query("delete from ClienteMovimiento where fechaComprobante = :fechaComprobante and comprobanteId = :comprobanteId and puntoVenta = :puntoVenta and numeroComprobante = :numeroComprobante")
 	void deleteAllByFechaComprobanteAndComprobanteIdAndPuntoVentaAndNumeroComprobante(OffsetDateTime fechaComprobante,

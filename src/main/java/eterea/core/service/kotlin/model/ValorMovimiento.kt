@@ -103,6 +103,7 @@ data class ValorMovimiento(
         try {
             return JsonMapper
                 .builder()
+                .findAndAddModules()
                 .build()
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(this)

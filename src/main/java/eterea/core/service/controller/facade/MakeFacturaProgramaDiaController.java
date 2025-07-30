@@ -19,7 +19,9 @@ public class MakeFacturaProgramaDiaController {
     }
 
     @GetMapping("/factura/{reservaId}/{comprobanteId}")
-    public ResponseEntity<Boolean> facturaReserva(@PathVariable Long reservaId, @PathVariable Integer comprobanteId, @RequestHeader(name = "X-Request-ID", required = false) String trackUuid) {
+    public ResponseEntity<Boolean> facturaReserva(@PathVariable Long reservaId,
+                                                  @PathVariable Integer comprobanteId,
+                                                  @RequestHeader(name = "X-Request-ID", required = false) String trackUuid) {
         Track track;
         if (trackUuid != null) {
             track = trackService.findByUuid(trackUuid);

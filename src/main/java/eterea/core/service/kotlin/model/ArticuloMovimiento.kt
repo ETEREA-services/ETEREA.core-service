@@ -105,6 +105,7 @@ data class ArticuloMovimiento(
         try {
             return JsonMapper
                 .builder()
+                .findAndAddModules()
                 .build()
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(this)

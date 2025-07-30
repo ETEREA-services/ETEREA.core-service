@@ -51,8 +51,8 @@ public class ArticulosService {
         Articulo articulo = articuloService.findByArticuloId(articuloId);
         List<ArticuloBarra> barrasToReplicate = articuloBarraService.findAllByArticuloId(articuloId);
 
-        logNegocios(negocios);
-        logArticulo(articulo);
+        negocios.forEach(negocio -> log.debug("Negocio -> {}", negocio.jsonify()));
+        log.debug("Articulo -> {}", articulo.jsonify());
 
         for (Negocio negocio : negocios) {
             try {
@@ -122,25 +122,27 @@ public class ArticulosService {
 
     private void replicateArticulo(ClientsHolder clients, Articulo articulo) {
         var parametro = clients.parametroClient.findTop();
-        logParametro(parametro);
+        log.debug("Parametro -> {}", parametro.jsonify());
 
         var cuentaVentas = verifyCuenta(clients.cuentaClient, articulo.getCuentaVentas(), "ventas");
         var cuentaCompras = verifyCuenta(clients.cuentaClient, articulo.getCuentaCompras(), "compras");
         var cuentaGastos = verifyCuenta(clients.cuentaClient, articulo.getCuentaGastos(), "gastos");
 
         var articuloDto = convertArticulo(articulo, parametro, cuentaVentas, cuentaCompras, cuentaGastos);
-        logArticuloDto(articuloDto);
+        log.debug("ArticuloDto -> {}", articuloDto.jsonify());
 
         articuloDto = clients.articuloClient.add(articuloDto);
-        logArticuloDto(articuloDto);
+        log.debug("ArticuloDto (post) -> {}", articuloDto.jsonify());
     }
 
     private void replicateCodigosBarras(ArticuloBarraClient client, List<ArticuloBarra> barrasToReplicate, String articuloId) {
         log.debug("Processing replicateCodigosBarras");
         try {
-            logBarras("A Replicar", barrasToReplicate);
+            log.debug("A Replicar");
+            barrasToReplicate.forEach(barra -> log.debug("ArticuloBarra -> {}", barra.jsonify()));
             var barrasExistentes = client.findAllByArticuloId(articuloId);
-            logBarras("Existentes", barrasExistentes);
+            log.debug("Existentes");
+            barrasExistentes.forEach(barra -> log.debug("ArticuloBarra -> {}", barra.jsonify()));
 
             // Eliminar códigos obsoletos
             deleteObsoleteBarCodes(client, barrasExistentes, barrasToReplicate);
@@ -150,15 +152,6 @@ public class ArticulosService {
         } catch (Exception e) {
             log.error("Error processing bar codes: {}", e.getMessage());
             throw new RuntimeException("Failed to replicate bar codes", e);
-        }
-    }
-
-    private void logBarras(String message, List<ArticuloBarra> barras) {
-        log.debug(message);
-        try {
-            log.debug("barras -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(barras));
-        } catch (JsonProcessingException e) {
-            log.debug("barras jsonify error -> {}", e.getMessage());
         }
     }
 
@@ -231,38 +224,6 @@ public class ArticulosService {
             }
         }
         return cuenta;
-    }
-
-    private void logParametro(ParametroDto parametro) {
-        try {
-            log.debug("ParametroDto -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(parametro));
-        } catch (JsonProcessingException e) {
-            log.debug("ParametroDto jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logArticuloDto(ArticuloDto articuloDto) {
-        try {
-            log.debug("ArticuloDto -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articuloDto));
-        } catch (JsonProcessingException e) {
-            log.debug("ArticuloDto jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logArticulo(Articulo articulo) {
-        try {
-            log.debug("Articulo -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articulo));
-        } catch (JsonProcessingException e) {
-            log.debug("Articulo jsonify error -> {}", e.getMessage());
-        }
-    }
-
-    private void logNegocios(List<Negocio> negocios) {
-        try {
-            log.debug("Negocios -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(negocios));
-        } catch (JsonProcessingException e) {
-            log.debug("Negocios jsonify error -> {}", e.getMessage());
-        }
     }
 
     private ArticuloDto convertArticulo(Articulo articulo, ParametroDto parametro, Long cuentaVentas, Long cuentaCompras, Long cuentaGastos) {

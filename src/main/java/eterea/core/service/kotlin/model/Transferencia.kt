@@ -1,6 +1,8 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -59,6 +61,19 @@ data class Transferencia (
     var comprobante: Comprobante? = null
 
 ) : Auditable() {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e : JsonProcessingException) {
+            return "jsonify error -> ${e.message}"
+        }
+    }
 
     class Builder {
         private var transferenciaId: Long? = null

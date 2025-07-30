@@ -88,6 +88,7 @@ data class CuentaMovimiento(
         try {
             return JsonMapper
                 .builder()
+                .findAndAddModules()
                 .build()
                 .writerWithDefaultPrettyPrinter()
                 .writeValueAsString(this)

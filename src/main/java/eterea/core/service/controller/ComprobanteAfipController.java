@@ -22,4 +22,5 @@ public class ComprobanteAfipController {
     public ResponseEntity<ComprobanteAfip> findByComprobanteAfipId(@PathVariable Integer comprobanteAfipId) {
         return ResponseEntity.ok(service.findByComprobanteAfipId(comprobanteAfipId));
     }
+
 }

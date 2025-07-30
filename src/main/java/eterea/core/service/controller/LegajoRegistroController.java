@@ -50,15 +50,17 @@ public class LegajoRegistroController {
 	}
 
 	@GetMapping("/lastday/{legajoId}/{fecha}/{hora}")
-	public ResponseEntity<LegajoRegistro> findLastByLegajoIdAndFecha(@PathVariable Integer legajoId,
-			@PathVariable @DateTimeFormat(iso = ISO.DATE) Date fecha, @PathVariable Time hora) {
+	public ResponseEntity<LegajoRegistro> findLastByLegajoIdAndFecha(
+			@PathVariable Integer legajoId,
+			@PathVariable @DateTimeFormat(iso = ISO.DATE) Date fecha,
+			@PathVariable Time hora
+	) {
 		try {
 			return new ResponseEntity<>(service.findLastByLegajoIdAndFecha(legajoId, fecha, hora),
 					HttpStatus.OK);
 		} catch (LegajoRegistroException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
-
 	}
 
 }

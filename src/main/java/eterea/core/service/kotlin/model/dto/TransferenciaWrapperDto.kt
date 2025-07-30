@@ -1,5 +1,7 @@
 package eterea.core.service.kotlin.model.dto
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.json.JsonMapper
 import eterea.core.service.kotlin.model.CuentaMovimiento
 import eterea.core.service.kotlin.model.ValorMovimiento
 
@@ -10,6 +12,20 @@ data class TransferenciaWrapperDto(
     var cuentaMovimientos: List<CuentaMovimiento?>? = null
 
 ) {
+
+    fun jsonify(): String {
+        try {
+            return JsonMapper
+                .builder()
+                .findAndAddModules()
+                .build()
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this)
+        } catch (e : JsonProcessingException) {
+            return "jsonify error -> ${e.message}"
+        }
+    }
+
     class Builder {
         private var transferencia: TransferenciaDto? = null
         private var valorMovimientos: List<ValorMovimiento?>? = null

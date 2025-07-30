@@ -32,7 +32,8 @@ public class ComprobanteController {
 	}
 
 	@GetMapping("/modulo/{modulo}/{debita}/{comprobanteId}")
-	public ResponseEntity<List<Comprobante>> findAllByModulo(@PathVariable Integer modulo, @PathVariable Byte debita,
+	public ResponseEntity<List<Comprobante>> findAllByModulo(@PathVariable Integer modulo,
+															 @PathVariable Byte debita,
 															 @PathVariable Integer comprobanteId) {
 		return new ResponseEntity<>(service.findAllByModulo(modulo, debita, comprobanteId),
 				HttpStatus.OK);

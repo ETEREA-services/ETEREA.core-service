@@ -3,7 +3,6 @@
  */
 package eterea.core.service.controller.facade;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,19 +21,26 @@ import eterea.core.service.service.facade.ImpresionFiscalService;
 @RequestMapping({"/api/core/impresionFiscal", "/impresionFiscal"})
 public class ImpresionFiscalController {
 
-	@Autowired
-	private ImpresionFiscalService service;
+	private final ImpresionFiscalService service;
+
+	public ImpresionFiscalController(ImpresionFiscalService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/fiscal/{ipAddress}/{hWnd}/{clienteId}/{comprobanteId}/{comprobanteOrigenId}")
-	public ResponseEntity<ImpresionFiscalDto> getData(@PathVariable String ipAddress, @PathVariable Long hWnd,
-                                                      @PathVariable Long clienteId, @PathVariable Integer comprobanteId, @PathVariable Long comprobanteOrigenId) {
+	public ResponseEntity<ImpresionFiscalDto> getData(@PathVariable String ipAddress,
+													  @PathVariable Long hWnd,
+                                                      @PathVariable Long clienteId,
+													  @PathVariable Integer comprobanteId,
+													  @PathVariable Long comprobanteOrigenId) {
 		return new ResponseEntity<>(
 				service.getData(ipAddress, hWnd, clienteId, comprobanteId, comprobanteOrigenId), HttpStatus.OK);
 	}
 
 	@GetMapping("/fiscalPrevio/{clienteMovimientoPrevioId}/{comprobanteId}/{comprobanteOrigenId}")
 	public ResponseEntity<ImpresionFiscalDto> getDataPrevio(@PathVariable Long clienteMovimientoPrevioId,
-                                                            @PathVariable Integer comprobanteId, @PathVariable Long comprobanteOrigenId) {
+                                                            @PathVariable Integer comprobanteId,
+															@PathVariable Long comprobanteOrigenId) {
 		return new ResponseEntity<>(
 				service.getDataPrevio(clienteMovimientoPrevioId, comprobanteId, comprobanteOrigenId), HttpStatus.OK);
 	}

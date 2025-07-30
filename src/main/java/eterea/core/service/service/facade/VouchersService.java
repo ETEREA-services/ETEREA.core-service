@@ -68,6 +68,13 @@ public class VouchersService {
 
     private boolean isOrderCompleted(OrderNote orderNote) {
         log.debug("Processing isOrderCompleted");
+        var payment = orderNote.getPayment();
+        if (payment == null) {
+            return false;
+        }
+        if (payment.getEstado().equals("EXPIRADA")) {
+            return false;
+        }
         return Arrays.asList("Completado", "Completed").contains(orderNote.getOrderStatus());
     }
 

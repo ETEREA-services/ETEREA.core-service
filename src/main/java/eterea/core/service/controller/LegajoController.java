@@ -32,4 +32,5 @@ public class LegajoController {
 	public ResponseEntity<List<Legajo>> findAll() {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
+
 }

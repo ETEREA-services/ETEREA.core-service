@@ -21,7 +21,7 @@ public class OffsetDateTimeDeserializer implements JsonDeserializer<OffsetDateTi
 	@Override
 	public OffsetDateTime deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context)
 			throws JsonParseException {
-		if (jsonElement.getAsString().equals(""))
+		if (jsonElement.getAsString().isEmpty())
 			return null;
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssz");
 		OffsetDateTime offsetDateTime = null;

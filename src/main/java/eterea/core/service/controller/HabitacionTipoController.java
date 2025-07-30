@@ -32,4 +32,5 @@ public class HabitacionTipoController {
 	public ResponseEntity<List<HabitacionTipo>> findAll() {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
 	}
+
 }

@@ -8,7 +8,6 @@ import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import eterea.core.service.exception.ArticuloException;

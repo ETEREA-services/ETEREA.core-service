@@ -31,4 +31,5 @@ public class HabitacionController {
 	public ResponseEntity<Habitacion> findByNumero(@PathVariable Integer numero) {
 		return new ResponseEntity<>(service.findByNumero(numero), HttpStatus.OK);
 	}
+
 }
