@@ -11,6 +11,8 @@ import eterea.core.service.kotlin.model.ReservaArticulo;
 import eterea.core.service.model.dto.CreateHabitacionMovimientoDto;
 import eterea.core.service.model.dto.reserva.CreateReservaDto;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +37,7 @@ import eterea.core.service.service.ReservaService;
 @RestController
 @RequestMapping({ "/api/core/reserva", "/reserva" })
 public class ReservaController {
+	private final Logger log = LoggerFactory.getLogger(ReservaController.class);
 
 	private final ReservaService service;
 
@@ -90,8 +93,6 @@ public class ReservaController {
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "50") int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		Slice<Reserva> sliceResult = service.findPendientesSliced(pageable);
-
-		return ResponseEntity.ok(sliceResult);
+		return ResponseEntity.ok(service.findPendientesSliced(pageable));
 	}
 }
