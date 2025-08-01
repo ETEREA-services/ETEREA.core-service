@@ -475,7 +475,7 @@ public class ContabilidadService {
          Cliente cliente = clienteMovimiento.getCliente();
          Reserva reserva = reservaService.findByReservaId(clienteMovimiento.getReservaId());
          Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-         log.info("--------------- Factura N° {} ---------------", clienteMovimiento.getNumeroComprobante());
+         log.info("--------------- Factura N° {} - Reserva N° {} ---------------", clienteMovimiento.getNumeroComprobante(), reserva.getReservaId());
          log.info(
                "Buscando transacción en Pluspagos para Orden web: {} correspondiente a Factura {}",
                voucher.getNumeroVoucher(),
