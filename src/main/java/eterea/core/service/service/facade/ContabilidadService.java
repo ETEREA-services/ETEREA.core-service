@@ -419,8 +419,6 @@ public class ContabilidadService {
             clienteMovimientosSinValor.size());
 
       List<Long> hardcodedReservaIds = List.of(
-         466681L,466690L,466691L,466692L,466694L,466695L,
-         466696L, 466698L, 466721L,466763L,466764L,466766L,
          466793L,466794L,466796L, 466798L,466799L,466802L,
          466804L, 466805L, 466808L, 466809L, 466810L, 466811L,
          466813L, 466814L,466815L,466816L,466819L,466820L,466821L,
@@ -493,7 +491,9 @@ public class ContabilidadService {
          PluspagosTransactionDto transaction = response.data();
          log.info("Transacción encontrada en Pluspagos: {}", transaction);
 
-         Integer valorId = valoresPluspagosMap.get(transaction.medioPagoId());
+         Long medioPagoId = transaction.medioPagoId();
+         if (medioPagoId == 11L) medioPagoId = 4L;
+         Integer valorId = valoresPluspagosMap.get(medioPagoId);
          Valor valor = valorService.findByValorId(valorId);
 
          String concepto = String.format("Nro: %04d %06d", clienteMovimiento.getPuntoVenta(),
