@@ -388,7 +388,7 @@ public class ContabilidadService {
 
    public List<ClienteMovimiento> checkOrphanFacturas(OffsetDateTime desde, OffsetDateTime hasta, Integer comprobanteId) {
       log.info("Verificando facturas desde {} hasta {} con comprobanteId={}", desde, hasta, comprobanteId);
-      List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findByFechaComprobanteBetween(desde, hasta);
+      List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findByComprobanteIdAndFechaComprobanteBetween(comprobanteId, desde, hasta);
       List<Long> clienteMovimientoIds = clienteMovimientos.stream()
             .map(ClienteMovimiento::getClienteMovimientoId)
             .toList();

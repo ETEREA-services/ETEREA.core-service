@@ -131,8 +131,8 @@ public class ClienteMovimientoService {
 				.orElseThrow(() -> new ClienteMovimientoException(reservaId));
 	}
 
-	public List<ClienteMovimiento> findByFechaComprobanteBetween(OffsetDateTime desde, OffsetDateTime hasta) {
-		return repository.findByFechaComprobanteBetween(desde, hasta);
+	public List<ClienteMovimiento> findByComprobanteIdAndFechaComprobanteBetween(Integer comprobanteId, OffsetDateTime desde, OffsetDateTime hasta) {
+		return repository.findByComprobanteIdAndFechaComprobanteBetween(comprobanteId, desde, hasta);
 	}
 
 }

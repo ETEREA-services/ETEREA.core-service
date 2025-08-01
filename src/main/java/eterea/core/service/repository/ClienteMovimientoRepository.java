@@ -68,6 +68,6 @@ public interface ClienteMovimientoRepository extends JpaRepository<ClienteMovimi
 	 """)
 	 List<ClienteMovimiento> findAllByReservaIdsIn(@Param("reservaIds") List<Long> reservaIds);
 
-	 List<ClienteMovimiento> findByFechaComprobanteBetween(OffsetDateTime desde, OffsetDateTime hasta);
+	 List<ClienteMovimiento> findByComprobanteIdAndFechaComprobanteBetween(Integer comprobanteId, OffsetDateTime desde, OffsetDateTime hasta);
 
 }
