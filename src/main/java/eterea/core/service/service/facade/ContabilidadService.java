@@ -387,7 +387,7 @@ public class ContabilidadService {
    }
 
    public List<ClienteMovimiento> checkOrphanFacturas(OffsetDateTime desde, OffsetDateTime hasta, Integer comprobanteId) {
-      log.debug("Verificando facturas desde {} hasta {} con comprobanteId={}", desde, hasta, comprobanteId);
+      log.info("Verificando facturas desde {} hasta {} con comprobanteId={}", desde, hasta, comprobanteId);
       List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findByFechaComprobanteBetween(desde, hasta);
       List<Long> clienteMovimientoIds = clienteMovimientos.stream()
             .map(ClienteMovimiento::getClienteMovimientoId)
@@ -418,7 +418,20 @@ public class ContabilidadService {
                   .toList(),
             clienteMovimientosSinValor.size());
 
-      return clienteMovimientosSinValor;
+      List<Long> hardcodedReservaIds = List.of(
+         466681L,466690L,466691L,466692L,466694L,466695L,
+         466696L, 466698L, 466721L,466763L,466764L,466766L,
+         466793L,466794L,466796L, 466798L,466799L,466802L,
+         466804L, 466805L, 466808L, 466809L, 466810L, 466811L,
+         466813L, 466814L,466815L,466816L,466819L,466820L,466821L,
+         466822L,466823L,466847L,466849L,466850L,466852L,466882L,
+         466883L,466884L,466913L,466914L,466915L,466916L,466917L,
+         466918L,466919L,466913L,466920L,466922L,466924L,466925L
+      );
+
+      List<ClienteMovimiento> hardcodedClienteMovimientosSinValor = clienteMovimientoService.findAllByReservaIds(hardcodedReservaIds);
+
+      return hardcodedClienteMovimientosSinValor;
    }
 
    private ApiResponseDto<PluspagosTransactionDto> getTransactionFromPluspagos(String orderNoteId) {
