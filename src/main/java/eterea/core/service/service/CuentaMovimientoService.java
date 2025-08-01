@@ -105,4 +105,9 @@ public class CuentaMovimientoService {
         log.debug("Intentando eliminar movimientos contables para fecha={} orden={}", fechaContable, ordenContable);
         repository.deleteAllByFechaAndOrden(fechaContable, ordenContable);
     }
+
+    public List<CuentaMovimiento> findAllByClienteIdAndComprobanteIdAndConceptoLike(Long clienteId, Integer comprobanteId, String concepto) {
+        return repository.findAllByClienteIdAndComprobanteIdAndConceptoLike(clienteId, comprobanteId, concepto);
+    }
+
 }

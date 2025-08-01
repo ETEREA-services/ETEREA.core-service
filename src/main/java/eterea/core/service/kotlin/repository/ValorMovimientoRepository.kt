@@ -47,4 +47,18 @@ interface ValorMovimientoRepository : JpaRepository<ValorMovimiento, Int> {
     """)
     fun deleteAllByFechaContableAndOrdenContable(fechaContable: OffsetDateTime, ordenContable: Int)
 
+    @Query("""
+        SELECT vm
+        FROM ValorMovimiento vm
+        WHERE vm.fechaContable >= :fechaDesde AND vm.fechaContable <= :fechaHasta
+            AND vm.comprobanteId = :comprobanteId
+            AND vm.clienteMovimientoId IN :clienteMovimientoIds
+    """)
+    fun findAllByFechaContableBetweenAndComprobanteIdAndClienteMovimientoIdIn(
+        fechaDesde: OffsetDateTime,
+        fechaHasta: OffsetDateTime,
+        comprobanteId: Int,
+        clienteMovimientoIds: List<Long>
+    ): List<ValorMovimiento>
+
 }
