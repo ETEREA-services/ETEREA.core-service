@@ -16,25 +16,18 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 
 - Gestión de transferencias entre negocios
 - Control de movimientos contables y valores
-- Administración de cotizaciones de monedas
-- Gestión de artículos y rubros con listas de precios
-- Control de comprobantes faltantes
-- Facturación electrónica
-- Gestión de Posiciones IVA
-- **Módulo de Snapshots para el registro de transacciones**
-- **Implementación de HATEOAS**
-- **Sistema de replicación de códigos de barras**
-- **Service Discovery con Consul**
-- **Cobertura de tests con Jacoco**
 - **Seguridad básica con Spring Security**
 
 ## Stack Tecnológico
-
-### Backend
-- Java 24
-- Kotlin 2.2.0
-- Spring Boot 3.5.3
 - Spring Cloud 2025.0.0
+# Cambios en la versión 0.7.1
+
+- Actualización de dependencias:
+  - spring-boot-starter-parent 3.5.4
+  - openpdf 2.2.4
+  - mysql-connector-j 9.4.0
+
+Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
   - Consul Discovery
   - OpenFeign
 - Spring Security
