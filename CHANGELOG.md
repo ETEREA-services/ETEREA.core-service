@@ -116,25 +116,18 @@
 
 ## [0.3.0] - 2025-07-02
 ### Feat
-- implementar módulo de snapshot y actualizar dependencias
-- implementar módulo de posición IVA y mejorar sistema de facturación
-- optimizar control de comprobantes faltantes y actualizar dependencias
-- implementar control de comprobantes faltantes
-- implementar regeneración de transferencias entre negocios
 - implementar HATEOAS y gestión de rubros/artículos
 - implement exchange rate management system
-- implementar actualización de artículos
-- add diferenciaWeb field for web-invoice amount control
-- implement barcode replication system
-- priorizar día feriado en determinación de tarifa
 
+## [0.7.1] - 2025-08-05
+- chore: Actualización de dependencias principales:
+  - spring-boot-starter-parent a 3.5.4
+  - openpdf a 2.2.4
+  - mysql-connector-j a 9.4.0
+- fix: Correcciones menores y refactorizaciones internas (ver historial de commits)
 ### Fix
 - ajustar configuración CORS para permitir acceso desde core-service
 - mejorar manejo de errores y logging en impresión fiscal
-
-### Refactor
-- optimizar control de comprobantes faltantes y mapeo JPA
-- reorganizar proceso de facturación y actualizar dependencias
 - implementar sistema de conversión entre monedas
 - optimizar manejo de cotizaciones y precisión decimal
 
