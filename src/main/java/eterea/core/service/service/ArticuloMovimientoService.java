@@ -39,4 +39,8 @@ public class ArticuloMovimientoService {
 		return repository.saveAll(articuloMovimientos);
     }
 
+	public List<ArticuloMovimiento> findAllByClienteMovimientoIdIn(List<Long> clienteMovimientoIds) {
+		return repository.findAllByClienteMovimientoIdIn(clienteMovimientoIds);
+	}
+
 }

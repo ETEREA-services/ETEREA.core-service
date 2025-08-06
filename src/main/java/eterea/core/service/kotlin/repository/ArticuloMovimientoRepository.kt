@@ -11,4 +11,6 @@ interface ArticuloMovimientoRepository : JpaRepository<ArticuloMovimiento, Long>
 
     fun findByArticuloMovimientoId(articuloMovimientoId: Long): Optional<ArticuloMovimiento?>?
 
+    fun findAllByClienteMovimientoIdIn(clienteMovimientoIds: List<Long>): List<ArticuloMovimiento?>?
+
 }

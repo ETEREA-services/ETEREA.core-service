@@ -95,11 +95,7 @@ public class ValorMovimientoService {
         return repository.saveAll(valorMovimientos);
     }
 
-    public List<ValorMovimiento> findAllByFechaContableBetweenAndComprobanteIdAndClienteMovimientoIdIn(
-            OffsetDateTime fechaDesde,
-            OffsetDateTime fechaHasta,
-            Integer comprobanteId,
-            List<Long> clienteMovimientoIds) {
-        return repository.findAllByFechaContableBetweenAndComprobanteIdAndClienteMovimientoIdIn(fechaDesde, fechaHasta, comprobanteId, clienteMovimientoIds);
+    public List<ValorMovimiento> findAllByClienteMovimientoIdIn(List<Long> clienteMovimientoIds) {
+        return repository.findAllByClienteMovimientoIdIn(clienteMovimientoIds);
     }
 }
