@@ -734,14 +734,14 @@ public class ContabilidadService {
 
          List<ValorMovimiento> facturaValorMovimientos = valorMovimientosMap
                .get(factura.getClienteMovimientoId());
-         if (facturaValorMovimientos.isEmpty()) {
+         if (facturaValorMovimientos == null || facturaValorMovimientos.isEmpty()) {
             log.warn("No se encontraron ValorMovimientos para la Factura N° {}",
                   factura.getNumeroComprobante());
          }
 
          List<ArticuloMovimiento> facturaArticuloMovimientos = articuloMovimientosMap
                .get(factura.getClienteMovimientoId());
-         if (facturaArticuloMovimientos.isEmpty()) {
+         if (facturaArticuloMovimientos == null || facturaArticuloMovimientos.isEmpty()) {
             log.warn("No se encontraron ArticuloMovimientos para la Factura N° {}",
                   factura.getNumeroComprobante());
          }
@@ -754,8 +754,8 @@ public class ContabilidadService {
                factura.getNumeroComprobante(),
                factura.getFechaComprobante(),
                factura.getImporte(),
-               facturaValorMovimientos,
-               facturaArticuloMovimientos,
+               facturaValorMovimientos != null ? facturaValorMovimientos : List.of(),
+               facturaArticuloMovimientos != null ? facturaArticuloMovimientos : List.of(),
                facturaCuentaMovimientos));
 
       }
