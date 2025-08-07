@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +48,24 @@ public class ContabilidadController {
       OffsetDateTime hastaDate = OffsetDateTime.parse(hasta);
       Pageable pageable = PageRequest.of(page, size);
       return ResponseEntity.ok(service.getFacturasDetallesSliced(desdeDate, hastaDate, comprobanteId, pageable));
+   }
+
+   @GetMapping("/facturas/orphan/detalles")
+   public ResponseEntity<List<FacturaDetailsDto>> getOrphanFacturasDetalles(
+         @RequestParam(name = "desde", required = true) String desde,
+         @RequestParam(name = "hasta", required = true) String hasta,
+         @RequestParam(name = "comprobanteId", required = true) Integer comprobanteId) {
+      OffsetDateTime desdeDate = OffsetDateTime.parse(desde);
+      OffsetDateTime hastaDate = OffsetDateTime.parse(hasta);
+      return ResponseEntity.ok(service.getOrphanFacturasDetalles(desdeDate, hastaDate, comprobanteId));
+   }
+
+   @PostMapping("/facturas/{clienteMovimientoId}/fix")
+   public ResponseEntity<Void> fixOrphanFactura(
+         @PathVariable(name = "clienteMovimientoId", required = true) Long clienteMovimientoId,
+         @RequestParam(name = "ignorePluspagos", required = true) boolean ignorePluspagos) {
+      service.fixOrphanFactura(clienteMovimientoId, ignorePluspagos);
+      return ResponseEntity.ok().build();
    }
 
 }

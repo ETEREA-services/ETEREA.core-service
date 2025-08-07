@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -394,7 +395,7 @@ public class ContabilidadService {
 
    }
 
-   public List<ClienteMovimiento> findOrphanFacturas(OffsetDateTime desde, OffsetDateTime hasta,
+   public List<ClienteMovimiento> getOrphanFacturas(OffsetDateTime desde, OffsetDateTime hasta,
          Integer comprobanteId) {
       log.info("Verificando facturas desde {} hasta {} con comprobanteId={}", desde, hasta, comprobanteId);
       List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService
@@ -427,77 +428,10 @@ public class ContabilidadService {
 
    public List<FacturaDetailsDto> getFacturasDetalles(OffsetDateTime desde, OffsetDateTime hasta,
          Integer comprobanteId) {
-      Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
-
       List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService
             .findByComprobanteIdAndFechaComprobanteBetween(comprobanteId, desde, hasta);
 
-      List<Long> clienteMovimientoIds = clienteMovimientos.stream()
-            .map(ClienteMovimiento::getClienteMovimientoId)
-            .toList();
-
-      List<ValorMovimiento> valorMovimientos = valorMovimientoService
-            .findAllByClienteMovimientoIdIn(clienteMovimientoIds);
-
-      // Map<ClienteMovimientoId, List<ValorMovimiento>>
-      Map<Long, List<ValorMovimiento>> valorMovimientosMap = valorMovimientos.stream()
-            .collect(Collectors.groupingBy(ValorMovimiento::getClienteMovimientoId));
-
-      List<ArticuloMovimiento> articuloMovimientos = articuloMovimientoService
-            .findAllByClienteMovimientoIdIn(clienteMovimientoIds);
-
-      // Map<ClienteMovimientoId, List<ArticuloMovimiento>>
-      Map<Long, List<ArticuloMovimiento>> articuloMovimientosMap = articuloMovimientos.stream()
-            .collect(Collectors.groupingBy(ArticuloMovimiento::getClienteMovimientoId));
-
-      List<FacturaDetailsDto> facturaDetails = new ArrayList<>();
-
-      for (ClienteMovimiento factura : clienteMovimientos) {
-         Cliente cliente = factura.getCliente();
-         Reserva reserva = reservaService.findByReservaId(factura.getReservaId());
-         Voucher voucher = (reserva.getVoucherId() != null && reserva.getVoucherId() != 0L)
-               ? voucherService.findByVoucherId(reserva.getVoucherId())
-               : null;
-
-         String concepto = String.format("Nro: %04d %06d", factura.getPuntoVenta(),
-               factura.getNumeroComprobante());
-         List<CuentaMovimiento> facturaCuentaMovimientos = cuentaMovimientoService
-               .findAllByClienteIdAndComprobanteIdAndConceptoLike(cliente.getClienteId(), comprobanteId,
-                     concepto);
-
-         if (facturaCuentaMovimientos.isEmpty()) {
-            log.warn("No se encontraron CuentaMovimientos para la Factura N° {}",
-                  factura.getNumeroComprobante());
-         }
-
-         List<ValorMovimiento> facturaValorMovimientos = valorMovimientosMap
-               .get(factura.getClienteMovimientoId());
-         if (facturaValorMovimientos.isEmpty()) {
-            log.warn("No se encontraron ValorMovimientos para la Factura N° {}",
-                  factura.getNumeroComprobante());
-         }
-
-         List<ArticuloMovimiento> facturaArticuloMovimientos = articuloMovimientosMap
-               .get(factura.getClienteMovimientoId());
-         if (facturaArticuloMovimientos.isEmpty()) {
-            log.warn("No se encontraron ArticuloMovimientos para la Factura N° {}",
-                  factura.getNumeroComprobante());
-         }
-
-         facturaDetails.add(new FacturaDetailsDto(
-               comprobante,
-               cliente,
-               reserva,
-               voucher,
-               factura.getNumeroComprobante(),
-               factura.getFechaComprobante(),
-               factura.getImporte(),
-               facturaValorMovimientos,
-               facturaArticuloMovimientos,
-               facturaCuentaMovimientos));
-
-      }
-      return facturaDetails;
+      return getFacturasDetalles(clienteMovimientos);
    }
 
    public Slice<FacturaDetailsDto> getFacturasDetallesSliced(OffsetDateTime desde, OffsetDateTime hasta,
@@ -505,88 +439,152 @@ public class ContabilidadService {
 
       Sort sort = Sort.by("fechaComprobante").ascending()
             .and(Sort.by("numeroComprobante")).ascending();
-            
+
       Pageable pageableWithSort = PageRequest.of(
             pageable.getPageNumber(),
             pageable.getPageSize(),
             sort);
 
-      Comprobante comprobante = comprobanteService.findByComprobanteId(comprobanteId);
-
       Slice<ClienteMovimiento> clienteMovimientoSlice = clienteMovimientoService
-            .findByComprobanteIdAndFechaComprobanteBetweenSliced(comprobanteId, desde, hasta, pageableWithSort);
+            .findByComprobanteIdAndFechaComprobanteBetweenSliced(comprobanteId, desde, hasta,
+                  pageableWithSort);
 
       List<ClienteMovimiento> clienteMovimientos = clienteMovimientoSlice.getContent();
       if (clienteMovimientos.isEmpty()) {
          return new SliceImpl<>(List.of(), pageableWithSort, false);
       }
 
-      List<Long> clienteMovimientoIds = clienteMovimientos.stream()
-            .map(ClienteMovimiento::getClienteMovimientoId)
-            .toList();
-
-      List<ValorMovimiento> valorMovimientos = valorMovimientoService
-            .findAllByClienteMovimientoIdIn(clienteMovimientoIds);
-
-      // Map<ClienteMovimientoId, List<ValorMovimiento>>
-      Map<Long, List<ValorMovimiento>> valorMovimientosMap = valorMovimientos.stream()
-            .collect(Collectors.groupingBy(ValorMovimiento::getClienteMovimientoId));
-
-      List<ArticuloMovimiento> articuloMovimientos = articuloMovimientoService
-            .findAllByClienteMovimientoIdIn(clienteMovimientoIds);
-
-      // Map<ClienteMovimientoId, List<ArticuloMovimiento>>
-      Map<Long, List<ArticuloMovimiento>> articuloMovimientosMap = articuloMovimientos.stream()
-            .collect(Collectors.groupingBy(ArticuloMovimiento::getClienteMovimientoId));
-
-      List<FacturaDetailsDto> facturaDetails = new ArrayList<>();
-
-      for (ClienteMovimiento factura : clienteMovimientos) {
-         Cliente cliente = factura.getCliente();
-         Reserva reserva = reservaService.findByReservaId(factura.getReservaId());
-         Voucher voucher = (reserva.getVoucherId() != null && reserva.getVoucherId() != 0L)
-               ? voucherService.findByVoucherId(reserva.getVoucherId())
-               : null;
-
-         String concepto = String.format("Nro: %04d %06d", factura.getPuntoVenta(),
-               factura.getNumeroComprobante());
-         List<CuentaMovimiento> facturaCuentaMovimientos = cuentaMovimientoService
-               .findAllByClienteIdAndComprobanteIdAndConceptoLike(cliente.getClienteId(), comprobanteId,
-                     concepto);
-
-         if (facturaCuentaMovimientos.isEmpty()) {
-            log.warn("No se encontraron CuentaMovimientos para la Factura N° {}",
-                  factura.getNumeroComprobante());
-         }
-
-         List<ValorMovimiento> facturaValorMovimientos = valorMovimientosMap
-               .getOrDefault(factura.getClienteMovimientoId(), List.of());
-         if (facturaValorMovimientos.isEmpty()) {
-            log.warn("No se encontraron ValorMovimientos para la Factura N° {}",
-                  factura.getNumeroComprobante());
-         }
-
-         List<ArticuloMovimiento> facturaArticuloMovimientos = articuloMovimientosMap
-               .getOrDefault(factura.getClienteMovimientoId(), List.of());
-         if (facturaArticuloMovimientos.isEmpty()) {
-            log.warn("No se encontraron ArticuloMovimientos para la Factura N° {}",
-                  factura.getNumeroComprobante());
-         }
-
-         facturaDetails.add(new FacturaDetailsDto(
-               comprobante,
-               cliente,
-               reserva,
-               voucher,
-               factura.getNumeroComprobante(),
-               factura.getFechaComprobante(),
-               factura.getImporte(),
-               facturaValorMovimientos,
-               facturaArticuloMovimientos,
-               facturaCuentaMovimientos));
-      }
+      List<FacturaDetailsDto> facturaDetails = getFacturasDetalles(clienteMovimientos);
 
       return new SliceImpl<>(facturaDetails, pageableWithSort, clienteMovimientoSlice.hasNext());
+   }
+
+   public List<FacturaDetailsDto> getOrphanFacturasDetalles(OffsetDateTime desde, OffsetDateTime hasta,
+         Integer comprobanteId) {
+      List<ClienteMovimiento> orphanFacturas = getOrphanFacturas(desde, hasta, comprobanteId);
+      return getFacturasDetalles(orphanFacturas);
+   }
+
+   public void fixOrphanFactura(Long clienteMovimientoId, boolean ignorePluspagos) {
+      ClienteMovimiento clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
+      Valor defaultValor = valorService.findByValorId(1); // Efectivo
+      Map<Long, Integer> valoresPluspagosMap = new HashMap<>();
+      valoresPluspagosMap.put(7L, 59);
+      valoresPluspagosMap.put(4L, 60);
+      valoresPluspagosMap.put(36L, 61);
+      valoresPluspagosMap.put(9L, 62);
+      valoresPluspagosMap.put(34L, 64);
+      valoresPluspagosMap.put(37L, 66);
+      valoresPluspagosMap.put(12L, 67);
+      valoresPluspagosMap.put(47L, 72);
+
+      Cliente cliente = clienteMovimiento.getCliente();
+      Reserva reserva = reservaService.findByReservaId(clienteMovimiento.getReservaId());
+      Voucher voucher = reserva != null
+            ? voucherService.findByVoucherId(reserva.getVoucherId())
+            : null;
+      log.info("--------------- Factura N° {} - Reserva N° {} ---------------",
+            clienteMovimiento.getNumeroComprobante(), reserva.getReservaId());
+      log.info("Buscando transacción en Pluspagos para Orden web: {} correspondiente a Factura {}",
+            voucher.getNumeroVoucher(),
+            clienteMovimiento.getNumeroComprobante());
+
+      ApiResponseDto<PluspagosTransactionDto> response = getTransactionFromPluspagos(voucher.getNumeroVoucher());
+
+      Valor valor = defaultValor;
+      if (response != null && response.data() != null) {
+         PluspagosTransactionDto transaction = response.data();
+         log.info("Transacción encontrada en Pluspagos: {}", transaction);
+
+         Long medioPagoId = transaction.medioPagoId();
+         if (medioPagoId == 11L)
+            medioPagoId = 4L;
+         Integer valorId = valoresPluspagosMap.get(medioPagoId);
+         valor = valorService.findByValorId(valorId);
+         log.info("Valor asignado: {}", valor.getConcepto());
+      } else {
+         if (ignorePluspagos) {
+            log.info(
+                  "Transacción en Pluspagos no encontrada. Ignorando transacción en Pluspagos. Asignando valor por defecto: {}",
+                  defaultValor.getConcepto());
+         } else {
+            return;
+         }
+      }
+
+      String concepto = String.format("Nro: %04d %06d",
+            clienteMovimiento.getPuntoVenta(),
+            clienteMovimiento.getNumeroComprobante());
+
+      List<CuentaMovimiento> cuentaMovimientos = cuentaMovimientoService
+            .findAllByClienteIdAndComprobanteIdAndConceptoLike(cliente.getClienteId(),
+                  clienteMovimiento.getComprobanteId(), concepto);
+      log.info("CuentaMovimientos encontrados: {}", cuentaMovimientos);
+      if (cuentaMovimientos.isEmpty()) {
+         log.info("No se encontró cuentaMovimiento para la Factura N° {}",
+               clienteMovimiento.getNumeroComprobante());
+         return;
+      }
+
+      BigDecimal totalDebe = cuentaMovimientos.stream()
+            .filter(cuentaMovimiento -> cuentaMovimiento.getDebita() == 1)
+            .map(CuentaMovimiento::getImporte)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+      BigDecimal totalHaber = cuentaMovimientos.stream()
+            .filter(cuentaMovimiento -> cuentaMovimiento.getDebita() == 0)
+            .map(CuentaMovimiento::getImporte)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+      if (totalDebe.compareTo(totalHaber) != 0) {
+         log.info("El total de debe y haber no coinciden. Total debe: {}, Total haber: {}", totalDebe, totalHaber);
+         int lastItem = cuentaMovimientos.stream()
+               .map(CuentaMovimiento::getItem)
+               .max(Integer::compareTo)
+               .orElse(0);
+         CuentaMovimiento newCuentaMovimiento = new CuentaMovimiento.Builder()
+               .negocioId(clienteMovimiento.getNegocioId())
+               .numeroCuenta(valor.getNumeroCuenta())
+               .debita(clienteMovimiento.getComprobante().getDebita())
+               .importe(clienteMovimiento.getImporte())
+               .item(lastItem + 1)
+               .fecha(clienteMovimiento.getFechaComprobante())
+               .comprobanteId(clienteMovimiento.getComprobanteId())
+               .orden(clienteMovimiento.getOrdenContable())
+               .clienteId(cliente.getClienteId())
+               .subrubroId(2L)
+               .concepto(cuentaMovimientos.get(0).getConcepto())
+               .build();
+
+         cuentaMovimientoService.saveAll(List.of(newCuentaMovimiento));
+         log.info("CuentaMovimiento agregada: {}", newCuentaMovimiento);
+      }
+
+      ValorMovimiento newValorMovimiento = new ValorMovimiento.Builder()
+            .negocioId(clienteMovimiento.getNegocioId())
+            .valorId(valor.getValorId())
+            .proveedorId(0L)
+            .clienteId(cliente.getClienteId())
+            .fechaEmision(clienteMovimiento.getFechaComprobante())
+            .fechaVencimiento(clienteMovimiento.getFechaComprobante())
+            .comprobanteId(clienteMovimiento.getComprobanteId())
+            .numeroComprobante(0L)
+            .importe(clienteMovimiento.getImporte())
+            .numeroCuenta(valor.getNumeroCuenta())
+            .fechaContable(clienteMovimiento.getFechaComprobante())
+            .ordenContable(clienteMovimiento.getOrdenContable())
+            .proveedorMovimientoId(0L)
+            .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
+            .titular("")
+            .banco("")
+            .receptor("")
+            .estadoId(0)
+            .cierreCajaId(0L)
+            .observaciones(clienteMovimiento.getObservaciones())
+            .valor(valor)
+            .build();
+      valorMovimientoService.add(newValorMovimiento);
+      log.info("ValorMovimiento agregado: {}", newValorMovimiento);
+
    }
 
    // public void fixOrphanFacturas(List<ClienteMovimiento> orphanFacturas, Integer
@@ -694,6 +692,76 @@ public class ContabilidadService {
    // log.info("ValorMovimiento agregado: {}", newValorMovimiento);
    // }
    // }
+   private List<FacturaDetailsDto> getFacturasDetalles(List<ClienteMovimiento> clienteMovimientos) {
+      List<Long> clienteMovimientoIds = clienteMovimientos.stream()
+            .map(ClienteMovimiento::getClienteMovimientoId)
+            .toList();
+
+      List<ValorMovimiento> valorMovimientos = valorMovimientoService
+            .findAllByClienteMovimientoIdIn(clienteMovimientoIds);
+
+      // Map<ClienteMovimientoId, List<ValorMovimiento>>
+      Map<Long, List<ValorMovimiento>> valorMovimientosMap = valorMovimientos.stream()
+            .collect(Collectors.groupingBy(ValorMovimiento::getClienteMovimientoId));
+
+      List<ArticuloMovimiento> articuloMovimientos = articuloMovimientoService
+            .findAllByClienteMovimientoIdIn(clienteMovimientoIds);
+
+      // Map<ClienteMovimientoId, List<ArticuloMovimiento>>
+      Map<Long, List<ArticuloMovimiento>> articuloMovimientosMap = articuloMovimientos.stream()
+            .collect(Collectors.groupingBy(ArticuloMovimiento::getClienteMovimientoId));
+
+      List<FacturaDetailsDto> facturaDetails = new ArrayList<>();
+
+      for (ClienteMovimiento factura : clienteMovimientos) {
+         Cliente cliente = factura.getCliente();
+         Reserva reserva = reservaService.findByReservaId(factura.getReservaId());
+         Voucher voucher = (reserva.getVoucherId() != null && reserva.getVoucherId() != 0L)
+               ? voucherService.findByVoucherId(reserva.getVoucherId())
+               : null;
+
+         String concepto = String.format("Nro: %04d %06d", factura.getPuntoVenta(),
+               factura.getNumeroComprobante());
+         List<CuentaMovimiento> facturaCuentaMovimientos = cuentaMovimientoService
+               .findAllByClienteIdAndComprobanteIdAndConceptoLike(cliente.getClienteId(),
+                     factura.getComprobanteId(),
+                     concepto);
+
+         if (facturaCuentaMovimientos.isEmpty()) {
+            log.warn("No se encontraron CuentaMovimientos para la Factura N° {}",
+                  factura.getNumeroComprobante());
+         }
+
+         List<ValorMovimiento> facturaValorMovimientos = valorMovimientosMap
+               .get(factura.getClienteMovimientoId());
+         if (facturaValorMovimientos.isEmpty()) {
+            log.warn("No se encontraron ValorMovimientos para la Factura N° {}",
+                  factura.getNumeroComprobante());
+         }
+
+         List<ArticuloMovimiento> facturaArticuloMovimientos = articuloMovimientosMap
+               .get(factura.getClienteMovimientoId());
+         if (facturaArticuloMovimientos.isEmpty()) {
+            log.warn("No se encontraron ArticuloMovimientos para la Factura N° {}",
+                  factura.getNumeroComprobante());
+         }
+
+         facturaDetails.add(new FacturaDetailsDto(
+               factura.getComprobante(),
+               cliente,
+               reserva,
+               voucher,
+               factura.getNumeroComprobante(),
+               factura.getFechaComprobante(),
+               factura.getImporte(),
+               facturaValorMovimientos,
+               facturaArticuloMovimientos,
+               facturaCuentaMovimientos));
+
+      }
+      return facturaDetails;
+
+   }
 
    private ApiResponseDto<PluspagosTransactionDto> getTransactionFromPluspagos(String orderNoteId) {
       try {
