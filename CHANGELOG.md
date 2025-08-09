@@ -1,4 +1,23 @@
+## [0.7.1] - 2025-08-09
+### Features
+- feat: Nuevos servicios de consulta (`ClienteSearchService`, `SaldoArticuloService`, `SaldoFechaService`).
+- feat: Centralización y mejora de utilidades en `ToolService`.
+- feat: Refactor y migración de servicios y repositorios de `api.rest` a `core.service`.
+- feat: Mejora de logging y trazabilidad en servicios críticos.
 
+### Changed
+- chore: Actualización de dependencias principales:
+    - spring-boot-starter-parent 3.5.4
+    - openpdf 2.2.4
+    - mysql-connector-j 9.4.0
+- refactor: Cambios en endpoints de controladores para mayor consistencia REST.
+- refactor: Mejoras en la gestión de comprobantes y facturación.
+
+### Removed
+- chore: Eliminación de archivos y configuraciones obsoletas (`logback-spring.xml`, `application.yml`, scripts de Maven Wrapper, etc).
+
+### Docs
+- docs: Actualización de diagramas y documentación para reflejar la nueva arquitectura y dependencias.
 ## [0.7.0] - 2025-07-24
 ### Features
 - feat: Integración de Spring Security y configuración de seguridad básica.

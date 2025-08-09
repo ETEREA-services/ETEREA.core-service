@@ -3,12 +3,13 @@
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
 [![Java](https://img.shields.io/badge/Java-24-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk24-archive-downloads.html)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.0-blueviolet.svg)](https://kotlinlang.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-green.svg)](https://spring.io/projects/spring-boot)
+
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-green.svg)](https://spring.io/projects/spring-cloud)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.9-blue.svg)](https://springdoc.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-9.3.0-orange.svg)](https://www.mysql.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.7.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.7.1-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -20,6 +21,7 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 
 ## Stack Tecnológico
 - Spring Cloud 2025.0.0
+
 # Cambios en la versión 0.7.1
 
 - Actualización de dependencias:

@@ -29,8 +29,9 @@ public class ClienteMovimientoService {
 		this.comprobanteService = comprobanteService;
 	}
 
-	public List<ClienteMovimiento> findTop200Asociables(Long clienteId) {
-		List<Integer> comprobanteIds = comprobanteService.findAllAsociables().stream()
+	public List<ClienteMovimiento> findTop200Asociables(Long clienteId, Integer comprobanteId) {
+        var comprobante = comprobanteService.findByComprobanteId(comprobanteId);
+		List<Integer> comprobanteIds = comprobanteService.findAllAsociables(comprobante.getDebita()).stream()
 				.map(Comprobante::getComprobanteId).collect(Collectors.toList());
 		return repository.findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
 	}

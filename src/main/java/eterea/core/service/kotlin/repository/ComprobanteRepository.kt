@@ -8,7 +8,7 @@ import java.util.*
 @Repository
 interface ComprobanteRepository : JpaRepository<Comprobante, Int> {
 
-    fun findAllByFacturaElectronicaAndAsociado(facturaElectronica: Byte?, Asociado: Byte?): List<Comprobante?>?
+    fun findAllByFacturaElectronicaAndAsociado(facturaElectronica: Byte?, asociado: Byte?): List<Comprobante?>?
 
     fun findAllByModuloAndTransferirAndInvisible(modulo: Int?, transferir: Byte?, invisible: Byte?): List<Comprobante?>?
 
@@ -27,7 +27,7 @@ interface ComprobanteRepository : JpaRepository<Comprobante, Int> {
         invisible: Byte?, comprobanteId: Int?
     ): List<Comprobante?>?
 
-    fun findAllByModuloAndDebitaAndAsociado(modulo: Int?, debita: Byte?, asociado: Byte?): List<Comprobante?>?
+    fun findAllByModuloAndDebitaAndLibroIva(modulo: Int?, debita: Byte?, libroIva: Byte?): List<Comprobante?>?
 
     fun findByComprobanteId(comprobanteId: Int?): Optional<Comprobante?>?
 
