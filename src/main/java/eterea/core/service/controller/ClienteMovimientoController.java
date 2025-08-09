@@ -31,19 +31,19 @@ public class ClienteMovimientoController {
 		this.service = service;
 	}
 
-	@GetMapping("/asociable/{clienteId}")
-	public ResponseEntity<List<ClienteMovimiento>> findTop200Asociables(@PathVariable Long clienteId) {
-		return new ResponseEntity<>(service.findTop200Asociables(clienteId), HttpStatus.OK);
+	@GetMapping("/asociable/{clienteId}/comprobante/{comprobanteId}")
+	public ResponseEntity<List<ClienteMovimiento>> findTop200Asociables(@PathVariable Long clienteId, @PathVariable Integer comprobanteId) {
+        return ResponseEntity.ok(service.findTop200Asociables(clienteId, comprobanteId));
 	}
 
 	@GetMapping("/findAllByReservaIds/{reservaIds}")
 	public ResponseEntity<List<ClienteMovimiento>> findAllByReservaIds(@PathVariable List<Long> reservaIds) {
-		return new ResponseEntity<>(service.findAllByReservaIds(reservaIds), HttpStatus.OK);
+        return ResponseEntity.ok(service.findAllByReservaIds(reservaIds));
 	}
 
 	@GetMapping("/reserva/{reservaId}")
 	public ResponseEntity<List<ClienteMovimiento>> findAllByReservaId(@PathVariable Long reservaId) {
-		return new ResponseEntity<>(service.findAllByReservaId(reservaId), HttpStatus.OK);
+        return ResponseEntity.ok(service.findAllByReservaId(reservaId));
 	}
 
 	@GetMapping("/rango/facturas/{letraComprobante}/{debita}/{puntoVenta}/{numeroComprobanteDesde}/{numeroComprobanteHasta}")
@@ -54,8 +54,8 @@ public class ClienteMovimientoController {
 			@PathVariable Long numeroComprobanteDesde,
 			@PathVariable Long numeroComprobanteHasta
 	) {
-		return new ResponseEntity<>(service.findAllFacturasByRango(letraComprobante, debita, puntoVenta, numeroComprobanteDesde,
-				numeroComprobanteHasta), HttpStatus.OK);
+        return ResponseEntity.ok(service.findAllFacturasByRango(letraComprobante, debita, puntoVenta, numeroComprobanteDesde,
+                numeroComprobanteHasta));
 	}
 
 	@GetMapping("/last/{puntoVenta}/{letraComprobante}")

@@ -30,8 +30,8 @@ public class ComprobanteService {
 		this.repository = repository;
 	}
 
-	public List<Comprobante> findAllAsociables() {
-		return repository.findAllByModuloAndDebitaAndAsociado(3, (byte) 1, (byte) 0);
+	public List<Comprobante> findAllAsociables(Byte debita) {
+		return repository.findAllByModuloAndDebitaAndLibroIva(3, (byte) (1 - debita), (byte) 1);
 	}
 
 	public List<Integer> findAllDisponibles() {
@@ -41,7 +41,7 @@ public class ComprobanteService {
         } catch (JsonProcessingException e) {
             log.debug("First comprobante error: {}", e.getMessage());
         }
-        Comprobante lastComprobante = repository.findFirstByOrderByComprobanteIdDesc().orElseThrow(ComprobanteException::new);
+        Comprobante lastComprobante = Objects.requireNonNull(repository.findFirstByOrderByComprobanteIdDesc()).orElseThrow(ComprobanteException::new);
 		try {
 			log.debug("Last comprobante: {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(lastComprobante));
 		} catch (JsonProcessingException e) {
@@ -49,7 +49,8 @@ public class ComprobanteService {
 		}
 		var usados = repository.findAll().stream().collect(Collectors.toMap(Comprobante::getComprobanteId, comprobante -> comprobante));
 		List<Integer> disponibles = new ArrayList<>();
-		for (Integer comprobanteId = firstComprobante.getComprobanteId(); comprobanteId <= lastComprobante.getComprobanteId(); comprobanteId++) {
+        assert firstComprobante != null;
+        for (Integer comprobanteId = firstComprobante.getComprobanteId(); comprobanteId <= lastComprobante.getComprobanteId(); comprobanteId++) {
 			if (!usados.containsKey(comprobanteId)) {
 				disponibles.add(comprobanteId);
 			}
