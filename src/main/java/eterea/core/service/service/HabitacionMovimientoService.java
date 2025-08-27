@@ -224,4 +224,12 @@ public class HabitacionMovimientoService {
         var savedReserva = save(habitacionMovimiento);
         log.info("Reserva guardada: {}", savedReserva);
     }
+
+    public HabitacionMovimientoResponseDto getHabitacionMovimientoByNroReserva(Long nroReserva) {
+        Optional<HabitacionMovimiento> habitacionMovimientoOpt = repository.findByNumeroReserva(nroReserva);
+        if (!habitacionMovimientoOpt.isPresent()) {
+            throw new HabitacionMovimientoExtendedException(nroReserva);
+        }
+        return habitacionMovimientoToDtoMapper.apply(habitacionMovimientoOpt.get());
+    }
 }

@@ -27,6 +27,11 @@ public class HabitacionMovimientoController {
       this.service = service;
    }
 
+   @GetMapping("/{nroReserva}")
+   public ResponseEntity<HabitacionMovimientoResponseDto> getHabitacionMovimientoByNroReserva(@PathVariable Long nroReserva) {
+      return ResponseEntity.ok(service.getHabitacionMovimientoByNroReserva(nroReserva));
+   }
+
    @GetMapping("/reservada/{nroHabitacion}/{fechaIngreso}/{fechaSalida}")
    public ResponseEntity<Boolean> isHabitacionReservada(@PathVariable Integer nroHabitacion,
          @PathVariable OffsetDateTime fechaIngreso, @PathVariable OffsetDateTime fechaSalida,
