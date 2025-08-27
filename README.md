@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.9-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.7.1-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.7.2-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -22,12 +22,11 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 ## Stack Tecnológico
 - Spring Cloud 2025.0.0
 
-# Cambios en la versión 0.7.1
+# Cambios en la versión 0.7.2
 
-- Actualización de dependencias:
-  - spring-boot-starter-parent 3.5.4
-  - openpdf 2.2.4
-  - mysql-connector-j 9.4.0
+- refactor: Mejora de lógica y trazabilidad en `ClienteMovimientoService` y `ComprobanteService`.
+- refactor: Se agrega método `findAllAsociables()` y se ajusta la consulta de comprobantes asociables.
+- refactor: Limpieza y mejora de interfaces en `ComprobanteRepository`.
 
 Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
   - Consul Discovery

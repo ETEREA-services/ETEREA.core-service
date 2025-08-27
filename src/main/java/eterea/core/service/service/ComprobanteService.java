@@ -30,6 +30,10 @@ public class ComprobanteService {
 		this.repository = repository;
 	}
 
+    public List<Comprobante> findAllAsociables() {
+        return repository.findAllByModuloAndLibroIva(3, (byte) 1);
+    }
+
 	public List<Comprobante> findAllAsociables(Byte debita) {
 		return repository.findAllByModuloAndDebitaAndLibroIva(3, (byte) (1 - debita), (byte) 1);
 	}
