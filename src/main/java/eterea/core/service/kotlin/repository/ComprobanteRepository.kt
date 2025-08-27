@@ -27,11 +27,14 @@ interface ComprobanteRepository : JpaRepository<Comprobante, Int> {
         invisible: Byte?, comprobanteId: Int?
     ): List<Comprobante?>?
 
+    fun findAllByModuloAndLibroIva(modulo: Int?, libroIva: Byte?): List<Comprobante?>?
+
     fun findAllByModuloAndDebitaAndLibroIva(modulo: Int?, debita: Byte?, libroIva: Byte?): List<Comprobante?>?
 
     fun findByComprobanteId(comprobanteId: Int?): Optional<Comprobante?>?
 
     fun findFirstByOrderByComprobanteId(): Optional<Comprobante?>?
+
     fun findFirstByOrderByComprobanteIdDesc(): Optional<Comprobante?>?
 
 }

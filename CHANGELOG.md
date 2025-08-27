@@ -1,3 +1,8 @@
+## [0.7.2] - 2025-08-27
+### Changed
+- refactor: Mejora de lógica y trazabilidad en `ClienteMovimientoService` y `ComprobanteService`.
+- refactor: Se agrega método `findAllAsociables()` y se ajusta la consulta de comprobantes asociables.
+- refactor: Limpieza y mejora de interfaces en `ComprobanteRepository`.
 ## [0.7.1] - 2025-08-09
 ### Features
 - feat: Nuevos servicios de consulta (`ClienteSearchService`, `SaldoArticuloService`, `SaldoFechaService`).

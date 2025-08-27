@@ -12,6 +12,7 @@ import eterea.core.service.kotlin.model.ClienteMovimiento;
 import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.repository.ClienteMovimientoRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@Slf4j
 public class ClienteMovimientoService {
 
 	private final ClienteMovimientoRepository repository;
@@ -31,7 +33,9 @@ public class ClienteMovimientoService {
 
 	public List<ClienteMovimiento> findTop200Asociables(Long clienteId, Integer comprobanteId) {
         var comprobante = comprobanteService.findByComprobanteId(comprobanteId);
-		List<Integer> comprobanteIds = comprobanteService.findAllAsociables(comprobante.getDebita()).stream()
+        log.debug("Comprobante -> {}", comprobante.jsonify());
+        List<Comprobante> comprobantes = (comprobante.getAsociado() == (byte) 1 && comprobante.getDebita() == (byte) 1) ? comprobanteService.findAllAsociables() : comprobanteService.findAllAsociables(comprobante.getDebita());
+		List<Integer> comprobanteIds = comprobantes.stream()
 				.map(Comprobante::getComprobanteId).collect(Collectors.toList());
 		return repository.findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(clienteId, comprobanteIds);
 	}
