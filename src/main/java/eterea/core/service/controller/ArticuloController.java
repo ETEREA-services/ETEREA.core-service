@@ -84,4 +84,9 @@ public class ArticuloController {
       return new ResponseEntity<>(service.findAllByIds(articuloIds), HttpStatus.OK);
    }
 
+   @GetMapping("/rubro/{rubroId}")
+   public ResponseEntity<List<Articulo>> findAllByRubroId(@PathVariable Long rubroId) {
+      return new ResponseEntity<>(service.findAllByRubroId(rubroId), HttpStatus.OK);
+   }
+
 }

@@ -31,4 +31,6 @@ interface ArticuloRepository : JpaRepository<Articulo, String> {
 
     fun findAllByArticuloIdIn(articuloIds: List<String>): List<Articulo>
 
+    fun findAllByRubroId(rubroId: Long): List<Articulo>
+
 }

@@ -1,8 +1,11 @@
 package eterea.core.service.controller;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.model.dto.HabitacionMovimientoObservacionRequestDto;
 import eterea.core.service.model.dto.HabitacionMovimientoResponseDto;
+import eterea.core.service.kotlin.model.Habitacion;
 import eterea.core.service.model.dto.CreateHabitacionMovimientoDto;
 import eterea.core.service.service.HabitacionMovimientoService;
 
@@ -27,9 +31,9 @@ public class HabitacionMovimientoController {
       this.service = service;
    }
 
-   @GetMapping("/{nroReserva}")
-   public ResponseEntity<HabitacionMovimientoResponseDto> getHabitacionMovimientoByNroReserva(@PathVariable Long nroReserva) {
-      return ResponseEntity.ok(service.getHabitacionMovimientoByNroReserva(nroReserva));
+   @GetMapping("/{numeroReserva}")
+   public ResponseEntity<HabitacionMovimientoResponseDto> getHabitacionMovimiento(@PathVariable Long numeroReserva) {
+      return ResponseEntity.ok(service.findByNumeroReserva(numeroReserva));
    }
 
    @GetMapping("/reservada/{nroHabitacion}/{fechaIngreso}/{fechaSalida}")
@@ -51,4 +55,18 @@ public class HabitacionMovimientoController {
       service.appendToObservaciones(habitacionMovimientoId, dtoObservacion.observacion());
       return ResponseEntity.ok().build();
    }
+
+   @DeleteMapping("/{numeroReserva}")
+   public ResponseEntity<Void> eliminar(@PathVariable Long numeroReserva) {
+      service.eliminar(numeroReserva);
+      return ResponseEntity.ok().build();
+   }
+
+   @GetMapping("/habitaciones/disponibles")
+   public ResponseEntity<List<Habitacion>> getHabitacionesDisponibles(
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta) {
+      return ResponseEntity.ok(service.getHabitacionesDisponibles(desde, hasta));
+   }
+
 }
