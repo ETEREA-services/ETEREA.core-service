@@ -139,5 +139,9 @@ public class ArticuloService {
 		return repository.findAllByArticuloIdIn(articuloIds);
 	}
 
+	public List<Articulo> findAllByRubroId(Long rubroId) {
+		return repository.findAllByRubroId(rubroId);
+	}
+
 }
 

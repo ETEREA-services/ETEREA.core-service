@@ -4,12 +4,14 @@
 package eterea.core.service.service;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import eterea.core.service.exception.ArticuloFechaException;
 import eterea.core.service.kotlin.model.ArticuloFecha;
 import eterea.core.service.kotlin.repository.ArticuloFechaRepository;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,6 +51,41 @@ public class ArticuloFechaService {
     }
 
     public List<ArticuloFecha> saveAll(List<ArticuloFecha> toSave) {
+        return repository.saveAll(toSave);
+    }
+
+    public List<ArticuloFecha> saveOrUpdateAll(List<ArticuloFecha> toSave) {
+        if (toSave.isEmpty()) {
+            return toSave;
+        }
+        
+        // Step 1: Find existing records (1 query)
+        List<String> articuloIds = toSave.stream()
+            .map(ArticuloFecha::getArticuloId)
+            .distinct()
+            .toList();
+        List<OffsetDateTime> fechas = toSave.stream()
+            .map(ArticuloFecha::getFecha)
+            .toList();
+        
+        List<ArticuloFecha> existing = repository.findAllByArticuloIdInAndFechaIn(articuloIds, fechas);
+        
+        // Step 2: Create lookup map for existing IDs
+        java.util.Map<String, Long> existingIds = existing.stream()
+            .collect(java.util.stream.Collectors.toMap(
+                e -> e.getArticuloId() + ":" + e.getFecha(),
+                ArticuloFecha::getArticuloFechaId
+            ));
+        
+        // Step 3: Set IDs on incoming entities that already exist
+        toSave.forEach(entity -> {
+            String key = entity.getArticuloId() + ":" + entity.getFecha();
+            if (existingIds.containsKey(key)) {
+                entity.setArticuloFechaId(existingIds.get(key));
+            }
+        });
+        
+        // Step 4: Save all - JPA will INSERT new ones, UPDATE existing ones
         return repository.saveAll(toSave);
     }
 

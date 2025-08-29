@@ -34,6 +34,11 @@ public class FeriadoController {
       return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
    }
 
+   @GetMapping("/anio/{anio}")
+   public ResponseEntity<List<Feriado>> findByAnio(@PathVariable Integer anio) {
+      return ResponseEntity.status(HttpStatus.OK).body(service.findAllByAnio(anio));
+   }
+
    @PostMapping()
    public ResponseEntity<Feriado> save(@RequestBody Feriado feriado) {
       return ResponseEntity.status(HttpStatus.CREATED).body(service.save(feriado));

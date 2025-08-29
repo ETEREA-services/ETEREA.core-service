@@ -11,4 +11,6 @@ interface FeriadoRepository : JpaRepository<Feriado, OffsetDateTime> {
 
     fun findByFecha(fecha: OffsetDateTime?): Optional<Feriado?>?
 
+    fun findAllByFechaBetween(desde: OffsetDateTime, hasta: OffsetDateTime): List<Feriado>
+
 }

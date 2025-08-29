@@ -4,6 +4,7 @@
 package eterea.core.service.controller;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import eterea.core.service.exception.ArticuloFechaException;
 import eterea.core.service.kotlin.model.ArticuloFecha;
@@ -55,6 +56,23 @@ public class ArticuloFechaController {
 	public ResponseEntity<ArticuloFecha> update(@RequestBody ArticuloFecha articulofecha,
 			@PathVariable Long articuloFechaId) {
 		return new ResponseEntity<>(service.update(articulofecha, articuloFechaId), HttpStatus.OK);
+	}
+
+	@GetMapping("/periodo/{articuloId}/{fechaInicio}/{fechaFin}")
+	public ResponseEntity<List<ArticuloFecha>> getByPeriodo(@PathVariable String articuloId,
+			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaInicio,
+			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaFin) {
+		return new ResponseEntity<>(service.findAllByArticuloIdAndPeriodo(articuloId, fechaInicio, fechaFin), HttpStatus.OK);
+	}
+
+	@PostMapping("/save-all")
+	public ResponseEntity<List<ArticuloFecha>> saveAll(@RequestBody List<ArticuloFecha> articulofechas) {
+		return new ResponseEntity<>(service.saveAll(articulofechas), HttpStatus.OK);
+	}
+
+	@PostMapping("/save-or-update-all")
+	public ResponseEntity<List<ArticuloFecha>> saveOrUpdateAll(@RequestBody List<ArticuloFecha> articulofechas) {
+		return new ResponseEntity<>(service.saveOrUpdateAll(articulofechas), HttpStatus.OK);
 	}
 
 }
