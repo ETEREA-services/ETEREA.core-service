@@ -61,7 +61,7 @@ public class ClienteMovimientoController {
 	@GetMapping("/last/{puntoVenta}/{letraComprobante}")
 	public ResponseEntity<Long> nextNumeroFactura(@PathVariable Integer puntoVenta,
 			@PathVariable String letraComprobante) {
-		return new ResponseEntity<>(service.nextNumeroFactura(puntoVenta, letraComprobante), HttpStatus.OK);
+		return new ResponseEntity<>(service.nextNumeroFactura(letraComprobante, puntoVenta, 0), HttpStatus.OK);
 	}
 
 	@GetMapping("/consulta/comprobante/{comprobanteId}/{puntoVenta}/{numeroComprobante}")
@@ -95,5 +95,23 @@ public class ClienteMovimientoController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
+
+    @GetMapping("/find/next/invoice/number/letraComprobante/{letraComprobante}/puntoVenta/{puntoVenta}/comprobante/{comprobanteId}")
+    public ResponseEntity<Long> findNextInvoiceNumber(@PathVariable String letraComprobante, @PathVariable Integer puntoVenta, @PathVariable Integer comprobanteId) {
+        try {
+            return ResponseEntity.ok(service.nextNumeroFactura(letraComprobante, puntoVenta, comprobanteId));
+        } catch (ClienteMovimientoException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/find/next/creditNote/number/letraComprobante/{letraComprobante}/puntoVenta/{puntoVenta}/comprobante/{comprobanteId}")
+    public ResponseEntity<Long> findNextCreditNoteNumber(@PathVariable String letraComprobante, @PathVariable Integer puntoVenta, @PathVariable Integer comprobanteId) {
+        try {
+            return ResponseEntity.ok(service.nextNumeroNotaCredito(letraComprobante, puntoVenta, comprobanteId));
+        } catch (ClienteMovimientoException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 
 }

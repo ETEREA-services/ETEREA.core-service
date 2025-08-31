@@ -1,3 +1,27 @@
+## [0.8.0] - 2025-08-31
+### Features
+- feat: Nuevo servicio `ProductsService` para procesamiento de productos y vouchers.
+- feat: Nuevos endpoints REST para consulta de numeración de facturas y notas de crédito.
+- feat: Servicios de consulta `SaldoArticuloService` y `SaldoFechaService` agregados.
+
+### Changed
+- chore: Actualización de dependencias principales:
+    - spring-boot-starter-parent 3.5.5
+    - kotlin 2.2.10
+    - openpdf 2.4.0
+    - springdoc-openapi-starter-webmvc-ui 2.8.10
+- refactor: Mejora de lógica y trazabilidad en `ClienteMovimientoService` y `ComprobanteService`.
+- refactor: Ajuste de endpoints y lógica de numeración de comprobantes.
+- refactor: Limpieza y mejora de interfaces en repositorios y servicios.
+- chore: Eliminación de `logback-spring.xml` y migración completa a configuración YAML.
+
+### Fixed
+- fix: Corrección de lógica en la obtención del próximo número de factura y nota de crédito.
+- fix: Ajustes en la configuración de CORS y Consul en `bootstrap.yml`.
+
+### Docs
+- docs: Actualización de diagramas y documentación para reflejar la nueva arquitectura y dependencias.
+
 ## [0.7.2] - 2025-08-27
 ### Changed
 - refactor: Mejora de lógica y trazabilidad en `ClienteMovimientoService` y `ComprobanteService`.

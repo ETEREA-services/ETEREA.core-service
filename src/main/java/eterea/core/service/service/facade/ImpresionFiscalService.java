@@ -49,8 +49,11 @@ public class ImpresionFiscalService {
 			clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(comprobanteOrigenId);
 		}
 		ImpresionFiscalDto impresionFiscal = new ImpresionFiscalDto(
-				clienteMovimientoService.nextNumeroFactura(comprobante.getPuntoVenta(),
-						comprobante.getLetraComprobante()),
+				clienteMovimientoService.nextNumeroFactura(
+                        comprobante.getLetraComprobante(),
+                        comprobante.getPuntoVenta(),
+                        0
+                ),
 				clienteService.findByClienteId(clienteId), comprobante,
 				articuloMovimientoTemporalService.findAllByHwnd(ipAddress, hWnd, null), clienteMovimiento, null);
 		log.debug("ImpresionFiscal -> {}", impresionFiscal.jsonify());
@@ -69,8 +72,11 @@ public class ImpresionFiscalService {
 				.findByClienteMovimientoPrevioId(clienteMovimientoPrevioId);
 		log.debug("ClienteMovimientoPrevio -> {}", clienteMovimientoPrevio.jsonify());
 		ImpresionFiscalDto impresionFiscal = new ImpresionFiscalDto(
-				clienteMovimientoService.nextNumeroFactura(comprobante.getPuntoVenta(),
-						comprobante.getLetraComprobante()),
+				clienteMovimientoService.nextNumeroFactura(
+                        comprobante.getLetraComprobante(),
+                        comprobante.getPuntoVenta(),
+                        0
+                ),
 				clienteMovimientoPrevio.getCliente(), comprobante, null, clienteMovimiento, clienteMovimientoPrevio);
 		log.debug("ImpresionFiscal -> {}", impresionFiscal.jsonify());
 		return impresionFiscal;
