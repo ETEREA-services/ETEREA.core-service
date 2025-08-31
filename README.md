@@ -2,14 +2,14 @@
 
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
 [![Java](https://img.shields.io/badge/Java-24-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk24-archive-downloads.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.0-blueviolet.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-blueviolet.svg)](https://kotlinlang.org/)
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.4-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-green.svg)](https://spring.io/projects/spring-cloud)
-[![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.9-blue.svg)](https://springdoc.org/)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.10-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.7.2-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.8.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -22,11 +22,16 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 ## Stack Tecnológico
 - Spring Cloud 2025.0.0
 
-# Cambios en la versión 0.7.2
 
-- refactor: Mejora de lógica y trazabilidad en `ClienteMovimientoService` y `ComprobanteService`.
-- refactor: Se agrega método `findAllAsociables()` y se ajusta la consulta de comprobantes asociables.
-- refactor: Limpieza y mejora de interfaces en `ComprobanteRepository`.
+# Cambios en la versión 0.8.0
+
+- feat: Nuevo servicio `ProductsService` para procesamiento de productos y vouchers.
+- feat: Nuevos endpoints REST para consulta de numeración de facturas y notas de crédito.
+- chore: Actualización de dependencias principales (Spring Boot 3.5.5, Kotlin 2.2.10, OpenPDF 2.4.0, OpenAPI 2.8.10).
+- refactor: Mejoras internas y limpieza de código.
+- fix: Corrección de lógica en numeración de comprobantes y configuración de CORS/Consul.
+
+Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
 
 Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
   - Consul Discovery
@@ -39,17 +44,17 @@ Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
 - Log4j2
 
 ### Utilidades
-- OpenPDF 2.2.3 (Generación de PDFs)
+- OpenPDF 2.4.0 (Generación de PDFs)
 - ZXing 3.5.3 (Códigos de Barras y QR)
 - Lombok
 - ModelMapper 3.2.4
 - Caffeine Cache
-- MySQL Connector 9.3.0
+- MySQL Connector 9.4.0
 - Jacoco 0.8.13 (Cobertura de tests)
 - Apache Commons Lang3 3.18.0
 
 ### Documentación
-- SpringDoc OpenAPI UI 2.8.9
+- SpringDoc OpenAPI UI 2.8.10
 
 ## Arquitectura
 
