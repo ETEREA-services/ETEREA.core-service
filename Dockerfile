@@ -34,6 +34,9 @@ WORKDIR /app
 # El pom.xml define <finalName>eterea.core-service</finalName>
 COPY --from=build /app/target/eterea.core-service.jar ./eterea.core-service.jar
 
+# Damos permisos al usuario sobre el directorio de la aplicación
+RUN chown -R appuser:appgroup /app
+
 # Cambiamos al usuario no privilegiado
 USER appuser
 

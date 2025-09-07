@@ -1,3 +1,20 @@
+## [0.9.0] - 2025-09-07
+### Features
+- feat: Servicios de consulta `SaldoArticuloService`, `SaldoFechaService` y `ClienteSearchService` agregados.
+- feat: Utilidad de serialización JSON centralizada (`Jsonifier`).
+- feat: Nueva clase utilitaria `ToolService` para operaciones de fecha, texto y números.
+
+### Changed
+- refactor: Migración y reorganización de servicios y repositorios de `api.rest` a `core.service`.
+- refactor: Limpieza y mejora de interfaces en repositorios y servicios.
+- refactor: Mejora de logging y trazabilidad en servicios críticos.
+- chore: Eliminación definitiva de archivos y configuraciones obsoletas (`logback-spring.xml`, `application.yml`, etc).
+
+### Fixed
+- fix: Ajustes menores en la configuración de CORS y Consul en `bootstrap.yml`.
+
+### Docs
+- docs: Actualización de diagramas y documentación para reflejar la nueva arquitectura y utilidades.
 ## [0.8.0] - 2025-08-31
 ### Features
 - feat: Nuevo servicio `ProductsService` para procesamiento de productos y vouchers.

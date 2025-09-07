@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.10-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.8.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.9.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -17,19 +17,22 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 
 - Gestión de transferencias entre negocios
 - Control de movimientos contables y valores
+- **Servicios de consulta de stock y clientes** (`SaldoArticuloService`, `SaldoFechaService`, `ClienteSearchService`)
+- **Utilidades centralizadas**: serialización JSON (`Jsonifier`), operaciones de fecha y texto (`ToolService`)
 - **Seguridad básica con Spring Security**
 
 ## Stack Tecnológico
 - Spring Cloud 2025.0.0
 
 
-# Cambios en la versión 0.8.0
 
-- feat: Nuevo servicio `ProductsService` para procesamiento de productos y vouchers.
-- feat: Nuevos endpoints REST para consulta de numeración de facturas y notas de crédito.
-- chore: Actualización de dependencias principales (Spring Boot 3.5.5, Kotlin 2.2.10, OpenPDF 2.4.0, OpenAPI 2.8.10).
-- refactor: Mejoras internas y limpieza de código.
-- fix: Corrección de lógica en numeración de comprobantes y configuración de CORS/Consul.
+# Cambios en la versión 0.9.0
+
+- feat: Servicios de consulta `SaldoArticuloService`, `SaldoFechaService` y `ClienteSearchService` agregados.
+- feat: Utilidad de serialización JSON centralizada (`Jsonifier`).
+- feat: Nueva clase utilitaria `ToolService` para operaciones de fecha, texto y números.
+- refactor: Migración y reorganización de servicios y repositorios de `api.rest` a `core.service`.
+- chore: Eliminación definitiva de archivos y configuraciones obsoletas (`logback-spring.xml`, `application.yml`, etc).
 
 Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
 
