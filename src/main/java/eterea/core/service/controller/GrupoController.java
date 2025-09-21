@@ -5,6 +5,7 @@ package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.Grupo;
 import eterea.core.service.service.GrupoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping({"/api/core/grupo", "/grupo"})
+@RequiredArgsConstructor
 public class GrupoController {
 
 	private final GrupoService service;
-
-	public GrupoController(GrupoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/")
 	public ResponseEntity<List<Grupo>> findAll() {

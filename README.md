@@ -2,9 +2,9 @@
 
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
 [![Java](https://img.shields.io/badge/Java-24-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk24-archive-downloads.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-blueviolet.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-blueviolet.svg)](https://kotlinlang.org/)
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.5-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-green.svg)](https://spring.io/projects/spring-cloud)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.10-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
@@ -47,7 +47,7 @@ Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
 - Log4j2
 
 ### Utilidades
-- OpenPDF 2.4.0 (Generación de PDFs)
+- OpenPDF 3.0.0 (Generación de PDFs)
 - ZXing 3.5.3 (Códigos de Barras y QR)
 - Lombok
 - ModelMapper 3.2.4

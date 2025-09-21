@@ -6,6 +6,7 @@ package eterea.core.service.controller;
 import java.util.List;
 
 import eterea.core.service.kotlin.model.GrupoProducto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,13 +25,10 @@ import eterea.core.service.service.GrupoProductoService;
  */
 @RestController
 @RequestMapping({"/api/core/grupoproducto", "/grupoproducto"})
+@RequiredArgsConstructor
 public class GrupoProductoController {
 
 	private final GrupoProductoService service;
-
-	public GrupoProductoController(GrupoProductoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/")
 	public ResponseEntity<List<GrupoProducto>> findAll() {

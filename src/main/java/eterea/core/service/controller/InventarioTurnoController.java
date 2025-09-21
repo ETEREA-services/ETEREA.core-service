@@ -3,6 +3,7 @@ package eterea.core.service.controller;
 import eterea.core.service.exception.InventarioTurnoException;
 import eterea.core.service.kotlin.model.InventarioTurno;
 import eterea.core.service.service.InventarioTurnoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping({"/api/core/inventarioturno", "/inventarioturno"})
+@RequiredArgsConstructor
 public class InventarioTurnoController {
 
     private final InventarioTurnoService service;
-
-    public InventarioTurnoController(InventarioTurnoService service) {
-        this.service = service;
-    }
 
     @GetMapping("/")
     public ResponseEntity<List<InventarioTurno>> findAll() {

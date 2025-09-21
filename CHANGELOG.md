@@ -1,3 +1,22 @@
+## [0.10.0] - 2025-09-21
+
+### Features
+- feat: Nuevos tipos de tarjeta de crédito agregados: "Visa Prepaga" y "Mastercard Prepaga"
+- feat: Actualización de dependencias principales (Spring Boot 3.5.5→3.5.6, Kotlin 2.2.10→2.2.20, OpenPDF 2.4.0→3.0.0)
+
+### Breaking Changes
+- refactor!: Eliminación de configuración CORS centralizada (WebConfig.java)
+- refactor!: Nueva configuración de seguridad con autenticación básica requerida
+- refactor!: Eliminación de BasicAuthRequestInterceptor
+
+### Changed
+- refactor: Refactorización masiva de controladores para usar inyección de dependencias con Lombok
+- refactor: Mejora en serialización JSON usando Jsonifier centralizado
+- chore: Eliminación de configuración CORS de bootstrap.yml
+
+### Docs
+- docs: Actualización de versiones de dependencias en README.md
+
 ## [0.9.0] - 2025-09-07
 ### Features
 - feat: Servicios de consulta `SaldoArticuloService`, `SaldoFechaService` y `ClienteSearchService` agregados.

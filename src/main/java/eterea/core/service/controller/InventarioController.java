@@ -2,6 +2,7 @@ package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.Inventario;
 import eterea.core.service.service.InventarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,13 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping({"/api/core/inventario", "/inventario"})
+@RequiredArgsConstructor
 public class InventarioController {
 
     private final InventarioService service;
-
-    public InventarioController(InventarioService service) {
-        this.service = service;
-    }
 
     @PostMapping("/all")
     public ResponseEntity<List<Inventario>> addAll(@RequestBody List<Inventario> inventarios) {

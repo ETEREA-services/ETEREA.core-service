@@ -6,6 +6,7 @@ package eterea.core.service.controller.view;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -24,17 +25,14 @@ import eterea.core.service.service.view.ProductoCantidadService;
  */
 @RestController
 @RequestMapping({"/api/core/productocantidad", "/productocantidad"})
+@RequiredArgsConstructor
 public class ProductoCantidadController {
 
 	private final ProductoCantidadService service;
 
-	public ProductoCantidadController(ProductoCantidadService service) {
-		this.service = service;
-	}
-
 	@GetMapping("/fechaServicio/{fechaServicio}")
 	public ResponseEntity<List<ProductoCantidad>> findAllByFechaServicio(
 			@PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaServicio) {
-		return new ResponseEntity<>(service.findAllByFechaServicio(fechaServicio), HttpStatus.OK);
+        return ResponseEntity.ok(service.findAllByFechaServicio(fechaServicio));
 	}
 }

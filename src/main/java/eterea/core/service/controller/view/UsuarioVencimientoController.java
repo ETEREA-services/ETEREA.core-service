@@ -5,6 +5,7 @@ package eterea.core.service.controller.view;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,13 +21,10 @@ import eterea.core.service.service.view.UsuarioVencimientoService;
  */
 @RestController
 @RequestMapping({"/api/core/usuarioVencimiento", "/usuarioVencimiento"})
+@RequiredArgsConstructor
 public class UsuarioVencimientoController {
 
 	private final UsuarioVencimientoService service;
-
-	public UsuarioVencimientoController(UsuarioVencimientoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/today")
 	public ResponseEntity<List<UsuarioVencimiento>> findAllToday() {

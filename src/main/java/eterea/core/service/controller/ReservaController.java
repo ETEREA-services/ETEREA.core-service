@@ -6,6 +6,7 @@ package eterea.core.service.controller;
 import java.util.List;
 
 import eterea.core.service.kotlin.model.Reserva;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +22,10 @@ import eterea.core.service.service.ReservaService;
  */
 @RestController
 @RequestMapping({"/api/core/reserva", "/reserva"})
+@RequiredArgsConstructor
 public class ReservaController {
 
 	private final ReservaService service;
-
-	public ReservaController(ReservaService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/pendientes")
 	public ResponseEntity<List<Reserva>> findTopPendientes() {

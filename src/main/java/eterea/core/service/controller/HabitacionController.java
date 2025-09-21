@@ -4,6 +4,7 @@
 package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.Habitacion;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +20,10 @@ import eterea.core.service.service.HabitacionService;
  */
 @RestController
 @RequestMapping({"/api/core/habitacion", "/habitacion"})
+@RequiredArgsConstructor
 public class HabitacionController {
 
 	private final HabitacionService service;
-
-	public HabitacionController(HabitacionService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/{numero}")
 	public ResponseEntity<Habitacion> findByNumero(@PathVariable Integer numero) {

@@ -6,6 +6,7 @@ package eterea.core.service.controller;
 import java.util.List;
 
 import eterea.core.service.kotlin.model.Producto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,13 +25,10 @@ import eterea.core.service.service.ProductoService;
  */
 @RestController
 @RequestMapping({"/api/core/producto", "/producto"})
+@RequiredArgsConstructor
 public class ProductoController {
 
 	private final ProductoService service;
-
-	public ProductoController(ProductoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/")
 	public ResponseEntity<List<Producto>> findAll() {

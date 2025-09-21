@@ -52,13 +52,6 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-  mvc:
-    cors:
-      allowed-origins: "*"
-      allowed-methods: GET,POST,PUT,DELETE
-      allowed-headers: "*"
-      allow-credentials: true
-      max-age: 3600
 
 logging:
   level:

@@ -3,6 +3,7 @@
  */
 package eterea.core.service.controller.facade;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,13 +19,10 @@ import eterea.core.service.service.facade.AlojamientoService;
  */
 @RestController
 @RequestMapping({"/api/core/alojamiento", "/alojamiento"})
+@RequiredArgsConstructor
 public class AlojamientoController {
 
 	private final AlojamientoService service;
-
-	public AlojamientoController(AlojamientoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/saveHabitacion/{numero}/{paxs}/{habitacionTipoId}/{valorDefault}")
 	public ResponseEntity<Boolean> saveHabitacion(@PathVariable Integer numero, @PathVariable Integer paxs,

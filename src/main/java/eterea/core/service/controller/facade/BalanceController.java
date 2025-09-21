@@ -3,6 +3,7 @@ package eterea.core.service.controller.facade;
 import eterea.core.service.kotlin.model.view.AsientoView;
 import eterea.core.service.service.CuentaMovimientoService;
 import eterea.core.service.service.view.BalanceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +18,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping({"/api/core/balance", "/balance"})
+@RequiredArgsConstructor
 public class BalanceController {
 
     private final BalanceService service;
     private final CuentaMovimientoService cuentaMovimientoService;
-
-    public BalanceController(BalanceService service, CuentaMovimientoService cuentaMovimientoService) {
-        this.service = service;
-        this.cuentaMovimientoService = cuentaMovimientoService;
-    }
 
     @GetMapping("/cuadraAgencia")
     public ResponseEntity<Void> cuadraAgencia() {
