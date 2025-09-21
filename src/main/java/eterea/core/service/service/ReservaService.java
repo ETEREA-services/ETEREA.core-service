@@ -21,6 +21,7 @@ import eterea.core.service.model.Track;
 import eterea.core.service.service.facade.PrecioService;
 import jakarta.transaction.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ReservaService {
 
     private final ReservaRepository repository;
@@ -43,30 +45,6 @@ public class ReservaService {
     private final EmpresaService empresaService;
     private final VoucherProductoService voucherProductoService;
     private final PrecioService precioService;
-
-    public ReservaService(ReservaRepository repository,
-                          ClienteMovimientoService clienteMovimientoService,
-                          VoucherService voucherService,
-                          ComprobanteService comprobanteService,
-                          ReservaArticuloService reservaArticuloService,
-                          ArticuloService articuloService,
-                          ArticuloMovimientoService articuloMovimientoService,
-                          ConceptoFacturadoService conceptoFacturadoService,
-                          EmpresaService empresaService,
-                          VoucherProductoService voucherProductoService,
-                          PrecioService precioService) {
-        this.repository = repository;
-        this.clienteMovimientoService = clienteMovimientoService;
-        this.voucherService = voucherService;
-        this.comprobanteService = comprobanteService;
-        this.reservaArticuloService = reservaArticuloService;
-        this.articuloService = articuloService;
-        this.articuloMovimientoService = articuloMovimientoService;
-        this.conceptoFacturadoService = conceptoFacturadoService;
-        this.empresaService = empresaService;
-        this.voucherProductoService = voucherProductoService;
-        this.precioService = precioService;
-    }
 
     public List<Reserva> findTopPendientes() {
         return repository

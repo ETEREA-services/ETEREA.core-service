@@ -13,6 +13,7 @@ import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.util.regex.Pattern;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ProductsService {
 
     private final TrackService trackService;
@@ -40,18 +42,6 @@ public class ProductsService {
     private final VoucherProductoService voucherProductoService;
 
     private record PersonType(int cantidad, String descripcion) {}
-
-    public ProductsService(TrackService trackService, FeriadoService feriadoService, ProductoSkuService productoSkuService, ClienteService clienteService, VoucherService voucherService, ReservaContextService reservaContextService, ReservaService reservaService, EmpresaService empresaService, VoucherProductoService voucherProductoService) {
-        this.trackService = trackService;
-        this.feriadoService = feriadoService;
-        this.productoSkuService = productoSkuService;
-        this.clienteService = clienteService;
-        this.voucherService = voucherService;
-        this.reservaContextService = reservaContextService;
-        this.reservaService = reservaService;
-        this.empresaService = empresaService;
-        this.voucherProductoService = voucherProductoService;
-    }
 
     @Transactional
     public ProgramaDiaDto processOneProduct(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio, Track track) {

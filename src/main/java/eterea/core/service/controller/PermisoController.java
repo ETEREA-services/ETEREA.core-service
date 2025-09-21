@@ -4,6 +4,7 @@
 package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.Permiso;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +20,10 @@ import eterea.core.service.service.PermisoService;
  */
 @RestController
 @RequestMapping({"/api/core/permiso", "/permiso"})
+@RequiredArgsConstructor
 public class PermisoController {
 
 	private final PermisoService service;
-
-	public PermisoController(PermisoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/permiso/{usuario}/{opcion}")
 	public ResponseEntity<Permiso> findByPermiso(@PathVariable String usuario, @PathVariable String opcion) {

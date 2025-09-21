@@ -6,6 +6,7 @@ package eterea.core.service.controller.view;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,10 @@ import eterea.core.service.service.view.HabitacionMovimientoExtendedService;
  */
 @RestController
 @RequestMapping({"/api/core/habitacionmovimientoextended", "/habitacionmovimientoextended"})
+@RequiredArgsConstructor
 public class HabitacionMovimientoExtendedController {
 
 	private final HabitacionMovimientoExtendedService service;
-
-	public HabitacionMovimientoExtendedController(HabitacionMovimientoExtendedService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/periodo/{desde}/{hasta}")
 	public ResponseEntity<List<HabitacionMovimientoExtended>> findAllByPeriodo(

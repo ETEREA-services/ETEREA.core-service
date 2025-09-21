@@ -9,6 +9,7 @@ import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.service.facade.reserva.ProductsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class VouchersService {
 
     private final EmpresaService empresaService;
@@ -23,18 +25,6 @@ public class VouchersService {
     private final OrderNoteService orderNoteService;
     private final VoucherService voucherService;
     private final ProductsService productsService;
-
-    public VouchersService(EmpresaService empresaService,
-                           NegocioService negocioService,
-                           OrderNoteService orderNoteService,
-                           VoucherService voucherService,
-                           ProductsService productsService) {
-        this.empresaService = empresaService;
-        this.negocioService = negocioService;
-        this.orderNoteService = orderNoteService;
-        this.voucherService = voucherService;
-        this.productsService = productsService;
-    }
 
     public ProgramaDiaDto importOneFromWeb(Long orderNumberId, Track track) {
         log.debug("Processing importOneFromWeb");

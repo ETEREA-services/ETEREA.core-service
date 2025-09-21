@@ -3,6 +3,7 @@ package eterea.core.service.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +16,10 @@ import eterea.core.service.service.ValorMovimientoService;
 
 @RestController
 @RequestMapping({"/api/v1/valor-movimientos", "/api/core/valorMovimiento", "/valorMovimiento"})
+@RequiredArgsConstructor
 public class ValorMovimientoController {
 
    private final ValorMovimientoService service;
-
-   public ValorMovimientoController(ValorMovimientoService service) {
-      this.service = service;
-   }
 
    @GetMapping()
    public ResponseEntity<List<ValorMovimientoDto>> findAllValorMovimientos(

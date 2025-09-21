@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 import eterea.core.service.kotlin.model.dto.PriceDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,10 @@ import eterea.core.service.service.facade.PrecioService;
  */
 @RestController
 @RequestMapping({"/api/core/precio", "/precio"})
+@RequiredArgsConstructor
 public class PrecioController {
 
 	private final PrecioService service;
-
-	public PrecioController(PrecioService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/articulo/{articuloId}/{fecha}")
 	public ResponseEntity<BigDecimal> getUnitPriceByArticuloIdAndFecha(@PathVariable String articuloId,

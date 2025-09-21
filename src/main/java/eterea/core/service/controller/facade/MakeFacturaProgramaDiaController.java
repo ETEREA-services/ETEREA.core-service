@@ -3,20 +3,17 @@ package eterea.core.service.controller.facade;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.TrackService;
 import eterea.core.service.service.facade.MakeFacturaProgramaDiaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping({"/api/core/make-factura-programa-dia", "/make-factura-programa-dia"})
+@RequiredArgsConstructor
 public class MakeFacturaProgramaDiaController {
 
     private final MakeFacturaProgramaDiaService service;
     private final TrackService trackService;
-
-    public MakeFacturaProgramaDiaController(MakeFacturaProgramaDiaService service, TrackService trackService) {
-        this.service = service;
-        this.trackService = trackService;
-    }
 
     @GetMapping("/factura/{reservaId}/{comprobanteId}")
     public ResponseEntity<Boolean> facturaReserva(@PathVariable Long reservaId,

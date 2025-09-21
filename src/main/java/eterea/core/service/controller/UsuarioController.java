@@ -3,6 +3,7 @@ package eterea.core.service.controller;
 import eterea.core.service.exception.UsuarioException;
 import eterea.core.service.kotlin.model.Usuario;
 import eterea.core.service.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping({"/api/core/usuario", "/usuario"})
+@RequiredArgsConstructor
 public class UsuarioController {
 
     private final UsuarioService service;
-
-    public UsuarioController(UsuarioService service) {
-        this.service = service;
-    }
 
     @GetMapping("/")
     public ResponseEntity<List<Usuario>> findAll() {

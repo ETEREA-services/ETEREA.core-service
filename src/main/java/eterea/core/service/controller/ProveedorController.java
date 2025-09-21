@@ -4,6 +4,7 @@
 package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.Proveedor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +22,10 @@ import eterea.core.service.service.ProveedorService;
  */
 @RestController
 @RequestMapping({"/api/core/proveedor", "/proveedor"})
+@RequiredArgsConstructor
 public class ProveedorController {
 
 	private final ProveedorService service;
-
-	public ProveedorController(ProveedorService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/{proveedorId}")
 	public ResponseEntity<Proveedor> findByProveedorId(@PathVariable Integer proveedorId) {

@@ -6,6 +6,7 @@ package eterea.core.service.controller;
 import java.util.List;
 
 import eterea.core.service.kotlin.model.Hotel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +25,11 @@ import eterea.core.service.service.HotelService;
  */
 @RestController
 @RequestMapping({"/api/core/hotel", "/hotel"})
+@RequiredArgsConstructor
 public class HotelController {
 
 	private final HotelService service;
 
-	public HotelController(HotelService service) {
-		this.service = service;
-	}
-	
 	@GetMapping("/")
 	public ResponseEntity<List<Hotel>> findAll() {
 		return new ResponseEntity<>(service.findAll(), HttpStatus.OK);

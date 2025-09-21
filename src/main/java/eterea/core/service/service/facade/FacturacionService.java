@@ -13,6 +13,7 @@ import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.tool.ToolService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -32,6 +33,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FacturacionService {
 
     private final VoucherService voucherService;
@@ -51,36 +53,6 @@ public class FacturacionService {
     private final FacturacionAfipClient facturacionAfipClient;
     private final FacturacionElectronicaService facturacionElectronicaService;
     private final RegistroCaeService registroCaeService;
-
-    public FacturacionService(VoucherService voucherService,
-                              OrderNoteService orderNoteService,
-                              ValorService valorService,
-                              ClienteMovimientoService clienteMovimientoService,
-                              ReservaContextService reservaContextService,
-                              ReservaArticuloService reservaArticuloService,
-                              ArticuloMovimientoService articuloMovimientoService,
-                              ReservaService reservaService,
-                              ContabilidadService contabilidadService,
-                              TrackService trackService,
-                              RegistraFacturaService registraFacturaService, ComprobanteService comprobanteService, ValorMovimientoService valorMovimientoService, CuentaMovimientoService cuentaMovimientoService, FacturacionAfipClient facturacionAfipClient, FacturacionElectronicaService facturacionElectronicaService, RegistroCaeService registroCaeService) {
-        this.voucherService = voucherService;
-        this.orderNoteService = orderNoteService;
-        this.valorService = valorService;
-        this.clienteMovimientoService = clienteMovimientoService;
-        this.reservaContextService = reservaContextService;
-        this.reservaArticuloService = reservaArticuloService;
-        this.articuloMovimientoService = articuloMovimientoService;
-        this.reservaService = reservaService;
-        this.contabilidadService = contabilidadService;
-        this.trackService = trackService;
-        this.registraFacturaService = registraFacturaService;
-        this.comprobanteService = comprobanteService;
-        this.valorMovimientoService = valorMovimientoService;
-        this.cuentaMovimientoService = cuentaMovimientoService;
-        this.facturacionAfipClient = facturacionAfipClient;
-        this.facturacionElectronicaService = facturacionElectronicaService;
-        this.registroCaeService = registroCaeService;
-    }
 
     public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva,
                                                                    FacturacionDto facturacionDto,
@@ -115,6 +87,8 @@ public class FacturacionService {
                 case "Tarjeta Naranja" -> 60;
                 case "Visa Cru00e9dito" -> 60;
                 case "Visa Debito" -> 59;
+                case "Visa Prepaga" -> 60;
+                case "Mastercard Prepaga" -> 62;
                 case null -> 0;
                 default -> 0;
             };

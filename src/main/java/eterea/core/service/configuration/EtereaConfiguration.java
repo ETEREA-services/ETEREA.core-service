@@ -22,9 +22,4 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @PropertySource("classpath:config/eterea.properties")
 public class EtereaConfiguration {
 
-    @Bean
-    public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
-        return new BasicAuthRequestInterceptor("admin", "admin");
-    }
-
 }

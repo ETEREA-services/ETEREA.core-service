@@ -8,6 +8,7 @@ import java.util.List;
 
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.model.Voucher;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -26,13 +27,10 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @RequestMapping({"/api/core/voucher", "/voucher"})
+@RequiredArgsConstructor
 public class VoucherController {
 
     private final VoucherService service;
-
-    public VoucherController(VoucherService service) {
-        this.service = service;
-    }
 
     @GetMapping("/today/{user}")
     public ResponseEntity<List<Voucher>> findAllByUserToday(@PathVariable String user) {

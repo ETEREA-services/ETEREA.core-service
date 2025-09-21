@@ -3,6 +3,7 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.ProductoSkuException;
 import eterea.core.service.kotlin.model.ProductoSku;
 import eterea.core.service.kotlin.repository.ProductoSkuRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +11,10 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ProductoSkuService {
 
     private final ProductoSkuRepository repository;
-
-    public ProductoSkuService(ProductoSkuRepository repository) {
-        this.repository = repository;
-    }
 
     public ProductoSku findBySku(String sku, byte lunes, byte martes, byte miercoles, byte jueves,
                                  byte viernes, byte sabado, byte domingo, byte feriado) {

@@ -2,6 +2,7 @@ package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.MonedaCotizacion;
 import eterea.core.service.service.MonedaCotizacionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping({"/api/core/monedaCotizacion", "/monedaCotizacion"})
+@RequiredArgsConstructor
 public class MonedaCotizacionController {
 
     private final MonedaCotizacionService service;
-
-    public MonedaCotizacionController(MonedaCotizacionService service) {
-        this.service = service;
-    }
 
     @GetMapping("/periodo/{monedaIdOrigen}/{monedaIdDestino}/{fechaDesde}/{fechaHasta}")
     public ResponseEntity<List<MonedaCotizacion>> findAllPeriodoCotizacion(@PathVariable Integer monedaIdOrigen,

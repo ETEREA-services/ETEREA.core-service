@@ -2,18 +2,16 @@ package eterea.core.service.controller.facade;
 
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.facade.TransaccionFacturaProgramaDiaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/core/transaccion-factura-programa-dia")
+@RequiredArgsConstructor
 public class TransaccionFacturaProgramaDiaController {
 
     private final TransaccionFacturaProgramaDiaService service;
-
-    public TransaccionFacturaProgramaDiaController(TransaccionFacturaProgramaDiaService service) {
-        this.service = service;
-    }
 
     @PostMapping("/registro/{orderNumberId}/solo-factura/{soloFactura}/dry-run/{dryRun}")
     public ResponseEntity<Void> registroTransaccionFacturaProgramaDia(@PathVariable Long orderNumberId, @PathVariable Boolean soloFactura, @PathVariable Boolean dryRun, @RequestBody FacturacionDto facturacionDto) {
