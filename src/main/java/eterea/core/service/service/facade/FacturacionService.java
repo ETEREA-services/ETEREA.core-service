@@ -87,8 +87,8 @@ public class FacturacionService {
                 case "Tarjeta Naranja" -> 60;
                 case "Visa Cru00e9dito" -> 60;
                 case "Visa Debito" -> 59;
-                case "Visa Prepaga" -> 60;
-                case "Mastercard Prepaga" -> 62;
+                case "Visa Prepaga" -> 59;
+                case "Mastercard Prepaga" -> 61;
                 case null -> 0;
                 default -> 0;
             };
