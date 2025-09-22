@@ -3,6 +3,7 @@ package eterea.core.service.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.service.tool.Jsonifier;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -77,15 +78,7 @@ public class FacturacionDto {
     private Integer idCondicionIva;
 
     public String jsonify() {
-        try {
-            return JsonMapper.builder()
-                    .findAndAddModules()
-                    .build()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            return "";
-        }
+        return Jsonifier.builder(this).build();
     }
 
 }
