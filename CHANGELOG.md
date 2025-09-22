@@ -1,3 +1,14 @@
+## [0.11.0] - 2025-09-22
+
+### Breaking Changes
+- refactor!: Eliminación de requisitos de autenticación, ahora permite todas las solicitudes sin verificaciones de seguridad.
+
+### Changed
+- refactor: Centralización de la serialización JSON usando Jsonifier en los modelos Negocio y FacturacionDto.
+- refactor: Agregado @RequiredArgsConstructor y eliminación del constructor manual en NegocioService.
+- refactor: Mejora del logging en NegocioService y FacturacionElectronicaService.
+- refactor: Simplificación de la creación de ResponseEntity en MakeFacturaController.
+
 ## [0.10.0] - 2025-09-21
 
 ### Features

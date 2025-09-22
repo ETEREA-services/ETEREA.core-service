@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.10-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.9.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.11.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -19,27 +19,23 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 - Control de movimientos contables y valores
 - **Servicios de consulta de stock y clientes** (`SaldoArticuloService`, `SaldoFechaService`, `ClienteSearchService`)
 - **Utilidades centralizadas**: serialización JSON (`Jsonifier`), operaciones de fecha y texto (`ToolService`)
-- **Seguridad básica con Spring Security**
 
 ## Stack Tecnológico
 - Spring Cloud 2025.0.0
 
 
 
-# Cambios en la versión 0.9.0
+# Cambios en la versión 0.11.0
 
-- feat: Servicios de consulta `SaldoArticuloService`, `SaldoFechaService` y `ClienteSearchService` agregados.
-- feat: Utilidad de serialización JSON centralizada (`Jsonifier`).
-- feat: Nueva clase utilitaria `ToolService` para operaciones de fecha, texto y números.
-- refactor: Migración y reorganización de servicios y repositorios de `api.rest` a `core.service`.
-- chore: Eliminación definitiva de archivos y configuraciones obsoletas (`logback-spring.xml`, `application.yml`, etc).
+- refactor!: Eliminación de requisitos de autenticación, ahora permite todas las solicitudes sin verificaciones de seguridad.
+- refactor: Centralización de la serialización JSON usando Jsonifier.
+- refactor: Mejoras en logging y constructores de servicios.
 
 Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
 
 Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
   - Consul Discovery
   - OpenFeign
-- Spring Security
 - Spring Data JPA
 - Spring HATEOAS
 - Spring WebFlux
@@ -65,7 +61,7 @@ El proyecto utiliza una arquitectura mixta:
 - **Modelos y Repositorios**: Implementados en Kotlin para aprovechar sus características de null-safety y data classes
 - **Servicios y Controladores**: Implementados en Java para mantener compatibilidad con librerías legacy
 
-> **Nota:** Desde la versión 0.7.0, el proyecto utiliza Consul para service discovery y cuenta con integración de seguridad básica y cobertura de tests automatizada.
+> **Nota:** Desde la versión 0.7.0, el proyecto utiliza Consul para service discovery y cobertura de tests automatizada.
 
 ## Módulos Principales
 
@@ -79,7 +75,6 @@ El proyecto utiliza una arquitectura mixta:
 - **Snapshot**: Registro de estados de transacciones
 - **Service Discovery**: Integración con Consul
 - **Cobertura de tests**: Jacoco
-- **Seguridad**: Spring Security
 
 ## Configuración del Proyecto
 
@@ -150,7 +145,6 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - **Implementación de HATEOAS**
 - **Sistema de replicación de códigos de barras**
 - **Cobertura de tests con Jacoco**
-- **Seguridad básica con Spring Security**
 
 ## Notas Importantes
 

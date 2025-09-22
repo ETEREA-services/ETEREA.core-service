@@ -18,7 +18,7 @@ public class FacturacionElectronicaService {
 
     public FacturacionDto makeFactura(FacturacionDto facturacionDto) {
         log.debug("Processing FactuacionElectronicaService.makeFactura");
-        log.debug("FacturacionDto -> {}", facturacionDto.jsonify());
+        log.debug("FacturacionDto (pre) -> {}", facturacionDto.jsonify());
         facturacionDto = facturacionAfipClient.facturador(facturacionDto);
         log.debug("FacturacionDto (post) -> {}", facturacionDto.jsonify());
         return facturacionDto;
