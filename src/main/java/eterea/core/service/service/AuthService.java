@@ -25,12 +25,12 @@ public class AuthService {
       String passwordHash = usuarioRepository.findPasswordHash(password);
       boolean isLoggedIn = usuario.getPassword().equals(passwordHash);
 
-      if (isLoggedIn) {
-         validatePassword(username, password);
-         return isLoggedIn;
-      }
+      // if (isLoggedIn) {
+      //    validatePassword(username, password);
+      //    return isLoggedIn;
+      // }
 
-      return false;
+      return isLoggedIn;
    }
 
    /**

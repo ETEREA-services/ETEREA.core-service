@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{login}")
-    public ResponseEntity<Usuario> findByLogin(String login) {
+    public ResponseEntity<Usuario> findByLogin(@PathVariable String login) {
         try {
             return new ResponseEntity<>(service.findByLogin(login), HttpStatus.OK);
         } catch (UsuarioException e) {
