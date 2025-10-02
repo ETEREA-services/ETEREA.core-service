@@ -4,15 +4,13 @@
 package eterea.core.service.service;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import org.springframework.stereotype.Service;
 
 import eterea.core.service.exception.ArticuloFechaException;
 import eterea.core.service.kotlin.model.ArticuloFecha;
 import eterea.core.service.kotlin.repository.ArticuloFechaRepository;
-import org.springframework.stereotype.Service;
 
 /**
  * @author daniel

@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.exception.ArticuloException;
 import eterea.core.service.exception.ClienteException;
 import eterea.core.service.exception.ClienteMovimientoException;
+import eterea.core.service.exception.ProductoClienteComisionException;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.ArticuloMovimiento;
@@ -34,6 +35,7 @@ import eterea.core.service.kotlin.model.ClienteMovimiento;
 import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.kotlin.model.ConceptoFacturado;
 import eterea.core.service.kotlin.model.Empresa;
+import eterea.core.service.kotlin.model.ProductoClienteComision;
 import eterea.core.service.kotlin.model.Reserva;
 import eterea.core.service.kotlin.model.ReservaArticulo;
 import eterea.core.service.kotlin.model.Voucher;
@@ -63,6 +65,7 @@ public class ReservaService {
    private final VoucherProductoService voucherProductoService;
    private final PrecioService precioService;
    private final ClienteService clienteService;
+   private final ProductoClienteComisionService productoClienteComisionService;
 
    public ReservaService(ReservaRepository repository,
          ClienteMovimientoService clienteMovimientoService,
@@ -75,7 +78,8 @@ public class ReservaService {
          EmpresaService empresaService,
          VoucherProductoService voucherProductoService,
          PrecioService precioService,
-         ClienteService clienteService) {
+         ClienteService clienteService,
+         ProductoClienteComisionService productoClienteComisionService) {
       this.repository = repository;
       this.clienteMovimientoService = clienteMovimientoService;
       this.voucherService = voucherService;
@@ -88,6 +92,7 @@ public class ReservaService {
       this.voucherProductoService = voucherProductoService;
       this.precioService = precioService;
       this.clienteService = clienteService;
+      this.productoClienteComisionService = productoClienteComisionService;
    }
 
    public List<Reserva> findTopPendientes() {
@@ -405,8 +410,13 @@ public class ReservaService {
    }
 
    private BigDecimal comisionArticulo(Long reservaId, String articuloId, Long clienteId) {
-      // TODO: simplificado para avanzar
-      return BigDecimal.ZERO;
+      try {
+         ProductoClienteComision productoClienteComision = productoClienteComisionService
+               .findByClienteIdAndReservaIdAndArticuloId(clienteId, reservaId, articuloId);
+         return productoClienteComision.getComision();
+      } catch (ProductoClienteComisionException e) {
+         return BigDecimal.ZERO;
+      }
    }
 
    /**
