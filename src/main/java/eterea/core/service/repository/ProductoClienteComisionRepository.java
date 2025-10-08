@@ -11,7 +11,7 @@ import eterea.core.service.kotlin.model.ProductoClienteComision;
 @Repository
 public interface ProductoClienteComisionRepository extends JpaRepository<ProductoClienteComision, Long> {
 
-   Optional<ProductoClienteComision> findByProductoIdAndClienteId(Long productoId, Long clienteId);
+   Optional<ProductoClienteComision> findByProductoIdAndClienteId(Integer productoId, Long clienteId);
 
    @Query("""
          SELECT DISTINCT pcc

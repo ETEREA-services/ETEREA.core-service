@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import eterea.core.service.exception.ProductoClienteComisionException;
 import eterea.core.service.kotlin.model.ProductoClienteComision;
 import eterea.core.service.service.ProductoClienteComisionService;
 
@@ -20,7 +21,7 @@ public class ProductoClienteComisionController {
     }
 
     @GetMapping("/producto/{productoId}/cliente/{clienteId}")
-    public ResponseEntity<ProductoClienteComision> findByProductoIdAndClienteId(@PathVariable Long productoId,
+    public ResponseEntity<ProductoClienteComision> findByProductoIdAndClienteId(@PathVariable Integer productoId,
             @PathVariable Long clienteId) {
         return ResponseEntity.ok(service.findByProductoIdAndClienteId(productoId, clienteId));
     }

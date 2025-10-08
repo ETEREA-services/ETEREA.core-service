@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import eterea.core.service.client.report.MakeFacturaReportClient;
 import eterea.core.service.kotlin.exception.ReservaContextException;
+import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.ClienteMovimiento;
 import eterea.core.service.kotlin.model.Comprobante;
@@ -27,13 +28,12 @@ import eterea.core.service.kotlin.model.RegistroCae;
 import eterea.core.service.kotlin.model.Reserva;
 import eterea.core.service.kotlin.model.ReservaArticulo;
 import eterea.core.service.kotlin.model.ReservaContext;
-import eterea.core.service.kotlin.model.Valor;
-import eterea.core.service.kotlin.model.ValorMovimiento;
 import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.kotlin.model.dto.FacturacionDto;
 import eterea.core.service.model.PosicionIva;
 import eterea.core.service.model.dto.FacturaMakeRequestDto;
 import eterea.core.service.service.ArticuloService;
+import eterea.core.service.service.ClienteMovimientoService;
 import eterea.core.service.service.ClienteService;
 import eterea.core.service.service.ComprobanteService;
 import eterea.core.service.service.EmpresaService;
@@ -42,7 +42,6 @@ import eterea.core.service.service.RegistroCaeService;
 import eterea.core.service.service.ReservaArticuloService;
 import eterea.core.service.service.ReservaContextService;
 import eterea.core.service.service.ReservaService;
-import eterea.core.service.service.ValorService;
 import eterea.core.service.service.VoucherService;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.tool.ToolService;
@@ -71,7 +70,7 @@ public class MakeFacturaService {
    private final Environment environment;
    private final VoucherService voucherService;
    private final FacturacionService facturacionService;
-   private final ValorService valorService;
+   private final ClienteMovimientoService clienteMovimientoService;
 
    public MakeFacturaService(
          ComprobanteService comprobanteService,
@@ -88,7 +87,7 @@ public class MakeFacturaService {
          Environment environment,
          VoucherService voucherService,
          FacturacionService facturacionService,
-         ValorService valorService) {
+         ClienteMovimientoService clienteMovimientoService) {
       this.comprobanteService = comprobanteService;
       this.reservaService = reservaService;
       this.empresaService = empresaService;
@@ -103,7 +102,7 @@ public class MakeFacturaService {
       this.environment = environment;
       this.voucherService = voucherService;
       this.facturacionService = facturacionService;
-      this.valorService = valorService;
+      this.clienteMovimientoService = clienteMovimientoService;
    }
 
    public Long facturaReservaMultipago(
@@ -509,6 +508,40 @@ public class MakeFacturaService {
       }
 
       return clienteMovimiento.getClienteMovimientoId();
+   }
+
+   private void verificarReserva(Reserva reserva) {
+      if (reserva.getAnulada() == (byte) 1) {
+         throw new ReservaException("Reserva anulada");
+      }
+      if (reserva.getPagaCacheuta() == (byte) 1) {
+         throw new ReservaException("Reserva marcada como Paga Cacheuta");
+      }
+      if (reserva.getFacturadoFuera() == (byte) 1) {
+         throw new ReservaException("Reserva facturada en otro punto de venta");
+      }
+      if (reserva.getVerificada() == (byte) 0) {
+         throw new ReservaException("Reserva no verificada");
+      }
+      if (reserva.getFacturada() == (byte) 1) {
+         throw new ReservaException("Reserva facturada");
+      }
+
+      List<ClienteMovimiento> clienteMovimientos = clienteMovimientoService.findAllByReservaId(reserva.getReservaId());
+      boolean tieneFactura = false;
+      boolean tieneNotaCredito = false;
+      for (ClienteMovimiento clienteMovimiento : clienteMovimientos) {
+         if (clienteMovimiento.getComprobante().getDebita() != (byte) 0) {
+            tieneFactura = true;
+         }
+         if (clienteMovimiento.getComprobante().getDebita() == (byte) 0) {
+            tieneNotaCredito = true;
+         }
+      }
+      if (tieneFactura && tieneNotaCredito) {
+         throw new ReservaException("Reserva ya tiene Factura y Nota de Crédito");
+      }
+
    }
 
    private void logFacturacionDto(FacturacionDto facturacionDto) {

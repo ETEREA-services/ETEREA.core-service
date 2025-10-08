@@ -1,5 +1,7 @@
 package eterea.core.service.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Service;
 
 import eterea.core.service.exception.ProductoClienteComisionException;
@@ -15,13 +17,20 @@ public class ProductoClienteComisionService {
       this.repository = repository;
    }
 
-   public ProductoClienteComision findByProductoIdAndClienteId(Long productoId, Long clienteId) {
+   public ProductoClienteComision findByProductoIdAndClienteId(Integer productoId, Long clienteId) {
       return repository
             .findByProductoIdAndClienteId(productoId, clienteId)
-            .orElseThrow(() -> new ProductoClienteComisionException(productoId, clienteId));
+            .orElseGet(() -> {
+               ProductoClienteComision defaultProductoClienteComision = new ProductoClienteComision();
+               defaultProductoClienteComision.setProductoId(productoId);
+               defaultProductoClienteComision.setClienteId(clienteId);
+               defaultProductoClienteComision.setComision(BigDecimal.ZERO);
+               return defaultProductoClienteComision;
+            });
    }
 
-   public ProductoClienteComision findByClienteIdAndReservaIdAndArticuloId(Long clienteId, Long reservaId, String articuloId) {
+   public ProductoClienteComision findByClienteIdAndReservaIdAndArticuloId(Long clienteId, Long reservaId,
+         String articuloId) {
       return repository.findByClienteIdAndReservaIdAndArticuloId(clienteId, reservaId, articuloId)
             .orElseThrow(() -> new ProductoClienteComisionException(clienteId, reservaId, articuloId));
    }
