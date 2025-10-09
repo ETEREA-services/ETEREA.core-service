@@ -42,9 +42,19 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 		  AND
 		  (CASE WHEN :incluyeBloqueados = false THEN c.bloqueado = 0 ELSE TRUE END)
 		  AND
-		  c.numeroDocumento IS NOT NULL
-		  AND
-		  c.numeroDocumento != ''
+		  	((c.numeroDocumento IS NOT NULL
+		  		AND
+		  		c.numeroDocumento != ''
+				AND
+				c.numeroDocumento != '0')
+			OR
+			(c.cuit IS NOT NULL
+				AND
+				c.cuit != ''
+				AND
+				c.cuit != '0'
+				AND
+				c.cuit != '00-00000000-0'))
    	ORDER BY c.razonSocial, c.nombre
 		""")
 	List<Cliente> findByRazonSocialOrNumeroDocumentoContainingIgnoreCase(@Param("searchTerm") String searchTerm, @Param("incluyeBloqueados") boolean incluyeBloqueados);
