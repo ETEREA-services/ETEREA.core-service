@@ -6,14 +6,20 @@ package eterea.core.service.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import eterea.core.service.exception.ClienteException;
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.view.ClienteSearch;
 import eterea.core.service.model.PosicionIva;
+import eterea.core.service.model.dto.PageDto;
 import eterea.core.service.repository.ClienteRepository;
 import eterea.core.service.service.view.ClienteSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 /**
  * @author daniel
@@ -58,9 +64,9 @@ public class ClienteService {
 
 	// NUEVO METODO PARA BUSCAR CLIENTES CON "LIKE"
 	// TODO: Agregar reemplazo de caracteres especiales
-	public List<Cliente> buscar(String searchTerm) {
+	public List<Cliente> buscar(String searchTerm, boolean incluyeBloqueados) {
 		searchTerm = searchTerm.trim();
-		return repository.findByRazonSocialOrNumeroDocumentoContainingIgnoreCase(searchTerm);
+		return repository.findByRazonSocialOrNumeroDocumentoContainingIgnoreCase(searchTerm, incluyeBloqueados);
 	}
 
 	public Cliente findByNumeroDocumentoAndDocumentoId(String numeroDocumento, Integer documentoId) {
@@ -112,6 +118,7 @@ public class ClienteService {
 		existentClient.setImpositivoId(updatedCliente.getImpositivoId());
 		existentClient.setDiscapacitado(updatedCliente.getDiscapacitado());
 		existentClient.setPosicion(posicionIva);
+		existentClient.setBloqueado(updatedCliente.getBloqueado());
 
 		return repository.save(existentClient);
 	}
@@ -123,5 +130,21 @@ public class ClienteService {
 	public Cliente findByCuit(String cuit) {
 		return repository.findByCuit(cuit).orElseThrow(() -> new ClienteException(cuit));
 	}
+	
+	public PageDto<Cliente> findAllPaginated(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("clienteId").descending());
+		Page<Cliente> pageResult = repository.findAllBy(pageable);
 
+		return new PageDto<Cliente>(
+			pageResult.getContent(),
+			pageResult.getNumber(),
+			pageResult.getSize(),
+			pageResult.getNumberOfElements(),
+			pageResult.getTotalElements(),
+			pageResult.getTotalPages(),
+			pageResult.isFirst(),
+			pageResult.isLast(),
+			pageResult.isEmpty()
+		);
+	}
 }

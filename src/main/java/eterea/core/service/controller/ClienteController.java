@@ -7,6 +7,8 @@ import java.util.List;
 
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.view.ClienteSearch;
+import eterea.core.service.model.dto.PageDto;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,8 +80,9 @@ public class ClienteController {
 	 */
 
 	@GetMapping("/buscar/{searchTerm}")
-	public ResponseEntity<List<Cliente>> buscar(@PathVariable String searchTerm) {
-		return new ResponseEntity<>(service.buscar(searchTerm), HttpStatus.OK);
+	public ResponseEntity<List<Cliente>> buscar(@PathVariable String searchTerm,
+			@RequestParam(defaultValue = "false") boolean incluyeBloqueados) {
+		return new ResponseEntity<>(service.buscar(searchTerm, incluyeBloqueados), HttpStatus.OK);
 	}
 
 	@GetMapping("/tipoDocumento/{documentoId}/numeroDocumento/{numeroDocumento}")
@@ -116,6 +119,13 @@ public class ClienteController {
 		} catch (ClienteException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
+	}
+
+	@GetMapping("/paginated")
+	public ResponseEntity<PageDto<Cliente>> findAllPaginated(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "50") int size) {
+		return new ResponseEntity<>(service.findAllPaginated(page, size), HttpStatus.OK);
 	}
 
 }

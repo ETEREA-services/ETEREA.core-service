@@ -205,6 +205,7 @@ public class ProgramaDiaService {
                             voucher.getFechaServicio(),
                             voucherToDtoMapper.toDto(voucher, voucherProductos, voucherArticulosByProducto),
                             reservaToDtoMapper.apply(voucher.getReserva()),
+                            voucher.getCliente().getRazonSocial(),
                             proveedorToDtoMapper.apply(voucher.getProveedor()),
                             ventasPorGrupo);
                 })

@@ -7,6 +7,7 @@ public record ProgramaDiaDetallesDto(
    OffsetDateTime fechaServicio,
    VoucherDto voucher,
    ReservaDto reserva,
+   String razonSocial,
    ProveedorDto proveedor,
    List<VentasPorGrupoDto> ventasPorGrupo
 ) {
