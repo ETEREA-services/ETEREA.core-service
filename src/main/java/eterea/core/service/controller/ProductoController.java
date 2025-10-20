@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import eterea.core.service.kotlin.model.Producto;
+import eterea.core.service.model.dto.ProductoDetailsDto;
 import eterea.core.service.service.ProductoService;
 
 /**
@@ -71,6 +72,16 @@ public class ProductoController {
 	@GetMapping("/productosByArticuloIds")
 	public ResponseEntity<List<Producto>> findByExactArticuloIds(@RequestParam List<String> articuloIds) {
 		return new ResponseEntity<>(service.findByExactArticuloIds(articuloIds), HttpStatus.OK);
+	}
+
+	@GetMapping("/productosWithArticulos")
+	public ResponseEntity<List<ProductoDetailsDto>> findAllWithArticulos(@RequestParam(defaultValue = "false") boolean includeDeshabilitados) {
+		return new ResponseEntity<>(service.findAllWithArticulos(includeDeshabilitados), HttpStatus.OK);
+	}
+
+	@GetMapping("/productosByIdsWithArticulos")
+	public ResponseEntity<List<ProductoDetailsDto>> findAllByIdsWithArticulos(@RequestParam List<Integer> productoIds) {
+		return new ResponseEntity<>(service.findAllByIdsWithArticulos(productoIds), HttpStatus.OK);
 	}
 
 }
