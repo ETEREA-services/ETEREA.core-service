@@ -4,8 +4,10 @@
 package eterea.core.service.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import eterea.core.service.kotlin.exception.ReservaArticuloException;
 import eterea.core.service.kotlin.model.ReservaArticulo;
@@ -30,9 +32,9 @@ public class ReservaArticuloService {
 		return repository.findAllByReservaId(reservaId);
 	}
 
-    public List<ReservaArticulo> findAllByVoucherId(Long reservaId, Long voucherId) {
+	public List<ReservaArticulo> findAllByVoucherId(Long reservaId, Long voucherId) {
 		return repository.findAllByReservaIdAndVoucherId(reservaId, voucherId);
-    }
+	}
 
 	@Transactional
 	public void deleteByReservaArticuloId(Long reservaArticuloId) {
@@ -47,7 +49,7 @@ public class ReservaArticuloService {
 		return repository.save(reservaArticulo);
 	}
 
-    public ReservaArticulo update(ReservaArticulo newReservaArticulo, Long reservaArticuloId) {
+	public ReservaArticulo update(ReservaArticulo newReservaArticulo, Long reservaArticuloId) {
 		return repository.findByReservaArticuloId(reservaArticuloId).map(reservaArticulo -> {
 			reservaArticulo = new ReservaArticulo.Builder()
 					.reservaArticuloId(reservaArticuloId)
@@ -62,8 +64,36 @@ public class ReservaArticuloService {
 					.precioCompra(newReservaArticulo.getPrecioCompra())
 					.observaciones(newReservaArticulo.getObservaciones())
 					.build();
-			return reservaArticulo;
+			return repository.save(reservaArticulo);
 		}).orElseThrow(() -> new ReservaArticuloException(reservaArticuloId));
-    }
+	}
+
+	public boolean equals(List<ReservaArticulo> reservaArticulos1, List<ReservaArticulo> reservaArticulos2) {
+		if (reservaArticulos1.size() != reservaArticulos2.size()) {
+			return false;
+		}
+
+		List<ReservaArticulo> sorted1 = reservaArticulos1.stream()
+				.sorted(Comparator.comparing(ReservaArticulo::getArticuloId))
+				.toList();
+
+		List<ReservaArticulo> sorted2 = reservaArticulos2.stream()
+				.sorted(Comparator.comparing(ReservaArticulo::getArticuloId))
+				.toList();
+
+		for (int i = 0; i < sorted1.size(); i++) {
+			ReservaArticulo ra1 = sorted1.get(i);
+			ReservaArticulo ra2 = sorted2.get(i);
+
+			if (!ra1.getArticuloId().equals(ra2.getArticuloId()) ||
+					ra1.getCantidad() != ra2.getCantidad() ||
+					ra1.getComision().compareTo(ra2.getComision()) != 0 ||
+					ra1.getPrecioUnitarioSinComision().compareTo(ra2.getPrecioUnitarioSinComision()) != 0 ||
+					ra1.getPrecioUnitario().compareTo(ra2.getPrecioUnitario()) != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }

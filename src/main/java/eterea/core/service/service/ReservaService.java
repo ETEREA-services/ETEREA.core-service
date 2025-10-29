@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -38,6 +37,7 @@ import eterea.core.service.kotlin.model.Empresa;
 import eterea.core.service.kotlin.model.ProductoClienteComision;
 import eterea.core.service.kotlin.model.Reserva;
 import eterea.core.service.kotlin.model.ReservaArticulo;
+import eterea.core.service.kotlin.model.ReservaArticuloEliminado;
 import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.kotlin.model.VoucherProducto;
 import eterea.core.service.kotlin.repository.ReservaRepository;
@@ -66,6 +66,7 @@ public class ReservaService {
    private final PrecioService precioService;
    private final ClienteService clienteService;
    private final ProductoClienteComisionService productoClienteComisionService;
+   private final ReservaArticuloEliminadoService reservaArticuloEliminadoService;
 
    public ReservaService(ReservaRepository repository,
          ClienteMovimientoService clienteMovimientoService,
@@ -79,7 +80,8 @@ public class ReservaService {
          VoucherProductoService voucherProductoService,
          PrecioService precioService,
          ClienteService clienteService,
-         ProductoClienteComisionService productoClienteComisionService) {
+         ProductoClienteComisionService productoClienteComisionService,
+         ReservaArticuloEliminadoService reservaArticuloEliminadoService) {
       this.repository = repository;
       this.clienteMovimientoService = clienteMovimientoService;
       this.voucherService = voucherService;
@@ -93,6 +95,7 @@ public class ReservaService {
       this.precioService = precioService;
       this.clienteService = clienteService;
       this.productoClienteComisionService = productoClienteComisionService;
+      this.reservaArticuloEliminadoService = reservaArticuloEliminadoService;
    }
 
    public List<Reserva> findTopPendientes() {
@@ -475,6 +478,180 @@ public class ReservaService {
       reservaArticulos = reservaArticuloService.saveAll(reservaArticulos);
 
       return savedReserva;
+   }
+
+   @Transactional
+   public Reserva updateReserva(Long reservaId, CreateReservaDto createReservaDto) {
+      Reserva existingReserva = repository
+            .findByReservaId(reservaId)
+            .orElseThrow(() -> new ReservaException(reservaId));
+
+      boolean isAgencia = createReservaDto.clienteCuit() != null
+            && !createReservaDto.clienteCuit().equals("00-00000000-0")
+            && !createReservaDto.clienteCuit().isBlank();
+
+      Reserva updatedReserva = createReservaDto.reserva();
+      List<ReservaArticulo> updatedReservaArticulos = createReservaDto.reservaArticulos();
+
+      List<ReservaArticulo> existingReservaArticulos = reservaArticuloService
+            .findAllByReservaId(existingReserva.getReservaId());
+
+      validateReservaUpdate(existingReserva, updatedReserva, updatedReservaArticulos, existingReservaArticulos);
+
+
+      Cliente cliente = null;
+      if (isAgencia) {
+         cliente = clienteService.findByCuit(createReservaDto.clienteCuit());
+      } else {
+         try {
+            cliente = clienteService.findByNumeroDocumentoAndDocumentoId(
+                  createReservaDto.clienteNumeroDocumento(),
+                  createReservaDto.tipoDocumentoId());
+         } catch (ClienteException e) {
+            cliente = clienteService.findByNumeroDocumento(createReservaDto.clienteNumeroDocumento());
+         }
+      }
+
+      existingReserva.setClienteId(cliente.getClienteId());
+      existingReserva.setCliente(cliente);
+      existingReserva.setFechaInServicio(updatedReserva.getFechaInServicio());
+      existingReserva.setFechaOutServicio(updatedReserva.getFechaOutServicio());
+      existingReserva.setFechaVencimiento(updatedReserva.getFechaVencimiento());
+      existingReserva.setHoraVencimiento(updatedReserva.getHoraVencimiento());
+      existingReserva.setAvisoMail(updatedReserva.getAvisoMail());
+      existingReserva.setPendiente(updatedReserva.getPendiente());
+      existingReserva.setConfirmada(updatedReserva.getConfirmada());
+      existingReserva.setFacturada(updatedReserva.getFacturada());
+      existingReserva.setAnulada(updatedReserva.getAnulada());
+      existingReserva.setEliminada(updatedReserva.getEliminada());
+      existingReserva.setVerificada(updatedReserva.getVerificada());
+      existingReserva.setNombrePax(updatedReserva.getNombrePax());
+      existingReserva.setCantidadPaxs(updatedReserva.getCantidadPaxs());
+      existingReserva.setObservaciones(updatedReserva.getObservaciones());
+      existingReserva.setVoucherId(updatedReserva.getVoucherId());
+      existingReserva.setPagaComision(updatedReserva.getPagaComision());
+      existingReserva.setObservacionesComision(updatedReserva.getObservacionesComision());
+      existingReserva.setComisionPagada(updatedReserva.getComisionPagada());
+      existingReserva.setPagaCacheuta(updatedReserva.getPagaCacheuta());
+      existingReserva.setFacturadoFuera(updatedReserva.getFacturadoFuera());
+      existingReserva.setUsuario(updatedReserva.getUsuario());
+      existingReserva.setContacto(updatedReserva.getContacto());
+      existingReserva.setReservaOrigenId(updatedReserva.getReservaOrigenId());
+      existingReserva.setFacturarExtranjero(updatedReserva.getFacturarExtranjero());
+      existingReserva.setFechaAbierta(updatedReserva.getFechaAbierta());
+
+      Reserva savedReserva = repository.save(existingReserva);
+
+      // Handles Articulos deletions and replacements
+      List<ReservaArticulo> articulosToDelete = existingReservaArticulos.stream()
+            .filter(existing -> {
+               var matchingUpdate = updatedReservaArticulos.stream()
+                     .filter(updated -> updated.getReservaArticuloId() != null &&
+                           updated.getReservaArticuloId().equals(existing.getReservaArticuloId()))
+                     .findFirst();
+
+               // Delete if:
+               // 1. Not found in update request (complete deletion), OR
+               // 2. Found but articuloId changed (article replacement)
+               return matchingUpdate.isEmpty() ||
+                     !matchingUpdate.get().getArticuloId().equals(existing.getArticuloId());
+            })
+            .toList();
+
+      for (ReservaArticulo articuloToDelete : articulosToDelete) {
+         log.info("Deleting Articulo {} from Reserva {}", articuloToDelete.getArticuloId(),
+               articuloToDelete.getReservaId());
+
+         ReservaArticuloEliminado auditRecord = new ReservaArticuloEliminado.Builder()
+               .negocioId(articuloToDelete.getNegocioId())
+               .reservaId(articuloToDelete.getReservaId())
+               .voucherId(articuloToDelete.getVoucherId() != null ? articuloToDelete.getVoucherId() : 0L)
+               .articuloId(articuloToDelete.getArticuloId())
+               .cantidad(articuloToDelete.getCantidad())
+               .comision(articuloToDelete.getComision())
+               .precioUnitarioSinComision(articuloToDelete.getPrecioUnitarioSinComision())
+               .precioUnitario(articuloToDelete.getPrecioUnitario())
+               .precioCompra(articuloToDelete.getPrecioCompra())
+               .observaciones(articuloToDelete.getObservaciones())
+               .reservaArticuloId(articuloToDelete.getReservaArticuloId())
+               .build();
+
+         reservaArticuloEliminadoService.create(auditRecord);
+
+         reservaArticuloService.deleteByReservaArticuloId(articuloToDelete.getReservaArticuloId());
+      }
+
+      List<String> articuloIds = updatedReservaArticulos.stream()
+            .map(ReservaArticulo::getArticuloId)
+            .toList();
+      List<Articulo> articulos = articuloService.findAllByIds(articuloIds);
+
+      for (ReservaArticulo updatedReservaArticulo : updatedReservaArticulos) {
+         // Check if this article was deleted (either complete deletion or replacement)
+         boolean wasDeleted = articulosToDelete.stream()
+               .anyMatch(deleted -> deleted.getReservaArticuloId().equals(updatedReservaArticulo.getReservaArticuloId()));
+
+         if (updatedReservaArticulo.getReservaArticuloId() != null && !wasDeleted) {
+            // Update existing article (simple modification - same articuloId, different quantity/price)
+            reservaArticuloService.update(updatedReservaArticulo, updatedReservaArticulo.getReservaArticuloId());
+         } else {
+            // Add as new (either brand new article or replacement after deletion)
+            Articulo articulo = articulos.stream()
+                  .filter(a -> a.getArticuloId().equals(updatedReservaArticulo.getArticuloId()))
+                  .findFirst()
+                  .orElseThrow(() -> new ArticuloException(updatedReservaArticulo.getArticuloId()));
+            BigDecimal precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(),
+                  updatedReserva.getFechaInServicio());
+
+            updatedReservaArticulo.setArticulo(articulo);
+            updatedReservaArticulo.setArticuloId(articulo.getArticuloId());
+            updatedReservaArticulo.setPrecioUnitarioSinComision(precioArticulo);
+            updatedReservaArticulo.setReservaId(savedReserva.getReservaId());
+            updatedReservaArticulo.setNegocioId(savedReserva.getNegocioId());
+
+            BigDecimal complemento = BigDecimal.ONE.subtract(comisionArticulo(savedReserva.getReservaId(),
+                  updatedReservaArticulo.getArticuloId(),
+                  cliente.getClienteId())).setScale(2, RoundingMode.HALF_UP);
+
+            updatedReservaArticulo.setPrecioUnitario(precioArticulo
+                  .multiply(complemento)
+                  .setScale(2, RoundingMode.HALF_UP));
+            reservaArticuloService.add(updatedReservaArticulo);
+         }
+      }
+
+      return savedReserva;
+   }
+
+   private void validateReservaUpdate(
+         Reserva existingReserva,
+         Reserva updatedReserva,
+         List<ReservaArticulo> updatedReservaArticulos,
+         List<ReservaArticulo> existingReservaArticulos) {
+
+      if (existingReserva.getFacturada() == (byte) 1
+            && isReservaFacturada(existingReserva.getReservaId())
+            && !reservaArticuloService.equals(updatedReservaArticulos, existingReservaArticulos)) {
+         throw new ReservaException("No se pueden modificar los artículos de una reserva facturada");
+      }
+
+      if (existingReserva.getFacturada() == (byte) 1
+            && isReservaFacturada(existingReserva.getReservaId())
+            && updatedReserva.getClienteId() != existingReserva.getClienteId()) {
+         throw new ReservaException("No se puede cambiar el cliente de una reserva facturada");
+      }
+
+      if (existingReserva.getAnulada() == (byte) 1
+            && updatedReserva.getAnulada() == (byte) 1) {
+         throw new ReservaException("No se puede modificar una reserva anulada");
+      }
+
+      if (existingReserva.getFacturada() == (byte) 1
+            && isReservaFacturada(existingReserva.getReservaId())
+            && updatedReserva.getAnulada() == (byte) 1) {
+         throw new ReservaException("No se puede anular una reserva facturada");
+      }
+
    }
 
    public Reserva findLastReserva() {

@@ -20,6 +20,7 @@ import eterea.core.service.model.dto.HabitacionMovimientoResponseDto;
 import eterea.core.service.kotlin.model.Habitacion;
 import eterea.core.service.model.dto.CreateHabitacionMovimientoDto;
 import eterea.core.service.service.HabitacionMovimientoService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping({ "/api/core/habitacionmovimiento", "/habitacionmovimiento" })
@@ -45,9 +46,16 @@ public class HabitacionMovimientoController {
    }
 
    @PostMapping
-   public ResponseEntity<HabitacionMovimientoResponseDto> createReservaHabitacion(@RequestBody CreateHabitacionMovimientoDto dto) {
+   public ResponseEntity<HabitacionMovimientoResponseDto> createReservaHabitacion(@RequestBody @Valid CreateHabitacionMovimientoDto dto) {
       return ResponseEntity.ok(service.createReservaHabitacion(dto));
    }
+
+   @PutMapping("/{numeroReserva}")
+   public ResponseEntity<HabitacionMovimientoResponseDto> updateReservaHabitacion(@PathVariable Long numeroReserva,
+         @RequestBody @Valid CreateHabitacionMovimientoDto dto) {
+      return ResponseEntity.ok(service.updateReservaHabitacion(numeroReserva, dto));
+   }
+
 
    @PutMapping("/{habitacionMovimientoId}/observaciones")
    public ResponseEntity<Void> appendToObservaciones(@PathVariable Long habitacionMovimientoId,
@@ -57,16 +65,17 @@ public class HabitacionMovimientoController {
    }
 
    @DeleteMapping("/{numeroReserva}")
-   public ResponseEntity<Void> eliminar(@PathVariable Long numeroReserva) {
-      service.eliminar(numeroReserva);
+   public ResponseEntity<Void> delete(@PathVariable Long numeroReserva) {
+      service.delete(numeroReserva);
       return ResponseEntity.ok().build();
    }
 
    @GetMapping("/habitaciones/disponibles")
    public ResponseEntity<List<Habitacion>> getHabitacionesDisponibles(
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
-            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta) {
-      return ResponseEntity.ok(service.getHabitacionesDisponibles(desde, hasta));
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta,
+            @RequestParam(required = false) Long habitacionMovimientoIdExcluir) {
+      return ResponseEntity.ok(service.getHabitacionesDisponibles(desde, hasta, habitacionMovimientoIdExcluir));
    }
 
 }

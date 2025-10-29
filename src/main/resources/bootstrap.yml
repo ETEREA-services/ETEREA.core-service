@@ -69,9 +69,9 @@ logging:
     web: ${app.logging}
     org:
       hibernate:
-        SQL: ${app.logging}
-        stat: ${app.logging}
-        engine.transaction: ${app.logging}
+        # SQL: ${app.logging}
+        # stat: ${app.logging}
+        # engine.transaction: ${app.logging}
       springframework:
         transaction: ${app.logging}
         cloud.config: ${app.logging}

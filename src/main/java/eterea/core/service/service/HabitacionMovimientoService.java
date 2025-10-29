@@ -97,12 +97,13 @@ public class HabitacionMovimientoService {
       if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida(), null)) {
          throw new HabitacionNoDisponibleException(dto.numeroHabitacion(), dto.fechaIngreso(), dto.fechaSalida());
       }
+      Habitacion habitacion = habitacionService.findByNumero(dto.numeroHabitacion());
 
       HabitacionMovimiento reserva = new HabitacionMovimiento.Builder()
             .cliente(cliente)
             .fechaIngreso(dto.fechaIngreso())
             .fechaSalida(dto.fechaSalida())
-            .habitacion(habitacionService.findByNumero(dto.numeroHabitacion()))
+            .habitacion(habitacion)
             .tarifaId(dto.tarifaId())
             .precioUnitarioTarifa(dto.precioUnitario())
             .cantidadPax(dto.cantidadPax().longValue())
@@ -129,7 +130,6 @@ public class HabitacionMovimientoService {
       HabitacionMovimiento savedReserva = save(reserva);
 
       if (savedReserva.getEstadoReserva().getLetraComprobante().equals("R")) {
-         Habitacion habitacion = habitacionService.findByNumero(dto.numeroHabitacion());
          habitacion.setClienteId(cliente.getClienteId());
          habitacionService.update(habitacion, habitacion.getNumero());
       }
@@ -138,67 +138,74 @@ public class HabitacionMovimientoService {
 
    }
 
-   // @Transactional
-   // public HabitacionMovimiento updateReservaHabitacion(Long
-   // habitacionMovimientoId, ReservaHotelDto dto) {
-   //
-   // OffsetDateTime fechaLimite; // TODO: Traer de la tabla violacionlimite (falta
-   // mapear a una clase)
-   //
-   // // 1. Find existing reservation
-   // HabitacionMovimiento existingReserva = findById(habitacionMovimientoId)
-   // .orElseThrow(() -> new ReservaException(habitacionMovimientoId));
-   //
-   // // 2. Validate operation date
-   // validarFechaOperacion(dto.fechaOperacion());
-   //
-   // // 3. Validate future date limit
-   // validarPlazoFuturo(dto.fechaOperacion());
-   //
-   // // 4. Validate required fields
-   // validarCamposRequeridos(dto);
-   //
-   // // 5. Validate dates
-   // validarFechas(dto.fechaIngreso(), dto.fechaSalida());
-   //
-   // // 6. Validate PAX counts
-   // validarCantidadPax(dto.paxMayor(), dto.paxMenor(), dto.cantidadPax());
-   //
-   // // 7. Check room availability (excluding current reservation)
-   // if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(),
-   // dto.fechaSalida(),
-   // habitacionMovimientoId)) {
-   // throw new HabitacionNoDisponibleException(dto.numeroHabitacion(),
-   // dto.fechaIngreso(), dto.fechaSalida());
-   // }
-   //
-   // // Check if reservation can be updated
-   // if (existingReserva.getEstadoReserva().getLetraComprobante().equals("V")
-   // || existingReserva.getEstadoReserva().getLetraComprobante().equals("A")) {
-   // throw new
-   // ReservaNoEditableException(existingReserva.getHabitacionMovimientoId(),
-   // existingReserva.getEstadoReserva().getLetraComprobante());
-   // }
-   //
-   // // 8. Update the reservation
-   // //
-   // existingReserva.setCliente(clienteService.findByClienteId(dto.clienteId()));
-   // existingReserva.setHabitacion(habitacionService.findByNumero(dto.numeroHabitacion()));
-   // existingReserva.setFechaIngreso(dto.fechaIngreso());
-   // existingReserva.setFechaSalida(dto.fechaSalida());
-   // existingReserva.setCantidadPax(dto.cantidadPax().longValue());
-   // existingReserva.setCantidadPaxMayor(dto.paxMayor());
-   // existingReserva.setCantidadPaxMenor(dto.paxMenor());
-   // existingReserva.setFechaOperacion(dto.fechaOperacion());
-   // existingReserva.setFechaVencimiento(dto.fechaVencimiento());
-   // existingReserva.setTarifaId(dto.tarifaId());
-   // existingReserva.setPrecioUnitarioTarifa(dto.precioUnitario());
-   // existingReserva.setTarifaStandard(dto.tarifaStandard() ? (byte) 1 : (byte)
-   // 0);
-   // existingReserva.setObservaciones(dto.observaciones());
-   //
-   // return save(existingReserva);
-   // }
+   @Transactional
+   public HabitacionMovimientoResponseDto updateReservaHabitacion(Long numeroReserva,
+         CreateHabitacionMovimientoDto dto) {
+
+      // OffsetDateTime fechaLimite; // TODO: Traer de la tabla violacionlimite (falta
+      // mapear a una clase)
+
+      HabitacionMovimiento existingReserva = repository.findByNumeroReserva(numeroReserva)
+            .orElseThrow(() -> new HabitacionMovimientoExtendedException(numeroReserva));
+
+      if (isHabitacionReservada(dto.numeroHabitacion(), dto.fechaIngreso(),
+            dto.fechaSalida(),
+            existingReserva.getHabitacionMovimientoId())) {
+         throw new HabitacionNoDisponibleException(dto.numeroHabitacion(),
+               dto.fechaIngreso(), dto.fechaSalida());
+      }
+
+      // Check if reservation can be updated
+      if (existingReserva.getEstadoReserva().getLetraComprobante().equals("V")
+            || existingReserva.getEstadoReserva().getLetraComprobante().equals("Z")) {
+         throw new ReservaNoEditableException(existingReserva.getHabitacionMovimientoId(),
+               existingReserva.getEstadoReserva().getLetraComprobante());
+      }
+
+      boolean isAgencia = dto.cuit() != null
+            && !dto.cuit().equals("00-00000000-0")
+            && !dto.cuit().isBlank();
+
+      Cliente cliente = null;
+      if (isAgencia) {
+         cliente = clienteService.findByCuit(dto.cuit());
+      } else {
+         try {
+            cliente = clienteService.findByNumeroDocumentoAndDocumentoId(
+                  dto.nroDocumento(),
+                  dto.tipoDocumentoId());
+         } catch (ClienteException e) {
+            cliente = clienteService.findByNumeroDocumento(dto.nroDocumento());
+         }
+      }
+      Habitacion habitacion = habitacionService.findByNumero(dto.numeroHabitacion());
+
+      existingReserva.setCliente(cliente);
+      existingReserva.setFechaIngreso(dto.fechaIngreso());
+      existingReserva.setFechaSalida(dto.fechaSalida());
+      existingReserva.setHabitacion(habitacion);
+      existingReserva.setTarifaId(dto.tarifaId());
+      existingReserva.setPrecioUnitarioTarifa(dto.precioUnitario());
+      existingReserva.setCantidadPax(dto.cantidadPax().longValue());
+      existingReserva.setCantidadPaxMayor(dto.paxMayor());
+      existingReserva.setCantidadPaxMenor(dto.paxMenor());
+      existingReserva.setTarifaStandard(dto.tarifaStandard() ? (byte) 1 : (byte) 0);
+      existingReserva.setEstadoReserva(comprobanteService.findByModuloAndLetraComprobante(11, dto.letraComprobante()));
+      existingReserva.setFechaOperacion(dto.fechaOperacion());
+      existingReserva.setFechaVencimiento(dto.fechaVencimiento());
+      existingReserva.setObservaciones(dto.observaciones());
+      existingReserva.setConceptoTarifa("");
+      existingReserva.setPrecioUnitarioTarifa(BigDecimal.ZERO);
+      existingReserva.setTarifaId(0L);
+
+      HabitacionMovimiento savedReserva = save(existingReserva);
+      if (savedReserva.getEstadoReserva().getLetraComprobante().equals("R")) {
+         habitacion.setClienteId(cliente.getClienteId());
+         habitacionService.update(habitacion, habitacion.getNumero());
+      }
+
+      return habitacionMovimientoToDtoMapper.apply(savedReserva);
+   }
 
    public HabitacionMovimiento findLastHabitacionMovimiento() {
       return repository.findFirstByOrderByHabitacionMovimientoIdDesc();
@@ -229,7 +236,7 @@ public class HabitacionMovimientoService {
       log.info("Reserva guardada: {}", savedReserva);
    }
 
-   public void eliminar(Long numeroReserva) {
+   public void delete(Long numeroReserva) {
       HabitacionMovimiento habitacionMovimiento = repository.findByNumeroReserva(numeroReserva)
             .orElseThrow(() -> new HabitacionMovimientoExtendedException(numeroReserva));
       if (!habitacionMovimiento.getEstadoReserva().getLetraComprobante().equals("A")) {
@@ -239,7 +246,8 @@ public class HabitacionMovimientoService {
       repository.delete(habitacionMovimiento);
    }
 
-   public List<Habitacion> getHabitacionesDisponibles(OffsetDateTime desde, OffsetDateTime hasta) {
+   public List<Habitacion> getHabitacionesDisponibles(OffsetDateTime desde, OffsetDateTime hasta,
+         Long habitacionMovimientoIdExcluir) {
       List<Habitacion> allHabitaciones = habitacionService.findAll();
 
       return allHabitaciones.stream()
@@ -247,9 +255,10 @@ public class HabitacionMovimientoService {
                   habitacion.getNumero(),
                   desde,
                   hasta,
-                  null))
+                  habitacionMovimientoIdExcluir))
             .toList();
    }
+
 }
 
 /*

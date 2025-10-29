@@ -65,6 +65,11 @@ public class ReservaController {
 		return new ResponseEntity<>(service.createReserva(createReservaDto), HttpStatus.CREATED);
 	}
 
+	@PutMapping("/{reservaId}")
+	public ResponseEntity<Reserva> updateReserva(@PathVariable Long reservaId, @RequestBody CreateReservaDto updateReservaDto) {
+		return new ResponseEntity<>(service.updateReserva(reservaId, updateReservaDto), HttpStatus.OK);
+	}
+
 	@GetMapping("/last")
 	public ResponseEntity<Reserva> findLastReserva() {
 		return new ResponseEntity<>(service.findLastReserva(), HttpStatus.OK);

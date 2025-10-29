@@ -19,4 +19,8 @@ public class HabitacionMovimientoExtendedException extends RuntimeException {
 		super(MessageFormat.format("Cannot find HabitacionMovimiento {0}", numeroReserva));
 	}
 
+	public HabitacionMovimientoExtendedException(String message) {
+		super(message);
+	}
+
 }
