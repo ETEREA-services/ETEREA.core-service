@@ -1,12 +1,11 @@
 package eterea.core.service.service.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import eterea.core.service.kotlin.model.ClienteMovimiento;
 import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.kotlin.model.ComprobanteFaltante;
+import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.service.ClienteMovimientoService;
 import eterea.core.service.service.ComprobanteFaltanteService;
+import eterea.core.service.tool.Jsonifier;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,18 +34,8 @@ public class ConsolidadoService {
     ) {
 
         public String jsonify() {
-            try {
-                return JsonMapper
-                        .builder()
-                        .findAndAddModules()
-                        .build()
-                        .writerWithDefaultPrettyPrinter()
-                        .writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                return "jsonify error -> " + e.getMessage();
-            }
+            return Jsonifier.builder(this).build();
         }
-
     }
 
     public ConsolidadoService(ComprobanteFaltanteService comprobanteFaltanteService,

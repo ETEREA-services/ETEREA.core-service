@@ -7,6 +7,7 @@ import java.util.List;
 
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.view.ClienteSearch;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +27,10 @@ import eterea.core.service.service.ClienteService;
  */
 @RestController
 @RequestMapping({"/api/core/cliente", "/cliente"})
+@RequiredArgsConstructor
 public class ClienteController {
 
 	private final ClienteService service;
-
-	public ClienteController(ClienteService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/search/{chain}")
 	public ResponseEntity<List<ClienteSearch>> findAllBySearch(@PathVariable String chain) {

@@ -18,6 +18,7 @@ import eterea.core.service.kotlin.model.dto.ParametroDto;
 import eterea.core.service.service.ArticuloBarraService;
 import eterea.core.service.service.ArticuloService;
 import eterea.core.service.service.NegocioService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,18 +28,12 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ArticulosService {
 
     private final NegocioService negocioService;
     private final ArticuloService articuloService;
     private final ArticuloBarraService articuloBarraService;
-
-    public ArticulosService(NegocioService negocioService,
-                            ArticuloService articuloService, ArticuloBarraService articuloBarraService) {
-        this.negocioService = negocioService;
-        this.articuloService = articuloService;
-        this.articuloBarraService = articuloBarraService;
-    }
 
     public String getNewCode() {
         return UUID.randomUUID().toString();

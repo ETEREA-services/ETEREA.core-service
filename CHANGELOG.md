@@ -1,3 +1,23 @@
+## [0.12.0] - 2025-10-29
+
+### Features
+- feat: Nuevo endpoint POST `/clienteMovimiento/` para crear movimientos de cliente
+- feat: Nuevos endpoints en LegajoController: `findByLegajoId` y `findAllBySearch`
+- feat: Nuevo servicio `LegajoSearchService` para búsqueda de legajos
+- feat: Nueva excepción `LegajoException` para manejo de errores de legajo
+- feat: Actualización de dependencias: Kotlin 2.2.20→2.2.21
+
+### Changed
+- refactor: Migración masiva de modelos de Kotlin a Java (ClienteMovimiento, CuentaMovimiento, RegistroCae)
+- refactor: Refactorización completa de controladores con `@RequiredArgsConstructor` y eliminación de constructores manuales
+- refactor: Mejora en manejo de excepciones con `ResponseStatusException` en controladores
+- refactor: Actualización de builders a métodos estáticos en modelos Java
+- refactor: Centralización de serialización JSON usando `Jsonifier` en lugar de `JsonMapper`
+- refactor: Optimización de constructores en servicios facade (ArticulosService, ContabilidadService, etc.)
+
+### Fixed
+- fix: Corrección de códigos de métodos de pago para tarjetas prepagas en FacturacionService
+
 ## [0.11.0] - 2025-09-22
 
 ### Breaking Changes

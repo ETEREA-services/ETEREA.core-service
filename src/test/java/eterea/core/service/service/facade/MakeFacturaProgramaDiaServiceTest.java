@@ -9,17 +9,12 @@ import eterea.core.service.kotlin.model.Voucher;
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.ReservaArticulo;
 import eterea.core.service.kotlin.model.Articulo;
-import eterea.core.service.model.Track;
-import eterea.core.service.kotlin.model.RegistroCae;
-import eterea.core.service.kotlin.model.ClienteMovimiento;
-import eterea.core.service.model.PosicionIva;
-import eterea.core.service.model.ReservaContext;
+import eterea.core.service.model.*;
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
-import eterea.core.service.tool.ToolService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -28,8 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.consul.serviceregistry.ConsulAutoServiceRegistrationAutoConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
@@ -181,7 +174,7 @@ class MakeFacturaProgramaDiaServiceTest {
         when(orderNoteService.findByOrderNumberId(any())).thenReturn(orderNote);
         when(registraFacturaService.markReservaContextFacturada(any(), any(), any())).thenReturn(reservaContext);
 
-        RegistroCae registroCae = new RegistroCae.Builder()
+        RegistroCae registroCae = RegistroCae.builder()
                 .comprobanteId(comprobanteId)
                 .puntoVenta(1)
                 .numeroComprobante(1L)

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.repository.ReservaRepository;
+import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.facade.PrecioService;
 import jakarta.transaction.Transactional;

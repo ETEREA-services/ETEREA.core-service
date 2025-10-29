@@ -1,6 +1,7 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import eterea.core.service.model.Auditable
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.OffsetDateTime
@@ -46,4 +47,4 @@ data class CuentaMovimientoApertura(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var cuentaMovimientoAperturaId: Long? = null
 
-) : _root_ide_package_.eterea.core.service.kotlin.model.Auditable()
+) : Auditable()

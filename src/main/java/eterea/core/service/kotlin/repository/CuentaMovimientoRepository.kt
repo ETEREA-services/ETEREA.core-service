@@ -1,6 +1,6 @@
 package eterea.core.service.kotlin.repository
 
-import eterea.core.service.kotlin.model.CuentaMovimiento
+import eterea.core.service.model.CuentaMovimiento
 import jakarta.transaction.Transactional
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying

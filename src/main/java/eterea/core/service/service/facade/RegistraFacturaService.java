@@ -2,6 +2,8 @@ package eterea.core.service.service.facade;
 
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
+import eterea.core.service.model.ClienteMovimiento;
+import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
 import eterea.core.service.model.dto.FacturacionDto;
@@ -11,6 +13,7 @@ import eterea.core.service.service.ReservaContextService;
 import eterea.core.service.service.ValorMovimientoService;
 import eterea.core.service.tool.ToolService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RegistraFacturaService {
 
     private final ClienteMovimientoService clienteMovimientoService;
@@ -30,14 +34,6 @@ public class RegistraFacturaService {
     private final ArticuloMovimientoService articuloMovimientoService;
     private final ContabilidadService contabilidadService;
     private final ReservaContextService reservaContextService;
-
-    public RegistraFacturaService(ClienteMovimientoService clienteMovimientoService, ValorMovimientoService valorMovimientoService, ArticuloMovimientoService articuloMovimientoService, ContabilidadService contabilidadService, ReservaContextService reservaContextService) {
-        this.clienteMovimientoService = clienteMovimientoService;
-        this.valorMovimientoService = valorMovimientoService;
-        this.articuloMovimientoService = articuloMovimientoService;
-        this.contabilidadService = contabilidadService;
-        this.reservaContextService = reservaContextService;
-    }
 
     @Transactional
     public ClienteMovimiento registraFacturaCompleta(
@@ -54,7 +50,7 @@ public class RegistraFacturaService {
                                 Parametro parametro
     ) {
         log.debug("Processing RegistraFacturaService.registraFacturaCompleta");
-        ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
+        ClienteMovimiento clienteMovimiento = ClienteMovimiento.builder()
                 .negocioId(empresa.getNegocioId())
                 .empresaId(empresa.getEmpresaId())
                 .clienteId(cliente.getClienteId())

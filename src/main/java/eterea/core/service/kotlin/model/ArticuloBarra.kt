@@ -2,6 +2,8 @@ package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.json.JsonMapper
+import eterea.core.service.model.Auditable
+import eterea.core.service.tool.Jsonifier
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -34,16 +36,7 @@ data class ArticuloBarra(
 ) : Auditable() {
 
     fun jsonify(): String {
-        try {
-            return JsonMapper
-                .builder()
-                .findAndAddModules()
-                .build()
-                .writerWithDefaultPrettyPrinter()
-                .writeValueAsString(this)
-        } catch (e: JsonProcessingException) {
-            return "jsonify error -> ${e.message}"
-        }
+        return Jsonifier.builder(this).build()
     }
 
 }

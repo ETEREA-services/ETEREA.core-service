@@ -9,6 +9,8 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.*;
+import eterea.core.service.model.ClienteMovimiento;
+import eterea.core.service.tool.Jsonifier;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,16 +36,7 @@ public class ImpresionFiscalDto implements Serializable {
 	private ClienteMovimientoPrevio clienteMovimientoPrevio;
 
 	public String jsonify() {
-		try {
-			return JsonMapper
-					.builder()
-					.findAndAddModules()
-					.build()
-					.writerWithDefaultPrettyPrinter()
-					.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			return "jsonify error -> " + e.getMessage();
-		}
+        return Jsonifier.builder(this).build();
 	}
 
 }

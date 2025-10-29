@@ -1,12 +1,12 @@
 package eterea.core.service.service.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.TransferenciaDto;
 import eterea.core.service.kotlin.model.dto.TransferenciaWrapperDto;
+import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.service.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TransferenciasService {
 
     private final TransferenciaService transferenciaService;
@@ -26,15 +27,6 @@ public class TransferenciasService {
     private final CuentaService cuentaService;
     private final ValorService valorService;
     private final CuentaMovimientoFirmaService cuentaMovimientoFirmaService;
-
-    public TransferenciasService(TransferenciaService transferenciaService, ValorMovimientoService valorMovimientoService, CuentaMovimientoService cuentaMovimientoService, CuentaService cuentaService, ValorService valorService, CuentaMovimientoFirmaService cuentaMovimientoFirmaService) {
-        this.transferenciaService = transferenciaService;
-        this.valorMovimientoService = valorMovimientoService;
-        this.cuentaMovimientoService = cuentaMovimientoService;
-        this.cuentaService = cuentaService;
-        this.valorService = valorService;
-        this.cuentaMovimientoFirmaService = cuentaMovimientoFirmaService;
-    }
 
     public TransferenciaWrapperDto findByUnique(Integer negocioIdDesde, Integer negocioIdHasta, Long numeroTransferencia) {
         log.debug("Processing TransferenciasService.findByUnique");
@@ -111,7 +103,7 @@ public class TransferenciasService {
         List<CuentaMovimiento> cuentaMovimientoLocales = new ArrayList<>();
         for (var valorMovimientoLocal : valorMovimientoLocales) {
             // imputación haber
-            var cuentaMovimiento = new CuentaMovimiento.Builder()
+            var cuentaMovimiento = CuentaMovimiento.builder()
                     .cuentaMovimientoId(null)
                     .fecha(fechaContableLocal)
                     .orden(ordenContableLocal)
@@ -132,13 +124,13 @@ public class TransferenciasService {
                     .nivel(0)
                     .firma(cuentaMovimientoFirmaLocal.getCuentaMovimientoFirmaId())
                     .tipoAsientoId(0)
-                    .articuloMovimientoId(0)
+                    .articuloMovimientoId(0L)
                     .ejercicioId(null)
                     .inflacion((byte) 0)
                     .build();
             cuentaMovimientoLocales.add(cuentaMovimiento);
             // imputación debe
-            cuentaMovimiento = new CuentaMovimiento.Builder()
+            cuentaMovimiento = CuentaMovimiento.builder()
                     .cuentaMovimientoId(null)
                     .fecha(fechaContableLocal)
                     .orden(ordenContableLocal)
@@ -159,7 +151,7 @@ public class TransferenciasService {
                     .nivel(0)
                     .firma(cuentaMovimientoFirmaLocal.getCuentaMovimientoFirmaId())
                     .tipoAsientoId(0)
-                    .articuloMovimientoId(0)
+                    .articuloMovimientoId(0L)
                     .ejercicioId(null)
                     .inflacion((byte) 0)
                     .build();
