@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eterea.core.service.exception.ClienteMovimientoException;
-import eterea.core.service.kotlin.model.ClienteMovimiento;
 import eterea.core.service.kotlin.model.Comprobante;
+import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.repository.ClienteMovimientoRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +22,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ClienteMovimientoService {
 
     private final ClienteMovimientoRepository repository;
     private final ComprobanteService comprobanteService;
-
-    public ClienteMovimientoService(ClienteMovimientoRepository repository, ComprobanteService comprobanteService) {
-        this.repository = repository;
-        this.comprobanteService = comprobanteService;
-    }
 
     public List<ClienteMovimiento> findTop200Asociables(Long clienteId, Integer comprobanteId) {
         var comprobante = comprobanteService.findByComprobanteId(comprobanteId);

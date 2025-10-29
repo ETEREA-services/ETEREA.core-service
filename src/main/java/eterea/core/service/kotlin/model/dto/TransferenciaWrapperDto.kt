@@ -2,8 +2,8 @@ package eterea.core.service.kotlin.model.dto
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.json.JsonMapper
-import eterea.core.service.kotlin.model.CuentaMovimiento
 import eterea.core.service.kotlin.model.ValorMovimiento
+import eterea.core.service.model.CuentaMovimiento
 
 data class TransferenciaWrapperDto(
 

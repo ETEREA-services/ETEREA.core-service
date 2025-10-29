@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import eterea.core.service.model.Auditable
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType

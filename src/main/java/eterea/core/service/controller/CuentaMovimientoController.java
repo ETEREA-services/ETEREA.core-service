@@ -3,7 +3,8 @@
  */
 package eterea.core.service.controller;
 
-import eterea.core.service.kotlin.model.CuentaMovimiento;
+import eterea.core.service.model.CuentaMovimiento;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +22,10 @@ import eterea.core.service.service.CuentaMovimientoService;
  */
 @RestController
 @RequestMapping({"/api/core/cuentaMovimiento", "/cuentaMovimiento"})
+@RequiredArgsConstructor
 public class CuentaMovimientoController {
 
 	private final CuentaMovimientoService service;
-
-	public CuentaMovimientoController(CuentaMovimientoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/{cuentaMovimientoId}")
 	public ResponseEntity<CuentaMovimiento> findByCuentaMovimientoId(@PathVariable Long cuentaMovimientoId) {

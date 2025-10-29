@@ -1,6 +1,6 @@
 package eterea.core.service.controller.facade;
 
-import eterea.core.service.kotlin.model.ClienteMovimiento;
+import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.model.dto.DatoUnaFacturaDto;
 import eterea.core.service.service.facade.FacturacionService;
 import lombok.RequiredArgsConstructor;

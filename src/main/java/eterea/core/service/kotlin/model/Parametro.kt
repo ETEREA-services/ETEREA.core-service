@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import eterea.core.service.model.Auditable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -75,6 +76,8 @@ data class Parametro(
     var centroStockIdRestaurant: Int? = null,
 
     @Column(name = "par_feproduccion")
-    var facturaElectronicaProduccion: Byte? = null
+    var facturaElectronicaProduccion: Byte? = null,
+
+    var porcentajeDescuentoPersonal: BigDecimal = BigDecimal.ZERO
 
 ) : Auditable()

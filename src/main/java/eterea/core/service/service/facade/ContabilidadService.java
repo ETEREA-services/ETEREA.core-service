@@ -1,9 +1,12 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.kotlin.model.*;
+import eterea.core.service.model.ClienteMovimiento;
+import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.model.Track;
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ContabilidadService {
 
     private final CuentaMovimientoService cuentaMovimientoService;
@@ -23,15 +27,6 @@ public class ContabilidadService {
     private final ParametroService parametroService;
     private final ComprobanteService comprobanteService;
     private final TrackService trackService;
-
-    public ContabilidadService(CuentaMovimientoService cuentaMovimientoService, ClienteMovimientoService clienteMovimientoService, ValorMovimientoService valorMovimientoService, ParametroService parametroService, ComprobanteService comprobanteService, TrackService trackService) {
-        this.cuentaMovimientoService = cuentaMovimientoService;
-        this.clienteMovimientoService = clienteMovimientoService;
-        this.valorMovimientoService = valorMovimientoService;
-        this.parametroService = parametroService;
-        this.comprobanteService = comprobanteService;
-        this.trackService = trackService;
-    }
 
     public List<CuentaMovimiento> registraContabilidadProgramaDia(
             ClienteMovimiento clienteMovimiento,
@@ -62,7 +57,7 @@ public class ContabilidadService {
         int item = 1;
         String concepto = String.format("Nro: %04d %06d", facturacionDto.getPuntoVenta(), facturacionDto.getNumeroComprobante());
         // Registro total valores
-        cuentaMovimientos.add(new CuentaMovimiento.Builder()
+        cuentaMovimientos.add(CuentaMovimiento.builder()
                 .negocioId(clienteMovimiento.getNegocioId())
                 .numeroCuenta(valor.getNumeroCuenta())
                 .debita(comprobante.getDebita())
@@ -79,7 +74,7 @@ public class ContabilidadService {
         log.debug("CuentaMovimiento -> {}", cuentaMovimientos.getLast().jsonify());
         // Registro iva 21
         if (facturacionDto.getIva().compareTo(BigDecimal.ZERO) > 0) {
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
+            cuentaMovimientos.add(CuentaMovimiento.builder()
                     .negocioId(clienteMovimiento.getNegocioId())
                     .numeroCuenta(parametro.getCuentaIvaVentas())
                     .debita((byte) (1 - comprobante.getDebita()))
@@ -97,7 +92,7 @@ public class ContabilidadService {
         }
         // Registro iva 10.5
         if (facturacionDto.getIva105().compareTo(BigDecimal.ZERO) > 0) {
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
+            cuentaMovimientos.add(CuentaMovimiento.builder()
                     .negocioId(clienteMovimiento.getNegocioId())
                     .numeroCuenta(parametro.getCuentaIvaRniVentas())
                     .debita((byte) (1 - comprobante.getDebita()))
@@ -116,7 +111,7 @@ public class ContabilidadService {
         // Registro de artículos
         for (ArticuloMovimiento articuloMovimiento : articuloMovimientos) {
             assert articuloMovimiento.getArticuloMovimientoId() != null;
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
+            cuentaMovimientos.add(CuentaMovimiento.builder()
                     .negocioId(clienteMovimiento.getNegocioId())
                     .numeroCuenta(articuloMovimiento.getNumeroCuenta())
                     .debita((byte) (1 - comprobante.getDebita()))
@@ -152,7 +147,7 @@ public class ContabilidadService {
         int item = 1;
         String concepto = String.format("Nro: %04d %06d", clienteMovimiento.getPuntoVenta(), clienteMovimiento.getNumeroComprobante());
         // Registro total deudores por ventas
-        cuentaMovimientos.add(new CuentaMovimiento.Builder()
+        cuentaMovimientos.add(CuentaMovimiento.builder()
                 .negocioId(clienteMovimiento.getNegocioId())
                 .numeroCuenta(12101001L)
                 .debita((byte) 1)
@@ -167,7 +162,7 @@ public class ContabilidadService {
                 .build());
         // Registro iva 21
         if (clienteMovimiento.getMontoIva().compareTo(BigDecimal.ZERO) > 0) {
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
+            cuentaMovimientos.add(CuentaMovimiento.builder()
                     .negocioId(clienteMovimiento.getNegocioId())
                     .numeroCuenta(parametro.getCuentaIvaVentas())
                     .debita((byte) (1 - comprobante.getDebita()))
@@ -183,7 +178,7 @@ public class ContabilidadService {
         }
         // Registro iva 10.5
         if (clienteMovimiento.getMontoIvaRni().compareTo(BigDecimal.ZERO) > 0) {
-            cuentaMovimientos.add(new CuentaMovimiento.Builder()
+            cuentaMovimientos.add(CuentaMovimiento.builder()
                     .negocioId(clienteMovimiento.getNegocioId())
                     .numeroCuenta(parametro.getCuentaIvaRniVentas())
                     .debita((byte) (1 - comprobante.getDebita()))
@@ -199,7 +194,7 @@ public class ContabilidadService {
         }
         // Registro de artículo
         assert articuloMovimiento.getArticuloMovimientoId() != null;
-        cuentaMovimientos.add(new CuentaMovimiento.Builder()
+        cuentaMovimientos.add(CuentaMovimiento.builder()
                 .negocioId(clienteMovimiento.getNegocioId())
                 .numeroCuenta(articuloMovimiento.getNumeroCuenta())
                 .debita((byte) (1 - comprobante.getDebita()))

@@ -1,6 +1,7 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import eterea.core.service.model.Auditable
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import jakarta.persistence.GeneratedValue

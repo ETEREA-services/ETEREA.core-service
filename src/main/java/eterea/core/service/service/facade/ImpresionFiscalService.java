@@ -3,13 +3,11 @@
  */
 package eterea.core.service.service.facade;
 
-import eterea.core.service.kotlin.model.ClienteMovimiento;
 import eterea.core.service.kotlin.model.ClienteMovimientoPrevio;
 import eterea.core.service.kotlin.model.Comprobante;
+import eterea.core.service.model.ClienteMovimiento;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import eterea.core.service.model.dto.ImpresionFiscalDto;
 import eterea.core.service.service.ArticuloMovimientoTemporalService;
@@ -25,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ImpresionFiscalService {
 
 	private final ClienteService clienteService;
@@ -32,14 +31,6 @@ public class ImpresionFiscalService {
 	private final ClienteMovimientoService clienteMovimientoService;
 	private final ClienteMovimientoPrevioService clienteMovimientoPrevioService;
 	private final ArticuloMovimientoTemporalService articuloMovimientoTemporalService;
-
-	public ImpresionFiscalService(ClienteService clienteService, ComprobanteService comprobanteService, ClienteMovimientoService clienteMovimientoService, ClienteMovimientoPrevioService clienteMovimientoPrevioService, ArticuloMovimientoTemporalService articuloMovimientoTemporalService) {
-		this.clienteService = clienteService;
-		this.comprobanteService = comprobanteService;
-		this.clienteMovimientoService = clienteMovimientoService;
-		this.clienteMovimientoPrevioService = clienteMovimientoPrevioService;
-		this.articuloMovimientoTemporalService = articuloMovimientoTemporalService;
-	}
 
 	public ImpresionFiscalDto getData(String ipAddress, Long hWnd, Long clienteId, Integer comprobanteId,
                                       Long comprobanteOrigenId) {

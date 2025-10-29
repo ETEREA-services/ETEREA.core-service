@@ -6,7 +6,7 @@ package eterea.core.service.model.view;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 
-import eterea.core.service.kotlin.model.Auditable;
+import eterea.core.service.model.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

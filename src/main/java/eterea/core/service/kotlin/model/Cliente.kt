@@ -1,6 +1,7 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import eterea.core.service.model.Auditable
 import eterea.core.service.model.PosicionIva
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -87,6 +88,7 @@ data class Cliente(
     var posicion: PosicionIva? = null
 
 ) : Auditable() {
+
     data class Builder(
         var clienteId: Long? = null,
         var nombre: String? = null,

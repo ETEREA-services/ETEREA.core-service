@@ -3,15 +3,14 @@ package eterea.core.service.service.facade;
 import eterea.core.service.client.report.MakeFacturaReportClient;
 import eterea.core.service.kotlin.exception.ReservaContextException;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.model.PosicionIva;
-import eterea.core.service.model.ReservaContext;
-import eterea.core.service.model.Track;
+import eterea.core.service.model.*;
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.tool.ToolService;
 import jakarta.mail.MessagingException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -27,6 +26,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class MakeFacturaProgramaDiaService {
 
     private final ComprobanteService comprobanteService;
@@ -46,40 +46,6 @@ public class MakeFacturaProgramaDiaService {
     private final FacturacionService facturacionService;
     private final TrackService trackService;
     private final RegistraFacturaService registraFacturaService;
-
-    public MakeFacturaProgramaDiaService(ComprobanteService comprobanteService,
-                                         ReservaService reservaService,
-                                         EmpresaService empresaService,
-                                         ReservaArticuloService reservaArticuloService,
-                                         ParametroService parametroService,
-                                         FacturacionElectronicaService facturacionElectronicaService,
-                                         RegistroCaeService registroCaeService,
-                                         ClienteService clienteService,
-                                         ArticuloService articuloService,
-                                         ReservaContextService reservaContextService,
-                                         OrderNoteService orderNoteService,
-                                         MakeFacturaReportClient makeFacturaReportClient,
-                                         Environment environment,
-                                         VoucherService voucherService,
-                                         FacturacionService facturacionService, TrackService trackService, RegistraFacturaService registraFacturaService) {
-        this.comprobanteService = comprobanteService;
-        this.reservaService = reservaService;
-        this.empresaService = empresaService;
-        this.reservaArticuloService = reservaArticuloService;
-        this.parametroService = parametroService;
-        this.facturacionElectronicaService = facturacionElectronicaService;
-        this.registroCaeService = registroCaeService;
-        this.clienteService = clienteService;
-        this.articuloService = articuloService;
-        this.reservaContextService = reservaContextService;
-        this.orderNoteService = orderNoteService;
-        this.makeFacturaReportClient = makeFacturaReportClient;
-        this.environment = environment;
-        this.voucherService = voucherService;
-        this.facturacionService = facturacionService;
-        this.trackService = trackService;
-        this.registraFacturaService = registraFacturaService;
-    }
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId, Track track) {
         if (track == null) {
@@ -258,7 +224,7 @@ public class MakeFacturaProgramaDiaService {
         }
 
         // Registra el resultado de la AFIP
-        RegistroCae registroCae = new RegistroCae.Builder()
+        RegistroCae registroCae = RegistroCae.builder()
                 .comprobanteId(comprobanteId)
                 .puntoVenta(facturacionDto.getPuntoVenta())
                 .numeroComprobante(facturacionDto.getNumeroComprobante())

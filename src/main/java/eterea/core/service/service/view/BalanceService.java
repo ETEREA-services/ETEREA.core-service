@@ -1,13 +1,12 @@
 package eterea.core.service.service.view;
 
-import eterea.core.service.kotlin.model.CuentaMovimiento;
-import eterea.core.service.kotlin.model.CuentaMovimientoMoneda;
-import eterea.core.service.kotlin.model.MonedaCotizacion;
 import eterea.core.service.kotlin.model.view.AsientoView;
+import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.service.CuentaMovimientoAperturaMonedaService;
 import eterea.core.service.service.CuentaMovimientoMonedaService;
 import eterea.core.service.service.CuentaMovimientoService;
 import eterea.core.service.service.MonedaCotizacionService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +17,10 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class BalanceService {
 
     private final AsientoViewService asientoViewService;
@@ -37,14 +34,6 @@ public class BalanceService {
     private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
     private final CuentaMovimientoAperturaMonedaService cuentaMovimientoAperturaMonedaService;
 
-    public BalanceService(AsientoViewService asientoViewService, CuentaMovimientoService cuentaMovimientoService, MonedaCotizacionService monedaCotizacionService, CuentaMovimientoMonedaService cuentaMovimientoMonedaService, CuentaMovimientoAperturaMonedaService cuentaMovimientoAperturaMonedaService) {
-        this.asientoViewService = asientoViewService;
-        this.cuentaMovimientoService = cuentaMovimientoService;
-        this.monedaCotizacionService = monedaCotizacionService;
-        this.cuentaMovimientoMonedaService = cuentaMovimientoMonedaService;
-        this.cuentaMovimientoAperturaMonedaService = cuentaMovimientoAperturaMonedaService;
-    }
-
     public void findAllDifferences() {
         List<AsientoView> asientos = asientoViewService.findAllDifferences(OffsetDateTime.of(2022, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC), OffsetDateTime.of(2022, 12, 31, 23, 59, 59, 0, ZoneOffset.UTC));
         List<CuentaMovimiento> cuentaMovimientos = new ArrayList<>();
@@ -53,7 +42,31 @@ public class BalanceService {
             byte debita = (byte) (diferencia.compareTo(BigDecimal.ZERO) < 0 ? 0 : 1);
             Long numeroCuenta = 44106000L;
             CuentaMovimiento lastByAsiento = cuentaMovimientoService.findLastByAsiento(asientoView.getFecha(), asientoView.getOrden());
-            CuentaMovimiento cuentaMovimiento = new CuentaMovimiento(null, lastByAsiento.getFecha(), lastByAsiento.getOrden(), 1 + lastByAsiento.getItem(), debita, lastByAsiento.getNegocioId(), numeroCuenta, lastByAsiento.getComprobanteId(), lastByAsiento.getConcepto(), diferencia.abs(), lastByAsiento.getSubrubroId(), lastByAsiento.getProveedorId(), lastByAsiento.getClienteId(), lastByAsiento.getCierreCajaId(), lastByAsiento.getNivel(), lastByAsiento.getFirma(), lastByAsiento.getTipoAsientoId(), lastByAsiento.getArticuloMovimientoId(), lastByAsiento.getEjercicioId(), lastByAsiento.getInflacion(), null, null, null, null);
+            CuentaMovimiento cuentaMovimiento = new CuentaMovimiento(null,
+                    lastByAsiento.getFecha(),
+                    lastByAsiento.getOrden(),
+                    1 + lastByAsiento.getItem(),
+                    debita,
+                    lastByAsiento.getNegocioId(),
+                    numeroCuenta,
+                    lastByAsiento.getComprobanteId(),
+                    lastByAsiento.getConcepto(),
+                    diferencia.abs(),
+                    lastByAsiento.getSubrubroId(),
+                    lastByAsiento.getProveedorId(),
+                    lastByAsiento.getClienteId(),
+                    lastByAsiento.getLegajoId(),
+                    lastByAsiento.getCierreCajaId(),
+                    lastByAsiento.getNivel(),
+                    lastByAsiento.getFirma(),
+                    lastByAsiento.getTipoAsientoId(),
+                    lastByAsiento.getArticuloMovimientoId(),
+                    lastByAsiento.getEjercicioId(),
+                    lastByAsiento.getInflacion(),
+                    null,
+                    null,
+                    null,
+                    null);
             cuentaMovimientos.add(cuentaMovimiento);
         }
         cuentaMovimientos = cuentaMovimientoService.saveAll(cuentaMovimientos);

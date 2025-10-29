@@ -3,10 +3,7 @@ package eterea.core.service.service.facade;
 import eterea.core.service.client.afip.FacturacionAfipClient;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.model.PosicionIva;
-import eterea.core.service.model.ReservaContext;
-import eterea.core.service.model.Track;
-import eterea.core.service.model.client.pyafipws.FacturaResponseDto;
+import eterea.core.service.model.*;
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.FacturacionElectronicaService;
@@ -262,7 +259,7 @@ public class FacturacionService {
         }
 
         // Registra el resultado de la AFIP
-        RegistroCae registroCae = new RegistroCae.Builder()
+        RegistroCae registroCae = RegistroCae.builder()
                 .comprobanteId(comprobanteNC.getComprobanteId())
                 .puntoVenta(facturacionDto.getPuntoVenta())
                 .numeroComprobante(facturacionDto.getNumeroComprobante())
@@ -285,7 +282,7 @@ public class FacturacionService {
         registroCae = registroCaeService.add(registroCae);
         log.debug("RegistroCae -> {}", registroCae.jsonify());
 
-        var notaCredito = new ClienteMovimiento.Builder()
+        var notaCredito = ClienteMovimiento.builder()
                 .negocioId(clienteMovimiento.getNegocioId())
                 .empresaId(clienteMovimiento.getEmpresaId())
                 .clienteId(clienteMovimiento.getClienteId())
@@ -368,7 +365,7 @@ public class FacturacionService {
         String concepto = String.format("Nro: %04d %06d", notaCredito.getPuntoVenta(), notaCredito.getNumeroComprobante());
         List<CuentaMovimiento> cuentaMovimientosNC = new ArrayList<>();
         for (var cuentaMovimiento : cuentaMovimientos) {
-            cuentaMovimientosNC.add(new CuentaMovimiento.Builder()
+            cuentaMovimientosNC.add(CuentaMovimiento.builder()
                     .negocioId(cuentaMovimiento.getNegocioId())
                     .numeroCuenta(cuentaMovimiento.getNumeroCuenta())
                     .debita((byte) (1 - cuentaMovimiento.getDebita()))

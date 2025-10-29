@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import eterea.core.service.model.Auditable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

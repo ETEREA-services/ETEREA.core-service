@@ -6,13 +6,10 @@ package eterea.core.service.controller;
 import java.util.List;
 
 import eterea.core.service.exception.ClienteMovimientoException;
-import eterea.core.service.kotlin.model.ClienteMovimiento;
+import eterea.core.service.model.ClienteMovimiento;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import eterea.core.service.service.ClienteMovimientoService;
 import org.springframework.web.server.ResponseStatusException;
@@ -112,6 +109,11 @@ public class ClienteMovimientoController {
         } catch (ClienteMovimientoException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<ClienteMovimiento> create(@RequestBody ClienteMovimiento clienteMovimiento) {
+        return ResponseEntity.ok(service.add(clienteMovimiento));
     }
 
 }

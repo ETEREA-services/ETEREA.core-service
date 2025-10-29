@@ -1,8 +1,8 @@
 package eterea.core.service.kotlin.model.dto
 
-import eterea.core.service.kotlin.model.ClienteMovimiento
 import eterea.core.service.kotlin.model.ReservaOrigen
 import eterea.core.service.kotlin.model.Voucher
+import eterea.core.service.model.ClienteMovimiento
 
 data class ProgramaDiaDto(
     var vouchers: List<Voucher?>? = null,

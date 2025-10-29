@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import eterea.core.service.model.Auditable
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 

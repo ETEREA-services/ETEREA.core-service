@@ -1,7 +1,7 @@
 package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.exception.RegistroCaeException;
-import eterea.core.service.kotlin.model.RegistroCae;
+import eterea.core.service.model.RegistroCae;
 import eterea.core.service.service.RegistroCaeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

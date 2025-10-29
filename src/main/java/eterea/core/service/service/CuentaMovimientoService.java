@@ -4,8 +4,8 @@
 package eterea.core.service.service;
 
 import eterea.core.service.exception.CuentaMovimientoException;
-import eterea.core.service.kotlin.model.CuentaMovimiento;
 import eterea.core.service.kotlin.repository.CuentaMovimientoRepository;
+import eterea.core.service.model.CuentaMovimiento;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
