@@ -38,24 +38,31 @@ public class RegistroCae extends Auditable {
     private Integer legajoId;
 
     @Column(name = "rec_cuit")
-    private String cuit;
+    @Builder.Default
+    private String cuit = "";
 
     @Column(name = "rec_total")
+    @Builder.Default
     private BigDecimal total = BigDecimal.ZERO;
 
     @Column(name = "rec_exento")
+    @Builder.Default
     private BigDecimal exento = BigDecimal.ZERO;
 
     @Column(name = "rec_neto")
+    @Builder.Default
     private BigDecimal neto = BigDecimal.ZERO;
 
     @Column(name = "rec_neto105")
+    @Builder.Default
     private BigDecimal neto105 = BigDecimal.ZERO;
 
     @Column(name = "rec_iva")
+    @Builder.Default
     private BigDecimal iva = BigDecimal.ZERO;
 
     @Column(name = "rec_iva105")
+    @Builder.Default
     private BigDecimal iva105 = BigDecimal.ZERO;
 
     @Column(name = "rec_cae")
@@ -68,9 +75,12 @@ public class RegistroCae extends Auditable {
     private String caeVencimiento;
 
     @Column(name = "rec_barras")
+    @Builder.Default
     private String barras = "";
 
     private Integer tipoDocumento;
+
+    @Builder.Default
     private BigDecimal numeroDocumento = BigDecimal.ZERO;
     private Long clienteMovimientoIdAsociado;
     private String trackUuid;
