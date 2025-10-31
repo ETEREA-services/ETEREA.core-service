@@ -82,6 +82,7 @@ public class RegistroCae extends Auditable {
 
     @Builder.Default
     private BigDecimal numeroDocumento = BigDecimal.ZERO;
+
     private Long clienteMovimientoIdAsociado;
     private String trackUuid;
 
