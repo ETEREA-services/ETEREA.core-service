@@ -1,4 +1,4 @@
-## [0.12.0] - 2025-10-29
+## [0.13.0] - 2025-10-31
 
 ### Features
 - feat: Nuevo endpoint POST `/clienteMovimiento/` para crear movimientos de cliente

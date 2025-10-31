@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.10-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.12.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.13.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -25,7 +25,7 @@ Servicio Core para la gestión financiera y contable, implementado con una arqui
 
 
 
-# Cambios en la versión 0.12.0
+# Cambios en la versión 0.13.0
 
 - feat: Nuevos endpoints para gestión de movimientos de cliente y búsqueda de legajos
 - refactor: Migración masiva de modelos a Java y refactorización con Lombok
