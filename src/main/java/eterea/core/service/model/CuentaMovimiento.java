@@ -30,51 +30,72 @@ public class CuentaMovimiento extends Auditable {
     private OffsetDateTime fecha;
 
     @Column(name = "nrocomp")
-    private Integer orden;
+    @Builder.Default
+    private Integer orden = 0;
 
-    private Integer item;
+    @Builder.Default
+    private Integer item = 0;
+
+    @Builder.Default
     private Byte debita = 0;
 
     @Column(name = "mco_neg_id")
-    private Integer negocioId;
+    @Builder.Default
+    private Integer negocioId = 0;
 
     @Column(name = "cuenta")
-    private Long numeroCuenta;
+    @Builder.Default
+    private Long numeroCuenta = 0L;
 
     @Column(name = "cgotcomp")
-    private Integer comprobanteId;
+    @Builder.Default
+    private Integer comprobanteId = 0;
 
-    private String concepto;
+    @Builder.Default
+    private String concepto = "";
+
+    @Builder.Default
     private BigDecimal importe = BigDecimal.ZERO;
 
     @Column(name = "cgosub")
-    private Long subrubroId;
+    @Builder.Default
+    private Long subrubroId = 0L;
 
     @Column(name = "cgoprov")
+    @Builder.Default
     private Long proveedorId = 0L;
 
     @Column(name = "cgoclie")
-    private Long clienteId;
+    @Builder.Default
+    private Long clienteId = 0L;
 
     private Integer legajoId;
 
     @Column(name = "mco_cic_id")
+    @Builder.Default
     private Long cierreCajaId = 0L;
 
     @Column(name = "mco_nivel")
+    @Builder.Default
     private Integer nivel = 0;
 
     @Column(name = "mco_mcf_firma")
+    @Builder.Default
     private Long firma = 0L;
 
     @Column(name = "mco_tas_id")
+    @Builder.Default
     private Integer tipoAsientoId = 0;
 
     @Column(name = "articulomovimiento_id")
+    @Builder.Default
     private Long articuloMovimientoId = 0L;
 
     private Integer ejercicioId;
+
+    @Builder.Default
     private Byte inflacion = 0;
+
     private String trackUuid;
 
     @OneToOne(optional = true)
