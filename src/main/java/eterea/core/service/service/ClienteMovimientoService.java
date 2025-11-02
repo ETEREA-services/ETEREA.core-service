@@ -3,6 +3,7 @@
  */
 package eterea.core.service.service;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import eterea.core.service.repository.ClienteMovimientoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -51,6 +53,14 @@ public class ClienteMovimientoService {
 
     public List<ClienteMovimiento> findAllFacturasByRango(String letraComprobante, Byte debita, Integer puntoVenta, Long numeroComprobanteDesde, Long numeroComprobanteHasta) {
         return repository.findAllByLetraComprobanteAndReciboAndPuntoVentaAndNumeroComprobanteBetweenAndComprobanteDebita(letraComprobante, (byte) 0, puntoVenta, numeroComprobanteDesde, numeroComprobanteHasta, debita);
+    }
+
+    public List<ClienteMovimiento> findAllByRegimenInformacionVentas(OffsetDateTime desde, OffsetDateTime hasta) {
+        return repository
+                .findAllByFechaComprobanteBetweenAndComprobanteLibroIva(desde, hasta, (byte) 1, Sort.by("puntoVenta").ascending().and(Sort.by("numeroComprobante")))
+                .stream()
+                .filter(movimiento -> movimiento.getMontoIva().add(movimiento.getMontoIvaRni()).compareTo(BigDecimal.ZERO) != 0)
+                .toList();
     }
 
     public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {
