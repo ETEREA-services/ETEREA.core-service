@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import eterea.core.service.model.ClienteMovimiento;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,6 +31,8 @@ public interface ClienteMovimientoRepository extends JpaRepository<ClienteMovimi
 	List<ClienteMovimiento> findAllByFechaComprobanteAndPuntoVentaGreaterThanAndComprobanteLibroIva(OffsetDateTime fechaComprobante, Integer puntoVenta, Byte libroIva);
 
 	List<ClienteMovimiento> findAllByLetraComprobanteAndReciboAndPuntoVentaAndNumeroComprobanteBetweenAndComprobanteDebita(String letraComprobante, Byte recibo, Integer puntoVenta, Long numeroComprobanteDesde, Long numeroComprobanteHasta, Byte debita);
+
+    List<ClienteMovimiento> findAllByFechaComprobanteBetweenAndComprobanteLibroIva(OffsetDateTime desde, OffsetDateTime hasta, Byte libroIva, Sort sort);
 
 	Optional<ClienteMovimiento> findByClienteMovimientoId(Long clienteMovimientoId);
 

@@ -17,11 +17,19 @@ classDiagram
         +add(Cliente): Cliente
     }
 
+    class ClienteMovimientoService {
+        +findAllByRegimenInformacionVentas(OffsetDateTime, OffsetDateTime): List~ClienteMovimiento~
+    }
+
     class ClienteRepository {
         +findByClienteId(Long): Optional~Cliente~
         +findTopByNumeroDocumento(String): Optional~Cliente~
         +findTopByOrderByClienteIdDesc(): Optional~Cliente~
         +save(Cliente): Cliente
+    }
+
+    class ClienteMovimientoRepository {
+        +findAllByFechaComprobanteBetweenAndComprobanteLibroIva(OffsetDateTime, OffsetDateTime, Byte, Sort): List~ClienteMovimiento~
     }
 
     class Cliente {
@@ -46,3 +54,6 @@ classDiagram
     ClienteService --> ClienteRepository
     ClienteRepository --> Cliente
     Cliente "1" -- "1" PosicionIva
+
+    ClienteMovimientoController --> ClienteMovimientoService
+    ClienteMovimientoService --> ClienteMovimientoRepository

@@ -13,3 +13,12 @@ sequenceDiagram
     CR-->>-CS: Cliente guardado
     CS-->>-CC: Cliente guardado
     CC-->>-User: 200 OK (body: Cliente)
+
+    User->>+CC: GET /clienteMovimiento/arca/regimen/informacion/ventas/{desde}/{hasta}
+    CC->>+CS: findAllByRegimenInformacionVentas(desde, hasta)
+    CS->>+CR: findAllByFechaComprobanteBetweenAndComprobanteLibroIva(desde, hasta, 1, sort)
+    CR->>+DB: SELECT * FROM cliente_movimiento WHERE fecha_comprobante BETWEEN ? AND ? AND comprobante_libro_iva = 1 ORDER BY punto_venta, numero_comprobante
+    DB-->>-CR: Lista de movimientos filtrados
+    CR-->>-CS: Lista filtrada por IVA
+    CS-->>-CC: Lista final
+    CC-->>-User: 200 OK (body: Lista de ClienteMovimiento)

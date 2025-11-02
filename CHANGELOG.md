@@ -1,3 +1,13 @@
+## [0.13.1] - 2025-11-02
+
+### Features
+- feat: Nuevo endpoint GET `/clienteMovimiento/arca/regimen/informacion/ventas/{desde}/{hasta}` para obtener movimientos de régimen de información de ventas
+- feat: Nuevo método `findAllByRegimenInformacionVentas` en `ClienteMovimientoService` con filtrado por IVA
+- feat: Nuevo método `findAllByFechaComprobanteBetweenAndComprobanteLibroIva` en `ClienteMovimientoRepository`
+
+### Changed
+- refactor: Refactorización de `ClienteMovimientoController` con `@RequiredArgsConstructor` y eliminación de constructor manual
+
 ## [0.13.0] - 2025-10-31
 
 ### Features

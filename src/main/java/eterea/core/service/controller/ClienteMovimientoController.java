@@ -3,10 +3,13 @@
  */
 package eterea.core.service.controller;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import eterea.core.service.exception.ClienteMovimientoException;
 import eterea.core.service.model.ClienteMovimiento;
+import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +23,10 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @RequestMapping({"/api/core/clienteMovimiento", "/clienteMovimiento"})
+@RequiredArgsConstructor
 public class ClienteMovimientoController {
 
 	private final ClienteMovimientoService service;
-
-	public ClienteMovimientoController(ClienteMovimientoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/asociable/{clienteId}/comprobante/{comprobanteId}")
 	public ResponseEntity<List<ClienteMovimiento>> findTop200Asociables(@PathVariable Long clienteId, @PathVariable Integer comprobanteId) {
@@ -54,6 +54,12 @@ public class ClienteMovimientoController {
         return ResponseEntity.ok(service.findAllFacturasByRango(letraComprobante, debita, puntoVenta, numeroComprobanteDesde,
                 numeroComprobanteHasta));
 	}
+
+    @GetMapping("/arca/regimen/informacion/ventas/{desde}/{hasta}")
+    public ResponseEntity<List<ClienteMovimiento>> findAllByRegimenInformacionVentas(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
+                                                                                     @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime hasta) {
+        return ResponseEntity.ok(service.findAllByRegimenInformacionVentas(desde, hasta));
+    }
 
 	@GetMapping("/last/{puntoVenta}/{letraComprobante}")
 	public ResponseEntity<Long> nextNumeroFactura(@PathVariable Integer puntoVenta,
