@@ -22,7 +22,7 @@ public class ProveedorMovimientoService {
 
     public List<ProveedorMovimiento> findAllByRegimenInformacionCompras(OffsetDateTime desde, OffsetDateTime hasta) {
         return repository
-                .findAllByFechaContableBetweenAndComprobanteLibroIva(desde, hasta, (byte) 1, Sort.by("fechaComprobante").ascending().and(Sort.by("puntoVenta").ascending().and(Sort.by("numeroComprobante"))))
+                .findAllByFechaContableBetweenAndComprobanteLibroIva(desde, hasta, (byte) 1, Sort.by("fechaComprobante").ascending().and(Sort.by("prefijo").ascending().and(Sort.by("numeroComprobante"))))
                 .stream()
                 .filter(movimiento -> movimiento.getMontoIva().add(movimiento.getMontoIva105().add(movimiento.getMontoIva27())).compareTo(BigDecimal.ZERO) != 0)
                 .toList();

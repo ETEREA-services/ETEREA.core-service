@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.10-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.13.2-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-0.13.3-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
