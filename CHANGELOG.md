@@ -1,3 +1,8 @@
+## [0.13.3] - 2025-11-04
+
+### Fixed
+- fix: Corrección del orden de sorting en `ProveedorMovimientoService.findAllByRegimenInformacionCompras` para usar `prefijo` en lugar de `puntoVenta`
+
 ## [0.13.2] - 2025-11-04
 
 ### Features
