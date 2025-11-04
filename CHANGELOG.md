@@ -1,3 +1,14 @@
+## [0.13.2] - 2025-11-04
+
+### Features
+- feat: Nuevo endpoint GET `/proveedorMovimiento/arca/regimen/informacion/compras/{desde}/{hasta}` para obtener movimientos de régimen de información de compras
+- feat: Nuevo método `findAllByRegimenInformacionCompras` en `ProveedorMovimientoService` con filtrado por IVA
+- feat: Nuevo método `findAllByFechaContableBetweenAndComprobanteLibroIva` en `ProveedorMovimientoRepository`
+
+### Changed
+- refactor: Refactorización de `ProveedorMovimientoController` con `@RequiredArgsConstructor` y eliminación de constructor manual
+- refactor: Refactorización de `ProveedorMovimientoService` con `@RequiredArgsConstructor` y eliminación de constructor manual
+
 ## [0.13.1] - 2025-11-02
 
 ### Features

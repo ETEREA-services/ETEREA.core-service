@@ -1,0 +1,59 @@
+classDiagram
+    direction LR
+
+    class ProveedorController {
+        +findAllBySearch(String): ResponseEntity
+        +findByProveedorId(Long): ResponseEntity
+        +findByNumeroDocumento(String): ResponseEntity
+        +findLast(): ResponseEntity
+        +add(Proveedor): ResponseEntity
+    }
+
+    class ProveedorService {
+        +findAllBySearch(String): List~ProveedorSearch~
+        +findByProveedorId(Long): Proveedor
+        +findByNumeroDocumento(String): Proveedor
+        +findLast(): Proveedor
+        +add(Proveedor): Proveedor
+    }
+
+    class ProveedorMovimientoService {
+        +findAllByRegimenInformacionCompras(OffsetDateTime, OffsetDateTime): List~ProveedorMovimiento~
+    }
+
+    class ProveedorRepository {
+        +findByProveedorId(Long): Optional~Proveedor~
+        +findTopByNumeroDocumento(String): Optional~Proveedor~
+        +findTopByOrderByProveedorIdDesc(): Optional~Proveedor~
+        +save(Proveedor): Proveedor
+    }
+
+    class ProveedorMovimientoRepository {
+        +findAllByFechaContableBetweenAndComprobanteLibroIva(OffsetDateTime, OffsetDateTime, Byte, Sort): List~ProveedorMovimiento~
+    }
+
+    class Proveedor {
+        <<Kotlin Data Class>>
+        +proveedorId: Long
+        +nombre: String
+        +cuit: String
+        +razonSocial: String
+        +email: String
+        +numeroMovil: String
+        +limiteCredito: BigDecimal
+        +posicionIva: Int
+        +posicion: PosicionIva
+    }
+
+    class PosicionIva {
+        +posicionId: Integer
+        +nombre: String
+    }
+
+    ProveedorController --> ProveedorService
+    ProveedorService --> ProveedorRepository
+    ProveedorRepository --> Proveedor
+    Proveedor "1" -- "1" PosicionIva
+
+    ProveedorMovimientoController --> ProveedorMovimientoService
+    ProveedorMovimientoService --> ProveedorMovimientoRepository
