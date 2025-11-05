@@ -41,7 +41,7 @@ data class Proveedor(
     var proveedorCategoriaId: Int? = null,
 
     @Column(name = "ibcategoria_id")
-    var inressosBrutosCategoriaId: Int? = null,
+    var ingresosBrutosCategoriaId: Int? = null,
 
     @Column(name = "prv_rep_codigo")
     var reparticionId: Int? = null,
