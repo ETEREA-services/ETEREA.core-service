@@ -136,7 +136,11 @@ data class ProveedorMovimiento(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cgoprov", insertable = false, updatable = false)
-    var proveedor: Proveedor? = null
+    var proveedor: Proveedor? = null,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "mpr_neg_id", insertable = false, updatable = false)
+    var negocio: Negocio? = null
 
 ) : Auditable() {
 
