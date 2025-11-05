@@ -8,7 +8,7 @@ sequenceDiagram
     User->>+PC: GET /proveedorMovimiento/arca/regimen/informacion/compras/{desde}/{hasta}
     PC->>+PS: findAllByRegimenInformacionCompras(desde, hasta)
     PS->>+PR: findAllByFechaContableBetweenAndComprobanteLibroIva(desde, hasta, 1, sort)
-    PR->>+DB: SELECT * FROM proveedor_movimiento WHERE fecha_contable BETWEEN ? AND ? AND comprobante_libro_iva = 1 ORDER BY fecha_comprobante, punto_venta, numero_comprobante
+    PR->>+DB: SELECT * FROM proveedor_movimiento WHERE fecha_contable BETWEEN ? AND ? AND comprobante_libro_iva = 1 ORDER BY fecha_comprobante, prefijo, numero_comprobante
     DB-->>-PR: Lista de movimientos filtrados
     PR-->>-PS: Lista filtrada por IVA
     PS-->>-PC: Lista final
