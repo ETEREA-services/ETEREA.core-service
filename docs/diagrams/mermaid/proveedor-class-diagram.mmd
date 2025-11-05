@@ -30,6 +30,22 @@ classDiagram
 
     class ProveedorMovimientoRepository {
         +findAllByFechaContableBetweenAndComprobanteLibroIva(OffsetDateTime, OffsetDateTime, Byte, Sort): List~ProveedorMovimiento~
+    class ProveedorMovimiento {
+        <<Kotlin Data Class>>
+        +proveedorMovimientoId: Long
+        +proveedorId: Long
+        +comprobanteId: Int
+        +fechaComprobante: OffsetDateTime
+        +prefijo: Int
+        +numeroComprobante: Long
+        +importe: BigDecimal
+        +neto: BigDecimal
+        +montoIva: BigDecimal
+        +fechaContable: OffsetDateTime
+        +comprobante: Comprobante
+        +proveedor: Proveedor
+    }
+
     }
 
     class Proveedor {

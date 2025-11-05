@@ -132,11 +132,16 @@ data class ProveedorMovimiento(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cgocomprob", insertable = false, updatable = false)
-    var comprobante: Comprobante? = null
+    var comprobante: Comprobante? = null,
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "cgoprov", insertable = false, updatable = false)
+    var proveedor: Proveedor? = null
 
 ) : Auditable() {
 
     fun comprobanteKey() : String {
         return "$proveedorId.$comprobanteId.$prefijo.$numeroComprobante"
     }
+
 }
