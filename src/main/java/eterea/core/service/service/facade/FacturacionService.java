@@ -2,6 +2,7 @@ package eterea.core.service.service.facade;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -230,7 +231,7 @@ public class FacturacionService {
       Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
       logVoucher(voucher);
 
-      String observaciones = "Reserva #" + reserva.getReservaId();
+      String observaciones = "";
       // Registra clienteMovimiento
       ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
             .negocioId(empresa.getNegocioId())
@@ -344,7 +345,9 @@ public class FacturacionService {
          Cliente cliente,
          Parametro parametro) {
 
-      String observaciones = "Reserva #" + reserva.getReservaId();
+      
+
+      String observaciones = getObservacionesPrecioPromedio(reserva);
       // Registra clienteMovimiento
       ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
             .negocioId(empresa.getNegocioId())
@@ -507,6 +510,33 @@ public class FacturacionService {
       } catch (JsonProcessingException e) {
          log.debug("articuloMovimiento jsonify error {}", e.getMessage());
       }
+   }
+   private String getObservacionesPrecioPromedio(Reserva reserva) {
+      OffsetDateTime fechaIn = reserva.getFechaInServicio();
+      OffsetDateTime fechaOutMinus1 = reserva.getFechaOutServicio().minusDays(1);
+
+      boolean hasWeekdayPrice = false;
+      boolean hasWeekendPrice = false;
+
+      OffsetDateTime currentDate = fechaIn;
+      while (!currentDate.isAfter(fechaOutMinus1)) {
+         var dayOfWeek = currentDate.getDayOfWeek();
+         
+         if (dayOfWeek == java.time.DayOfWeek.FRIDAY || dayOfWeek == java.time.DayOfWeek.SATURDAY) {
+            hasWeekendPrice = true;
+         } 
+         else {
+            hasWeekdayPrice = true;
+         }
+         
+         if (hasWeekdayPrice && hasWeekendPrice) {
+            return "Precio Unitario ARS corresponde al precio promedio por noche.";
+         }
+         
+         currentDate = currentDate.plusDays(1);
+      }
+
+      return "";
    }
 
 }

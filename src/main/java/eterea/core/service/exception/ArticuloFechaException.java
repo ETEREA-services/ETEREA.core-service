@@ -22,4 +22,8 @@ public class ArticuloFechaException extends RuntimeException {
 	public ArticuloFechaException(String articuloId, OffsetDateTime fecha) {
 		super("Cannot find ArticuloFecha " + articuloId + " - " + fecha);
 	}
+
+	public ArticuloFechaException(String articuloId, OffsetDateTime fechaInicio, OffsetDateTime fechaFin) {
+		super("Cannot find ArticuloFecha " + articuloId + " for period " + fechaInicio + " - " + fechaFin);
+	}
 }

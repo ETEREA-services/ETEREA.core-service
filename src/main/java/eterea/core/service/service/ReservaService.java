@@ -450,33 +450,7 @@ public class ReservaService {
       newReserva.setCliente(cliente);
       Reserva savedReserva = repository.save(newReserva);
 
-      List<String> articuloIds = createReservaDto.reservaArticulos().stream()
-            .map(ReservaArticulo::getArticuloId)
-            .toList();
-      List<Articulo> articulos = articuloService.findAllByIds(articuloIds);
-
-      List<ReservaArticulo> reservaArticulos = createReservaDto.reservaArticulos();
-      for (ReservaArticulo reservaArticulo : reservaArticulos) {
-         Articulo articulo = articulos.stream()
-               .filter(a -> a.getArticuloId().equals(reservaArticulo.getArticuloId()))
-               .findFirst()
-               .orElseThrow(() -> new ArticuloException(reservaArticulo.getArticuloId()));
-         BigDecimal precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(),
-               newReserva.getFechaInServicio());
-
-         reservaArticulo.setArticulo(articulo);
-         reservaArticulo.setArticuloId(articulo.getArticuloId());
-         reservaArticulo.setPrecioUnitarioSinComision(precioArticulo);
-         reservaArticulo.setReservaId(savedReserva.getReservaId());
-         reservaArticulo.setNegocioId(savedReserva.getNegocioId());
-
-         BigDecimal complemento = BigDecimal.ONE.subtract(reservaArticulo.getComision()).setScale(2,
-               RoundingMode.HALF_UP);
-         reservaArticulo.setPrecioUnitario(reservaArticulo.getPrecioUnitarioSinComision().multiply(complemento)
-               .setScale(2, RoundingMode.HALF_UP));
-      }
-      reservaArticulos = reservaArticuloService.saveAll(reservaArticulos);
-
+      reservaArticuloService.createAll(savedReserva, createReservaDto.reservaArticulos());
       return savedReserva;
    }
 
@@ -497,7 +471,6 @@ public class ReservaService {
             .findAllByReservaId(existingReserva.getReservaId());
 
       validateReservaUpdate(existingReserva, updatedReserva, updatedReservaArticulos, existingReservaArticulos);
-
 
       Cliente cliente = null;
       if (isAgencia) {
@@ -542,83 +515,14 @@ public class ReservaService {
 
       Reserva savedReserva = repository.save(existingReserva);
 
-      // Handles Articulos deletions and replacements
-      List<ReservaArticulo> articulosToDelete = existingReservaArticulos.stream()
-            .filter(existing -> {
-               var matchingUpdate = updatedReservaArticulos.stream()
-                     .filter(updated -> updated.getReservaArticuloId() != null &&
-                           updated.getReservaArticuloId().equals(existing.getReservaArticuloId()))
-                     .findFirst();
+      // Set Comisiones
+      updatedReservaArticulos.forEach(ra -> {
+         BigDecimal comision = comisionArticulo(savedReserva.getReservaId(), ra.getArticuloId(),
+               savedReserva.getClienteId());
+         ra.setComision(comision);
+      });
 
-               // Delete if:
-               // 1. Not found in update request (complete deletion), OR
-               // 2. Found but articuloId changed (article replacement)
-               return matchingUpdate.isEmpty() ||
-                     !matchingUpdate.get().getArticuloId().equals(existing.getArticuloId());
-            })
-            .toList();
-
-      for (ReservaArticulo articuloToDelete : articulosToDelete) {
-         log.info("Deleting Articulo {} from Reserva {}", articuloToDelete.getArticuloId(),
-               articuloToDelete.getReservaId());
-
-         ReservaArticuloEliminado auditRecord = new ReservaArticuloEliminado.Builder()
-               .negocioId(articuloToDelete.getNegocioId())
-               .reservaId(articuloToDelete.getReservaId())
-               .voucherId(articuloToDelete.getVoucherId() != null ? articuloToDelete.getVoucherId() : 0L)
-               .articuloId(articuloToDelete.getArticuloId())
-               .cantidad(articuloToDelete.getCantidad())
-               .comision(articuloToDelete.getComision())
-               .precioUnitarioSinComision(articuloToDelete.getPrecioUnitarioSinComision())
-               .precioUnitario(articuloToDelete.getPrecioUnitario())
-               .precioCompra(articuloToDelete.getPrecioCompra())
-               .observaciones(articuloToDelete.getObservaciones())
-               .reservaArticuloId(articuloToDelete.getReservaArticuloId())
-               .build();
-
-         reservaArticuloEliminadoService.create(auditRecord);
-
-         reservaArticuloService.deleteByReservaArticuloId(articuloToDelete.getReservaArticuloId());
-      }
-
-      List<String> articuloIds = updatedReservaArticulos.stream()
-            .map(ReservaArticulo::getArticuloId)
-            .toList();
-      List<Articulo> articulos = articuloService.findAllByIds(articuloIds);
-
-      for (ReservaArticulo updatedReservaArticulo : updatedReservaArticulos) {
-         // Check if this article was deleted (either complete deletion or replacement)
-         boolean wasDeleted = articulosToDelete.stream()
-               .anyMatch(deleted -> deleted.getReservaArticuloId().equals(updatedReservaArticulo.getReservaArticuloId()));
-
-         if (updatedReservaArticulo.getReservaArticuloId() != null && !wasDeleted) {
-            // Update existing article (simple modification - same articuloId, different quantity/price)
-            reservaArticuloService.update(updatedReservaArticulo, updatedReservaArticulo.getReservaArticuloId());
-         } else {
-            // Add as new (either brand new article or replacement after deletion)
-            Articulo articulo = articulos.stream()
-                  .filter(a -> a.getArticuloId().equals(updatedReservaArticulo.getArticuloId()))
-                  .findFirst()
-                  .orElseThrow(() -> new ArticuloException(updatedReservaArticulo.getArticuloId()));
-            BigDecimal precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(),
-                  updatedReserva.getFechaInServicio());
-
-            updatedReservaArticulo.setArticulo(articulo);
-            updatedReservaArticulo.setArticuloId(articulo.getArticuloId());
-            updatedReservaArticulo.setPrecioUnitarioSinComision(precioArticulo);
-            updatedReservaArticulo.setReservaId(savedReserva.getReservaId());
-            updatedReservaArticulo.setNegocioId(savedReserva.getNegocioId());
-
-            BigDecimal complemento = BigDecimal.ONE.subtract(comisionArticulo(savedReserva.getReservaId(),
-                  updatedReservaArticulo.getArticuloId(),
-                  cliente.getClienteId())).setScale(2, RoundingMode.HALF_UP);
-
-            updatedReservaArticulo.setPrecioUnitario(precioArticulo
-                  .multiply(complemento)
-                  .setScale(2, RoundingMode.HALF_UP));
-            reservaArticuloService.add(updatedReservaArticulo);
-         }
-      }
+      reservaArticuloService.updateAll(savedReserva, existingReservaArticulos, updatedReservaArticulos);
 
       return savedReserva;
    }
