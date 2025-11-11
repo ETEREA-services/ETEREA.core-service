@@ -310,6 +310,7 @@ public class ContabilidadService {
             clienteMovimiento.getClienteMovimientoId());
 
       // Agrego asiento contable a valorMovimiento
+      // Skipped if CtaCte because List<ValorMovimiento> is empty
       for (ValorMovimiento vm : valorMovimientos) {
          vm.setFechaContable(clienteMovimiento.getFechaContable());
          vm.setOrdenContable(ordenContable);
@@ -320,6 +321,7 @@ public class ContabilidadService {
       String concepto = String.format("Nro: %04d %06d", facturacionDTO.getPuntoVenta(),
             facturacionDTO.getNumeroComprobante());
 
+      // Skipped if CtaCte because List<ValorMovimiento> is empty
       for (ValorMovimiento vm : valorMovimientos) {
          // Registro total valores
          cuentaMovimientos.add(new CuentaMovimiento.Builder()
@@ -336,6 +338,24 @@ public class ContabilidadService {
                .concepto(concepto)
                .build());
       }
+
+      // If CtaCte, registro cuenta clientes
+      if (comprobante.getCuentaCorriente() != 0) {
+         cuentaMovimientos.add(new CuentaMovimiento.Builder()
+               .negocioId(clienteMovimiento.getNegocioId()) 
+               .numeroCuenta(parametro.getCuentaClientes())
+               .debita(comprobante.getDebita())
+               .importe(clienteMovimiento.getImporte()) // TODO: REVISAR, VB6 usa función "importeAjustado()"
+               .item(item++)
+               .fecha(clienteMovimiento.getFechaComprobante())
+               .comprobanteId(comprobante.getComprobanteId())
+               .orden(ordenContable)
+               .clienteId(clienteMovimiento.getClienteId())
+               .subrubroId(2L)
+               .concepto(concepto)
+               .build());
+      }
+
       // Registro iva 21
       if (facturacionDTO.getIva().compareTo(BigDecimal.ZERO) > 0) {
          cuentaMovimientos.add(new CuentaMovimiento.Builder()
