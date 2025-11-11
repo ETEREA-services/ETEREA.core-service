@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
+import eterea.core.service.exception.FacturacionException;
+import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.ArticuloMovimiento;
 import eterea.core.service.kotlin.model.Cliente;
@@ -38,6 +40,7 @@ import eterea.core.service.service.ValorService;
 import eterea.core.service.service.VoucherService;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.tool.ToolService;
+import eterea.core.service.validation.CuitValidator;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -227,6 +230,12 @@ public class FacturacionService {
          Parametro parametro,
          ReservaContext reservaContext) {
 
+      validateReserva(reserva);
+      validateFacturacion(cliente, comprobante, valorMovimientos, facturacionDTO);
+
+      int posicionIva = cliente.getPosicion().getPosicionId();
+      String tipoComprobante = (posicionIva == 1 || posicionIva == 4) ? "A" : "B";
+
       Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
       logVoucher(voucher);
 
@@ -240,7 +249,9 @@ public class FacturacionService {
             .fechaComprobante(ToolService.dateAbsoluteArgentina())
             .fechaVencimiento(ToolService.dateAbsoluteArgentina())
             .importe(facturacionDTO.getTotal())
-            .cancelado(facturacionDTO.getTotal()) // contado
+            .cancelado(comprobante.getCuentaCorriente() != 0
+                  ? BigDecimal.ZERO
+                  : facturacionDTO.getTotal())
             .puntoVenta(comprobante.getPuntoVenta())
             .numeroComprobante(facturacionDTO.getNumeroComprobante())
             .montoIva(facturacionDTO.getIva())
@@ -344,6 +355,12 @@ public class FacturacionService {
          Cliente cliente,
          Parametro parametro) {
 
+      validateReserva(reserva);
+      validateFacturacion(cliente, comprobante, valorMovimientos, facturacionDTO);
+
+      int posicionIva = cliente.getPosicion().getPosicionId();
+      String tipoComprobante = (posicionIva == 1 || posicionIva == 4) ? "A" : "B";
+
       String observaciones = "Reserva #" + reserva.getReservaId();
       // Registra clienteMovimiento
       ClienteMovimiento clienteMovimiento = new ClienteMovimiento.Builder()
@@ -354,7 +371,9 @@ public class FacturacionService {
             .fechaComprobante(ToolService.dateAbsoluteArgentina())
             .fechaVencimiento(ToolService.dateAbsoluteArgentina())
             .importe(facturacionDTO.getTotal())
-            .cancelado(facturacionDTO.getTotal()) // contado
+            .cancelado(comprobante.getCuentaCorriente() != 0
+                  ? BigDecimal.ZERO
+                  : facturacionDTO.getTotal())
             .puntoVenta(comprobante.getPuntoVenta())
             .numeroComprobante(facturacionDTO.getNumeroComprobante())
             .montoIva(facturacionDTO.getIva())
@@ -507,6 +526,62 @@ public class FacturacionService {
       } catch (JsonProcessingException e) {
          log.debug("articuloMovimiento jsonify error {}", e.getMessage());
       }
+   }
+
+   private void validateReserva(Reserva reserva) {
+      if (reserva.getAnulada() == (byte) 1) {
+         throw new ReservaException("Reserva anulada");
+      }
+      if (reserva.getPagaCacheuta() == (byte) 1) {
+         throw new ReservaException("Reserva marcada como Paga Cacheuta");
+      }
+      if (reserva.getFacturadoFuera() == (byte) 1) {
+         throw new ReservaException("Reserva facturada en otro punto de venta");
+      }
+      if (reserva.getFacturada() == (byte) 1) {
+         throw new ReservaException("Reserva ya facturada");
+      }
+      if (reserva.getCliente() == null) {
+         throw new ReservaException("Reserva no tiene cliente asociado");
+      }
+   }
+
+   private void validateFacturacion(Cliente cliente, Comprobante comprobante, List<ValorMovimiento> valorMovimientos,
+         FacturacionDto facturacionDTO) {
+      int posicionIva = cliente.getPosicion().getPosicionId();
+      String tipoComprobante = (posicionIva == 1 || posicionIva == 4) ? "A" : "B";
+      if (!comprobante.getLetraComprobante().equals(tipoComprobante)) {
+         throw new FacturacionException("El tipo de comprobante " + comprobante.getLetraComprobante()
+               + " no es apropiado para la posición del cliente " + posicionIva);
+      }
+
+      if (tipoComprobante.equals("A") && !CuitValidator.validate(cliente.getCuit())) {
+         throw new FacturacionException("CUIT " + cliente.getCuit() + " inválido");
+      }
+
+      if (comprobante.getCuentaCorriente() != 0 && !valorMovimientos.isEmpty()) {
+         throw new FacturacionException("CtaCte no debe contener Valor Movimientos");
+      }
+
+      if (comprobante.getCuentaCorriente() == 0 && valorMovimientos.isEmpty()) {
+         throw new FacturacionException("CtaCte debe contener Valor Movimientos");
+      }
+
+      if (facturacionDTO.getTotal().compareTo(BigDecimal.ZERO) <= 0) {
+         throw new FacturacionException("Importe total debe ser mayor a 0");
+      }
+
+      if (comprobante.getCuentaCorriente() == 0) {
+         BigDecimal total = facturacionDTO.getTotal();
+         BigDecimal totalValorMovimientos = valorMovimientos.stream()
+               .map(ValorMovimiento::getImporte)
+               .reduce(BigDecimal.ZERO, BigDecimal::add);
+         if (total.compareTo(totalValorMovimientos) != 0) {
+            throw new FacturacionException(
+                  "Importe total no coincide con la suma de los importes de Valor Movimientos");
+         }
+      }
+
    }
 
 }
