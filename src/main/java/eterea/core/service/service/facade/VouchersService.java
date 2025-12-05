@@ -1,5 +1,6 @@
 package eterea.core.service.service.facade;
 
+import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
@@ -20,11 +21,11 @@ import java.util.*;
 @RequiredArgsConstructor
 public class VouchersService {
 
-    private final EmpresaService empresaService;
     private final NegocioService negocioService;
     private final OrderNoteService orderNoteService;
     private final VoucherService voucherService;
     private final ProductsService productsService;
+    private final EmpresaService empresaService;
 
     public ProgramaDiaDto importOneFromWeb(Long orderNumberId, Track track) {
         log.debug("Processing importOneFromWeb");
@@ -48,7 +49,7 @@ public class VouchersService {
 
         Product product = orderNote.getProducts().getFirst();
         assert product != null;
-        return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findTop().getNegocioId()), track);
+        return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findLast().get().getNegocioId()), track);
     }
 
     private OrderNote getOrderNoteById(Long orderNumberId) {

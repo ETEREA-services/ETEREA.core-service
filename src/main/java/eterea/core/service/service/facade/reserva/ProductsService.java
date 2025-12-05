@@ -3,6 +3,7 @@ package eterea.core.service.service.facade.reserva;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.exception.ClienteException;
+import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.kotlin.exception.FeriadoException;
 import eterea.core.service.kotlin.exception.ProductoSkuException;
 import eterea.core.service.kotlin.extern.OrderNote;
@@ -38,8 +39,8 @@ public class ProductsService {
     private final VoucherService voucherService;
     private final ReservaContextService reservaContextService;
     private final ReservaService reservaService;
-    private final EmpresaService empresaService;
     private final VoucherProductoService voucherProductoService;
+    private final EmpresaService empresaService;
 
     private record PersonType(int cantidad, String descripcion) {}
 
@@ -260,7 +261,7 @@ public class ProductsService {
             track = trackService.startTracking("generar-reserva");
         }
         Reserva reserva = reservaService.copyFromVoucher(voucher);
-        reserva.setNegocioId(empresaService.findTop().getNegocioId());
+        reserva.setNegocioId(empresaService.findLast().get().getNegocioId());
         reserva.setUsuario("admin");
         reserva.setTrackUuid(track.getUuid());
         reserva = reservaService.add(reserva, track);
