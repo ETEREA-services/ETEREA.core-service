@@ -21,21 +21,26 @@ public class Legajo extends Auditable {
     @Column(name = "leg_id")
     private Integer legajoId;
 
+    @Builder.Default
     @Column(name = "leg_apellido")
     private String apellido = "";
 
+    @Builder.Default
     @Column(name = "leg_nombre")
     private String nombre = "";
 
     @Column(name = "leg_doc_id")
     private Integer documentoId;
 
+    @Builder.Default
     @Column(name = "leg_telefono")
     private String telefono = "";
 
+    @Builder.Default
     @Column(name = "leg_celular")
     private String celular = "";
 
+    @Builder.Default
     @Column(name = "leg_email")
     private String email = "";
 
@@ -46,24 +51,31 @@ public class Legajo extends Auditable {
     @Column(name = "leg_nrodoc")
     private BigDecimal numeroDocumento;
 
+    @Builder.Default
     @Column(name = "leg_cuil")
     private String cuil = "";
 
+    @Builder.Default
     @Column(name = "leg_calle")
     private String calle = "";
 
+    @Builder.Default
     @Column(name = "leg_numero")
     private String numero = "";
 
+    @Builder.Default
     @Column(name = "leg_piso")
     private String piso = "";
 
+    @Builder.Default
     @Column(name = "leg_dpto")
     private String departamento = "";
 
+    @Builder.Default
     @Column(name = "leg_localidad")
     private String localidad = "";
 
+    @Builder.Default
     @Column(name = "leg_provincia")
     private String provincia = "";
 

@@ -1,6 +1,8 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.client.report.MakeFacturaReportClient;
+import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
+import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.exception.ReservaContextException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.*;
@@ -31,7 +33,6 @@ public class MakeFacturaProgramaDiaService {
 
     private final ComprobanteService comprobanteService;
     private final ReservaService reservaService;
-    private final EmpresaService empresaService;
     private final ReservaArticuloService reservaArticuloService;
     private final ParametroService parametroService;
     private final FacturacionElectronicaService facturacionElectronicaService;
@@ -46,6 +47,7 @@ public class MakeFacturaProgramaDiaService {
     private final FacturacionService facturacionService;
     private final TrackService trackService;
     private final RegistraFacturaService registraFacturaService;
+    private final EmpresaService empresaService;
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId, Track track) {
         if (track == null) {
@@ -56,7 +58,7 @@ public class MakeFacturaProgramaDiaService {
             return false;
         }
         log.debug("Comprobante -> {}", comprobante.jsonify());
-        Empresa empresa = empresaService.findTop();
+        Empresa empresa = empresaService.findLast().get();
         Parametro parametro = parametroService.findTop();
         String moneda = "PES";
         Reserva reserva = reservaService.findByReservaId(reservaId);

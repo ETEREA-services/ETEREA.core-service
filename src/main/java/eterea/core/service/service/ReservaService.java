@@ -9,11 +9,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
+import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.repository.ReservaRepository;
@@ -43,9 +46,9 @@ public class ReservaService {
     private final ArticuloService articuloService;
     private final ArticuloMovimientoService articuloMovimientoService;
     private final ConceptoFacturadoService conceptoFacturadoService;
-    private final EmpresaService empresaService;
     private final VoucherProductoService voucherProductoService;
     private final PrecioService precioService;
+    private final EmpresaService empresaService;
 
     public List<Reserva> findTopPendientes() {
         return repository
@@ -55,7 +58,7 @@ public class ReservaService {
     }
 
     public Reserva findByReservaId(Long reservaId) {
-        return repository.findByReservaId(reservaId).orElseThrow(() -> new ReservaException(reservaId));
+        return Objects.requireNonNull(repository.findByReservaId(reservaId)).orElseThrow(() -> new ReservaException(reservaId));
     }
 
     @Transactional
@@ -85,7 +88,7 @@ public class ReservaService {
         Voucher voucher = null;
         if (reserva.getVoucherId() != null && reserva.getVoucherId() > 0) {
             voucher = voucherService.findByReservaId(clienteMovimiento.getReservaId());
-            if (!voucher.getNumeroVoucher().trim().isEmpty())
+            if (!Objects.requireNonNull(voucher.getNumeroVoucher()).trim().isEmpty())
                 numeroVoucher = " - No.Voucher: " + voucher.getNumeroVoucher();
         }
         int item = 0;
@@ -120,7 +123,7 @@ public class ReservaService {
             factorIva = new BigDecimal("1.105");
         if (articulo.getExento() == 1)
             factorIva = new BigDecimal("1.0");
-        Integer factor = comprobante.getDebita() == 1 ? -1 : 1;
+        int factor = comprobante.getDebita() == 1 ? -1 : 1;
 
         if (articulo.getCentroStockId() != 1 || facturaExtranjero == 0) {
             BigDecimal precioUnitarioSinIva = reservaArticulo.getPrecioUnitario().divide(factorIva, 2, RoundingMode.HALF_UP);
@@ -249,7 +252,7 @@ public class ReservaService {
 
     @Transactional
     public void generarReservaArticulo(Reserva reserva, List<VoucherProducto> voucherProductos, Track track) {
-        Empresa empresa = empresaService.findTop();
+        Empresa empresa = empresaService.findLast().get();
         // Proceso que depura los artículos a eliminar y agregar
         // Para eliminar parto de todos los que ya están guardados y sacaré los que hay que guardar que ya estaban, los que queden serán eliminados
         Map<String, ReservaArticulo> collectionEliminar = reservaArticuloService.findAllByVoucherId(reserva.getReservaId(), reserva.getVoucherId()).stream().collect(Collectors.toMap(ReservaArticulo::getArticuloId, reservaArticulo -> reservaArticulo));

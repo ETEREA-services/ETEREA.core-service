@@ -1,5 +1,6 @@
 package eterea.core.service.service.facade;
 
+import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.model.dto.FacturacionDto;
 import eterea.core.service.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -12,25 +13,24 @@ public class TransaccionFacturaProgramaDiaService {
     private final FacturacionService facturacionService;
     private final VoucherService voucherService;
     private final ComprobanteService comprobanteService;
-    private final EmpresaService empresaService;
     private final ParametroService parametroService;
     private final ReservaContextService reservaContextService;
     private final TrackService trackService;
+    private final EmpresaService empresaService;
 
     public TransaccionFacturaProgramaDiaService(FacturacionService facturacionService,
                                                 VoucherService voucherService,
                                                 ComprobanteService comprobanteService,
-                                                EmpresaService empresaService,
                                                 ParametroService parametroService,
                                                 ReservaContextService reservaContextService,
-                                                TrackService trackService) {
+                                                TrackService trackService, EmpresaService empresaService) {
         this.facturacionService = facturacionService;
         this.voucherService = voucherService;
         this.comprobanteService = comprobanteService;
-        this.empresaService = empresaService;
         this.parametroService = parametroService;
         this.reservaContextService = reservaContextService;
         this.trackService = trackService;
+        this.empresaService = empresaService;
     }
 
     public void registroTransaccionFacturaProgramaDia(Long orderNumberId, FacturacionDto facturacionDto, Boolean soloFactura, Boolean dryRun) {
@@ -42,7 +42,7 @@ public class TransaccionFacturaProgramaDiaService {
         var cliente = voucher.getCliente();
         var comprobante = comprobanteService.findByComprobanteId(853);
         log.debug("Comprobante -> {}", comprobante.jsonify());
-        var empresa = empresaService.findTop();
+        var empresa = empresaService.findLast().get();
         var parametro = parametroService.findTop();
         var reservaContext = reservaContextService.findByReservaId(voucher.getReservaId());
         log.debug("ReservaContext -> {}", reservaContext.jsonify());

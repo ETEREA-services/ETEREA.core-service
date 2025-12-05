@@ -1,6 +1,7 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.client.afip.FacturacionAfipClient;
+import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.*;
