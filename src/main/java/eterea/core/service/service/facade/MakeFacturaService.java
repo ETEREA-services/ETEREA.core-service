@@ -203,10 +203,14 @@ public class MakeFacturaService {
          reservaContext.setFacturaTries(1 + reservaContext.getFacturaTries());
       } catch (ReservaContextException e) {
          log.debug("creando reserva_context");
+         String numeroVoucher = voucher.getNumeroVoucher();
+         Long orderNumberId = (numeroVoucher != null && !numeroVoucher.trim().isEmpty())
+               ? Long.valueOf(numeroVoucher)
+               : 0L;
          reservaContext = new ReservaContext.Builder()
                .reservaId(reserva.getReservaId())
                .voucherId(reserva.getVoucherId())
-               .orderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())))
+               .orderNumberId(orderNumberId)
                // TODO: TEMPORAL, por ahora todas las cargadas por eterea online
                // cargan reserva_context con facturaPendiente=0 y envioPendiente=0
                .facturaPendiente((byte) 0)
