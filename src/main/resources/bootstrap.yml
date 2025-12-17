@@ -29,10 +29,16 @@ spring:
         prefer-ip-address: true
         tags: eterea,core
   datasource:
-    url: jdbc:mysql://${app.server}/${app.database}?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://${app.server}/${app.database}?useSSL=false&serverTimezone=UTC&tcpKeepAlive=true
     username: ${app.user}
     password: ${app.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      max-lifetime: 1200000        # 20 minutos (seguro, << 4h)
+      idle-timeout: 600000         # 10 minutos
+      connection-timeout: 30000    # 30 segundos
+      validation-timeout: 3000     # 3 segundos
   jpa:
     hibernate:
       ddl-auto: none
