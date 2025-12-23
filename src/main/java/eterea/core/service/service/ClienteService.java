@@ -70,13 +70,17 @@ public class ClienteService {
 	}
 
 	public Cliente findByNumeroDocumentoAndDocumentoId(String numeroDocumento, Integer documentoId) {
-		return repository.findByNumeroDocumentoAndDocumentoId(numeroDocumento, documentoId)
+		if (!isNumeroDocumentoValid(numeroDocumento)) {
+			throw new ClienteException("Número de documento inválido: " + numeroDocumento);
+		}
+		return repository.findTopByNumeroDocumentoAndDocumentoIdOrderByClienteIdDesc(numeroDocumento, documentoId)
 				.orElseThrow(() -> new ClienteException(numeroDocumento, documentoId));
 	}
 
 	public Cliente createOrGet(Cliente cliente) {
 		Optional<Cliente> existentClientByTipoDocumentoAndNumeroDocumentoOpt = repository
-				.findByNumeroDocumentoAndDocumentoId(cliente.getNumeroDocumento(), cliente.getDocumentoId());
+				.findTopByNumeroDocumentoAndDocumentoIdOrderByClienteIdDesc(cliente.getNumeroDocumento(),
+						cliente.getDocumentoId());
 
 		if (existentClientByTipoDocumentoAndNumeroDocumentoOpt.isPresent()) {
 			return existentClientByTipoDocumentoAndNumeroDocumentoOpt.get();
@@ -128,23 +132,40 @@ public class ClienteService {
 	}
 
 	public Cliente findByCuit(String cuit) {
-		return repository.findByCuit(cuit).orElseThrow(() -> new ClienteException(cuit));
+		if (!isCuitValid(cuit)) {
+			throw new ClienteException("CUIT inválido: " + cuit);
+		}
+		return repository.findTopByCuitOrderByClienteIdDesc(cuit).orElseThrow(() -> new ClienteException(cuit));
 	}
-	
+
 	public PageDto<Cliente> findAllPaginated(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("clienteId").descending());
 		Page<Cliente> pageResult = repository.findAllBy(pageable);
 
 		return new PageDto<Cliente>(
-			pageResult.getContent(),
-			pageResult.getNumber(),
-			pageResult.getSize(),
-			pageResult.getNumberOfElements(),
-			pageResult.getTotalElements(),
-			pageResult.getTotalPages(),
-			pageResult.isFirst(),
-			pageResult.isLast(),
-			pageResult.isEmpty()
-		);
+				pageResult.getContent(),
+				pageResult.getNumber(),
+				pageResult.getSize(),
+				pageResult.getNumberOfElements(),
+				pageResult.getTotalElements(),
+				pageResult.getTotalPages(),
+				pageResult.isFirst(),
+				pageResult.isLast(),
+				pageResult.isEmpty());
+	}
+
+	private boolean isNumeroDocumentoValid(String numeroDocumento) {
+		return numeroDocumento != null
+				&& !numeroDocumento.trim().equals("")
+				&& !numeroDocumento.trim().isBlank()
+				&& !numeroDocumento.trim().matches("0+");
+	}
+
+	private boolean isCuitValid(String cuit) {
+		return cuit != null
+				&& !cuit.trim().equals("")
+				&& !cuit.trim().equals("00-00000000-0")
+				&& !cuit.trim().isBlank()
+				&& !cuit.trim().matches("0+");
 	}
 }

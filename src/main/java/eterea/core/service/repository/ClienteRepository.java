@@ -30,6 +30,10 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	Optional<Cliente> findByNumeroDocumentoAndDocumentoId(String numeroDocumento, Integer documentoId);
 
+	Optional<Cliente> findTopByNumeroDocumentoAndDocumentoIdOrderByClienteIdDesc(String numeroDocumento, Integer documentoId);
+
+	Optional<Cliente> findTopByCuitOrderByClienteIdDesc(String cuit);
+
 	@Query("""
 		SELECT
         c
