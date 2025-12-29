@@ -450,7 +450,7 @@ public class ReservaService {
       newReserva.setCliente(cliente);
       Reserva savedReserva = repository.save(newReserva);
 
-      reservaArticuloService.createAll(savedReserva, createReservaDto.reservaArticulos());
+      reservaArticuloService.createAll(savedReserva, createReservaDto.reservaArticulos(), createReservaDto.articuloFechasMap());
       return savedReserva;
    }
 
@@ -522,7 +522,7 @@ public class ReservaService {
          ra.setComision(comision);
       });
 
-      reservaArticuloService.updateAll(savedReserva, existingReservaArticulos, updatedReservaArticulos);
+      reservaArticuloService.updateAll(savedReserva, existingReservaArticulos, updatedReservaArticulos, createReservaDto.articuloFechasMap());
 
       return savedReserva;
    }

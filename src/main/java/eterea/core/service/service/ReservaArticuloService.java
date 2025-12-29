@@ -25,6 +25,7 @@ import eterea.core.service.kotlin.model.Reserva;
 import eterea.core.service.kotlin.model.ReservaArticulo;
 import eterea.core.service.kotlin.model.ReservaArticuloEliminado;
 import eterea.core.service.kotlin.repository.ReservaArticuloRepository;
+import eterea.core.service.model.dto.reserva.ArticuloFechasDto;
 import eterea.core.service.service.facade.PrecioService;
 import jakarta.transaction.Transactional;
 
@@ -77,7 +78,8 @@ public class ReservaArticuloService {
 		return repository.save(reservaArticulo);
 	}
 
-	public List<ReservaArticulo> createAll(Reserva reserva, List<ReservaArticulo> reservaArticulos) {
+	public List<ReservaArticulo> createAll(Reserva reserva, List<ReservaArticulo> reservaArticulos,
+			Map<String, List<ArticuloFechasDto>> articuloFechasMap) {
 		List<String> articulosIds = reservaArticulos.stream()
 				.map(ReservaArticulo::getArticuloId)
 				.toList();
@@ -90,7 +92,10 @@ public class ReservaArticuloService {
 					.findFirst()
 					.orElseThrow(() -> new ArticuloException(ra.getArticuloId()));
 
-			BigDecimal precioUnitarioSinComision = calculatePrecio(ra, reserva);
+			List<ArticuloFechasDto> fechasList = articuloFechasMap.get(ra.getArticuloId());
+
+			BigDecimal precioUnitarioSinComision = calculateTotalWeightedPrecio(ra, fechasList,
+					reserva.getFechaInServicio(), reserva.getFechaOutServicio());
 			ra.setPrecioUnitarioSinComision(precioUnitarioSinComision);
 
 			ra.setArticulo(articulo);
@@ -105,8 +110,8 @@ public class ReservaArticuloService {
 	}
 
 	public List<ReservaArticulo> updateAll(Reserva reserva, List<ReservaArticulo> existingReservaArticulos,
-			List<ReservaArticulo> newReservaArticulos) {
-		
+			List<ReservaArticulo> newReservaArticulos, Map<String, List<ArticuloFechasDto>> articuloFechasMap) {
+
 		log.debug("newReservaArticulos: {}", newReservaArticulos);
 		List<ReservaArticulo> raToDelete = existingReservaArticulos.stream()
 				.filter(existingRa -> {
@@ -121,7 +126,7 @@ public class ReservaArticuloService {
 							|| !matchingUpdate.get().getArticuloId().equals(existingRa.getArticuloId());
 				})
 				.toList();
-			
+
 		log.debug("raToDelete: {}", raToDelete);
 
 		// Create audit records and delete articles
@@ -174,7 +179,10 @@ public class ReservaArticuloService {
 							.findFirst()
 							.orElseThrow(() -> new ArticuloException(ra.getArticuloId()));
 
-					BigDecimal precioUnitarioSinComision = calculatePrecio(ra, reserva);
+					List<ArticuloFechasDto> fechasList = articuloFechasMap.get(ra.getArticuloId());
+
+					BigDecimal precioUnitarioSinComision = calculateTotalWeightedPrecio(ra, fechasList,
+							reserva.getFechaInServicio(), reserva.getFechaOutServicio());
 					ra.setPrecioUnitarioSinComision(precioUnitarioSinComision);
 					ra.setArticulo(articulo);
 					ra.setArticuloId(articulo.getArticuloId());
@@ -188,7 +196,7 @@ public class ReservaArticuloService {
 
 		List<ReservaArticulo> createdRa = raToCreate.isEmpty()
 				? List.of()
-				: createAll(reserva, raToCreate);
+				: createAll(reserva, raToCreate, articuloFechasMap);
 
 		return Stream.concat(updatedRa.stream(), createdRa.stream()).toList();
 	}
@@ -240,24 +248,23 @@ public class ReservaArticuloService {
 		return true;
 	}
 
-	private BigDecimal calculatePrecio(ReservaArticulo ra, Reserva reserva) {
-		BigDecimal precioArticulo = (reserva.getFechaInServicio().isEqual(reserva.getFechaOutServicio()))
-				? precioService.getUnitPriceByArticuloIdAndFecha(ra.getArticuloId(), reserva.getFechaInServicio())
-				: getPrecioAvgHabitaciones(ra, reserva);
+	private BigDecimal calculatePrecio(ReservaArticulo ra, OffsetDateTime fechaIngreso, OffsetDateTime fechaSalida) {
+		BigDecimal precioArticulo = (fechaSalida == null || fechaSalida.isEqual(fechaIngreso))
+				? precioService.getUnitPriceByArticuloIdAndFecha(ra.getArticuloId(), fechaIngreso)
+				: calculateAveragePerNight(ra, fechaIngreso, fechaSalida);
 		return precioArticulo;
 	}
 
-	private BigDecimal getPrecioAvgHabitaciones(ReservaArticulo ra, Reserva reserva) {
-		OffsetDateTime fechaIn = reserva.getFechaInServicio();
-		OffsetDateTime fechaOut = reserva.getFechaOutServicio();
-		OffsetDateTime fechaOutMinus1 = fechaOut.minusDays(1);
-		int noches = (int) ChronoUnit.DAYS.between(fechaIn, fechaOut);
+	private BigDecimal calculateAveragePerNight(ReservaArticulo ra, OffsetDateTime fechaIngreso,
+			OffsetDateTime fechaSalida) {
+		OffsetDateTime fechaSalidaMinus1 = fechaSalida.minusDays(1);
+		int noches = (int) ChronoUnit.DAYS.between(fechaIngreso, fechaSalida);
 
 		List<ArticuloFecha> articuloFechas = articuloFechaService.findAllByArticuloIdAndPeriodo(ra.getArticuloId(),
-				fechaIn, fechaOutMinus1);
+				fechaIngreso, fechaSalidaMinus1);
 		if (articuloFechas.isEmpty()) {
 			throw new ArticuloFechaException(
-					ra.getArticuloId(), fechaIn, fechaOut);
+					ra.getArticuloId(), fechaIngreso, fechaSalida);
 		}
 
 		BigDecimal precioArticuloAvg = articuloFechas.stream()
@@ -266,6 +273,44 @@ public class ReservaArticuloService {
 				.divide(BigDecimal.valueOf(noches), 2, RoundingMode.HALF_UP);
 
 		return precioArticuloAvg;
+	}
+
+	private BigDecimal calculateTotalWeightedPrecio(
+			ReservaArticulo ra,
+			List<ArticuloFechasDto> fechasList,
+			OffsetDateTime fallbackIngreso,
+			OffsetDateTime fallbackSalida) {
+
+		// If no room dates, use fallback (reservation dates)
+		if (fechasList == null || fechasList.isEmpty()) {
+			return calculatePrecio(ra, fallbackIngreso, fallbackSalida);
+		}
+
+		// Single date range - use existing logic
+		if (fechasList.size() == 1) {
+			ArticuloFechasDto fechas = fechasList.get(0);
+			return calculatePrecio(ra, fechas.fechaIngreso(), fechas.fechaSalida());
+		}
+
+		// Multiple date ranges - weighted average
+		BigDecimal totalValue = BigDecimal.ZERO;
+		long totalNights = 0;
+
+		for (ArticuloFechasDto fechas : fechasList) {
+			long nights = ChronoUnit.DAYS.between(fechas.fechaIngreso(), fechas.fechaSalida());
+			if (nights <= 0)
+				nights = 1; // Minimum 1 night
+
+			BigDecimal priceForRange = calculatePrecio(ra, fechas.fechaIngreso(), fechas.fechaSalida());
+			totalValue = totalValue.add(priceForRange.multiply(BigDecimal.valueOf(nights)));
+			totalNights += nights;
+		}
+
+		if (totalNights == 0) {
+			return calculatePrecio(ra, fallbackIngreso, fallbackSalida);
+		}
+
+		return totalValue.divide(BigDecimal.valueOf(totalNights), 2, RoundingMode.HALF_UP);
 	}
 
 }
