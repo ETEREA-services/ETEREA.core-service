@@ -1,5 +1,6 @@
 package eterea.core.service.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,6 +24,7 @@ public interface ProductoClienteComisionRepository extends JpaRepository<Product
          WHERE ra.reservaId = :reservaId
                AND pcc.clienteId = :clienteId
                AND pa.articuloId = :articuloId
+         ORDER BY pcc.productoClienteComisionId ASC
          """)
-   Optional<ProductoClienteComision> findByClienteIdAndReservaIdAndArticuloId(Long clienteId, Long reservaId, String articuloId);
+   List<ProductoClienteComision> findByClienteIdAndReservaIdAndArticuloId(Long clienteId, Long reservaId, String articuloId);
 }
