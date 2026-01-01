@@ -11,12 +11,12 @@
     </parent>
     <groupId>com.termascacheuta</groupId>
     <artifactId>eterea.core.service</artifactId>
-    <version>0.13.3</version>
+    <version>1.0.0</version>
     <name>ETEREA.core-service</name>
     <description>API - Eterea - Core</description>
     <properties>
-        <java.version>24</java.version>
-        <kotlin.version>2.2.21</kotlin.version>
+        <java.version>25</java.version>
+        <kotlin.version>2.3.0</kotlin.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
         <sonar.organization>eterea-services</sonar.organization>
         <sonar.projectKey>ETEREA-services_ETEREA.core-service</sonar.projectKey>

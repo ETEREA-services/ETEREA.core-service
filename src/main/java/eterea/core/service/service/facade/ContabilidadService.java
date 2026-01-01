@@ -4,7 +4,7 @@ import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.model.Track;
-import eterea.core.service.model.dto.FacturacionDto;
+import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
 import eterea.core.service.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

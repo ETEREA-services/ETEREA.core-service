@@ -1,3 +1,45 @@
+## [1.0.0] - 2026-01-01
+
+### 🚀 Major Release - Migración a Arquitectura Hexagonal
+
+#### Breaking Changes
+- **refactor!**: Migración completa a arquitectura hexagonal con reorganización de paquetes y estructura de código
+- **refactor!**: Actualización de dependencias principales: Java 24→25, Kotlin 2.2.21→2.3.0, Spring Boot 3.5.6→3.5.8
+- **refactor!**: Reorganización de módulos de facturación en estructura hexagonal nacional/exportación
+
+#### Features
+- **feat**: Nueva funcionalidad de facturación de exportación con `FacturaExportacionResponse` y `FacturaExportacionFacturadorItem`
+- **feat**: Sistema de ajuste automático de netos e ivas para comprobantes de compras
+- **feat**: Implementación de relación proveedor-movimiento con negocio
+- **feat**: Optimización del pool de conexiones de base de datos (10→20 conexiones)
+- **feat**: Migración completa del módulo Empresa a arquitectura hexagonal
+- **feat**: Migración completa del módulo ProveedorMovimiento a arquitectura hexagonal
+- **feat**: Migración completa del módulo de facturación nacional a arquitectura hexagonal
+
+#### Changed
+- **refactor**: Reorganización completa de servicios a arquitectura hexagonal:
+  - `hexagonal/empresa/` - Gestión de empresas
+  - `hexagonal/facturacion/arca/nacional/` - Facturación nacional
+  - `hexagonal/facturacion/arca/exportacion/` - Facturación de exportación
+- **refactor**: Actualización de imports y referencias en toda la codebase
+- **refactor**: Mejora en nomenclatura de campos (hwnd→hWnd, impositivoId→idImpositivo)
+- **refactor**: Actualización de Dockerfile y CI/CD pipeline para Java 25
+- **refactor**: Mejora en manejo de transacciones con `@Transactional` en servicios críticos
+
+#### Fixed
+- **fix**: Corrección de nombres de atributos en entidades Kotlin para mayor consistencia
+- **fix**: Optimización de consultas en `ArticuloMovimientoTemporalRepository` con nombres de métodos corregidos
+- **fix**: Mejora en manejo de errores y logging en servicios de facturación
+
+#### Performance
+- **perf**: Incremento del pool de conexiones Hikari de 10 a 20 para mejor throughput
+- **perf**: Optimización de métodos de búsqueda con nombres de campos corregidos
+
+#### Documentation
+- **docs**: Actualización de diagramas de arquitectura para reflejar la nueva estructura hexagonal
+- **docs**: Documentación de nuevos endpoints de facturación de exportación
+- **docs**: Actualización de badges y versiones en README.md
+
 ## [0.13.3] - 2025-11-04
 
 ### Fixed

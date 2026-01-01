@@ -17,7 +17,7 @@ data class ArticuloMovimientoTemporal(
     var ipAddress: String = "",
 
     @Column(name = "dat_hwnd")
-    var hwnd: Long = 0,
+    var hWnd: Long = 0,
 
     var item: Long = 0,
     var item2: Int = 0,

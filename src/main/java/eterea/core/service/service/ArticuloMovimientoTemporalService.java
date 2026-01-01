@@ -23,13 +23,13 @@ public class ArticuloMovimientoTemporalService {
 		this.repository = repository;
 	}
 
-	public List<ArticuloMovimientoTemporal> findAllByHwnd(String ipAddress, Long hWnd, Integer centroId) {
+	public List<ArticuloMovimientoTemporal> findAllByHWnd(String ipAddress, Long hWnd, Integer centroId) {
 		Sort sort = Sort.by("item").ascending()
 				.and(Sort.by("item2").descending().and(Sort.by("articuloMovimientoTemporalId").ascending()));
-		if (centroId == null) {
-			return repository.findAllByIpAddressAndHwnd(ipAddress, hWnd, sort);
+		if (centroId == null || centroId == 0) {
+			return repository.findAllByIpAddressAndHWnd(ipAddress, hWnd, sort);
 		}
-		return repository.findAllByIpAddressAndHwndAndCentroId(ipAddress, hWnd, centroId, sort);
+		return repository.findAllByIpAddressAndHWndAndCentroId(ipAddress, hWnd, centroId, sort);
 	}
 
 }

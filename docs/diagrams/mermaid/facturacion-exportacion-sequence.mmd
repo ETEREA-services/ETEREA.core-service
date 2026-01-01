@@ -1,0 +1,47 @@
+sequenceDiagram
+    participant CLIENT as Cliente Frontend
+    participant API as API Controller
+    participant SERVICE as Facturación Exportación Service
+    participant AFIP as AFIP Web Service
+    participant DB as Base de Datos
+    
+    Note over CLIENT,DB: Flujo de Facturación de Exportación v1.0.0
+    
+    CLIENT->>API: POST /facturacion/exportacion
+    Note right of CLIENT: FacturaExportacionContextRequest
+    
+    API->>SERVICE: makeFacturaExportacion(request)
+    
+    alt Validación de Datos
+        SERVICE->>SERVICE: Validar datos de exportación
+        alt Datos Inválidos
+            SERVICE-->>API: Error de validación
+            API-->>CLIENT: 400 Bad Request
+        end
+    end
+    
+    SERVICE->>AFIP: POST /facturador_exportacion
+    Note right of SERVICE: FacturaExportacionFacturadorPayloadRequest
+    
+    alt AFIP Disponible
+        AFIP->>AFIP: Procesar factura de exportación
+        AFIP-->>SERVICE: FacturaExportacionResponse
+        Note left of AFIP: CAE, fecha vencimiento, etc.
+        
+        SERVICE->>DB: Guardar registro CAE
+        SERVICE->>DB: Actualizar comprobante
+        
+        SERVICE-->>API: Response con datos AFIP
+        API-->>CLIENT: 200 OK con factura procesada
+        
+    else AFIP No Disponible
+        AFIP-->>SERVICE: Error de conexión
+        SERVICE-->>API: 503 Service Unavailable
+        API-->>CLIENT: Error de servicio
+    end
+    
+    Note over CLIENT,DB: Funcionalidades Nuevas v1.0.0:
+    Note over CLIENT,DB: • Soporte para moneda extranjera
+    Note over CLIENT,DB: • Manejo de incoterms
+    Note over CLIENT,DB: • Validación de permisos de exportación
+    Note over CLIENT,DB: • Cálculo automático de cotizaciones

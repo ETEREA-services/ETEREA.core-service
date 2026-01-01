@@ -17,9 +17,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArticuloMovimientoTemporalRepository extends JpaRepository<ArticuloMovimientoTemporal, Long> {
 
-	List<ArticuloMovimientoTemporal> findAllByIpAddressAndHwnd(String ipAddress, Long hWnd, Sort sort);
+	List<ArticuloMovimientoTemporal> findAllByIpAddressAndHWnd(String ipAddress, Long hWnd, Sort sort);
 
-	List<ArticuloMovimientoTemporal> findAllByIpAddressAndHwndAndCentroId(String ipAddress, Long hWnd,
+	List<ArticuloMovimientoTemporal> findAllByIpAddressAndHWndAndCentroId(String ipAddress, Long hWnd,
 			Integer centroId, Sort sort);
 
 }

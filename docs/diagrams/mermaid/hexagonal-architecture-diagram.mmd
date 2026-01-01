@@ -1,0 +1,64 @@
+graph TB
+    subgraph "Hexagonal Architecture - ETEREA Core Service"
+        
+        subgraph "Facturación Nacional"
+            FN_API[Facturación Controller<br/>hexagonal.facturacion.arca.nacional.infrastructure.web.controller]
+            FN_APP[Facturación Service<br/>hexagonal.facturacion.arca.nacional.application.service]
+            FN_DOMAIN[Facturación DTOs<br/>hexagonal.facturacion.arca.nacional.infrastructure.web.dto]
+        end
+        
+        subgraph "Facturación Exportación"
+            FE_API[Exportación Controller<br/>hexagonal.facturacion.arca.exportacion.infrastructure.web.controller]
+            FE_APP[Exportación Service<br/>hexagonal.facturacion.arca.exportacion.application.service]
+            FE_DOMAIN[Exportación DTOs<br/>hexagonal.facturacion.arca.exportacion.infrastructure.web.dto]
+        end
+        
+        subgraph "Gestión Empresa"
+            E_API[Empresa Controller<br/>hexagonal.empresa.infrastructure.web.controller]
+            E_APP[Empresa Service<br/>hexagonal.empresa.application.service]
+            E_DOMAIN[Empresa Model<br/>hexagonal.empresa.domain.model]
+            E_PORTS[Ports In/Out<br/>hexagonal.empresa.domain.ports]
+        end
+        
+        subgraph "Persistence Layer"
+            E_REPO[Empresa Repository Adapter<br/>hexagonal.empresa.infrastructure.persistence.repository]
+            E_ENTITY[Empresa Entity<br/>hexagonal.empresa.infrastructure.persistence.entity]
+            E_MAPPER[Empresa Mapper<br/>hexagonal.empresa.infrastructure.persistence.mapper]
+        end
+        
+        subgraph "External Clients"
+            AFIP[AFIP Client<br/>client.arca.FacturacionAfipClient]
+            CONSUL[Consul Discovery]
+            DB[(MySQL Database)]
+        end
+        
+        %% API Layer to Application Layer
+        FN_API --> FN_APP
+        FE_API --> FE_APP
+        E_API --> E_APP
+        
+        %% Application to Domain
+        FN_APP --> FN_DOMAIN
+        FE_APP --> FE_DOMAIN
+        E_APP --> E_DOMAIN
+        E_APP --> E_PORTS
+        
+        %% Domain to Infrastructure
+        E_PORTS --> E_REPO
+        E_REPO --> E_ENTITY
+        E_REPO --> E_MAPPER
+        E_ENTITY --> DB
+        
+        %% External Dependencies
+        FN_APP --> AFIP
+        FE_APP --> AFIP
+        E_API --> CONSUL
+        
+        style FN_API fill:#e1f5fe
+        style FE_API fill:#e1f5fe
+        style E_API fill:#e1f5fe
+        style FN_APP fill:#f3e5f5
+        style FE_APP fill:#f3e5f5
+        style E_APP fill:#f3e5f5
+        style DB fill:#ffebee
+    end

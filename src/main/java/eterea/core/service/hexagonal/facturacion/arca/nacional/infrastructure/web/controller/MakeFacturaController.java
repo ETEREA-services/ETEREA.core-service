@@ -1,9 +1,8 @@
-package eterea.core.service.controller.facade;
+package eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.controller;
 
-import eterea.core.service.model.dto.FacturacionDto;
-import eterea.core.service.service.extern.FacturacionElectronicaService;
+import eterea.core.service.hexagonal.facturacion.arca.nacional.application.service.FacturacionElectronicaService;
+import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

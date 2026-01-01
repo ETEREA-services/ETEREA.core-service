@@ -1,39 +1,39 @@
 # ETEREA.core.api.rest
 
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
-[![Java](https://img.shields.io/badge/Java-24-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk24-archive-downloads.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.20-blueviolet.svg)](https://kotlinlang.org/)
+[![Java](https://img.shields.io/badge/Java-25-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk25-archive-downloads.html)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-blueviolet.svg)](https://kotlinlang.org/)
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.8-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-green.svg)](https://spring.io/projects/spring-cloud)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-2.8.10-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.4.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.13.3-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
-Servicio Core para la gestión financiera y contable, implementado con una arquitectura mixta Java/Kotlin. Proporciona:
+Servicio Core para la gestión financiera y contable, implementado con una **arquitectura hexagonal mixta Java/Kotlin**. Proporciona:
 
+- **Arquitectura Hexagonal**: Implementación completa con puertos, adaptadores y casos de uso
+- **Facturación Nacional y de Exportación**: Soporte completo para facturación electrónica argentina
 - Gestión de transferencias entre negocios
 - Control de movimientos contables y valores
-- **Servicios de consulta de stock y clientes** (`SaldoArticuloService`, `SaldoFechaService`, `ClienteSearchService`)
-- **Utilidades centralizadas**: serialización JSON (`Jsonifier`), operaciones de fecha y texto (`ToolService`)
+- **Servicios de consulta** de stock y clientes
+- **Ajuste automático** de netos e ivas en comprobantes
+- **Utilidades centralizadas**: serialización JSON, operaciones de fecha y texto
 
 ## Stack Tecnológico
 - Spring Cloud 2025.0.0
 
 
 
-# Cambios en la versión 0.13.0
+## Stack Tecnológico
 
-- feat: Nuevos endpoints para gestión de movimientos de cliente y búsqueda de legajos
-- refactor: Migración masiva de modelos a Java y refactorización con Lombok
-- chore: Actualización de Kotlin a 2.2.21
-
-Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
-
-Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
+- **Java 25** y **Kotlin 2.3.0**
+- **Spring Boot 3.5.8** con Spring Cloud 2025.0.0
+- **Arquitectura Hexagonal** para modularidad y testabilidad
+- **Consul Discovery** y **OpenFeign**
   - Consul Discovery
   - OpenFeign
 - Spring Data JPA
@@ -57,29 +57,46 @@ Para más detalles, consulta el [CHANGELOG.md](CHANGELOG.md).
 
 ## Arquitectura
 
-El proyecto utiliza una arquitectura mixta:
-- **Modelos y Repositorios**: Implementados en Kotlin para aprovechar sus características de null-safety y data classes
-- **Servicios y Controladores**: Implementados en Java para mantener compatibilidad con librerías legacy
+El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 
-> **Nota:** Desde la versión 0.7.0, el proyecto utiliza Consul para service discovery y cobertura de tests automatizada.
+### Módulos Hexagonales
+- **`hexagonal/empresa/`**: Gestión de empresas con puertos de entrada y salida
+- **`hexagonal/facturacion/arca/nacional/`**: Facturación electrónica nacional
+- **`hexagonal/facturacion/arca/exportacion/`**: Facturación de exportación
+
+### Estructura por Tecnología
+- **Modelos y Entidades**: Implementados en Kotlin para aprovechar null-safety y data classes
+- **Servicios y Controladores**: Implementados en Java para compatibilidad con librerías legacy
+- **Casos de Uso y Puertos**: Siguiendo principios de Clean Architecture
+
+> **Nota:** Desde la versión 1.0.0, el proyecto implementa arquitectura hexagonal completa con migración de todos los módulos críticos.
 
 ## Módulos Principales
 
+### Facturación
+- **Facturación Nacional**: Sistema completo de facturación electrónica AFIP
+- **Facturación de Exportación**: Nueva funcionalidad para comprobantes de exportación
+- **Ajuste Automático**: Sistema de corrección automática de netos e ivas
+
+### Gestión Empresarial
 - **Transferencias**: Gestión de transferencias entre negocios
 - **Movimientos**: Control de movimientos contables y valores
 - **Cotizaciones**: Administración de cotizaciones de monedas
+
+### Gestión de Productos
 - **Artículos**: Gestión de artículos y sus listas de precios
 - **Rubros**: Categorización y gestión de rubros comerciales
-- **Facturación**: Control de comprobantes y facturación electrónica
-- **Posición IVA**: Gestión de las posiciones de IVA de clientes
-- **Snapshot**: Registro de estados de transacciones
+- **Inventario**: Control de stock y movimientos
+
+### Servicios Transversales
 - **Service Discovery**: Integración con Consul
-- **Cobertura de tests**: Jacoco
+- **Cobertura de tests**: Jacoco para análisis de cobertura
+- **Utilidades**: Herramientas centralizadas para operaciones comunes
 
 ## Configuración del Proyecto
 
 ### Requisitos
-- JDK 24
+- **JDK 25**
 - Maven 3.8+
 - MySQL 9.3+
 
@@ -108,9 +125,31 @@ docker run -p 8080:8080 eterea/core-service
 
 La documentación de la API está disponible en:
 
-- Swagger UI: http://localhost:8080/swagger-ui/index.html
-- OpenAPI JSON: http://localhost:8080/v3/api-docs
-- OpenAPI YAML: http://localhost:8080/v3/api-docs.yaml
+- **Swagger UI**: http://localhost:8080/swagger-ui/index.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+- **OpenAPI YAML**: http://localhost:8080/v3/api-docs.yaml
+
+## Nuevas Funcionalidades v1.0.0
+
+### 🚀 Facturación de Exportación
+- Soporte completo para comprobantes de exportación
+- Integración con AFIP para validación de datos
+- Manejo de monedas extranjeras y cotizaciones
+
+### 🔧 Ajuste Automático
+- Corrección automática de netos e ivas en comprobantes de compras
+- Validación de consistencia contable
+- Logging detallado de ajustes realizados
+
+### 🏗️ Arquitectura Hexagonal
+- Migración completa a arquitectura hexagonal
+- Separación clara de responsabilidades
+- Mayor testabilidad y mantenibilidad
+
+### ⚡ Mejoras de Rendimiento
+- Pool de conexiones optimizado (20 conexiones)
+- Consultas mejoradas con nombres de métodos corregidos
+- Caché de Caffeine para operaciones frecuentes
 
 ## Documentación Adicional
 
@@ -128,7 +167,7 @@ La documentación de la API está disponible en:
 
 ## Estado del Proyecto
 
-El proyecto está en desarrollo activo. Ver [GitHub Projects](https://github.com/ETEREA-services/ETEREA.core-service/projects) para el roadmap.
+El proyecto está en **desarrollo activo** con arquitectura hexagonal estable. Ver [GitHub Projects](https://github.com/ETEREA-services/ETEREA.core-service/projects) para el roadmap.
 
 ## Licencia
 
@@ -136,20 +175,38 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 
 ## Características
 
-- Proyecto mixto Java/Kotlin
-- Documentación API con OpenAPI 3.0
-- Soporte para transacciones distribuidas
-- Integración con Consul Service Discovery
-- Gestión de Posiciones IVA
-- **Módulo de Snapshots**
-- **Implementación de HATEOAS**
-- **Sistema de replicación de códigos de barras**
-- **Cobertura de tests con Jacoco**
+### Arquitectura
+- ✅ **Arquitectura Hexagonal** completa con puertos y adaptadores
+- ✅ **Proyecto mixto Java/Kotlin** optimizado
+- ✅ **Clean Architecture** con separación clara de responsabilidades
+
+### Funcionalidades Core
+- ✅ **Facturación Nacional y Exportación** con integración AFIP
+- ✅ **Ajuste Automático** de comprobantes
+- ✅ **Gestión de Empresas** con arquitectura hexagonal
+- ✅ **Control de Movimientos** contables y valores
+- ✅ **Sistema de Transferencias** entre negocios
+
+### Infraestructura
+- ✅ **Documentación API** con OpenAPI 3.0
+- ✅ **Service Discovery** con Consul
+- ✅ **Cache distribuido** con Caffeine
+- ✅ **Transacciones distribuidas** con JPA
+- ✅ **Cobertura de tests** con Jacoco
+- ✅ **CI/CD** con GitHub Actions
+
+### Utilidades
+- ✅ **Generación de PDFs** con OpenPDF
+- ✅ **Códigos de barras y QR** con ZXing
+- ✅ **Mapeo de objetos** con ModelMapper
+- ✅ **Serialización JSON** centralizada
+- ✅ **Herramientas de fecha y texto** utilidades
 
 ## Notas Importantes
 
-- El proyecto usa una combinación de Java y Kotlin
-- Las entidades JPA están definidas en Kotlin
-- Los servicios y controladores están en Java
+- El proyecto utiliza arquitectura hexagonal desde la versión 1.0.0
+- Las entidades JPA están definidas en Kotlin para mejor type safety
+- Los casos de uso y controladores siguen principios de Clean Architecture
 - Se requiere configuración de Consul para el registro de servicios
 - La documentación de la API se genera automáticamente en tiempo de ejecución
+- Todas las pruebas unitarias deben seguir la estructura hexagonal

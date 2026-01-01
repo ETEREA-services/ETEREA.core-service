@@ -1,0 +1,87 @@
+graph TD
+    subgraph "ETEREA Core Service v1.0.0 - Hexagonal Architecture"
+        
+        subgraph "API Gateway"
+            GATEWAY[Spring Boot API<br/>Puerto 8080]
+        end
+        
+        subgraph "Controllers (Adapters In)"
+            CTRL_EMPRESA[Empresa Controller<br/>hexagonal.empresa.infrastructure.web.controller]
+            CTRL_FACT_NAC[Facturación Nacional<br/>hexagonal.facturacion.arca.nacional.infrastructure.web.controller]
+            CTRL_FACT_EXP[Facturación Exportación<br/>hexagonal.facturacion.arca.exportacion.infrastructure.web.controller]
+            CTRL_PROV[Proveedor Controller]
+        end
+        
+        subgraph "Application Layer (Use Cases)"
+            APP_EMPRESA[Empresa Service<br/>hexagonal.empresa.application.service]
+            APP_FACT_NAC[Facturación Nacional Service<br/>hexagonal.facturacion.arca.nacional.application.service]
+            APP_FACT_EXP[Facturación Exportación Service<br/>hexagonal.facturacion.arca.exportacion.application.service]
+        end
+        
+        subgraph "Domain Layer (Core Business)"
+            DOMAIN_EMPRESA[Empresa Domain<br/>hexagonal.empresa.domain.model]
+            PORTS_IN[Ports In<br/>GetLastEmpresaUseCase]
+            PORTS_OUT[Ports Out<br/>EmpresaRepository]
+            FACT_DTOS[Facturación DTOs<br/>Nacional & Exportación]
+        end
+        
+        subgraph "Infrastructure (Adapters Out)"
+            INFRA_EMPRESA[Empresa Repository Adapter<br/>hexagonal.empresa.infrastructure.persistence.repository]
+            ENTITY_EMPRESA[Empresa Entity<br/>hexagonal.empresa.infrastructure.persistence.entity]
+            MAPPER_EMPRESA[Empresa Mapper<br/>hexagonal.empresa.infrastructure.persistence.mapper]
+        end
+        
+        subgraph "External Systems"
+            AFIP_CLIENT[AFIP Web Service<br/>Facturación Electrónica]
+            CONSUL[Consul Service Discovery]
+            MYSQL[(MySQL Database)]
+            CAFFEINE[Caffeine Cache]
+        end
+        
+        %% API Gateway to Controllers
+        GATEWAY --> CTRL_EMPRESA
+        GATEWAY --> CTRL_FACT_NAC
+        GATEWAY --> CTRL_FACT_EXP
+        GATEWAY --> CTRL_PROV
+        
+        %% Controllers to Application Layer
+        CTRL_EMPRESA --> APP_EMPRESA
+        CTRL_FACT_NAC --> APP_FACT_NAC
+        CTRL_FACT_EXP --> APP_FACT_EXP
+        
+        %% Application to Domain
+        APP_EMPRESA --> DOMAIN_EMPRESA
+        APP_EMPRESA --> PORTS_IN
+        APP_FACT_NAC --> FACT_DTOS
+        APP_FACT_EXP --> FACT_DTOS
+        
+        %% Domain to Infrastructure
+        PORTS_OUT --> INFRA_EMPRESA
+        INFRA_EMPRESA --> ENTITY_EMPRESA
+        INFRA_EMPRESA --> MAPPER_EMPRESA
+        ENTITY_EMPRESA --> MYSQL
+        
+        %% Infrastructure to External Systems
+        APP_FACT_NAC --> AFIP_CLIENT
+        APP_FACT_EXP --> AFIP_CLIENT
+        INFRA_EMPRESA --> CAFFEINE
+        GATEWAY --> CONSUL
+        
+        %% Legacy Services (Migrating)
+        subgraph "Legacy Services (In Migration)"
+            LEGACY_PROV[ProveedorMovimiento Service<br/>hexagonal.proveedormovimiento.*]
+        end
+        
+        %% Styling
+        style GATEWAY fill:#2196f3,color:#fff
+        style CTRL_EMPRESA fill:#4caf50,color:#fff
+        style CTRL_FACT_NAC fill:#4caf50,color:#fff
+        style CTRL_FACT_EXP fill:#4caf50,color:#fff
+        style APP_EMPRESA fill:#ff9800,color:#fff
+        style APP_FACT_NAC fill:#ff9800,color:#fff
+        style APP_FACT_EXP fill:#ff9800,color:#fff
+        style DOMAIN_EMPRESA fill:#e91e63,color:#fff
+        style MYSQL fill:#f44336,color:#fff
+        style AFIP_CLIENT fill:#9c27b0,color:#fff
+        style CONSUL fill:#607d8b,color:#fff
+    end

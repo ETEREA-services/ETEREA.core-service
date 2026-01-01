@@ -46,7 +46,7 @@ public class ImpresionFiscalService {
                         0
                 ),
 				clienteService.findByClienteId(clienteId), comprobante,
-				articuloMovimientoTemporalService.findAllByHwnd(ipAddress, hWnd, null), clienteMovimiento, null);
+				articuloMovimientoTemporalService.findAllByHWnd(ipAddress, hWnd, null), clienteMovimiento, null);
 		log.debug("ImpresionFiscal -> {}", impresionFiscal.jsonify());
 		return impresionFiscal;
 	}
