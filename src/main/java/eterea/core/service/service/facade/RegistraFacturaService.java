@@ -7,7 +7,7 @@ import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
-import eterea.core.service.model.dto.FacturacionDto;
+import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
 import eterea.core.service.service.ArticuloMovimientoService;
 import eterea.core.service.service.ClienteMovimientoService;
 import eterea.core.service.service.ReservaContextService;

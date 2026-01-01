@@ -75,7 +75,7 @@ data class Cliente(
     var clienteCategoriaId: Int? = null,
 
     @Column(name = "cli_idimpositivo")
-    var impositivoId: String = "",
+    var idImpositivo: String = "",
 
     @Column(name = "facturarextranjero")
     var facturarExtranjero: Byte = 0,
@@ -112,7 +112,7 @@ data class Cliente(
         var limiteCredito: BigDecimal = BigDecimal.ZERO,
         var nacionalidad: String = "",
         var clienteCategoriaId: Int? = null,
-        var impositivoId: String = "",
+        var idImpositivo: String = "",
         var facturarExtranjero: Byte = 0,
         var bloqueado: Byte = 0,
         var discapacitado: Byte = 0,
@@ -140,7 +140,7 @@ data class Cliente(
         fun limiteCredito(limiteCredito: BigDecimal) = apply { this.limiteCredito = limiteCredito }
         fun nacionalidad(nacionalidad: String) = apply { this.nacionalidad = nacionalidad }
         fun clienteCategoriaId(clienteCategoriaId: Int?) = apply { this.clienteCategoriaId = clienteCategoriaId }
-        fun impositivoId(impositivoId: String) = apply { this.impositivoId = impositivoId }
+        fun idImpositivo(impositivoId: String) = apply { this.idImpositivo = impositivoId }
         fun facturarExtranjero(facturarExtranjero: Byte) = apply { this.facturarExtranjero = facturarExtranjero }
         fun bloqueado(bloqueado: Byte) = apply { this.bloqueado = bloqueado }
         fun discapacitado(discapacitado: Byte) = apply { this.discapacitado = discapacitado }
@@ -169,7 +169,7 @@ data class Cliente(
             limiteCredito,
             nacionalidad,
             clienteCategoriaId,
-            impositivoId,
+            idImpositivo,
             facturarExtranjero,
             bloqueado,
             discapacitado,

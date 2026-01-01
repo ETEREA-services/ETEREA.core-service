@@ -1,20 +1,17 @@
-package eterea.core.service.service.extern;
+package eterea.core.service.hexagonal.facturacion.arca.nacional.application.service;
 
-import eterea.core.service.client.afip.FacturacionAfipClient;
-import eterea.core.service.model.dto.FacturacionDto;
+import eterea.core.service.client.arca.FacturacionAfipClient;
+import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FacturacionElectronicaService {
 
     private final FacturacionAfipClient facturacionAfipClient;
-
-    public FacturacionElectronicaService(FacturacionAfipClient facturacionAfipClient
-    ) {
-        this.facturacionAfipClient = facturacionAfipClient;
-    }
 
     public FacturacionDto makeFactura(FacturacionDto facturacionDto) {
         log.debug("Processing FactuacionElectronicaService.makeFactura");

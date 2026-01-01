@@ -1,13 +1,13 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.client.afip.FacturacionAfipClient;
+import eterea.core.service.client.arca.FacturacionAfipClient;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
+import eterea.core.service.hexagonal.facturacion.arca.nacional.application.service.FacturacionElectronicaService;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.*;
-import eterea.core.service.model.dto.FacturacionDto;
+import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
 import eterea.core.service.service.*;
-import eterea.core.service.service.extern.FacturacionElectronicaService;
 import eterea.core.service.service.extern.OrderNoteService;
 import eterea.core.service.tool.ToolService;
 import jakarta.transaction.Transactional;
