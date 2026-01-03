@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +29,7 @@ import eterea.core.service.service.VoucherService;
  *
  */
 @RestController
-@RequestMapping({"/api/core/voucher", "/voucher"})
+@RequestMapping({ "/api/core/voucher", "/voucher" })
 public class VoucherController {
 
     private final VoucherService service;
@@ -76,14 +78,14 @@ public class VoucherController {
         }
     }
 
-    @GetMapping("/byNumeroVoucherIn")
-    public ResponseEntity<List<Voucher>> findAllByNumeroVoucherIn(@RequestParam List<String> numerosVoucher) {
+    @PostMapping("/byNumeroVoucherIn")
+    public ResponseEntity<List<Voucher>> findAllByNumeroVoucherIn(@RequestBody List<String> numerosVoucher) {
         return new ResponseEntity<>(service.findAllByNumeroVoucherIn(numerosVoucher), HttpStatus.OK);
     }
 
-	@GetMapping("/{voucherId}/productos")
-	public ResponseEntity<List<VoucherProducto>> findAllVoucherProductos(@PathVariable Long voucherId) {
-		return new ResponseEntity<>(service.findAllVoucherProductos(voucherId), HttpStatus.OK);
-	}
+    @GetMapping("/{voucherId}/productos")
+    public ResponseEntity<List<VoucherProducto>> findAllVoucherProductos(@PathVariable Long voucherId) {
+        return new ResponseEntity<>(service.findAllVoucherProductos(voucherId), HttpStatus.OK);
+    }
 
 }
