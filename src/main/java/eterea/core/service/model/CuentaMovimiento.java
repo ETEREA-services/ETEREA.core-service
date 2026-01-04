@@ -1,9 +1,9 @@
 package eterea.core.service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import eterea.core.service.hexagonal.negocio.infrastructure.persistence.entity.NegocioEntity;
 import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.kotlin.model.Cuenta;
-import eterea.core.service.kotlin.model.Negocio;
 import eterea.core.service.tool.Jsonifier;
 import jakarta.persistence.*;
 import lombok.*;
@@ -111,7 +111,7 @@ public class CuentaMovimiento extends Auditable {
     @OneToOne(optional = true)
     @JoinColumn(name = "mco_neg_id", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    private Negocio negocio;
+    private NegocioEntity negocio;
 
     public String jsonify() {
         return Jsonifier.builder(this).build();

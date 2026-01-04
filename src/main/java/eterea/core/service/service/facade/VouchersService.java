@@ -2,10 +2,10 @@ package eterea.core.service.service.facade;
 
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.hexagonal.negocio.application.service.NegocioService;
+import eterea.core.service.hexagonal.negocio.domain.model.Negocio;
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
-import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
@@ -50,31 +50,7 @@ public class VouchersService {
 
         Product product = orderNote.getProducts().getFirst();
         assert product != null;
-        
-        var negocioId = empresaService.findLast().get().getNegocioId();
-        var hexagonalNegocio = negocioService.getNegocioById(negocioId).orElseThrow(() -> new RuntimeException("Negocio not found"));
-        var kotlinNegocio = new eterea.core.service.kotlin.model.Negocio(
-                hexagonalNegocio.getNegocioId(),
-                hexagonalNegocio.getNombre(),
-                hexagonalNegocio.getNegocioIdReal(),
-                hexagonalNegocio.getDatabaseIpVpn(),
-                hexagonalNegocio.getDatabaseIpLan(),
-                hexagonalNegocio.getDatabase(),
-                hexagonalNegocio.getUser(),
-                hexagonalNegocio.getTransferenciaStock(),
-                hexagonalNegocio.getTransferenciaValor(),
-                hexagonalNegocio.getBackendIpVpn(),
-                hexagonalNegocio.getBackendIpLan(),
-                hexagonalNegocio.getBackendPort(),
-                hexagonalNegocio.getFacturaServer(),
-                hexagonalNegocio.getFacturaPort(),
-                hexagonalNegocio.getHasGateway(),
-                hexagonalNegocio.getCopyArticulo(),
-                hexagonalNegocio.getIpAddress(),
-                hexagonalNegocio.getBackendServer()
-        );
-        
-        return processProduct(orderNote, product, kotlinNegocio, track);
+        return processProduct(orderNote, product, negocioService.getNegocioById(empresaService.findLast().get().getNegocioId()).get(), track);
     }
 
     private OrderNote getOrderNoteById(Long orderNumberId) {

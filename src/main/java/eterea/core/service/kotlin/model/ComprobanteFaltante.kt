@@ -1,6 +1,7 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import eterea.core.service.hexagonal.negocio.infrastructure.persistence.entity.NegocioEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -41,7 +42,7 @@ data class ComprobanteFaltante(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cfa_neg_id", insertable = false, updatable = false)
-    var negocio: Negocio? = null,
+    var negocio: NegocioEntity? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cfa_cmp_id", insertable = false, updatable = false)
@@ -56,7 +57,7 @@ data class ComprobanteFaltante(
         var fecha: OffsetDateTime? = null,
         var prefijo: Int = 0,
         var numero: Long = 0,
-        var negocio: Negocio? = null,
+        var negocio: NegocioEntity? = null,
         var comprobante: Comprobante? = null
     ) {
         fun comprobanteFaltanteId(comprobanteFaltanteId: Long?) = apply { this.comprobanteFaltanteId = comprobanteFaltanteId }
@@ -65,7 +66,7 @@ data class ComprobanteFaltante(
         fun fecha(fecha: OffsetDateTime?) = apply { this.fecha = fecha }
         fun prefijo(prefijo: Int) = apply { this.prefijo = prefijo }
         fun numero(numero: Long) = apply { this.numero = numero }
-        fun negocio(negocio: Negocio?) = apply { this.negocio = negocio }
+        fun negocio(negocio: NegocioEntity?) = apply { this.negocio = negocio }
         fun comprobante(comprobante: Comprobante?) = apply { this.comprobante = comprobante }
 
         fun build() = ComprobanteFaltante(

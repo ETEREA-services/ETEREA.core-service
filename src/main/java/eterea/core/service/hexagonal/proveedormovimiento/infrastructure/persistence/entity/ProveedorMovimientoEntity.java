@@ -1,8 +1,8 @@
 package eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.hexagonal.negocio.infrastructure.persistence.entity.NegocioEntity;
+import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.kotlin.model.Proveedor;
 import eterea.core.service.model.Auditable;
 import jakarta.persistence.*;

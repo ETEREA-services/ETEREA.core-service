@@ -1,7 +1,5 @@
 package eterea.core.service.service.facade;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.client.core.ArticuloBarraClient;
 import eterea.core.service.client.core.ArticuloClient;
 import eterea.core.service.client.core.CuentaClient;
@@ -10,9 +8,9 @@ import eterea.core.service.client.core.builder.ArticuloBarraClientBuilder;
 import eterea.core.service.client.core.builder.ArticuloClientBuilder;
 import eterea.core.service.client.core.builder.CuentaClientBuilder;
 import eterea.core.service.client.core.builder.ParametroClientBuilder;
+import eterea.core.service.hexagonal.negocio.domain.model.Negocio;
 import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.ArticuloBarra;
-import eterea.core.service.kotlin.model.Negocio;
 import eterea.core.service.kotlin.model.dto.ArticuloDto;
 import eterea.core.service.kotlin.model.dto.ParametroDto;
 import eterea.core.service.service.ArticuloBarraService;
@@ -43,34 +41,10 @@ public class ArticulosService {
     public Boolean replicate(String articuloId) {
         log.debug("Starting article replication for articleId: {}", articuloId);
 
-        List<Negocio> negocios = negocioService.getAllNegociosByCopyArticulo((byte) 1)
-                .stream()
-                .map(n -> new Negocio(
-                        n.getNegocioId(),
-                        n.getNombre(),
-                        n.getNegocioIdReal(),
-                        n.getDatabaseIpVpn(),
-                        n.getDatabaseIpLan(),
-                        n.getDatabase(),
-                        n.getUser(),
-                        n.getTransferenciaStock(),
-                        n.getTransferenciaValor(),
-                        n.getBackendIpVpn(),
-                        n.getBackendIpLan(),
-                        n.getBackendPort(),
-                        n.getFacturaServer(),
-                        n.getFacturaPort(),
-                        n.getHasGateway(),
-                        n.getCopyArticulo(),
-                        n.getIpAddress(),
-                        n.getBackendServer()
-                ))
-                .collect(Collectors.toList());
-                
+        List<Negocio> negocios = negocioService.getAllNegociosByCopyArticulo((byte) 1);
         Articulo articulo = articuloService.findByArticuloId(articuloId);
         List<ArticuloBarra> barrasToReplicate = articuloBarraService.findAllByArticuloId(articuloId);
 
-        negocios.forEach(negocio -> log.debug("Negocio -> {}", negocio.jsonify()));
         log.debug("Articulo -> {}", articulo.jsonify());
 
         for (Negocio negocio : negocios) {
