@@ -3,6 +3,7 @@
  */
 package eterea.core.service.controller;
 
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -86,6 +87,19 @@ public class VoucherController {
     @GetMapping("/{voucherId}/productos")
     public ResponseEntity<List<VoucherProducto>> findAllVoucherProductos(@PathVariable Long voucherId) {
         return new ResponseEntity<>(service.findAllVoucherProductos(voucherId), HttpStatus.OK);
+    }
+
+    @GetMapping("/buscar/pax/{searchTerm}")
+    public ResponseEntity<List<Voucher>> buscarByNombrePax(@PathVariable String searchTerm,
+            @DateTimeFormat(iso = ISO.DATE_TIME) @RequestParam(required = false) OffsetDateTime desde,
+            @DateTimeFormat(iso = ISO.DATE_TIME) @RequestParam(required = false) OffsetDateTime hasta) {
+        if (hasta == null) {
+            hasta = OffsetDateTime.now().with(LocalTime.of(23, 59, 59, 0));
+        }
+        if (desde == null) {
+            desde = hasta.minusDays(7);
+        }
+        return new ResponseEntity<>(service.buscarByNombrePax(searchTerm, desde, hasta), HttpStatus.OK);
     }
 
 }
