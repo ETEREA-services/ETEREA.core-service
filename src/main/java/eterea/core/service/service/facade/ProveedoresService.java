@@ -1,6 +1,6 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.entity.ProveedorMovimientoEntity;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.service.FacturaRendicionDetalleService;
 import eterea.core.service.hexagonal.proveedormovimiento.application.service.ProveedorMovimientoService;
 import org.springframework.stereotype.Service;
@@ -19,10 +19,10 @@ public class ProveedoresService {
         this.facturaRendicionDetalleService = facturaRendicionDetalleService;
     }
 
-    public List<ProveedorMovimientoEntity> findAllByProveedorIdSinRendicion(Long proveedorId) {
-        Map<String, ProveedorMovimientoEntity> proveedorMovimientos = new HashMap<>();
+    public List<ProveedorMovimiento> findAllByProveedorIdSinRendicion(Long proveedorId) {
+        Map<String, ProveedorMovimiento> proveedorMovimientos = new HashMap<>();
 
-        proveedorMovimientoService.findAllByProveedorId(proveedorId).forEach(movimiento ->
+        proveedorMovimientoService.getProveedorMovimientosByProveedorId(proveedorId).forEach(movimiento ->
                 proveedorMovimientos.put(movimiento.comprobanteKey(), movimiento)
         );
 
@@ -34,7 +34,7 @@ public class ProveedoresService {
         // Convertimos a lista y ordenamos por fechaComprobante
         return proveedorMovimientos.values()
                 .stream()
-                .sorted(Comparator.comparing(ProveedorMovimientoEntity::getFechaComprobante, Comparator.nullsLast(Comparator.naturalOrder())))
+                .sorted(Comparator.comparing(ProveedorMovimiento::getFechaComprobante, Comparator.nullsLast(Comparator.naturalOrder())))
                 .collect(Collectors.toList());
     }
 

@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.termascacheuta</groupId>
     <artifactId>eterea.core.service</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>ETEREA.core-service</name>
     <description>API - Eterea - Core</description>
     <properties>
