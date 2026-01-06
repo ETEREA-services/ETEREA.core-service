@@ -2,7 +2,7 @@ package eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persist
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import eterea.core.service.kotlin.model.Comprobante;
-import eterea.core.service.kotlin.model.Negocio;
+import eterea.core.service.hexagonal.negocio.infrastructure.persistence.entity.NegocioEntity;
 import eterea.core.service.kotlin.model.Proveedor;
 import eterea.core.service.model.Auditable;
 import jakarta.persistence.*;
@@ -166,7 +166,7 @@ public class ProveedorMovimientoEntity extends Auditable {
 
     @OneToOne(optional = true)
     @JoinColumn(name = "mpr_neg_id", insertable = false, updatable = false)
-    private Negocio negocio;
+    private NegocioEntity negocio;
 
     public String comprobanteKey() {
         return proveedorId + "." + comprobanteId + "." + prefijo + "." + numeroComprobante;

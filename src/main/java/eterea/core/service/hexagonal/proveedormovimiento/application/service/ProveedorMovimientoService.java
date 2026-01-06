@@ -1,7 +1,12 @@
 package eterea.core.service.hexagonal.proveedormovimiento.application.service;
 
-import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.entity.ProveedorMovimientoEntity;
-import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.repository.ProveedorMovimientoJpaRepository;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensual;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.GetProveedorMovimientosByProveedorIdUseCase;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.GetProveedorMovimientosByRegimenInformacionComprasUseCase;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.GetResumenIvaComprasMensualUseCase;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.UpdateProveedorMovimientoNetoAjusteUseCase;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.out.ProveedorMovimientoRepository;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.dto.ProveedorMovimientoNetoAjusteRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -13,15 +18,21 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProveedorMovimientoService {
+public class ProveedorMovimientoService implements
+        GetProveedorMovimientosByProveedorIdUseCase,
+        GetProveedorMovimientosByRegimenInformacionComprasUseCase,
+        UpdateProveedorMovimientoNetoAjusteUseCase,
+        GetResumenIvaComprasMensualUseCase {
 
-    private final ProveedorMovimientoJpaRepository repository;
+    private final ProveedorMovimientoRepository repository;
 
-    public List<ProveedorMovimientoEntity> findAllByProveedorId(Long proveedorId) {
-        return repository.findAllByProveedorIdOrderByFechaComprobante(proveedorId);
+    @Override
+    public List<ProveedorMovimiento> getProveedorMovimientosByProveedorId(Long proveedorId) {
+        return repository.findAllByProveedorId(proveedorId);
     }
 
-    public List<ProveedorMovimientoEntity> findAllByRegimenInformacionCompras(OffsetDateTime desde,
+    @Override
+    public List<ProveedorMovimiento> getProveedorMovimientosByRegimenInformacionCompras(OffsetDateTime desde,
             OffsetDateTime hasta) {
         return repository
                 .findAllByFechaContableBetweenAndComprobanteLibroIva(desde, hasta, (byte) 1,
@@ -34,16 +45,22 @@ public class ProveedorMovimientoService {
                 .toList();
     }
 
-    public ProveedorMovimientoEntity ajusteNetoInformacionArca(ProveedorMovimientoNetoAjusteRequest proveedorMovimientoNetoAjusteRequest) {
-        return repository.findByProveedorMovimientoId(proveedorMovimientoNetoAjusteRequest.getProveedorMovimientoId())
+    @Override
+    public ProveedorMovimiento updateProveedorMovimientoNetoAjuste(ProveedorMovimientoNetoAjusteRequest request) {
+        return repository.findByProveedorMovimientoId(request.getProveedorMovimientoId())
                 .map(movimiento -> {
-                    movimiento.setNeto(proveedorMovimientoNetoAjusteRequest.getNetoAjustado());
-                    movimiento.setMontoIva(proveedorMovimientoNetoAjusteRequest.getMontoIva21Ajustado());
-                    movimiento.setMontoIva105(proveedorMovimientoNetoAjusteRequest.getMontoIva105Ajustado());
-                    movimiento.setMontoIva27(proveedorMovimientoNetoAjusteRequest.getMontoIva27Ajustado());
+                    movimiento.setNeto(request.getNetoAjustado());
+                    movimiento.setMontoIva(request.getMontoIva21Ajustado());
+                    movimiento.setMontoIva105(request.getMontoIva105Ajustado());
+                    movimiento.setMontoIva27(request.getMontoIva27Ajustado());
                     return repository.save(movimiento);
                 })
                 .orElse(null);
+    }
+
+    @Override
+    public ResumenIvaComprasMensual getResumenIvaComprasMensual(Integer anho, Integer mes) {
+        return repository.findResumenByYearAndMonth(anho, mes);
     }
 
 }

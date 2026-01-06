@@ -3,11 +3,13 @@ package eterea.core.service.service.facade;
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
 import eterea.core.service.service.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TransaccionFacturaProgramaDiaService {
 
     private final FacturacionService facturacionService;
@@ -17,21 +19,6 @@ public class TransaccionFacturaProgramaDiaService {
     private final ReservaContextService reservaContextService;
     private final TrackService trackService;
     private final EmpresaService empresaService;
-
-    public TransaccionFacturaProgramaDiaService(FacturacionService facturacionService,
-                                                VoucherService voucherService,
-                                                ComprobanteService comprobanteService,
-                                                ParametroService parametroService,
-                                                ReservaContextService reservaContextService,
-                                                TrackService trackService, EmpresaService empresaService) {
-        this.facturacionService = facturacionService;
-        this.voucherService = voucherService;
-        this.comprobanteService = comprobanteService;
-        this.parametroService = parametroService;
-        this.reservaContextService = reservaContextService;
-        this.trackService = trackService;
-        this.empresaService = empresaService;
-    }
 
     public void registroTransaccionFacturaProgramaDia(Long orderNumberId, FacturacionDto facturacionDto, Boolean soloFactura, Boolean dryRun) {
         log.debug("Processing TransaccionFacturaProgramaDiaService.registroTransaccionFacturaProgramaDia");

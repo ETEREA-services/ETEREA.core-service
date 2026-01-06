@@ -1,6 +1,7 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
+import eterea.core.service.hexagonal.negocio.application.service.NegocioService;
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
@@ -49,7 +50,31 @@ public class VouchersService {
 
         Product product = orderNote.getProducts().getFirst();
         assert product != null;
-        return processProduct(orderNote, product, negocioService.findByNegocioId(empresaService.findLast().get().getNegocioId()), track);
+        
+        var negocioId = empresaService.findLast().get().getNegocioId();
+        var hexagonalNegocio = negocioService.getNegocioById(negocioId).orElseThrow(() -> new RuntimeException("Negocio not found"));
+        var kotlinNegocio = new eterea.core.service.kotlin.model.Negocio(
+                hexagonalNegocio.getNegocioId(),
+                hexagonalNegocio.getNombre(),
+                hexagonalNegocio.getNegocioIdReal(),
+                hexagonalNegocio.getDatabaseIpVpn(),
+                hexagonalNegocio.getDatabaseIpLan(),
+                hexagonalNegocio.getDatabase(),
+                hexagonalNegocio.getUser(),
+                hexagonalNegocio.getTransferenciaStock(),
+                hexagonalNegocio.getTransferenciaValor(),
+                hexagonalNegocio.getBackendIpVpn(),
+                hexagonalNegocio.getBackendIpLan(),
+                hexagonalNegocio.getBackendPort(),
+                hexagonalNegocio.getFacturaServer(),
+                hexagonalNegocio.getFacturaPort(),
+                hexagonalNegocio.getHasGateway(),
+                hexagonalNegocio.getCopyArticulo(),
+                hexagonalNegocio.getIpAddress(),
+                hexagonalNegocio.getBackendServer()
+        );
+        
+        return processProduct(orderNote, product, kotlinNegocio, track);
     }
 
     private OrderNote getOrderNoteById(Long orderNumberId) {

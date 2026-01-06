@@ -17,7 +17,7 @@ import eterea.core.service.kotlin.model.dto.ArticuloDto;
 import eterea.core.service.kotlin.model.dto.ParametroDto;
 import eterea.core.service.service.ArticuloBarraService;
 import eterea.core.service.service.ArticuloService;
-import eterea.core.service.service.NegocioService;
+import eterea.core.service.hexagonal.negocio.application.service.NegocioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -42,7 +43,30 @@ public class ArticulosService {
     public Boolean replicate(String articuloId) {
         log.debug("Starting article replication for articleId: {}", articuloId);
 
-        List<Negocio> negocios = negocioService.findAllByCopyArticulo((byte) 1);
+        List<Negocio> negocios = negocioService.getAllNegociosByCopyArticulo((byte) 1)
+                .stream()
+                .map(n -> new Negocio(
+                        n.getNegocioId(),
+                        n.getNombre(),
+                        n.getNegocioIdReal(),
+                        n.getDatabaseIpVpn(),
+                        n.getDatabaseIpLan(),
+                        n.getDatabase(),
+                        n.getUser(),
+                        n.getTransferenciaStock(),
+                        n.getTransferenciaValor(),
+                        n.getBackendIpVpn(),
+                        n.getBackendIpLan(),
+                        n.getBackendPort(),
+                        n.getFacturaServer(),
+                        n.getFacturaPort(),
+                        n.getHasGateway(),
+                        n.getCopyArticulo(),
+                        n.getIpAddress(),
+                        n.getBackendServer()
+                ))
+                .collect(Collectors.toList());
+                
         Articulo articulo = articuloService.findByArticuloId(articuloId);
         List<ArticuloBarra> barrasToReplicate = articuloBarraService.findAllByArticuloId(articuloId);
 

@@ -64,7 +64,7 @@ public class RegistraFacturaService {
                 .numeroComprobante(facturacionDto.getNumeroComprobante())
                 .montoIva(facturacionDto.getIva())
                 .montoIvaRni(facturacionDto.getIva105())
-                .neto(facturacionDto.getNeto())
+                .neto(facturacionDto.getNeto().add(facturacionDto.getNeto105()))
                 .letraComprobante(comprobante.getLetraComprobante())
                 .montoExento(facturacionDto.getExento())
                 .reservaId(reserva.getReservaId())

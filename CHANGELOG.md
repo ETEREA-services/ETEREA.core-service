@@ -1,3 +1,20 @@
+## [1.1.0] - 2026-01-06
+
+### Features
+- feat: Nuevo endpoint GET `/proveedorMovimiento/resumen/iva/compras/{anho}/{mes}` para obtener resumen mensual de IVA de compras
+- feat: Nuevo modelo de dominio `ResumenIvaComprasMensual` para cálculos de IVA
+- feat: Mejora en la lógica de cálculo de neto en `RegistraFacturaService` incluyendo neto105
+
+### Changed
+- refactor: Migración completa de `ProveedorMovimiento` a arquitectura hexagonal con dominio y puertos
+- refactor: Actualización de imports en controladores para usar modelos de dominio en lugar de entidades
+- refactor: Refactorización de `NegocioController` con parámetro renombrado `negocioIdExcept`
+- refactor: Eliminación de anotación `@Transient` innecesaria en `NegocioEntity`
+- refactor: Agregado `@RequiredArgsConstructor` en `TransaccionFacturaProgramaDiaService`
+
+### Fixed
+- fix: Ajuste en cálculo de neto para incluir neto105 en facturación
+
 ## [1.0.0] - 2026-01-01
 
 ### 🚀 Major Release - Migración a Arquitectura Hexagonal
