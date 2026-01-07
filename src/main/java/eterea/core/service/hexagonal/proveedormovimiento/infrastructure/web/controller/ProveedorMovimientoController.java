@@ -4,6 +4,8 @@ import eterea.core.service.hexagonal.proveedormovimiento.application.service.Pro
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensual;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.dto.ProveedorMovimientoNetoAjusteRequest;
+import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.dto.ResumenIvaComprasMensualResponse;
+import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.mapper.ResumenIvaComprasMensualDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.List;
 public class ProveedorMovimientoController {
 
     private final ProveedorMovimientoService service;
+    private final ResumenIvaComprasMensualDtoMapper resumenIvaComprasMensualDtoMapper;
 
     @GetMapping("/arca/regimen/informacion/compras/{desde}/{hasta}")
     public ResponseEntity<List<ProveedorMovimiento>> findAllByRegimenInformacionCompras(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
@@ -36,8 +39,8 @@ public class ProveedorMovimientoController {
     }
 
     @GetMapping("/resumen/iva/compras/{anho}/{mes}")
-    public ResponseEntity<ResumenIvaComprasMensual> resumenIvaComprasMensual(@PathVariable Integer anho, @PathVariable Integer mes) {
-        return ResponseEntity.ok(service.getResumenIvaComprasMensual(anho, mes));
+    public ResponseEntity<ResumenIvaComprasMensualResponse> resumenIvaComprasMensual(@PathVariable Integer anho, @PathVariable Integer mes) {
+        return ResponseEntity.ok(resumenIvaComprasMensualDtoMapper.toResponse(service.getResumenIvaComprasMensual(anho, mes)));
     }
 
 }
