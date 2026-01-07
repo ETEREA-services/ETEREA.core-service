@@ -1,3 +1,8 @@
+## [1.2.0] - 2026-01-07
+
+### Features
+- feat: Mejora en el endpoint GET `/proveedorMovimiento/resumen/iva/compras/{anho}/{mes}` para incluir el nombre del negocio en la respuesta, basado en cambios en `ProveedorMovimientoController.java`, adición de `ResumenIvaComprasMensualResponse.java` y `ResumenIvaComprasMensualDtoMapper.java`
+
 ## [1.1.0] - 2026-01-06
 
 ### Features
