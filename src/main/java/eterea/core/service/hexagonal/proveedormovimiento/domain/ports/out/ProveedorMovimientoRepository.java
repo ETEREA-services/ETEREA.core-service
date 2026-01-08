@@ -2,6 +2,7 @@ package eterea.core.service.hexagonal.proveedormovimiento.domain.ports.out;
 
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensual;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensualPosicion;
 import org.springframework.data.domain.Sort;
 
 import java.time.OffsetDateTime;
@@ -19,5 +20,7 @@ public interface ProveedorMovimientoRepository {
     ProveedorMovimiento save(ProveedorMovimiento proveedorMovimiento);
 
     ResumenIvaComprasMensual findResumenByYearAndMonth(Integer anho, Integer mes);
+
+    List<ResumenIvaComprasMensualPosicion> findAllResumenPosicionByYearAndMonth(Integer anho, Integer mes);
 
 }

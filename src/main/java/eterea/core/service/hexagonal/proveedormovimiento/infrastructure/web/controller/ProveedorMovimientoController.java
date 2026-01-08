@@ -4,8 +4,10 @@ import eterea.core.service.hexagonal.proveedormovimiento.application.service.Pro
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensual;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.dto.ProveedorMovimientoNetoAjusteRequest;
+import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.dto.ResumenIvaComprasMensualPosicionResponse;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.dto.ResumenIvaComprasMensualResponse;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.mapper.ResumenIvaComprasMensualDtoMapper;
+import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.mapper.ResumenIvaComprasMensualPosicionDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ public class ProveedorMovimientoController {
 
     private final ProveedorMovimientoService service;
     private final ResumenIvaComprasMensualDtoMapper resumenIvaComprasMensualDtoMapper;
+    private final ResumenIvaComprasMensualPosicionDtoMapper resumenIvaComprasMensualPosicionDtoMapper;
 
     @GetMapping("/arca/regimen/informacion/compras/{desde}/{hasta}")
     public ResponseEntity<List<ProveedorMovimiento>> findAllByRegimenInformacionCompras(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime desde,
@@ -41,6 +44,13 @@ public class ProveedorMovimientoController {
     @GetMapping("/resumen/iva/compras/{anho}/{mes}")
     public ResponseEntity<ResumenIvaComprasMensualResponse> resumenIvaComprasMensual(@PathVariable Integer anho, @PathVariable Integer mes) {
         return ResponseEntity.ok(resumenIvaComprasMensualDtoMapper.toResponse(service.getResumenIvaComprasMensual(anho, mes)));
+    }
+
+    @GetMapping("/resumen/iva/compras/posicion/{anho}/{mes}")
+    public ResponseEntity<List<ResumenIvaComprasMensualPosicionResponse>> resumenIvaComprasPosicionMensual(@PathVariable Integer anho, @PathVariable Integer mes) {
+        return ResponseEntity.ok(service.getAllResumenIvaComprasMensualPosicion(anho, mes).stream()
+                .map(resumenIvaComprasMensualPosicionDtoMapper::toResponse)
+                .toList());
     }
 
 }

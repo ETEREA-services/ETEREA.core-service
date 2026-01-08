@@ -2,10 +2,8 @@ package eterea.core.service.hexagonal.proveedormovimiento.application.service;
 
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensual;
-import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.GetProveedorMovimientosByProveedorIdUseCase;
-import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.GetProveedorMovimientosByRegimenInformacionComprasUseCase;
-import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.GetResumenIvaComprasMensualUseCase;
-import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.UpdateProveedorMovimientoNetoAjusteUseCase;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensualPosicion;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.in.*;
 import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.out.ProveedorMovimientoRepository;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.web.dto.ProveedorMovimientoNetoAjusteRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,8 @@ public class ProveedorMovimientoService implements
         GetProveedorMovimientosByProveedorIdUseCase,
         GetProveedorMovimientosByRegimenInformacionComprasUseCase,
         UpdateProveedorMovimientoNetoAjusteUseCase,
-        GetResumenIvaComprasMensualUseCase {
+        GetResumenIvaComprasMensualUseCase,
+        GetAllResumenIvaComprasMensualPosicionUseCase {
 
     private final ProveedorMovimientoRepository repository;
 
@@ -63,4 +62,8 @@ public class ProveedorMovimientoService implements
         return repository.findResumenByYearAndMonth(anho, mes);
     }
 
+    @Override
+    public List<ResumenIvaComprasMensualPosicion> getAllResumenIvaComprasMensualPosicion(Integer anho, Integer mes) {
+        return repository.findAllResumenPosicionByYearAndMonth(anho, mes);
+    }
 }

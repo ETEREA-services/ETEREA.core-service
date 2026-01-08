@@ -17,8 +17,18 @@ classDiagram
         +add(Proveedor): Proveedor
     }
 
+    class ProveedorMovimientoController {
+        +findAllByRegimenInformacionCompras(OffsetDateTime, OffsetDateTime): ResponseEntity
+        +resumenIvaComprasMensual(Integer, Integer): ResponseEntity
+        +resumenIvaComprasPosicionMensual(Integer, Integer): ResponseEntity
+        +updateNetoAjuste(ProveedorMovimientoNetoAjusteRequest): ResponseEntity
+    }
+
     class ProveedorMovimientoService {
         +findAllByRegimenInformacionCompras(OffsetDateTime, OffsetDateTime): List~ProveedorMovimiento~
+        +getResumenIvaComprasMensual(Integer, Integer): ResumenIvaComprasMensual
+        +getAllResumenIvaComprasMensualPosicion(Integer, Integer): List~ResumenIvaComprasMensualPosicion~
+        +updateProveedorMovimientoNetoAjuste(ProveedorMovimientoNetoAjusteRequest): void
     }
 
     class ProveedorRepository {
@@ -30,6 +40,10 @@ classDiagram
 
     class ProveedorMovimientoRepository {
         +findAllByFechaContableBetweenAndComprobanteLibroIva(OffsetDateTime, OffsetDateTime, Byte, Sort): List~ProveedorMovimiento~
+        +findResumenByYearAndMonth(Integer, Integer): ResumenIvaComprasMensual
+        +findAllResumenPosicionByYearAndMonth(Integer, Integer): List~ResumenIvaComprasMensualPosicion~
+    }
+
     class ProveedorMovimiento {
         <<Kotlin Data Class>>
         +proveedorMovimientoId: Long
@@ -44,8 +58,6 @@ classDiagram
         +fechaContable: OffsetDateTime
         +comprobante: Comprobante
         +proveedor: Proveedor
-    }
-
     }
 
     class Proveedor {
@@ -73,3 +85,4 @@ classDiagram
 
     ProveedorMovimientoController --> ProveedorMovimientoService
     ProveedorMovimientoService --> ProveedorMovimientoRepository
+    ProveedorMovimientoRepository --> ProveedorMovimiento

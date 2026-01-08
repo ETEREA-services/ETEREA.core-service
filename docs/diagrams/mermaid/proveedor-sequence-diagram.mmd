@@ -13,3 +13,12 @@ sequenceDiagram
     PR-->>-PS: Lista filtrada por IVA
     PS-->>-PC: Lista final
     PC-->>-User: 200 OK (body: Lista de ProveedorMovimiento)
+
+    User->>+PC: GET /proveedorMovimiento/resumen/iva/compras/posicion/{anho}/{mes}
+    PC->>+PS: getAllResumenIvaComprasMensualPosicion(anho, mes)
+    PS->>+PR: findAllResumenPosicionByYearAndMonth(anho, mes)
+    PR->>+DB: SELECT negocio_id, anho, mes, posicion, SUM(neto) AS neto, ... FROM movprov JOIN proveedores ... GROUP BY negocio_id, anho, mes, posicion
+    DB-->>-PR: Lista de resúmenes por posición
+    PR-->>-PS: Lista mapeada
+    PS-->>-PC: Lista final con nombres de posición
+    PC-->>-User: 200 OK (body: Lista de ResumenIvaComprasMensualPosicionResponse)

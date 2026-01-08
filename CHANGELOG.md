@@ -1,3 +1,8 @@
+## [1.3.0] - 2026-01-08
+
+### Features
+- feat: Nuevo endpoint GET `/proveedorMovimiento/resumen/iva/compras/posicion/{anho}/{mes}` para obtener resumen mensual de IVA de compras por posición, basado en cambios en `ProveedorMovimientoService.java`, adición de `ResumenIvaComprasMensualPosicion.java`, `ResumenIvaComprasMensualPosicionResponse.java` y mappers asociados
+
 ## [1.2.0] - 2026-01-07
 
 ### Features
