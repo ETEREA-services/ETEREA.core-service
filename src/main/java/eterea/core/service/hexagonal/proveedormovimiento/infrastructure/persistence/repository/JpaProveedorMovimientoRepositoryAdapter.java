@@ -2,11 +2,13 @@ package eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persist
 
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensual;
+import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ResumenIvaComprasMensualPosicion;
 import eterea.core.service.hexagonal.proveedormovimiento.domain.ports.out.ProveedorMovimientoRepository;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.dto.ResumenIvaComprasMensualDto;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.entity.ProveedorMovimientoEntity;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.mapper.ProveedorMovimientoMapper;
 import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.mapper.ResumenIvaComprasMensualMapper;
+import eterea.core.service.hexagonal.proveedormovimiento.infrastructure.persistence.mapper.ResumenIvaComprasMensualPosicionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -22,6 +24,7 @@ public class JpaProveedorMovimientoRepositoryAdapter implements ProveedorMovimie
     private final JpaProveedorMovimientoRepository jpaRepository;
     private final ProveedorMovimientoMapper proveedorMovimientoMapper;
     private final ResumenIvaComprasMensualMapper resumenIvaComprasMensualMapper;
+    private final ResumenIvaComprasMensualPosicionMapper resumenIvaComprasMensualPosicionMapper;
 
     @Override
     public List<ProveedorMovimiento> findAllByProveedorId(Long proveedorId) {
@@ -54,6 +57,13 @@ public class JpaProveedorMovimientoRepositoryAdapter implements ProveedorMovimie
     @Override
     public ResumenIvaComprasMensual findResumenByYearAndMonth(Integer anho, Integer mes) {
         return resumenIvaComprasMensualMapper.toDomain(jpaRepository.findResumenByYearAndMonth(anho, mes));
+    }
+
+    @Override
+    public List<ResumenIvaComprasMensualPosicion> findAllResumenPosicionByYearAndMonth(Integer anho, Integer mes) {
+        return jpaRepository.findAllResumenPosicionByYearAndMonth(anho, mes).stream()
+                .map(resumenIvaComprasMensualPosicionMapper::toDomain)
+                .toList();
     }
 
 }
