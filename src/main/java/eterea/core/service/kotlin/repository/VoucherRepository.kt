@@ -49,4 +49,19 @@ interface VoucherRepository : JpaRepository<Voucher, Long> {
                 desde: OffsetDateTime,
                 hasta: OffsetDateTime
         ): List<Voucher?>?
+
+        @Query("""
+   	SELECT DISTINCT v
+   	FROM Voucher v
+   	JOIN VoucherProducto vp ON v.voucherId = vp.voucherId
+   	JOIN ProductoArticulo pa ON vp.productoId = pa.productoId
+   	JOIN Articulo a ON pa.articuloId = a.articuloId
+   	WHERE v.fechaServicio = :fechaServicio
+   	    AND a.rubroId = :rubroId
+   	    AND v.confirmado = 1
+        """)
+        fun findAllByFechaServicioAndArticuloRubroId(
+                fechaServicio: OffsetDateTime,
+                rubroId: Long
+        ): List<Voucher?>?
 }

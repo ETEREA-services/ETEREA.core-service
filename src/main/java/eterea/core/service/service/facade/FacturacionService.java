@@ -221,6 +221,7 @@ public class FacturacionService {
       return clienteMovimiento;
    }
 
+   @Transactional
    public ClienteMovimiento registraTransaccionFacturaMultiplesPagos(
          Reserva reserva,
          FacturacionDto facturacionDTO,
@@ -347,6 +348,7 @@ public class FacturacionService {
       return clienteMovimiento;
    }
 
+   @Transactional
    public ClienteMovimiento registraTransaccionFacturaHotelMultiplesPagos(
          Reserva reserva,
          FacturacionDto facturacionDTO,
@@ -361,8 +363,6 @@ public class FacturacionService {
 
       int posicionIva = cliente.getPosicion().getPosicionId();
       String tipoComprobante = (posicionIva == 1 || posicionIva == 4) ? "A" : "B";
-
-      
 
       String observaciones = getObservacionesPrecioPromedio(reserva);
       // Registra clienteMovimiento
@@ -530,6 +530,7 @@ public class FacturacionService {
          log.debug("articuloMovimiento jsonify error {}", e.getMessage());
       }
    }
+
    private String getObservacionesPrecioPromedio(Reserva reserva) {
       OffsetDateTime fechaIn = reserva.getFechaInServicio();
       OffsetDateTime fechaOutMinus1 = reserva.getFechaOutServicio().minusDays(1);
@@ -540,18 +541,17 @@ public class FacturacionService {
       OffsetDateTime currentDate = fechaIn;
       while (!currentDate.isAfter(fechaOutMinus1)) {
          var dayOfWeek = currentDate.getDayOfWeek();
-         
+
          if (dayOfWeek == java.time.DayOfWeek.FRIDAY || dayOfWeek == java.time.DayOfWeek.SATURDAY) {
             hasWeekendPrice = true;
-         } 
-         else {
+         } else {
             hasWeekdayPrice = true;
          }
-         
+
          if (hasWeekdayPrice && hasWeekendPrice) {
             return "Precio Unitario ARS corresponde al precio promedio por noche.";
          }
-         
+
          currentDate = currentDate.plusDays(1);
       }
 

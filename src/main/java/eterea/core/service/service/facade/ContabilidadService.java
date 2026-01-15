@@ -302,6 +302,8 @@ public class ContabilidadService {
          Parametro parametro) {
 
       List<CuentaMovimiento> cuentaMovimientos = new ArrayList<>();
+      // TODO: Esto genera una excepcion DataIntegrityViolationException cuando hay
+      // concurrencia
       int ordenContable = cuentaMovimientoService.nextOrdenContable(clienteMovimiento.getFechaComprobante());
       // Agrego asiento contable a clienteMovimiento
       clienteMovimiento.setFechaContable(clienteMovimiento.getFechaComprobante());
@@ -342,7 +344,7 @@ public class ContabilidadService {
       // If CtaCte, registro cuenta clientes
       if (comprobante.getCuentaCorriente() != 0) {
          cuentaMovimientos.add(new CuentaMovimiento.Builder()
-               .negocioId(clienteMovimiento.getNegocioId()) 
+               .negocioId(clienteMovimiento.getNegocioId())
                .numeroCuenta(parametro.getCuentaClientes())
                .debita(comprobante.getDebita())
                .importe(clienteMovimiento.getImporte()) // TODO: REVISAR, VB6 usa función "importeAjustado()"

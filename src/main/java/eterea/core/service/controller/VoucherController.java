@@ -102,4 +102,11 @@ public class VoucherController {
         return new ResponseEntity<>(service.buscarByNombrePax(searchTerm, desde, hasta), HttpStatus.OK);
     }
 
+    @GetMapping("/byFechaServicioAndArticuloRubroId/{fechaServicio}/{rubroId}")
+    public ResponseEntity<List<Voucher>> findAllByFechaServicioAndArticuloRubroId(
+            @PathVariable @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime fechaServicio,
+            @PathVariable Long rubroId) {
+        return new ResponseEntity<>(service.findAllByFechaServicioAndArticuloRubroId(fechaServicio, rubroId), HttpStatus.OK);
+    }
+
 }

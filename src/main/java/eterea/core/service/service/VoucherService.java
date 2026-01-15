@@ -149,4 +149,8 @@ public class VoucherService {
       return repository.findByNombrePaxContainingIgnoreCaseAndFechaServicioBetween(searchTerm, desde, hasta);
    }
 
+   public List<Voucher> findAllByFechaServicioAndArticuloRubroId(OffsetDateTime fechaServicio, Long rubroId) {
+      return repository.findAllByFechaServicioAndArticuloRubroId(fechaServicio, rubroId);
+   }
+
 }
