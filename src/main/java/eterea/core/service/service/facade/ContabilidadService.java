@@ -328,7 +328,9 @@ public class ContabilidadService {
          // Registro total valores
          cuentaMovimientos.add(new CuentaMovimiento.Builder()
                .negocioId(clienteMovimiento.getNegocioId())
-               .numeroCuenta(vm.getValor().getNumeroCuenta())
+               .numeroCuenta(vm.getValor() != null
+                     ? vm.getValor().getNumeroCuenta()
+                     : vm.getNumeroCuenta())
                .debita(comprobante.getDebita())
                .importe(vm.getImporte())
                .item(item++)

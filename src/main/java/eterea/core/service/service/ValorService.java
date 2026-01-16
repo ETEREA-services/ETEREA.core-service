@@ -25,4 +25,8 @@ public class ValorService {
         return Objects.requireNonNull(repository.findByValorId(valorId)).orElseThrow(() -> new ValorException(valorId));
     }
 
+    public List<Valor> findAllByIds(List<Integer> valorIds) {
+        return repository.findAllByValorIdIn(valorIds);
+    }
+
 }

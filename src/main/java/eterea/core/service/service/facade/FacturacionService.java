@@ -167,7 +167,7 @@ public class FacturacionService {
       List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
       int item = 1;
       for (ReservaArticulo reservaArticulo : reservaArticuloService
-            .findAllByReservaId(reserva.getReservaId())) {
+            .findAllByReservaIdWithArticulo(reserva.getReservaId())) {
          articuloMovimientos.add(new ArticuloMovimiento.Builder()
                .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
                .centroStockId(Objects.requireNonNull(reservaArticulo.getArticulo())
@@ -304,7 +304,7 @@ public class FacturacionService {
       List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
       int item = 1;
       for (ReservaArticulo reservaArticulo : reservaArticuloService
-            .findAllByReservaId(reserva.getReservaId())) {
+            .findAllByReservaIdWithArticulo(reserva.getReservaId())) {
          articuloMovimientos.add(new ArticuloMovimiento.Builder()
                .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
                .centroStockId(Objects.requireNonNull(reservaArticulo.getArticulo())
@@ -330,7 +330,11 @@ public class FacturacionService {
       }
       articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
 
-      List<Valor> valores = savedValorMovimientos.stream().map(ValorMovimiento::getValor).toList();
+      List<Integer> valorIds = savedValorMovimientos.stream()
+            .map(ValorMovimiento::getValorId)
+            .distinct()
+            .toList();
+      List<Valor> valores = valorService.findAllByIds(valorIds);
       log.debug("valores={}", valores);
 
       List<CuentaMovimiento> clienteMovimientos = contabilidadService.registraContabilidad(
@@ -424,7 +428,7 @@ public class FacturacionService {
       List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
       int item = 1;
       for (ReservaArticulo reservaArticulo : reservaArticuloService
-            .findAllByReservaId(reserva.getReservaId())) {
+            .findAllByReservaIdWithArticulo(reserva.getReservaId())) {
          articuloMovimientos.add(new ArticuloMovimiento.Builder()
                .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
                .centroStockId(Objects.requireNonNull(reservaArticulo.getArticulo())
@@ -450,7 +454,11 @@ public class FacturacionService {
       }
       articuloMovimientos = articuloMovimientoService.saveAll(articuloMovimientos);
 
-      List<Valor> valores = savedValorMovimientos.stream().map(ValorMovimiento::getValor).toList();
+      List<Integer> valorIds = savedValorMovimientos.stream()
+            .map(ValorMovimiento::getValorId)
+            .distinct()
+            .toList();
+      List<Valor> valores = valorService.findAllByIds(valorIds);
       log.debug("valores={}", valores);
 
       List<CuentaMovimiento> clienteMovimientos = contabilidadService.registraContabilidad(

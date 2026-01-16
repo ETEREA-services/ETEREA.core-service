@@ -10,4 +10,6 @@ interface ValorRepository : JpaRepository<Valor, Int> {
 
     fun findByValorId(valorId: Int): Optional<Valor?>?
 
+    fun findAllByValorIdIn(valorIds: List<Int>): List<Valor>
+
 }

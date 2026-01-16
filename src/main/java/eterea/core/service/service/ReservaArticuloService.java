@@ -61,6 +61,10 @@ public class ReservaArticuloService {
 		return repository.findAllByReservaId(reservaId);
 	}
 
+	public List<ReservaArticulo> findAllByReservaIdWithArticulo(Long reservaId) {
+		return repository.findAllByReservaIdWithArticulo(reservaId);
+	}
+
 	public List<ReservaArticulo> findAllByVoucherId(Long reservaId, Long voucherId) {
 		return repository.findAllByReservaIdAndVoucherId(reservaId, voucherId);
 	}
