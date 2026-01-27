@@ -74,15 +74,18 @@ jobs:
               <div id="stats" class="stats"></div>
 
               <div class="section">
-                  <h2>Arquitectura General</h2>
-                  <div id="component-diagram"></div>
-                  <div id="erd-general" style="margin-top: 2rem;"></div>
+              <h2>Arquitectura General</h2>
+              <div id="component-diagram"></div>
+              <div id="erd-general" style="margin-top: 2rem;"></div>
+              <div id="hexagonal-architecture-diagram" style="margin-top: 2rem;"></div>
               </div>
 
               <div class="section">
-                  <h2>Dominio: Facturación</h2>
-                  <div id="make-factura-class-diagram"></div>
-                  <div id="make-factura-sequence-diagram" style="margin-top: 2rem;"></div>
+              <h2>Dominio: Facturación</h2>
+              <div id="make-factura-class-diagram"></div>
+              <div id="make-factura-sequence-diagram" style="margin-top: 2rem;"></div>
+              <div id="facturacion-exportacion-sequence-diagram" style="margin-top: 2rem;"></div>
+              <div id="transaccion-factura-sequence-diagram" style="margin-top: 2rem;"></div>
               </div>
 
               <div class="section">
@@ -102,7 +105,18 @@ jobs:
                   <div id="reserva-class-diagram"></div>
                   <div id="reserva-sequence-diagram" style="margin-top: 2rem;"></div>
               </div>
-              
+
+              <div class="section">
+                  <h2>Dominio: Gestión de Proveedores</h2>
+                  <div id="proveedor-class-diagram"></div>
+                  <div id="proveedor-sequence-diagram" style="margin-top: 2rem;"></div>
+              </div>
+
+              <div class="section">
+                  <h2>Dominio: Gestión de Legajos</h2>
+                  <div id="legajo-class-diagram"></div>
+              </div>
+
               <div id="dependencies" class="section">
                   <h2>🌳 Grafo de Dependencias</h2>
                   <p>El siguiente es el árbol de dependencias completo del proyecto, generado por Maven.</p>
@@ -157,9 +171,12 @@ jobs:
                       // General Architecture
                       { id: 'component-diagram', path: 'diagrams/mermaid/component-diagram.mmd', title: '🏛️ Diagrama de Componentes' },
                       { id: 'erd-general', path: 'diagrams/mermaid/erd-general.mmd', title: '🌐 Diagrama de Entidad-Relación General' },
+                      { id: 'hexagonal-architecture-diagram', path: 'diagrams/mermaid/hexagonal-architecture-diagram.mmd', title: '🏛️ Diagrama de Arquitectura Hexagonal' },
                       // Billing Domain
                       { id: 'make-factura-class-diagram', path: 'diagrams/mermaid/make-factura-class-diagram.mmd', title: 'UML Diagrama de Clases de Facturación' },
                       { id: 'make-factura-sequence-diagram', path: 'diagrams/mermaid/make-factura-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Factura' },
+                      { id: 'facturacion-exportacion-sequence-diagram', path: 'diagrams/mermaid/facturacion-exportacion-sequence.mmd', title: '🔄 Diagrama de Secuencia: Facturación de Exportación' },
+                      { id: 'transaccion-factura-sequence-diagram', path: 'diagrams/mermaid/transaccion-factura-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Transacción de Factura' },
                       // Customer Domain
                       { id: 'cliente-class-diagram', path: 'diagrams/mermaid/cliente-class-diagram.mmd', title: 'UML Diagrama de Clases de Clientes' },
                       { id: 'cliente-sequence-diagram', path: 'diagrams/mermaid/cliente-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Cliente' },
@@ -168,7 +185,12 @@ jobs:
                       { id: 'inventario-sequence-diagram', path: 'diagrams/mermaid/inventario-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Registro de Inventario' },
                       // Hotel Booking Domain
                       { id: 'reserva-class-diagram', path: 'diagrams/mermaid/reserva-class-diagram.mmd', title: 'UML Diagrama de Clases de Reservas' },
-                      { id: 'reserva-sequence-diagram', path: 'diagrams/mermaid/reserva-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Reserva' }
+                      { id: 'reserva-sequence-diagram', path: 'diagrams/mermaid/reserva-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Reserva' },
+                      // Provider Domain
+                      { id: 'proveedor-class-diagram', path: 'diagrams/mermaid/proveedor-class-diagram.mmd', title: 'UML Diagrama de Clases de Proveedores' },
+                      { id: 'proveedor-sequence-diagram', path: 'diagrams/mermaid/proveedor-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Gestión de Proveedor' },
+                      // Legajo Domain
+                      { id: 'legajo-class-diagram', path: 'diagrams/mermaid/legajo-class-diagram.mmd', title: 'UML Diagrama de Clases de Legajos' }
                   ];
 
                   // Insert titles and mermaid divs first
