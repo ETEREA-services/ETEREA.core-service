@@ -19,11 +19,21 @@ graph TB
             E_DOMAIN[Empresa Model<br/>hexagonal.empresa.domain.model]
             E_PORTS[Ports In/Out<br/>hexagonal.empresa.domain.ports]
         end
+
+        subgraph "Gestión Legajo"
+            L_API[Legajo Controller<br/>hexagonal.legajo.infrastructure.web.controller]
+            L_APP[Legajo Service<br/>hexagonal.legajo.application.service]
+            L_DOMAIN[Legajo Model<br/>hexagonal.legajo.domain.model]
+            L_PORTS[Ports In/Out<br/>hexagonal.legajo.domain.ports]
+        end
         
         subgraph "Persistence Layer"
             E_REPO[Empresa Repository Adapter<br/>hexagonal.empresa.infrastructure.persistence.repository]
             E_ENTITY[Empresa Entity<br/>hexagonal.empresa.infrastructure.persistence.entity]
             E_MAPPER[Empresa Mapper<br/>hexagonal.empresa.infrastructure.persistence.mapper]
+            L_REPO[Legajo Repository Adapter<br/>hexagonal.legajo.infrastructure.persistence.repository]
+            L_ENTITY[Legajo Entity<br/>hexagonal.legajo.infrastructure.persistence.entity]
+            L_MAPPER[Legajo Mapper<br/>hexagonal.legajo.infrastructure.persistence.mapper]
         end
         
         subgraph "External Clients"
@@ -36,18 +46,25 @@ graph TB
         FN_API --> FN_APP
         FE_API --> FE_APP
         E_API --> E_APP
+        L_API --> L_APP
         
         %% Application to Domain
         FN_APP --> FN_DOMAIN
         FE_APP --> FE_DOMAIN
         E_APP --> E_DOMAIN
         E_APP --> E_PORTS
+        L_APP --> L_DOMAIN
+        L_APP --> L_PORTS
         
         %% Domain to Infrastructure
         E_PORTS --> E_REPO
         E_REPO --> E_ENTITY
         E_REPO --> E_MAPPER
         E_ENTITY --> DB
+        L_PORTS --> L_REPO
+        L_REPO --> L_ENTITY
+        L_REPO --> L_MAPPER
+        L_ENTITY --> DB
         
         %% External Dependencies
         FN_APP --> AFIP

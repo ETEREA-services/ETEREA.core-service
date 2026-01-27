@@ -11,7 +11,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @Repository
-interface CuentaMovimientoRepository : JpaRepository<CuentaMovimiento?, Long?> {
+interface CuentaMovimientoRepository : JpaRepository<CuentaMovimiento, Long> {
 
     fun findAllByFechaAndOrden(fechaContable: OffsetDateTime, ordenContable: Int): List<CuentaMovimiento>
     fun findAllByFechaBetween(fechaDesde: OffsetDateTime, fechaHasta: OffsetDateTime): List<CuentaMovimiento>

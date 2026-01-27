@@ -1,21 +1,24 @@
-package eterea.core.service.model;
+package eterea.core.service.hexagonal.legajo.infrastructure.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import eterea.core.service.model.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 @Entity
+@Table(name = "legajo")
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Legajo extends Auditable {
+public class LegajoEntity extends Auditable {
 
     @Id
     @Column(name = "leg_id")

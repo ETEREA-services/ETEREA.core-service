@@ -7,7 +7,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @Repository
-interface ArticuloFechaRepository : JpaRepository<ArticuloFecha?, Long?> {
+interface ArticuloFechaRepository : JpaRepository<ArticuloFecha, Long> {
     fun findByArticuloIdAndFecha(articuloId: String?, fecha: OffsetDateTime?): Optional<ArticuloFecha?>?
 
     fun findByArticuloFechaId(articuloFechaId: Long?): Optional<ArticuloFecha?>?
