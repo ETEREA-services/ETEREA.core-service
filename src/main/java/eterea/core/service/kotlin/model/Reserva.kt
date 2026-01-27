@@ -8,6 +8,7 @@ import eterea.core.service.tool.Jsonifier
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.OffsetDateTime
+import java.time.LocalTime
 import java.util.*
 
 @Entity
@@ -41,8 +42,7 @@ data class Reserva(
     var fechaVencimiento: OffsetDateTime? = null,
 
     @Column(name = "res_horavto")
-    @Temporal(TemporalType.TIME)
-    var horaVencimiento: Date? = null,
+    var horaVencimiento: LocalTime? = null,
 
     @Column(name = "res_avisomail")
     var avisoMail: Byte = 0,
@@ -129,7 +129,7 @@ data class Reserva(
         var fechaInServicio: OffsetDateTime? = null,
         var fechaOutServicio: OffsetDateTime? = null,
         var fechaVencimiento: OffsetDateTime? = null,
-        var horaVencimiento: Date? = null,
+        var horaVencimiento: LocalTime? = null,
         var avisoMail: Byte = 0,
         var pendiente: Byte = 0,
         var confirmada: Byte = 0,
@@ -162,7 +162,7 @@ data class Reserva(
         fun fechaInServicio(fechaInServicio: OffsetDateTime?) = apply { this.fechaInServicio = fechaInServicio }
         fun fechaOutServicio(fechaOutServicio: OffsetDateTime?) = apply { this.fechaOutServicio = fechaOutServicio }
         fun fechaVencimiento(fechaVencimiento: OffsetDateTime?) = apply { this.fechaVencimiento = fechaVencimiento }
-        fun horaVencimiento(horaVencimiento: Date?) = apply { this.horaVencimiento = horaVencimiento }
+        fun horaVencimiento(horaVencimiento: LocalTime?) = apply { this.horaVencimiento = horaVencimiento }
         fun avisoMail(avisoMail: Byte) = apply { this.avisoMail = avisoMail }
         fun pendiente(pendiente: Byte) = apply { this.pendiente = pendiente }
         fun confirmada(confirmada: Byte) = apply { this.confirmada = confirmada }

@@ -1,3 +1,26 @@
+## [2.0.0] - 2026-01-27
+
+### 🚀 Major Release - Migración de Legajo a Arquitectura Hexagonal y Actualización de Dependencias
+
+#### Breaking Changes
+- **refactor!**: Migración completa del módulo Legajo a arquitectura hexagonal con reorganización de paquetes y estructura de código
+- **refactor!**: Actualización de dependencias principales: Spring Boot 3.5.8→4.0.1, Spring Cloud 2025.0.0→2025.1.0
+- **refactor!**: Eliminación de tipos nullable en repositorios Kotlin para mayor consistencia de tipos
+- **refactor!**: Cambio en modelo Reserva de `Date` a `LocalTime` para `horaVencimiento`
+- **refactor!**: Actualización de builders de clientes Feign para compatibilidad con Spring Boot 4
+
+#### Features
+- **feat**: Nueva implementación hexagonal del módulo Legajo con controladores, servicios, dominio y persistencia
+- **feat**: Nuevos endpoints para Legajo: GET `/legajo/`, GET `/legajo/{legajoId}`, POST `/legajo/search`, POST `/legajo/`
+- **feat**: Servicio de búsqueda avanzada de legajos por substrings
+- **feat**: Actualización de dependencias: ZXing 3.5.3→3.5.4, MySQL Connector 9.4.0→9.5.0, SpringDoc OpenAPI 2.8.10→3.0.1, ModelMapper 3.2.4→3.2.6, Commons Lang 3.18.0→3.20.0
+
+#### Changed
+- **refactor**: Reorganización completa del módulo Legajo a estructura hexagonal:
+  - `hexagonal/legajo/domain/` - Modelos de dominio y puertos
+  - `hexagonal/legajo/application/` - Casos de uso y servicios
+  - `hexagonal/legajo/infrastructure/` - Adaptadores web y persistencia
+
 ## [1.3.0] - 2026-01-08
 
 ### Features
@@ -99,7 +122,7 @@
 - feat: Nuevo endpoint POST `/clienteMovimiento/` para crear movimientos de cliente
 - feat: Nuevos endpoints en LegajoController: `findByLegajoId` y `findAllBySearch`
 - feat: Nuevo servicio `LegajoSearchService` para búsqueda de legajos
-- feat: Nueva excepción `LegajoException` para manejo de errores de legajo
+- feat: Nueva excepción `LegajoException` para manejo de errores de legajoEntity
 - feat: Actualización de dependencias: Kotlin 2.2.20→2.2.21
 
 ### Changed

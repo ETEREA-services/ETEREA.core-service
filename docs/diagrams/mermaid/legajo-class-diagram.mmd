@@ -1,0 +1,155 @@
+classDiagram
+    direction LR
+
+    class LegajoController {
+        +findAll(): ResponseEntity~List<LegajoResponse>~
+        +findByLegajoId(Integer): ResponseEntity~LegajoResponse~
+        +findAllContainingSubstrings(List~String~): ResponseEntity~List<LegajoResponse>~
+        +createLegajo(LegajoRequest): ResponseEntity~LegajoResponse~
+    }
+
+    class LegajoService {
+        +getAllLegajos(): List~Legajo~
+        +findByLegajoId(Integer): Optional~Legajo~
+        +findAllContainingSubstrings(List~String~): List~Legajo~
+        +createLegajo(Legajo): Legajo
+    }
+
+    class GetAllLegajosUseCaseImpl {
+        +getAllLegajos(): List~Legajo~
+    }
+
+    class GetLegajoByIdUseCaseImpl {
+        +findByLegajoId(Integer): Optional~Legajo~
+    }
+
+    class CreateLegajoUseCaseImpl {
+        +createLegajo(Legajo): Legajo
+    }
+
+    class GetAllLegajosContainingSubstringsUseCaseImpl {
+        +findAllContainingSubstrings(List~String~): List~Legajo~
+    }
+
+    class LegajoRepository {
+        +findAll(): List~Legajo~
+        +findByLegajoId(Integer): Optional~Legajo~
+        +createLegajo(Legajo): Legajo
+        +findAllContainingSubstrings(List~String~): List~Legajo~
+    }
+
+    class JpaLegajoRepositoryAdapter {
+        +findAll(): List~Legajo~
+        +findByLegajoId(Integer): Optional~Legajo~
+        +createLegajo(Legajo): Legajo
+        +findAllContainingSubstrings(List~String~): List~Legajo~
+    }
+
+    class JpaLegajoRepository {
+        +findByLegajoId(Integer): Optional~LegajoEntity~
+        +findAllByStrings(List~String~): List~LegajoEntity~
+    }
+
+    class Legajo {
+        +legajoId: Integer
+        +apellido: String
+        +nombre: String
+        +documentoId: Integer
+        +telefono: String
+        +celular: String
+        +email: String
+        +fechaNacimiento: OffsetDateTime
+        +numeroDocumento: BigDecimal
+        +cuil: String
+        +calle: String
+        +numero: String
+        +piso: String
+        +departamento: String
+        +localidad: String
+        +provincia: String
+        +fechaIngreso: OffsetDateTime
+        +negocioId: Integer
+    }
+
+    class LegajoEntity {
+        +legajoId: Integer
+        +apellido: String
+        +nombre: String
+        +documentoId: Integer
+        +telefono: String
+        +celular: String
+        +email: String
+        +fechaNacimiento: OffsetDateTime
+        +numeroDocumento: BigDecimal
+        +cuil: String
+        +calle: String
+        +numero: String
+        +piso: String
+        +departamento: String
+        +localidad: String
+        +provincia: String
+        +fechaIngreso: OffsetDateTime
+        +negocioId: Integer
+    }
+
+    class LegajoRequest {
+        +legajoId: Integer
+        +apellido: String
+        +nombre: String
+        +documentoId: Integer
+        +telefono: String
+        +celular: String
+        +email: String
+        +fechaNacimiento: OffsetDateTime
+        +numeroDocumento: BigDecimal
+        +cuil: String
+        +calle: String
+        +numero: String
+        +piso: String
+        +departamento: String
+        +localidad: String
+        +provincia: String
+        +fechaIngreso: OffsetDateTime
+        +negocioId: Integer
+    }
+
+    class LegajoResponse {
+        +legajoId: Integer
+        +apellido: String
+        +nombre: String
+        +documentoId: Integer
+        +telefono: String
+        +celular: String
+        +email: String
+        +fechaNacimiento: OffsetDateTime
+        +numeroDocumento: BigDecimal
+        +cuil: String
+        +calle: String
+        +numero: String
+        +piso: String
+        +departamento: String
+        +localidad: String
+        +provincia: String
+        +fechaIngreso: OffsetDateTime
+    }
+
+    LegajoController --> LegajoService
+    LegajoService --> GetAllLegajosUseCaseImpl
+    LegajoService --> GetLegajoByIdUseCaseImpl
+    LegajoService --> CreateLegajoUseCaseImpl
+    LegajoService --> GetAllLegajosContainingSubstringsUseCaseImpl
+
+    GetAllLegajosUseCaseImpl --> LegajoRepository
+    GetLegajoByIdUseCaseImpl --> LegajoRepository
+    CreateLegajoUseCaseImpl --> LegajoRepository
+    GetAllLegajosContainingSubstringsUseCaseImpl --> LegajoRepository
+
+    LegajoRepository --> JpaLegajoRepositoryAdapter
+    JpaLegajoRepositoryAdapter --> JpaLegajoRepository
+    JpaLegajoRepositoryAdapter --> LegajoMapper
+    JpaLegajoRepository --> LegajoEntity
+
+    LegajoController --> LegajoDtoMapper
+    LegajoDtoMapper --> Legajo
+    LegajoDtoMapper --> LegajoRequest
+    LegajoDtoMapper --> LegajoResponse

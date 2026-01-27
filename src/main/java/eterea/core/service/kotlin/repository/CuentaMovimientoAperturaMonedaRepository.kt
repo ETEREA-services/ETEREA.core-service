@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param
 import java.time.OffsetDateTime
 import java.util.UUID
 
-interface CuentaMovimientoAperturaMonedaRepository : JpaRepository<CuentaMovimientoAperturaMoneda?, UUID?> {
+interface CuentaMovimientoAperturaMonedaRepository : JpaRepository<CuentaMovimientoAperturaMoneda, UUID> {
 
     @Modifying
     @Query(nativeQuery = true, value = """
