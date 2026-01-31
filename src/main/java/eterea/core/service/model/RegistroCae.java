@@ -1,5 +1,6 @@
 package eterea.core.service.model;
 
+import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.tool.Jsonifier;
 import jakarta.persistence.*;
 import lombok.*;
@@ -86,6 +87,10 @@ public class RegistroCae extends Auditable {
 
     private Long clienteMovimientoIdAsociado;
     private String trackUuid;
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "rec_tco_id", insertable = false, updatable = false)
+    private Comprobante comprobante;
 
     public String jsonify() {
         return Jsonifier.builder(this).build();

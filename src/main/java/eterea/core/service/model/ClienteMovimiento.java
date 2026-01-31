@@ -1,6 +1,7 @@
 package eterea.core.service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import eterea.core.service.hexagonal.empresa.infrastructure.persistence.entity.EmpresaEntity;
 import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.Comprobante;
 import eterea.core.service.kotlin.model.Moneda;
@@ -11,13 +12,14 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "movclie")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class ClienteMovimiento extends Auditable {
 
     @Id
@@ -182,6 +184,10 @@ public class ClienteMovimiento extends Auditable {
     @OneToOne(optional = true)
     @JoinColumn(name = "mcl_mon_id", insertable = false, updatable = false)
     private Moneda moneda;
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "mcl_emp_id",  insertable = false, updatable = false)
+    private EmpresaEntity empresa;
 
     public String jsonify() {
         return Jsonifier.builder(this).build();

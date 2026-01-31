@@ -117,6 +117,11 @@ jobs:
                   <div id="legajo-class-diagram"></div>
               </div>
 
+              <div class="section">
+                  <h2>Dominio: Consulta de Datos de Facturación</h2>
+                  <div id="invoicedata-class-diagram"></div>
+              </div>
+
               <div id="dependencies" class="section">
                   <h2>🌳 Grafo de Dependencias</h2>
                   <p>El siguiente es el árbol de dependencias completo del proyecto, generado por Maven.</p>
@@ -189,9 +194,11 @@ jobs:
                       // Provider Domain
                       { id: 'proveedor-class-diagram', path: 'diagrams/mermaid/proveedor-class-diagram.mmd', title: 'UML Diagrama de Clases de Proveedores' },
                       { id: 'proveedor-sequence-diagram', path: 'diagrams/mermaid/proveedor-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Gestión de Proveedor' },
-                      // Legajo Domain
-                      { id: 'legajo-class-diagram', path: 'diagrams/mermaid/legajo-class-diagram.mmd', title: 'UML Diagrama de Clases de Legajos' }
-                  ];
+                       // Legajo Domain
+                       { id: 'legajo-class-diagram', path: 'diagrams/mermaid/legajo-class-diagram.mmd', title: 'UML Diagrama de Clases de Legajos' },
+                       // InvoiceData Domain
+                       { id: 'invoicedata-class-diagram', path: 'diagrams/mermaid/invoicedata-class-diagram.mmd', title: 'UML Diagrama de Clases de Consulta de Datos de Facturación' }
+                   ];
 
                   // Insert titles and mermaid divs first
                   diagramConfigs.forEach(config => {

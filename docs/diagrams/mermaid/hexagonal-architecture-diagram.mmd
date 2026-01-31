@@ -26,6 +26,13 @@ graph TB
             L_DOMAIN[Legajo Model<br/>hexagonal.legajo.domain.model]
             L_PORTS[Ports In/Out<br/>hexagonal.legajo.domain.ports]
         end
+
+        subgraph "Consulta de Datos de Facturación"
+            ID_API[InvoiceData Controller<br/>hexagonal.invoicedata.infrastructure.web]
+            ID_APP[InvoiceData Service<br/>hexagonal.invoicedata.application.service]
+            ID_DOMAIN[InvoiceData Model<br/>hexagonal.invoicedata.domain.model]
+            ID_PORTS[Ports In<br/>hexagonal.invoicedata.domain.ports.in]
+        end
         
         subgraph "Persistence Layer"
             E_REPO[Empresa Repository Adapter<br/>hexagonal.empresa.infrastructure.persistence.repository]
@@ -47,6 +54,7 @@ graph TB
         FE_API --> FE_APP
         E_API --> E_APP
         L_API --> L_APP
+        ID_API --> ID_APP
         
         %% Application to Domain
         FN_APP --> FN_DOMAIN
@@ -55,6 +63,8 @@ graph TB
         E_APP --> E_PORTS
         L_APP --> L_DOMAIN
         L_APP --> L_PORTS
+        ID_APP --> ID_DOMAIN
+        ID_APP --> ID_PORTS
         
         %% Domain to Infrastructure
         E_PORTS --> E_REPO
@@ -65,17 +75,23 @@ graph TB
         L_REPO --> L_ENTITY
         L_REPO --> L_MAPPER
         L_ENTITY --> DB
+        ID_PORTS --> DB
         
         %% External Dependencies
         FN_APP --> AFIP
         FE_APP --> AFIP
         E_API --> CONSUL
+        ID_APP --> E_API
         
         style FN_API fill:#e1f5fe
         style FE_API fill:#e1f5fe
         style E_API fill:#e1f5fe
+        style L_API fill:#e1f5fe
+        style ID_API fill:#e1f5fe
         style FN_APP fill:#f3e5f5
         style FE_APP fill:#f3e5f5
         style E_APP fill:#f3e5f5
+        style L_APP fill:#f3e5f5
+        style ID_APP fill:#f3e5f5
         style DB fill:#ffebee
     end
