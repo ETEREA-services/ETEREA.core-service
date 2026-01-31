@@ -2,6 +2,7 @@ package eterea.core.service.hexagonal.empresa.infrastructure.persistence.mapper;
 
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.hexagonal.empresa.infrastructure.persistence.entity.EmpresaEntity;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.EmpresaResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -56,6 +57,22 @@ public class EmpresaMapper {
                 .conectaUnificado(empresa.getConectaUnificado())
                 .certificado(empresa.getCertificado())
                 .businessId(empresa.getBusinessId())
+                .build();
+    }
+
+    public EmpresaResponse toResponse(EmpresaEntity empresaEntity) {
+        if (empresaEntity == null) {
+            return null;
+        }
+        return EmpresaResponse.builder()
+                .nombreFantasia(empresaEntity.getNombreFantasia())
+                .razonSocial(empresaEntity.getRazonSocial())
+                .domicilio(empresaEntity.getDomicilio())
+                .telefono(empresaEntity.getTelefono())
+                .condicionIva(empresaEntity.getCondicionIva())
+                .cuit(empresaEntity.getCuit())
+                .ingresosBrutos(empresaEntity.getIngresosBrutos())
+                .inicioActividades(empresaEntity.getInicioActividades())
                 .build();
     }
 

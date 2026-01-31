@@ -1,0 +1,112 @@
+classDiagram
+    direction TB
+
+    class InvoiceDataController {
+        +getInvoiceDatabyClienteMovimientoId(Long): ResponseEntity~InvoiceDataResponse~
+    }
+
+    class InvoiceDataService {
+        +getInvoiceData(Long): InvoiceData
+    }
+
+    class GetInvoiceDataByClienteMovimientoIdImpl {
+        +getInvoiceDataByClienteMovimientoId(Long): InvoiceData
+    }
+
+    class InvoiceData {
+        +clienteMovimiento: ClienteMovimiento
+        +registroCae: RegistroCae
+        +clienteMovimientoAsociado: ClienteMovimiento
+    }
+
+    class InvoiceDataResponse {
+        +clienteMovimiento: ClienteMovimientoResponse
+        +registroCae: RegistroCaeResponse
+        +clienteMovimientoAsociado: ClienteMovimientoResponse
+    }
+
+    class ClienteMovimientoResponse {
+        +letraComprobante: String
+        +puntoVenta: Integer
+        +numeroComprobante: Long
+        +observaciones: String
+        +neto: BigDecimal
+        +montoIva: BigDecimal
+        +importe: BigDecimal
+        +empresa: EmpresaResponse
+        +cliente: ClienteResponse
+        +moneda: MonedaResponse
+        +comprobante: ComprobanteResponse
+        +articulos: List~ArticuloMovimientoResponse~
+    }
+
+    class RegistroCaeResponse {
+        +tipoDocumento: Integer
+        +puntoVenta: Integer
+        +numeroComprobante: Long
+        +cae: String
+        +caeVencimiento: OffsetDateTime
+        +total: BigDecimal
+        +comprobante: ComprobanteResponse
+    }
+
+    class EmpresaResponse {
+        +nombreFantasia: String
+        +razonSocial: String
+        +domicilio: String
+        +telefono: String
+        +condicionIva: String
+        +cuit: String
+        +ingresosBrutos: String
+        +inicioActividades: OffsetDateTime
+    }
+
+    class ClienteResponse {
+        +razonSocial: String
+        +domicilio: String
+        +cuit: String
+        +posicionIva: Integer
+        +email: String
+    }
+
+    class MonedaResponse {
+        +simbolo: String
+    }
+
+    class ComprobanteResponse {
+        +letraComprobante: String
+        +contado: Byte
+        +comprobanteAfip: ComprobanteAfipResponse
+    }
+
+    class ComprobanteAfipResponse {
+        +comprobanteAfipId: Integer
+        +label: String
+    }
+
+    class ArticuloMovimientoResponse {
+        +articuloId: String
+        +cantidad: BigDecimal
+        +precioUnitario: BigDecimal
+        +descripcion: String
+        +conceptoFacturado: ConceptoFacturadoResponse
+    }
+
+    class ConceptoFacturadoResponse {
+        +concepto: String
+    }
+
+    InvoiceDataController --> InvoiceDataService
+    InvoiceDataService --> GetInvoiceDataByClienteMovimientoIdImpl
+    GetInvoiceDataByClienteMovimientoIdImpl --> InvoiceData
+    InvoiceDataController ..> InvoiceDataResponse : uses mapper
+    InvoiceDataResponse --> ClienteMovimientoResponse
+    InvoiceDataResponse --> RegistroCaeResponse
+    ClienteMovimientoResponse --> EmpresaResponse
+    ClienteMovimientoResponse --> ClienteResponse
+    ClienteMovimientoResponse --> MonedaResponse
+    ClienteMovimientoResponse --> ComprobanteResponse
+    ClienteMovimientoResponse --> ArticuloMovimientoResponse
+    RegistroCaeResponse --> ComprobanteResponse
+    ComprobanteResponse --> ComprobanteAfipResponse
+    ArticuloMovimientoResponse --> ConceptoFacturadoResponse

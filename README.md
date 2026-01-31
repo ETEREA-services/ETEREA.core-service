@@ -4,12 +4,12 @@
 [![Java](https://img.shields.io/badge/Java-25-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk25-archive-downloads.html)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-blueviolet.svg)](https://kotlinlang.org/)
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.2-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.0-green.svg)](https://spring.io/projects/spring-cloud)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.1-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.5.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.0.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-2.1.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -31,7 +31,7 @@ Servicio Core para la gestión financiera y contable, implementado con una **arq
 ## Stack Tecnológico
 
 - **Java 25** y **Kotlin 2.3.0**
-- **Spring Boot 4.0.1** con Spring Cloud 2025.1.0
+- **Spring Boot 4.0.2** con Spring Cloud 2025.1.0
 - **Arquitectura Hexagonal** para modularidad y testabilidad
 - **Consul Discovery** y **OpenFeign**
   - Consul Discovery
@@ -61,6 +61,8 @@ El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 
 ### Módulos Hexagonales
 - **`hexagonal/empresa/`**: Gestión de empresas con puertos de entrada y salida
+- **`hexagonal/legajo/`**: Gestión de legajos con arquitectura hexagonal
+- **`hexagonal/invoicedata/`**: Consulta de datos completos de facturación con arquitectura hexagonal
 - **`hexagonal/facturacion/arca/nacional/`**: Facturación electrónica nacional
 - **`hexagonal/facturacion/arca/exportacion/`**: Facturación de exportación
 
@@ -87,6 +89,10 @@ El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 - **Artículos**: Gestión de artículos y sus listas de precios
 - **Rubros**: Categorización y gestión de rubros comerciales
 - **Inventario**: Control de stock y movimientos
+
+### Consulta de Datos de Facturación
+- **InvoiceData**: Endpoint para obtener datos completos de facturas por movimiento de cliente
+- Integración con módulos de empresa, cliente, comprobante y CAE
 
 ### Servicios Transversales
 - **Service Discovery**: Integración con Consul

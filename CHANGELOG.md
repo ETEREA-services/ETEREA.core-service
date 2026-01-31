@@ -1,3 +1,24 @@
+## [2.1.0] - 2026-01-31
+
+### Features
+- **feat(invoicedata)**: Nuevo módulo hexagonal `InvoiceData` para consulta de datos de facturación completa
+  - Nuevo endpoint GET `/api/core/invoiceData/{clienteMovimientoId}` para obtener datos completos de factura
+  - Modelo de dominio `InvoiceData` con información de cliente, movimiento, CAE y comprobante asociado
+  - Implementación completa de arquitectura hexagonal:
+    - `domain/`: Modelos y puertos de entrada
+    - `application/`: Servicios y casos de uso
+    - `infrastructure/`: DTOs, mappers y controlador REST
+  - Mappers para transformación de entidades: `InvoiceDataMapper`, `ClienteMovimientoMapper`, `RegistroCaeMapper`, `ArticuloMovimientoMapper`, `ClienteMapper`, `EmpresaMapper`, `ComprobanteMapper`, `ComprobanteAfipMapper`, `MonedaMapper`, `ConceptoFacturadoMapper`
+  - DTOs de respuesta estructurados: `InvoiceDataResponse`, `ClienteMovimientoResponse`, `RegistroCaeResponse`, etc.
+
+### Changed
+- **refactor(stock)**: Simplificación de inyección de dependencias en `StockService` usando `@RequiredArgsConstructor` en lugar de constructor manual
+- **refactor(empresa)**: Adición de método `toResponse()` en `EmpresaMapper` para soporte de DTOs en módulo invoicedata
+- **refactor(model)**: Actualización de `ClienteMovimiento` y `RegistroCae` con nuevas relaciones JPA para soporte de consultas enriquecidas
+
+### Dependencies
+- **chore(deps)**: Actualización de Spring Boot 4.0.1 → 4.0.2
+
 ## [2.0.0] - 2026-01-27
 
 ### 🚀 Major Release - Migración de Legajo a Arquitectura Hexagonal y Actualización de Dependencias

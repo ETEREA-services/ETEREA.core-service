@@ -14,6 +14,7 @@ import eterea.core.service.service.view.SaldoArticuloService;
 import eterea.core.service.service.view.SaldoFechaService;
 import eterea.core.service.tool.Jsonifier;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class StockService {
 
     private final StockMovimientoService stockMovimientoService;
@@ -33,20 +35,6 @@ public class StockService {
     private final SaldoArticuloService saldoArticuloService;
     private final ArticuloSaldoFechaService articuloSaldoFechaService;
     private final ArticuloCentroService articuloCentroService;
-
-    public StockService(StockMovimientoService stockMovimientoService,
-                        ArticuloMovimientoService articuloMovimientoService,
-                        SaldoFechaService saldoFechaService,
-                        SaldoArticuloService saldoArticuloService,
-                        ArticuloSaldoFechaService articuloSaldoFechaService,
-                        ArticuloCentroService articuloCentroService) {
-        this.stockMovimientoService = stockMovimientoService;
-        this.articuloMovimientoService = articuloMovimientoService;
-        this.saldoFechaService = saldoFechaService;
-        this.saldoArticuloService = saldoArticuloService;
-        this.articuloSaldoFechaService = articuloSaldoFechaService;
-        this.articuloCentroService = articuloCentroService;
-    }
 
     @Transactional
     public StockMovimiento addMovimiento(StockAndArticulosDto stockAndArticulos) {
