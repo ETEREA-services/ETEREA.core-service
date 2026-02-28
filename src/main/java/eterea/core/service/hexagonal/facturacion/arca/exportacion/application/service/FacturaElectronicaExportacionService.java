@@ -42,7 +42,7 @@ public class FacturaElectronicaExportacionService {
                 .map(movimiento -> new FacturaExportacionFacturadorItem(
                         movimiento.getArticuloId(),
                         movimiento.getDescripcion(),
-                        movimiento.getCantidad().abs().intValue(),
+                        movimiento.getCantidad().abs(),
                         7,
                         movimiento.getPrecioUnitario(),
                         movimiento.getTotal()))

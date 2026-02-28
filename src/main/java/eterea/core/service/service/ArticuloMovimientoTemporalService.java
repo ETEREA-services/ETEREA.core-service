@@ -7,6 +7,7 @@ import java.util.List;
 
 import eterea.core.service.kotlin.model.ArticuloMovimientoTemporal;
 import eterea.core.service.repository.ArticuloMovimientoTemporalRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class ArticuloMovimientoTemporalService {
 
 	private final ArticuloMovimientoTemporalRepository repository;
-
-	public ArticuloMovimientoTemporalService(ArticuloMovimientoTemporalRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<ArticuloMovimientoTemporal> findAllByHWnd(String ipAddress, Long hWnd, Integer centroId) {
 		Sort sort = Sort.by("item").ascending()
