@@ -1,3 +1,10 @@
+## [2.1.1] - 2026-02-27
+
+### Changed
+- **refactor(facturacion-exportacion)**: Cambio del tipo de dato `cantidad` de `Integer` a `BigDecimal` en `FacturaExportacionFacturadorItem` para permitir cantidades decimales en facturación de exportación
+- **refactor(facturacion-exportacion)**: Ajuste en `FacturaElectronicaExportacionService` para usar `BigDecimal` directamente sin conversión a `int`
+- **refactor(service)**: Simplificación de inyección de dependencias en `ArticuloMovimientoTemporalService` usando `@RequiredArgsConstructor`
+
 ## [2.1.0] - 2026-01-31
 
 ### Features

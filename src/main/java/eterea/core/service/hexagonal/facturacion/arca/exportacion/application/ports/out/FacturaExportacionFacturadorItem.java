@@ -18,7 +18,7 @@ public class FacturaExportacionFacturadorItem {
     private String descripcion;
 
     @JsonProperty(value = "pro_qty")
-    private Integer cantidad;
+    private BigDecimal cantidad;
 
     @JsonProperty(value = "pro_umed")
     private Integer unidadMedida;
