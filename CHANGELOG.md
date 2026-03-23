@@ -1,3 +1,17 @@
+## [2.2.0] - 2026-03-23
+
+### Changed
+- **refactor(migracion)**: Migración completa del modelo `ArticuloMovimiento` de Kotlin a Java para mejor compatibilidad con Spring Boot 4 y consistencia con el resto de la codebase
+- **refactor(clients)**: Simplificación masiva de los builders de clientes Feign (`ArticuloBarraClientBuilder`, `ArticuloClientBuilder`, `CuentaClientBuilder`, `ParametroClientBuilder`) eliminando la configuración compleja de SpringEncoder/SpringDecoder que ya no es necesaria con Spring Cloud 2025
+- **refactor(excepciones)**: Migración de `StockMovimientoException` de Kotlin a Java, manteniendo ambas variantes para compatibilidad hacia atrás
+- **refactor(servicios)**: Adición de `@RequiredArgsConstructor` y eliminación de constructores manuales en `ArticuloMovimientoService`, `StockMovimientoService`
+- **refactor(impresion-fiscal)**: Extensión del endpoint de impresión fiscal con nuevo parámetro `stockMovimientoId` para obtener datos de stock y artículos asociados
+- **chore(deps)**: Actualización de Kotlin de 2.3.0 a 2.3.20 en `pom.xml`
+
+### Features
+- **feat(impresion-fiscal)**: Nuevo endpoint `/fiscal/{ipAddress}/{hWnd}/{clienteId}/{comprobanteId}/{comprobanteOrigenId}/stock/{stockMovimientoId}` que incluye datos de stock y artículos asociados
+- **feat(repositories)**: Nuevos métodos de consulta `findAllByStockMovimientoId` en `ArticuloMovimientoRepository` y `findByStockMovimientoId` en `StockMovimientoRepository`
+
 ## [2.1.1] - 2026-02-27
 
 ### Changed

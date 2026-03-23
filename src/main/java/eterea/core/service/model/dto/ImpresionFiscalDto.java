@@ -3,30 +3,29 @@
  */
 package eterea.core.service.model.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.model.*;
+import eterea.core.service.model.ArticuloMovimiento;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.tool.Jsonifier;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @author daniel
  *
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImpresionFiscalDto implements Serializable {
 
-	private static final long serialVersionUID = 8474478112848630563L;
+	@Serial
+    private static final long serialVersionUID = 8474478112848630563L;
 
 	private Long numeroFactura;
 	private Cliente cliente;
@@ -34,6 +33,8 @@ public class ImpresionFiscalDto implements Serializable {
 	private List<ArticuloMovimientoTemporal> articuloMovimientoTemporals;
 	private ClienteMovimiento comprobanteOrigen;
 	private ClienteMovimientoPrevio clienteMovimientoPrevio;
+	private StockMovimiento stockMovimiento;
+	private List<ArticuloMovimiento> articuloMovimientos;
 
 	public String jsonify() {
         return Jsonifier.builder(this).build();

@@ -1,6 +1,7 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.kotlin.model.*;
+import eterea.core.service.model.ArticuloMovimiento;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.model.Track;

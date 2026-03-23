@@ -2,7 +2,7 @@ package eterea.core.service.hexagonal.invoicedata.infrastructure.mapper;
 
 import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ArticuloMovimientoResponse;
 import eterea.core.service.kotlin.exception.ConceptoFacturadoException;
-import eterea.core.service.kotlin.model.ArticuloMovimiento;
+import eterea.core.service.model.ArticuloMovimiento;
 import eterea.core.service.kotlin.model.ConceptoFacturado;
 import eterea.core.service.service.ConceptoFacturadoService;
 import lombok.RequiredArgsConstructor;

@@ -25,13 +25,14 @@ public class ImpresionFiscalController {
 
 	private final ImpresionFiscalService service;
 
-	@GetMapping("/fiscal/{ipAddress}/{hWnd}/{clienteId}/{comprobanteId}/{comprobanteOrigenId}")
+	@GetMapping("/fiscal/{ipAddress}/{hWnd}/{clienteId}/{comprobanteId}/{comprobanteOrigenId}/stock/{stockMovimientoId}")
 	public ResponseEntity<ImpresionFiscalDto> getData(@PathVariable String ipAddress,
 													  @PathVariable Long hWnd,
                                                       @PathVariable Long clienteId,
 													  @PathVariable Integer comprobanteId,
-													  @PathVariable Long comprobanteOrigenId) {
-        return ResponseEntity.ok(service.getData(ipAddress, hWnd, clienteId, comprobanteId, comprobanteOrigenId));
+													  @PathVariable Long comprobanteOrigenId,
+													  @PathVariable Long stockMovimientoId) {
+        return ResponseEntity.ok(service.getData(ipAddress, hWnd, clienteId, comprobanteId, comprobanteOrigenId, stockMovimientoId));
 	}
 
 	@GetMapping("/fiscalPrevio/{clienteMovimientoPrevioId}/{comprobanteId}/{comprobanteOrigenId}")
