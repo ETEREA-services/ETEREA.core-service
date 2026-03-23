@@ -1,6 +1,6 @@
 package eterea.core.service.controller;
 
-import eterea.core.service.kotlin.model.ArticuloMovimiento;
+import eterea.core.service.model.ArticuloMovimiento;
 import eterea.core.service.service.ArticuloMovimientoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

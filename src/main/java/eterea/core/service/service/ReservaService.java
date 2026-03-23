@@ -20,6 +20,7 @@ import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.repository.ReservaRepository;
+import eterea.core.service.model.ArticuloMovimiento;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.facade.PrecioService;
@@ -128,7 +129,7 @@ public class ReservaService {
         if (articulo.getCentroStockId() != 1 || facturaExtranjero == 0) {
             BigDecimal precioUnitarioSinIva = reservaArticulo.getPrecioUnitario().divide(factorIva, 2, RoundingMode.HALF_UP);
             BigDecimal precioUnitarioConIva = precioUnitarioSinIva.multiply(factorIva);
-            ArticuloMovimiento articuloMovimiento = new ArticuloMovimiento.Builder()
+            ArticuloMovimiento articuloMovimiento = ArticuloMovimiento.builder()
                     .clienteMovimientoId(clienteMovimiento.getClienteMovimientoId())
                     .comprobanteId(clienteMovimiento.getComprobanteId())
                     .negocioId(clienteMovimiento.getNegocioId())

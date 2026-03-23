@@ -3,10 +3,7 @@ package eterea.core.service.service.facade;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.model.ClienteMovimiento;
-import eterea.core.service.model.CuentaMovimiento;
-import eterea.core.service.model.ReservaContext;
-import eterea.core.service.model.Track;
+import eterea.core.service.model.*;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
 import eterea.core.service.service.ArticuloMovimientoService;
 import eterea.core.service.service.ClienteMovimientoService;
@@ -103,7 +100,7 @@ public class RegistraFacturaService {
         int item = 1;
         List<ArticuloMovimiento> articuloMovimientos = new ArrayList<>();
         for (ReservaArticulo reservaArticulo : reservaArticulos) {
-            articuloMovimientos.add(new ArticuloMovimiento.Builder()
+            articuloMovimientos.add(ArticuloMovimiento.builder()
                     .centroStockId(Objects.requireNonNull(reservaArticulo.getArticulo()).getCentroStockId())
                     .comprobanteId(comprobante.getComprobanteId())
                     .item(item++)

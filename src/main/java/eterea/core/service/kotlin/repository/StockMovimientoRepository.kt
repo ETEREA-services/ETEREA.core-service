@@ -9,5 +9,6 @@ import java.util.Optional
 interface StockMovimientoRepository : JpaRepository<StockMovimiento, Long> {
 
     fun findFirstByComprobanteIdOrderByStockMovimientoIdDesc(comprobanteId: Int): Optional<StockMovimiento?>?
+    fun findByStockMovimientoId(stockMovimientoId: Long): Optional<StockMovimiento?>?
 
 }

@@ -340,7 +340,7 @@ public class FacturacionService {
         List<ArticuloMovimiento> articuloMovimientosNC = new ArrayList<>();
         for (var articuloMovimiento : articuloMovimientos) {
             log.debug("ArticuloMovimiento -> {}", articuloMovimiento.jsonify());
-            articuloMovimientosNC.add(new ArticuloMovimiento.Builder()
+            articuloMovimientosNC.add(ArticuloMovimiento.builder()
                     .centroStockId(articuloMovimiento.getCentroStockId())
                     .comprobanteId(comprobanteNC.getComprobanteId())
                     .item(articuloMovimiento.getItem())

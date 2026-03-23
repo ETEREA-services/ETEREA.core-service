@@ -2,14 +2,14 @@
 
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
 [![Java](https://img.shields.io/badge/Java-25-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk25-archive-downloads.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.0-blueviolet.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-blueviolet.svg)](https://kotlinlang.org/)
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.2-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.0-green.svg)](https://spring.io/projects/spring-cloud)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.1-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.5.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.1.1-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-2.2.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -30,7 +30,7 @@ Servicio Core para la gestión financiera y contable, implementado con una **arq
 
 ## Stack Tecnológico
 
-- **Java 25** y **Kotlin 2.3.0**
+- **Java 25** y **Kotlin 2.3.20**
 - **Spring Boot 4.0.2** con Spring Cloud 2025.1.0
 - **Arquitectura Hexagonal** para modularidad y testabilidad
 - **Consul Discovery** y **OpenFeign**
