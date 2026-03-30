@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.json.JsonMapper
 import eterea.core.service.model.Auditable
@@ -9,6 +10,7 @@ import java.math.BigDecimal
 
 @Entity
 @Table(name = "articulos")
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Articulo(
 
     @Id
