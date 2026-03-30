@@ -64,7 +64,7 @@ public class ArticuloController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Articulo> add(@RequestBody Articulo articulo) {
         return new ResponseEntity<>(service.add(articulo), HttpStatus.OK);
     }

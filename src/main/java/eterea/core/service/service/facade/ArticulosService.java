@@ -16,6 +16,7 @@ import eterea.core.service.kotlin.model.dto.ParametroDto;
 import eterea.core.service.service.ArticuloBarraService;
 import eterea.core.service.service.ArticuloService;
 import eterea.core.service.hexagonal.negocio.application.service.NegocioService;
+import eterea.core.service.tool.Jsonifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,9 @@ public class ArticulosService {
         log.debug("Starting article replication for articleId: {}", articuloId);
 
         List<Negocio> negocios = negocioService.getAllNegociosByCopyArticulo((byte) 1);
+        log.debug("Negocios para replicar: {}", Jsonifier.builder(negocios).build());
         Articulo articulo = articuloService.findByArticuloId(articuloId);
+        log.debug("Articulo para replicar: {}", articulo.jsonify());
         List<ArticuloBarra> barrasToReplicate = articuloBarraService.findAllByArticuloId(articuloId);
 
         log.debug("Articulo -> {}", articulo.jsonify());
@@ -77,8 +80,10 @@ public class ArticulosService {
     }
 
     private void updateArticuloIfNeeded(ClientsHolder clients, Articulo articulo) {
+        log.debug("Processing ArticulosService.updateArticuloIfNeeded()");
         try {
             var existingArticulo = clients.articuloClient.findByArticuloId(articulo.getArticuloId());
+            log.debug("ExistingArticulo -> {}", existingArticulo.jsonify());
 
             if (!Objects.equals(existingArticulo.getDescripcion(), articulo.getDescripcion())) {
                 
@@ -105,6 +110,7 @@ public class ArticulosService {
     }
 
     private ClientsHolder initializeClients(String baseUrl) {
+        log.debug("Processing ArticulosService.initializeClients");
         return new ClientsHolder(
                 ArticuloClientBuilder.buildClient(baseUrl),
                 ArticuloBarraClientBuilder.buildClient(baseUrl),
@@ -114,6 +120,7 @@ public class ArticulosService {
     }
 
     private void replicateArticulo(ClientsHolder clients, Articulo articulo) {
+        log.debug("Processing ArticulosService.replicateArticulo: {}", articulo.getArticuloId());
         var parametro = clients.parametroClient.findTop();
         log.debug("Parametro -> {}", parametro.jsonify());
 
@@ -129,7 +136,7 @@ public class ArticulosService {
     }
 
     private void replicateCodigosBarras(ArticuloBarraClient client, List<ArticuloBarra> barrasToReplicate, String articuloId) {
-        log.debug("Processing replicateCodigosBarras");
+        log.debug("Processing ArticulosService.replicateCodigosBarras");
         try {
             log.debug("A Replicar");
             barrasToReplicate.forEach(barra -> log.debug("ArticuloBarra -> {}", barra.jsonify()));
@@ -149,7 +156,7 @@ public class ArticulosService {
     }
 
     private void deleteObsoleteBarCodes(ArticuloBarraClient client, List<ArticuloBarra> existing, List<ArticuloBarra> toReplicate) {
-        log.debug("Processing deleteObsoleteBarCodes");
+        log.debug("Processing ArticulosService.deleteObsoleteBarCodes");
         if (toReplicate.isEmpty()) {
             // Si no hay códigos para replicar, eliminar todos los existentes
             existing.forEach(barra -> {
@@ -177,7 +184,7 @@ public class ArticulosService {
                 });
     }
     private void addNewBarCodes(ArticuloBarraClient client, List<ArticuloBarra> toReplicate, List<ArticuloBarra> existing) {
-        log.debug("Processing addNewBarCodes");
+        log.debug("Processing ArticulosService.addNewBarCodes");
         toReplicate.stream()
                 .filter(newBarra -> existing.stream()
                         .noneMatch(existingBarra -> Objects.equals(newBarra.getCodigoBarras(), existingBarra.getCodigoBarras())))
@@ -197,6 +204,7 @@ public class ArticulosService {
     }
 
     private boolean articuloExists(ArticuloClient articuloClient, String articuloId, String negocioNombre) {
+        log.debug("Processing ArticulosService.articuloExists");
         try {
             articuloClient.findByArticuloId(articuloId);
             log.debug("Articulo ya existe en -> {}", negocioNombre);
@@ -208,6 +216,7 @@ public class ArticulosService {
     }
 
     private Long verifyCuenta(CuentaClient cuentaClient, Long cuenta, String tipoCuenta) {
+        log.debug("Processing ArticulosService.verifyCuenta");
         if (cuenta != null) {
             try {
                 cuentaClient.findByNumeroCuenta(cuenta);
@@ -220,7 +229,7 @@ public class ArticulosService {
     }
 
     private ArticuloDto convertArticulo(Articulo articulo, ParametroDto parametro, Long cuentaVentas, Long cuentaCompras, Long cuentaGastos) {
-        log.debug("Processing convertArticulo");
+        log.debug("Processing ArticulosService.convertArticulo");
         return new ArticuloDto.Builder()
                 .articuloId(articulo.getArticuloId())
                 .negocioId(articulo.getNegocioId())

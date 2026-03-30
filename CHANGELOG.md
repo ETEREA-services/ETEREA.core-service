@@ -1,3 +1,22 @@
+## [2.3.0] - 2026-03-30
+
+### Dependencies
+- **chore(deps)**: Actualización de Spring Boot 4.0.2→4.0.4 en `pom.xml`
+- **chore(deps)**: Actualización de OpenPDF 3.0.0→3.0.3 en `pom.xml`
+- **chore(deps)**: Actualización de MySQL Connector 9.5.0→9.6.0 en `pom.xml`
+- **chore(deps)**: Actualización de SpringDoc OpenAPI 3.0.1→3.0.2 en `pom.xml`
+- **chore(deps)**: Nueva dependencia `feign-jackson` para soporte de serialización JSON en clientes Feign
+- **chore(deps)**: Nueva dependencia `commons-fileupload` 1.6.0 en dependencyManagement
+
+### Changed
+- **refactor(clients)**: Mejora en `ArticuloBarraClientBuilder`, `ArticuloClientBuilder`, `CuentaClientBuilder`, `ParametroClientBuilder` añadiendo `JacksonDecoder` con `KotlinModule` para mejor compatibilidad con modelos Kotlin
+- **refactor(clients)**: Adición de `SpringMvcContract` y `JacksonEncoder` en `ArticuloClientBuilder` para soportar solicitudes y respuestas JSON
+- **refactor(controller)**: Mejora en `ArticuloController.add()` especificando `consumes` y `produces` como "application/json"
+- **refactor(model)**: Adición de `@JsonIgnoreProperties(ignoreUnknown = true)` en `Articulo.kt`, `ArticuloDto.kt`, `ParametroDto.kt` para ignorar propiedades desconocidas en JSON
+- **refactor(model)**: Nuevo campo `porcentajeDescuentoPersonal` en `ParametroDto.kt`
+- **refactor(service)**: Mejora en logging de `ArticulosService` con mensajes más descriptivos para trazabilidad
+- **refactor(service)**: Uso de `Jsonifier` en lugar de serialización manual en `ArticulosService`
+
 ## [2.2.0] - 2026-03-23
 
 ### Changed

@@ -1,9 +1,11 @@
 package eterea.core.service.kotlin.model.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.json.JsonMapper
 import java.math.BigDecimal
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class ArticuloDto (
 
     val articuloId: String?,
