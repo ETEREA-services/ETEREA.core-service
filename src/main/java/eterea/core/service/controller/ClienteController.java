@@ -64,6 +64,11 @@ public class ClienteController {
 		}
 	}
 
+	@PostMapping("/byIds")
+	public ResponseEntity<List<Cliente>> findAllByIds(@RequestBody List<Long> clienteIds) {
+		return new ResponseEntity<>(service.findAllByIds(clienteIds), HttpStatus.OK);
+	}
+
 	@PostMapping("/")
 	public ResponseEntity<Cliente> add(@RequestBody Cliente cliente) {
 		return new ResponseEntity<>(service.add(cliente), HttpStatus.OK);

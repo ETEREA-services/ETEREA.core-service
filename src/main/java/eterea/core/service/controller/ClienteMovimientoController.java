@@ -117,6 +117,11 @@ public class ClienteMovimientoController {
         }
     }
 
+    @PostMapping("/byIds")
+    public ResponseEntity<List<ClienteMovimiento>> findAllByIds(@RequestBody List<Long> clienteMovimientoIds) {
+        return new ResponseEntity<>(service.findAllByIds(clienteMovimientoIds), HttpStatus.OK);
+    }
+
     @PostMapping("/")
     public ResponseEntity<ClienteMovimiento> create(@RequestBody ClienteMovimiento clienteMovimiento) {
         return ResponseEntity.ok(service.add(clienteMovimiento));

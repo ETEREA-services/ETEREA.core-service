@@ -63,6 +63,10 @@ public class ClienteMovimientoService {
                 .toList();
     }
 
+    public List<ClienteMovimiento> findAllByIds(List<Long> clienteMovimientoIds) {
+        return repository.findAllByClienteMovimientoIdIn(clienteMovimientoIds);
+    }
+
     public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {
         return repository.findByClienteMovimientoId(clienteMovimientoId)
                 .orElseThrow(() -> new ClienteMovimientoException(clienteMovimientoId));

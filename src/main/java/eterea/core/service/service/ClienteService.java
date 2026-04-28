@@ -33,6 +33,10 @@ public class ClienteService {
 		return clienteSearchService.findAllBySearch(search);
 	}
 
+	public List<Cliente> findAllByIds(List<Long> clienteIds) {
+		return repository.findAllByClienteIdIn(clienteIds);
+	}
+
 	public Cliente findByClienteId(Long clienteId) {
 		return repository.findByClienteId(clienteId).orElseThrow(() -> new ClienteException(clienteId));
 	}

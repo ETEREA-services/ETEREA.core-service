@@ -1,3 +1,13 @@
+## [2.3.1] - 2026-04-28
+
+### Features
+- **feat(clienteMovimiento)**: Nuevo endpoint `POST /byIds` para buscar movimientos de cliente por lista de IDs
+- **feat(cliente)**: Nuevo endpoint `POST /byIds` para buscar clientes por lista de IDs
+
+### Changed
+- **refactor(dto)**: Ampliación de `ValorMovimientoDto` con los campos `movClieId`, `clienteId`, `nroPlanCta`, `created` y `updated`
+- **refactor(mapper)**: Actualización de `ValorMovimientoDtoMapper` para incluir los nuevos campos con null-guard en `valor.getConcepto()`
+
 ## [2.3.0] - 2026-03-30
 
 ### Dependencies

@@ -3,6 +3,7 @@
  */
 package eterea.core.service.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import eterea.core.service.kotlin.model.Cliente;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Repository;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
 	Optional<Cliente> findByClienteId(Long clienteId);
+
+	List<Cliente> findAllByClienteIdIn(List<Long> clienteIds);
 
 	Optional<Cliente> findTopByNumeroDocumento(String numeroDocumento);
 

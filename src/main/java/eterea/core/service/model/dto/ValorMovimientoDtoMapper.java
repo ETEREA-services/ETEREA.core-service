@@ -11,8 +11,17 @@ public class ValorMovimientoDtoMapper implements Function<ValorMovimiento, Valor
 
    @Override
    public ValorMovimientoDto apply(ValorMovimiento valorMovimiento) {
-      return new ValorMovimientoDto(valorMovimiento.getValorMovimientoId(), valorMovimiento.getCierreCajaId(),
-            valorMovimiento.getNegocioId(), valorMovimiento.getValor().getConcepto(),
-            valorMovimiento.getFechaContable(), valorMovimiento.getImporte());
+      return new ValorMovimientoDto(
+            valorMovimiento.getValorMovimientoId(),
+            valorMovimiento.getCierreCajaId(),
+            valorMovimiento.getNegocioId(),
+            valorMovimiento.getValor() != null ? valorMovimiento.getValor().getConcepto() : null,
+            valorMovimiento.getFechaContable(),
+            valorMovimiento.getImporte(),
+            valorMovimiento.getClienteMovimientoId(),
+            valorMovimiento.getClienteId(),
+            valorMovimiento.getNumeroCuenta(),
+            valorMovimiento.getCreated(),
+            valorMovimiento.getUpdated());
    }
 }

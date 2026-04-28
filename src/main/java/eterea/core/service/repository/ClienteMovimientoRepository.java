@@ -61,6 +61,8 @@ public interface ClienteMovimientoRepository extends JpaRepository<ClienteMovimi
 			Byte debita
 	);
 
+	List<ClienteMovimiento> findAllByClienteMovimientoIdIn(List<Long> clienteMovimientoIds);
+
 	@Modifying
 	@Query("delete from ClienteMovimiento where fechaComprobante = :fechaComprobante and comprobanteId = :comprobanteId and puntoVenta = :puntoVenta and numeroComprobante = :numeroComprobante")
 	void deleteAllByFechaComprobanteAndComprobanteIdAndPuntoVentaAndNumeroComprobante(OffsetDateTime fechaComprobante,
