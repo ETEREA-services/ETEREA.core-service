@@ -1,7 +1,6 @@
 package eterea.core.service.kotlin.model
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.json.JsonMapper
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
 import eterea.core.service.model.Auditable
 import eterea.core.service.tool.Jsonifier
 import jakarta.persistence.*
@@ -50,7 +49,7 @@ data class ReservaArticulo(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "rar_art_id", insertable = false, updatable = false)
-    var articulo: Articulo? = null
+    var articulo: ArticuloEntity? = null
 
 ) : Auditable() {
 
@@ -71,7 +70,7 @@ data class ReservaArticulo(
         var precioCompra: BigDecimal = BigDecimal.ZERO,
         var observaciones: String = "",
         var trackUuid: String? = null,
-        var articulo: Articulo? = null,
+        var articulo: ArticuloEntity? = null,
     ) {
         fun reservaArticuloId(reservaArticuloId: Long?) = apply { this.reservaArticuloId = reservaArticuloId }
         fun negocioId(negocioId: Int?) = apply { this.negocioId = negocioId }
@@ -87,7 +86,7 @@ data class ReservaArticulo(
         fun precioCompra(precioCompra: BigDecimal) = apply { this.precioCompra = precioCompra }
         fun observaciones(observaciones: String) = apply { this.observaciones = observaciones }
         fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
-        fun articulo(articulo: Articulo?) = apply {this.articulo = articulo}
+        fun articulo(articulo: ArticuloEntity?) = apply {this.articulo = articulo}
 
         fun build() = ReservaArticulo(
             reservaArticuloId,

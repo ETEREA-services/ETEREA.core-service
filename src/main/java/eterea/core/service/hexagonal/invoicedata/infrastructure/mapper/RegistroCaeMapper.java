@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RegistroCaeMapper {
 
-    private final ComprobanteMapper comprobanteMapper;
+    private final ComprobanteResponseMapper comprobanteMapper;
 
     public RegistroCaeResponse toResponse(RegistroCae registroCae) {
         if (registroCae == null) {

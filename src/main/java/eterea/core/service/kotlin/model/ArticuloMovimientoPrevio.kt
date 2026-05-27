@@ -1,6 +1,8 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
+import eterea.core.service.hexagonal.cuenta.infrastructure.persistence.entity.CuentaEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.*
 import java.math.BigDecimal
@@ -38,10 +40,10 @@ data class ArticuloMovimientoPrevio(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "articuloId", insertable = false, updatable = false)
-    var articulo: Articulo? = null,
+    var articulo: ArticuloEntity? = null,
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cuentaVenta", insertable = false, updatable = false)
-    var cuenta: Cuenta? = null
+    var cuenta: CuentaEntity? = null
 
 ) : Auditable()

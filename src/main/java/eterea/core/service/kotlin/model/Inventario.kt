@@ -1,6 +1,7 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -49,7 +50,7 @@ data class Inventario(
 
     @OneToOne
     @JoinColumn(name = "inv_art_id", updatable = false, insertable = false)
-    var articulo: Articulo? = null
+    var articulo: ArticuloEntity? = null
 
 ) : Auditable() {
 
@@ -63,7 +64,7 @@ data class Inventario(
         private var stock: BigDecimal = BigDecimal("0.000")
         private var inventarioTurno: InventarioTurno? = null
         private var centroStock: CentroStock? = null
-        private var articulo: Articulo? = null
+        private var articulo: ArticuloEntity? = null
 
         fun inventarioId(inventarioId: Long?) = apply { this.inventarioId = inventarioId }
         fun fecha(fecha: OffsetDateTime?) = apply { this.fecha = fecha }
@@ -74,7 +75,7 @@ data class Inventario(
         fun stock(stock: BigDecimal) = apply { this.stock = stock }
         fun inventarioTurno(inventarioTurno: InventarioTurno?) = apply { this.inventarioTurno = inventarioTurno }
         fun centroStock(centroStock: CentroStock?) = apply { this.centroStock = centroStock }
-        fun articulo(articulo: Articulo?) = apply { this.articulo = articulo }
+        fun articulo(articulo: ArticuloEntity?) = apply { this.articulo = articulo }
 
         fun build() = Inventario(
             inventarioId, fecha, inventarioTurnoId, centroStockId, articuloId, cantidad, stock, inventarioTurno, centroStock, articulo

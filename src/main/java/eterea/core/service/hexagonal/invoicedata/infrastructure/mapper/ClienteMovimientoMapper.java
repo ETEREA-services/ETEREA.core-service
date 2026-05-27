@@ -3,7 +3,7 @@ package eterea.core.service.hexagonal.invoicedata.infrastructure.mapper;
 import eterea.core.service.hexagonal.empresa.infrastructure.persistence.mapper.EmpresaMapper;
 import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ClienteMovimientoResponse;
 import eterea.core.service.model.ClienteMovimiento;
-import eterea.core.service.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ public class ClienteMovimientoMapper {
     private final EmpresaMapper empresaMapper;
     private final ClienteMapper clienteMapper;
     private final MonedaMapper monedaMapper;
-    private final ComprobanteMapper comprobanteMapper;
+    private final ComprobanteResponseMapper comprobanteMapper;
     private final ArticuloMovimientoService articuloMovimientoService;
     private final ArticuloMovimientoMapper articuloMovimientoMapper;
 

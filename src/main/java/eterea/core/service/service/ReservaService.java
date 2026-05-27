@@ -15,12 +15,19 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.service.hexagonal.articulo.application.service.ArticuloService;
+import eterea.core.service.hexagonal.articulo.domain.model.Articulo;
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.mapper.ArticuloMapper;
+import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.exception.ReservaException;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.kotlin.repository.ReservaRepository;
-import eterea.core.service.model.ArticuloMovimiento;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.facade.PrecioService;
@@ -50,6 +57,7 @@ public class ReservaService {
     private final VoucherProductoService voucherProductoService;
     private final PrecioService precioService;
     private final EmpresaService empresaService;
+    private final ArticuloMapper articuloMapper;
 
     public List<Reserva> findTopPendientes() {
         return repository
@@ -73,18 +81,11 @@ public class ReservaService {
 
         if (clienteMovimiento.getReservaId() == 0)
             return;
-        Reserva reserva = repository.findByReservaId(clienteMovimiento.getReservaId()).get();
-        try {
-            log.debug("Reserva = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reserva));
-        } catch (JsonProcessingException e) {
-            log.debug("Reserva error = {}", e.getMessage());
-        }
+        Reserva reserva = Objects.requireNonNull(repository.findByReservaId(clienteMovimiento.getReservaId()))
+                .orElseThrow(() -> new ReservaException(clienteMovimiento.getReservaId()));
+        log.debug("Reserva = {}", reserva.jsonify());
         Comprobante comprobante = comprobanteService.findByComprobanteId(clienteMovimiento.getComprobanteId());
-        try {
-            log.debug("Comprobante = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(comprobante));
-        } catch (JsonProcessingException e) {
-            log.debug("Comprobante error = {}", e.getMessage());
-        }
+        log.debug("Comprobante = {}", comprobante.jsonify());
         String numeroVoucher = "";
         Voucher voucher = null;
         if (reserva.getVoucherId() != null && reserva.getVoucherId() > 0) {
@@ -97,11 +98,7 @@ public class ReservaService {
 
         for (ReservaArticulo reservaArticulo : reservaArticuloService
                 .findAllByReservaId(clienteMovimiento.getReservaId())) {
-            try {
-                log.debug("ReservaArticulo = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
-            } catch (JsonProcessingException e) {
-                log.debug("ReservaArticulo error = {}", e.getMessage());
-            }
+            log.debug("ReservaArticulo = {}", reservaArticulo.jsonify());
             if (!reservaArticulo.getObservaciones().trim().isEmpty())
                 reservaArticulo.setObservaciones(reservaArticulo.getObservaciones() + numeroVoucher);
             addArticulo(clienteMovimiento, reservaArticulo, comprobante, ++item, reserva.getFacturarExtranjero(),
@@ -114,11 +111,7 @@ public class ReservaService {
     protected void addArticulo(ClienteMovimiento clienteMovimiento, ReservaArticulo reservaArticulo,
                                Comprobante comprobante, Integer item, Byte facturaExtranjero, List<ArticuloMovimiento> articuloMovs) {
         Articulo articulo = articuloService.findByArticuloId(reservaArticulo.getArticuloId());
-        try {
-            log.debug("Articulo = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articulo));
-        } catch (JsonProcessingException e) {
-            log.debug("Articulo error = {}", e.getMessage());
-        }
+        log.debug("Articulo = {}", articulo.jsonify());
         BigDecimal factorIva = new BigDecimal("1.21");
         if (articulo.getIva105() == 1)
             factorIva = new BigDecimal("1.105");
@@ -143,25 +136,18 @@ public class ReservaService {
                     .precioUnitarioConIva(precioUnitarioConIva)
                     .precioUnitario(precioUnitarioConIva)
                     .cantidad(new BigDecimal(factor * reservaArticulo.getCantidad()))
-                    .total(precioUnitarioConIva.multiply(new BigDecimal(reservaArticulo.getCantidad())))
-                    .numeroCuenta(articulo.getCuentaVentas())
+                    .totalConIva(precioUnitarioConIva.multiply(new BigDecimal(reservaArticulo.getCantidad())))
+                    .totalSinIva(precioUnitarioSinIva.multiply(new BigDecimal(reservaArticulo.getCantidad())))
+                    .numeroCuenta(articulo.getNumeroCuentaVentas())
                     .iva105(articulo.getIva105())
                     .exento(articulo.getExento())
                     .build();
 
-            try {
-                log.debug("ArticuloMovimiento before = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
-            } catch (JsonProcessingException e) {
-                log.debug("ArticuloMovimiento before error = {}", e.getMessage());
-            }
+            log.debug("ArticuloMovimiento before = {}", articuloMovimiento.jsonify());
 
             articuloMovimiento = articuloMovimientoService.add(articuloMovimiento);
 
-            try {
-                log.debug("ArticuloMovimiento after = {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articuloMovimiento));
-            } catch (JsonProcessingException e) {
-                log.debug("ArticuloMovimiento after error = {}", e.getMessage());
-            }
+            log.debug("ArticuloMovimiento after = {}", articuloMovimiento.jsonify());
 
             articuloMovs.add(articuloMovimiento);
 
@@ -289,19 +275,13 @@ public class ReservaService {
                     .voucherId(reserva.getVoucherId())
                     .articuloId(articulo.getArticuloId())
                     .precioUnitarioSinComision(precioArticulo)
-                    .articulo(articulo)
+                    .articulo(articuloMapper.toEntity(articulo))
                     .build());
             if (track != null) {
                 reservaArticulos.getLast().setTrackUuid(track.getUuid());
             }
         }
         reservaArticulos = reservaArticuloService.saveAll(reservaArticulos);
-
-        try {
-            log.debug("reservaArticulos={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulos));
-        } catch (JsonProcessingException e) {
-            log.debug("something went wrong");
-        }
 
         recalcularVoucher(reserva.getReservaId(), reserva.getVoucherId());
     }
@@ -333,12 +313,6 @@ public class ReservaService {
             }
 
             reservaArticulo = reservaArticuloService.update(reservaArticulo, reservaArticulo.getReservaArticuloId());
-            try {
-                log.debug("reserva_articulo={}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(reservaArticulo));
-            } catch (JsonProcessingException e) {
-                log.debug("reserva_articulo=null");
-            }
-
         }
     }
 

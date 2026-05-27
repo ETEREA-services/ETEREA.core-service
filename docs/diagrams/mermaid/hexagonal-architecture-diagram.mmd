@@ -1,6 +1,41 @@
 graph TB
     subgraph "Hexagonal Architecture - ETEREA Core Service"
         
+        subgraph "Gestión Artículos"
+            ART_API[Articulo Controller<br/>hexagonal.articulo.infrastructure.web.controller]
+            ART_APP[Articulo Service<br/>hexagonal.articulo.application.service]
+            ART_DOMAIN[Articulo Model<br/>hexagonal.articulo.domain.model]
+            ART_PORTS[Ports In/Out<br/>hexagonal.articulo.domain.ports]
+        end
+        
+        subgraph "Gestión Movimientos Artículos"
+            AM_API[ArticuloMovimiento Controller<br/>hexagonal.articulomovimiento.infrastructure.web.controller]
+            AM_APP[ArticuloMovimiento Service<br/>hexagonal.articulomovimiento.application.service]
+            AM_DOMAIN[ArticuloMovimiento Model<br/>hexagonal.articulomovimiento.domain.model]
+            AM_PORTS[Ports In/Out<br/>hexagonal.articulomovimiento.domain.ports]
+        end
+
+        subgraph "Gestión Comprobantes"
+            COMP_API[Comprobante Controller<br/>hexagonal.comprobante.infrastructure.web.controller]
+            COMP_APP[Comprobante Service<br/>hexagonal.comprobante.application.service]
+            COMP_DOMAIN[Comprobante Model<br/>hexagonal.comprobante.domain.model]
+            COMP_PORTS[Ports In/Out<br/>hexagonal.comprobante.domain.ports]
+        end
+
+        subgraph "Gestión Cuentas"
+            CTA_API[Cuenta Controller<br/>hexagonal.cuenta.infrastructure.web.controller]
+            CTA_APP[Cuenta Service<br/>hexagonal.cuenta.application.service]
+            CTA_DOMAIN[Cuenta Model<br/>hexagonal.cuenta.domain.model]
+            CTA_PORTS[Ports In/Out<br/>hexagonal.cuenta.domain.ports]
+        end
+
+        subgraph "Gestión Transferencias"
+            TRF_API[Transferencia Controller<br/>hexagonal.transferencia.infrastructure.web.controller]
+            TRF_APP[Transferencia Service<br/>hexagonal.transferencia.application.service]
+            TRF_DOMAIN[Transferencia Model<br/>hexagonal.transferencia.domain.model]
+            TRF_PORTS[Ports In/Out<br/>hexagonal.transferencia.domain.ports]
+        end
+
         subgraph "Facturación Nacional"
             FN_API[Facturación Controller<br/>hexagonal.facturacion.arca.nacional.infrastructure.web.controller]
             FN_APP[Facturación Service<br/>hexagonal.facturacion.arca.nacional.application.service]
@@ -27,6 +62,11 @@ graph TB
             L_PORTS[Ports In/Out<br/>hexagonal.legajo.domain.ports]
         end
 
+        subgraph "Gestión Proveedores"
+            PM_DOMAIN[ProveedorMovimiento Model<br/>hexagonal.proveedormovimiento.domain.model]
+            PM_ENTITY[ProveedorMovimiento Entity<br/>hexagonal.proveedormovimiento.infrastructure.persistence.entity]
+        end
+
         subgraph "Consulta de Datos de Facturación"
             ID_API[InvoiceData Controller<br/>hexagonal.invoicedata.infrastructure.web]
             ID_APP[InvoiceData Service<br/>hexagonal.invoicedata.application.service]
@@ -35,12 +75,20 @@ graph TB
         end
         
         subgraph "Persistence Layer"
+            ART_REPO[Articulo Repository Adapter<br/>hexagonal.articulo.infrastructure.persistence.repository]
+            ART_ENTITY[Articulo Entity<br/>hexagonal.articulo.infrastructure.persistence.entity]
+            AM_REPO[ArticuloMovimiento Repository Adapter<br/>hexagonal.articulomovimiento.infrastructure.persistence.repository]
+            AM_ENTITY[ArticuloMovimiento Entity<br/>hexagonal.articulomovimiento.infrastructure.persistence.entity]
+            COMP_REPO[Comprobante Repository Adapter<br/>hexagonal.comprobante.infrastructure.persistence.repository]
+            COMP_ENTITY[Comprobante Entity<br/>hexagonal.comprobante.infrastructure.persistence.entity]
+            CTA_REPO[Cuenta Repository Adapter<br/>hexagonal.cuenta.infrastructure.persistence.repository]
+            CTA_ENTITY[Cuenta Entity<br/>hexagonal.cuenta.infrastructure.persistence.entity]
+            TRF_REPO[Transferencia Repository Adapter<br/>hexagonal.transferencia.infrastructure.persistence.repository]
+            TRF_ENTITY[Transferencia Entity<br/>hexagonal.transferencia.infrastructure.persistence.entity]
             E_REPO[Empresa Repository Adapter<br/>hexagonal.empresa.infrastructure.persistence.repository]
             E_ENTITY[Empresa Entity<br/>hexagonal.empresa.infrastructure.persistence.entity]
-            E_MAPPER[Empresa Mapper<br/>hexagonal.empresa.infrastructure.persistence.mapper]
             L_REPO[Legajo Repository Adapter<br/>hexagonal.legajo.infrastructure.persistence.repository]
             L_ENTITY[Legajo Entity<br/>hexagonal.legajo.infrastructure.persistence.entity]
-            L_MAPPER[Legajo Mapper<br/>hexagonal.legajo.infrastructure.persistence.mapper]
         end
         
         subgraph "External Clients"
@@ -50,6 +98,11 @@ graph TB
         end
         
         %% API Layer to Application Layer
+        ART_API --> ART_APP
+        AM_API --> AM_APP
+        COMP_API --> COMP_APP
+        CTA_API --> CTA_APP
+        TRF_API --> TRF_APP
         FN_API --> FN_APP
         FE_API --> FE_APP
         E_API --> E_APP
@@ -57,6 +110,16 @@ graph TB
         ID_API --> ID_APP
         
         %% Application to Domain
+        ART_APP --> ART_DOMAIN
+        ART_APP --> ART_PORTS
+        AM_APP --> AM_DOMAIN
+        AM_APP --> AM_PORTS
+        COMP_APP --> COMP_DOMAIN
+        COMP_APP --> COMP_PORTS
+        CTA_APP --> CTA_DOMAIN
+        CTA_APP --> CTA_PORTS
+        TRF_APP --> TRF_DOMAIN
+        TRF_APP --> TRF_PORTS
         FN_APP --> FN_DOMAIN
         FE_APP --> FE_DOMAIN
         E_APP --> E_DOMAIN
@@ -67,27 +130,50 @@ graph TB
         ID_APP --> ID_PORTS
         
         %% Domain to Infrastructure
+        ART_PORTS --> ART_REPO
+        ART_REPO --> ART_ENTITY
+        ART_ENTITY --> DB
+        AM_PORTS --> AM_REPO
+        AM_REPO --> AM_ENTITY
+        AM_ENTITY --> DB
+        COMP_PORTS --> COMP_REPO
+        COMP_REPO --> COMP_ENTITY
+        COMP_ENTITY --> DB
+        CTA_PORTS --> CTA_REPO
+        CTA_REPO --> CTA_ENTITY
+        CTA_ENTITY --> DB
+        TRF_PORTS --> TRF_REPO
+        TRF_REPO --> TRF_ENTITY
+        TRF_ENTITY --> DB
         E_PORTS --> E_REPO
         E_REPO --> E_ENTITY
-        E_REPO --> E_MAPPER
         E_ENTITY --> DB
         L_PORTS --> L_REPO
         L_REPO --> L_ENTITY
-        L_REPO --> L_MAPPER
         L_ENTITY --> DB
         ID_PORTS --> DB
+        PM_ENTITY --> DB
         
         %% External Dependencies
         FN_APP --> AFIP
         FE_APP --> AFIP
-        E_API --> CONSUL
         ID_APP --> E_API
         
+        style ART_API fill:#e1f5fe
+        style AM_API fill:#e1f5fe
+        style COMP_API fill:#e1f5fe
+        style CTA_API fill:#e1f5fe
+        style TRF_API fill:#e1f5fe
         style FN_API fill:#e1f5fe
         style FE_API fill:#e1f5fe
         style E_API fill:#e1f5fe
         style L_API fill:#e1f5fe
         style ID_API fill:#e1f5fe
+        style ART_APP fill:#f3e5f5
+        style AM_APP fill:#f3e5f5
+        style COMP_APP fill:#f3e5f5
+        style CTA_APP fill:#f3e5f5
+        style TRF_APP fill:#f3e5f5
         style FN_APP fill:#f3e5f5
         style FE_APP fill:#f3e5f5
         style E_APP fill:#f3e5f5

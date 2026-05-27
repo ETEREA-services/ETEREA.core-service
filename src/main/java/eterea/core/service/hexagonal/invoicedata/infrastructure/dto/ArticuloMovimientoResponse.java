@@ -1,5 +1,6 @@
 package eterea.core.service.hexagonal.invoicedata.infrastructure.dto;
 
+import eterea.core.service.hexagonal.articulo.infrastructure.web.dto.ArticuloResponseForInvoiceData;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +13,9 @@ public class ArticuloMovimientoResponse {
     private BigDecimal cantidad;
     private BigDecimal precioUnitarioSinIva;
     private BigDecimal precioUnitarioConIva;
-    private ArticuloResponse articulo;
+    private BigDecimal precioTotalSinIva;
+    private BigDecimal precioTotalConIva;
+    private ArticuloResponseForInvoiceData articulo;
     private ConceptoFacturadoResponse conceptoFacturado;
 
 }

@@ -1,6 +1,6 @@
 package eterea.core.service.client.core;
 
-import eterea.core.service.kotlin.model.dto.ArticuloDto;
+import eterea.core.service.model.dto.ArticuloDto;
 import org.springframework.web.bind.annotation.*;
 
 public interface ArticuloClient {

@@ -1,6 +1,6 @@
 package eterea.core.service.controller.facade;
 
-import eterea.core.service.kotlin.model.dto.TransferenciaWrapperDto;
+import eterea.core.service.model.dto.TransferenciaWrapperDto;
 import eterea.core.service.service.facade.TransferenciasService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

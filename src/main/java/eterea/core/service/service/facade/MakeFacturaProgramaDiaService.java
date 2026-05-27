@@ -1,6 +1,12 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.client.report.MakeFacturaReportClient;
+import eterea.core.service.exception.EmpresaException;
+import eterea.core.service.hexagonal.articulo.application.service.ArticuloService;
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.mapper.ArticuloMapper;
+import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.application.service.FacturacionElectronicaService;
@@ -48,6 +54,7 @@ public class MakeFacturaProgramaDiaService {
     private final TrackService trackService;
     private final RegistraFacturaService registraFacturaService;
     private final EmpresaService empresaService;
+    private final ArticuloMapper articuloMapper;
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId, Track track) {
         if (track == null) {
@@ -58,7 +65,8 @@ public class MakeFacturaProgramaDiaService {
             return false;
         }
         log.debug("Comprobante -> {}", comprobante.jsonify());
-        Empresa empresa = empresaService.findLast().get();
+        Empresa empresa = empresaService.findLast()
+                .orElseThrow(EmpresaException::new);
         Parametro parametro = parametroService.findTop();
         String moneda = "PES";
         Reserva reserva = reservaService.findByReservaId(reservaId);
@@ -122,7 +130,7 @@ public class MakeFacturaProgramaDiaService {
         BigDecimal total105 = BigDecimal.ZERO;
         BigDecimal exento = BigDecimal.ZERO;
         for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reservaId)) {
-            reservaArticulo.setArticulo(articuloService.findByArticuloId(reservaArticulo.getArticuloId()));
+            reservaArticulo.setArticulo(articuloMapper.toEntity(articuloService.findByArticuloId(reservaArticulo.getArticuloId())));
             log.debug("ReservaArticulo -> {}", reservaArticulo.jsonify());
             BigDecimal subtotal = reservaArticulo.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad()));
             total = total.add(subtotal);
