@@ -6,7 +6,7 @@ package eterea.core.service.controller.facade;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-import eterea.core.service.kotlin.model.dto.PriceDto;
+import eterea.core.service.model.dto.PriceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;

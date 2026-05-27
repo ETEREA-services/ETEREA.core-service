@@ -1,6 +1,6 @@
 package eterea.core.service.controller.facade;
 
-import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
+import eterea.core.service.model.dto.ProgramaDiaDto;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.TrackService;
 import eterea.core.service.service.facade.VouchersService;

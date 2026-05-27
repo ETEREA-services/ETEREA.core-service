@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ## [2.3.1] - 2026-04-28
 
 ### Features
@@ -9,23 +10,45 @@
 - **refactor(mapper)**: Actualización de `ValorMovimientoDtoMapper` para incluir los nuevos campos con null-guard en `valor.getConcepto()`
 
 ## [2.3.0] - 2026-03-30
+=======
+## [2.3.0] - 2026-05-27
+>>>>>>> Stashed changes
 
-### Dependencies
-- **chore(deps)**: Actualización de Spring Boot 4.0.2→4.0.4 en `pom.xml`
-- **chore(deps)**: Actualización de OpenPDF 3.0.0→3.0.3 en `pom.xml`
-- **chore(deps)**: Actualización de MySQL Connector 9.5.0→9.6.0 en `pom.xml`
-- **chore(deps)**: Actualización de SpringDoc OpenAPI 3.0.1→3.0.2 en `pom.xml`
-- **chore(deps)**: Nueva dependencia `feign-jackson` para soporte de serialización JSON en clientes Feign
-- **chore(deps)**: Nueva dependencia `commons-fileupload` 1.6.0 en dependencyManagement
+### 🚀 Migración Masiva a Arquitectura Hexagonal
+
+#### Features
+- **feat(hexagonal)**: Nuevos módulos hexagonales completos (puertos, casos de uso, JPA, controladores REST):
+  - **`articulo`**: Migración completa del modelo `Articulo` de Kotlin a Java con arquitectura hexagonal. Casos de uso: creación, búsqueda (por ID, autoNumerico, máscara balanza, texto, voucher), cálculo de totales y actualización. Nuevo controlador REST con endpoints CRUD y DTOs (`ArticuloRequest`, `ArticuloResponse`, `ArticuloResponseForInvoiceData`, `TotalArticuloResponse`)
+  - **`articulomovimiento`**: Migración completa del modelo `ArticuloMovimiento` de Kotlin a Java con arquitectura hexagonal. Casos de uso: creación, consulta por ID, por clienteMovimientoId, por stockMovimientoId, autocompletado de totales y guardado masivo
+  - **`comprobante`**: Migración completa del modelo `Comprobante` de Kotlin a Java con arquitectura hexagonal. Casos de uso: consulta por módulo, comprobantes asociables, comprobantes disponibles y búsqueda por ID
+  - **`cuenta`**: Migración completa del modelo `Cuenta` de Kotlin a Java con arquitectura hexagonal. Casos de uso: listado completo, listado con cuenta maestra, búsqueda por cuenta maestra y por número de cuenta
+  - **`transferencia`**: Migración completa del modelo `Transferencia` de Kotlin a Java con arquitectura hexagonal. Caso de uso: búsqueda por identificador único
+- **feat(controllers)**: Nuevos controladores REST para los módulos hexagonales: `ArticuloController`, `ArticuloMovimientoController`, `ComprobanteController`, `CuentaController`, `TransferenciaController`
+- **feat(facade)**: Actualización de servicios facade (`PrecioController`, `StockController`, `TransferenciasController`, `VouchersController`) para usar los nuevos servicios hexagonales
+- **feat(clients)**: Actualización de `ArticuloClient`, `CuentaClient`, `ParametroClient` con nuevos builders compatibles con Spring Boot 4.0.6
 
 ### Changed
 - **refactor(clients)**: Mejora en `ArticuloBarraClientBuilder`, `ArticuloClientBuilder`, `CuentaClientBuilder`, `ParametroClientBuilder` añadiendo `JacksonDecoder` con `KotlinModule` para mejor compatibilidad con modelos Kotlin
 - **refactor(clients)**: Adición de `SpringMvcContract` y `JacksonEncoder` en `ArticuloClientBuilder` para soportar solicitudes y respuestas JSON
 - **refactor(controller)**: Mejora en `ArticuloController.add()` especificando `consumes` y `produces` como "application/json"
-- **refactor(model)**: Adición de `@JsonIgnoreProperties(ignoreUnknown = true)` en `Articulo.kt`, `ArticuloDto.kt`, `ParametroDto.kt` para ignorar propiedades desconocidas en JSON
+- **refactor(model)**: Adición de `@JsonIgnoreProperties(ignoreUnknown = true)` en modelos Kotlin para ignorar propiedades desconocidas en JSON
 - **refactor(model)**: Nuevo campo `porcentajeDescuentoPersonal` en `ParametroDto.kt`
-- **refactor(service)**: Mejora en logging de `ArticulosService` con mensajes más descriptivos para trazabilidad
+- **refactor(service)**: Mejora en logging de `ArticulosService` con mensajes más descriptivos
 - **refactor(service)**: Uso de `Jsonifier` en lugar de serialización manual en `ArticulosService`
+
+### Removed
+- **chore(cleanup)**: Eliminación de modelos Kotlin obsoletos: `Articulo.kt`, `Comprobante.kt`, `Cuenta.kt`, `Transferencia.kt` y sus DTOs asociados
+- **chore(cleanup)**: Eliminación de repositorios Kotlin obsoletos: `ArticuloRepository.kt`, `ArticuloMovimientoRepository.kt`, `ComprobanteRepository.kt`, `CuentaRepository.kt`, `TransferenciaRepository.kt`
+- **chore(cleanup)**: Eliminación de controladores y servicios Java antiguos reemplazados por módulos hexagonales
+
+### Dependencies
+- **chore(deps)**: Actualización de Spring Boot 4.0.4→4.0.6 en `pom.xml`
+- **chore(deps)**: Actualización de Kotlin 2.3.20→2.3.21 en `pom.xml`
+- **chore(deps)**: Actualización de SpringDoc OpenAPI 3.0.2→3.0.3 en `pom.xml`
+- **chore(deps)**: Actualización de OpenPDF 3.0.0→3.0.3 en `pom.xml`
+- **chore(deps)**: Actualización de MySQL Connector 9.5.0→9.6.0 en `pom.xml`
+- **chore(deps)**: Nueva dependencia `feign-jackson` para soporte de serialización JSON en clientes Feign
+- **chore(deps)**: Nueva dependencia `commons-fileupload` 1.6.0 en dependencyManagement
 
 ## [2.2.0] - 2026-03-23
 

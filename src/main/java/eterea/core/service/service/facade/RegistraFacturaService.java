@@ -1,11 +1,14 @@
 package eterea.core.service.service.facade;
 
+import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.*;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
-import eterea.core.service.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
 import eterea.core.service.service.ClienteMovimientoService;
 import eterea.core.service.service.ReservaContextService;
 import eterea.core.service.service.ValorMovimientoService;
@@ -35,17 +38,17 @@ public class RegistraFacturaService {
 
     @Transactional
     public ClienteMovimiento registraFacturaCompleta(
-                                Empresa empresa,
-                                Cliente cliente,
-                                Comprobante comprobante,
-                                OffsetDateTime fechaComprobante,
-                                FacturacionDto facturacionDto,
-                                Reserva reserva,
-                                String observaciones,
-                                Track track,
-                                Valor valor,
-                                List<ReservaArticulo> reservaArticulos,
-                                Parametro parametro
+            Empresa empresa,
+            Cliente cliente,
+            Comprobante comprobante,
+            OffsetDateTime fechaComprobante,
+            FacturacionDto facturacionDto,
+            Reserva reserva,
+            String observaciones,
+            Track track,
+            Valor valor,
+            List<ReservaArticulo> reservaArticulos,
+            Parametro parametro
     ) {
         log.debug("Processing RegistraFacturaService.registraFacturaCompleta");
         ClienteMovimiento clienteMovimiento = ClienteMovimiento.builder()
@@ -117,7 +120,7 @@ public class RegistraFacturaService {
                             )
                     )
                     .precioUnitarioConIva(reservaArticulo.getPrecioUnitario())
-                    .numeroCuenta(reservaArticulo.getArticulo().getCuentaVentas())
+                    .numeroCuenta(reservaArticulo.getArticulo().getNumeroCuentaVentas())
                     .iva105(reservaArticulo.getArticulo().getIva105())
                     .exento(reservaArticulo.getArticulo().getExento())
                     .fechaMovimiento(clienteMovimiento.getFechaComprobante())

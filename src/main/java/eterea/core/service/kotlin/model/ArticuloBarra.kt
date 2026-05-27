@@ -1,7 +1,6 @@
 package eterea.core.service.kotlin.model
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.json.JsonMapper
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
 import eterea.core.service.model.Auditable
 import eterea.core.service.tool.Jsonifier
 import jakarta.persistence.Column
@@ -31,7 +30,7 @@ data class ArticuloBarra(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "aba_art_id", updatable = false, insertable = false)
-    var articulo: Articulo? = null
+    var articulo: ArticuloEntity? = null
 
 ) : Auditable() {
 

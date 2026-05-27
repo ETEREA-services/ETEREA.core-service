@@ -1,6 +1,7 @@
 package eterea.core.service.hexagonal.facturacion.arca.exportacion.application.service;
 
 import eterea.core.service.client.arca.FacturacionAfipClient;
+import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
 import eterea.core.service.hexagonal.facturacion.arca.exportacion.application.ports.out.FacturaExportacionFacturadorItem;
 import eterea.core.service.hexagonal.facturacion.arca.exportacion.application.ports.out.FacturaExportacionFacturadorPayloadRequest;
 import eterea.core.service.hexagonal.facturacion.arca.exportacion.infrastructure.web.dto.FacturaExportacionContextRequest;

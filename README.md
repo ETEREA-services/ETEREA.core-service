@@ -2,36 +2,31 @@
 
 [![ETEREA.core-service CI](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ETEREA-services/ETEREA.core-service/actions/workflows/maven.yml)
 [![Java](https://img.shields.io/badge/Java-25-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk25-archive-downloads.html)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-blueviolet.svg)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-blueviolet.svg)](https://kotlinlang.org/)
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.4-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.0-green.svg)](https://spring.io/projects/spring-cloud)
-[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.1-blue.svg)](https://springdoc.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-9.5.0-orange.svg)](https://www.mysql.com/)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-blue.svg)](https://springdoc.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-9.6.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-2.3.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
-Servicio Core para la gestión financiera y contable, implementado con una **arquitectura hexagonal mixta Java/Kotlin**. Proporciona:
+Servicio Core para la gestión financiera y contable, implementado con **arquitectura hexagonal**. Proporciona:
 
 - **Arquitectura Hexagonal**: Implementación completa con puertos, adaptadores y casos de uso
 - **Facturación Nacional y de Exportación**: Soporte completo para facturación electrónica argentina
-- Gestión de transferencias entre negocios
-- Control de movimientos contables y valores
-- **Servicios de consulta** de stock y clientes
+- **Gestión de Artículos, Comprobantes, Cuentas, Transferencias**: Módulos hexagonales migrados a Java
+- **InvoiceData**: Consulta de datos completos de facturación
+- **Gestión de Legajos y Proveedores**: Con arquitectura hexagonal
 - **Ajuste automático** de netos e ivas en comprobantes
 - **Utilidades centralizadas**: serialización JSON, operaciones de fecha y texto
 
 ## Stack Tecnológico
-- Spring Cloud 2025.1.0
 
-
-
-## Stack Tecnológico
-
-- **Java 25** y **Kotlin 2.3.20**
-- **Spring Boot 4.0.2** con Spring Cloud 2025.1.0
+- **Java 25** y **Kotlin 2.3.21**
+- **Spring Boot 4.0.6** con Spring Cloud 2025.1.0
 - **Arquitectura Hexagonal** para modularidad y testabilidad
 - **Consul Discovery** y **OpenFeign**
   - Consul Discovery
@@ -43,32 +38,39 @@ Servicio Core para la gestión financiera y contable, implementado con una **arq
 - Log4j2
 
 ### Utilidades
-- OpenPDF 3.0.0 (Generación de PDFs)
+- OpenPDF 3.0.3 (Generación de PDFs)
 - ZXing 3.5.4 (Códigos de Barras y QR)
 - Lombok
 - ModelMapper 3.2.6
 - Caffeine Cache
-- MySQL Connector 9.4.0
+- MySQL Connector 9.6.0
 - Jacoco 0.8.13 (Cobertura de tests)
-- Apache Commons Lang3 3.18.0
+- Apache Commons Lang3 3.20.0
 
 ### Documentación
-- SpringDoc OpenAPI UI 2.8.10
+- SpringDoc OpenAPI UI 3.0.3
 
 ## Arquitectura
 
 El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 
 ### Módulos Hexagonales
+- **`hexagonal/articulo/`**: Gestión de artículos con puertos de entrada y salida (migrado a Java)
+- **`hexagonal/articulomovimiento/`**: Gestión de movimientos de artículos (migrado a Java)
+- **`hexagonal/comprobante/`**: Gestión de comprobantes (migrado a Java)
+- **`hexagonal/cuenta/`**: Gestión de cuentas contables (migrado a Java)
+- **`hexagonal/transferencia/`**: Gestión de transferencias entre negocios (migrado a Java)
 - **`hexagonal/empresa/`**: Gestión de empresas con puertos de entrada y salida
 - **`hexagonal/legajo/`**: Gestión de legajos con arquitectura hexagonal
 - **`hexagonal/invoicedata/`**: Consulta de datos completos de facturación con arquitectura hexagonal
+- **`hexagonal/proveedormovimiento/`**: Gestión de movimientos de proveedores
 - **`hexagonal/facturacion/arca/nacional/`**: Facturación electrónica nacional
 - **`hexagonal/facturacion/arca/exportacion/`**: Facturación de exportación
 
 ### Estructura por Tecnología
-- **Modelos y Entidades**: Implementados en Kotlin para aprovechar null-safety y data classes
-- **Servicios y Controladores**: Implementados en Java para compatibilidad con librerías legacy
+- **Modelos de Dominio**: Implementados en Java siguiendo principios de Clean Architecture
+- **Entidades JPA**: Implementadas en Java (migración progresiva desde Kotlin)
+- **Servicios y Controladores**: Implementados en Java
 - **Casos de Uso y Puertos**: Siguiendo principios de Clean Architecture
 
 > **Nota:** Desde la versión 1.0.0, el proyecto implementa arquitectura hexagonal completa con migración de todos los módulos críticos.
@@ -135,28 +137,6 @@ La documentación de la API está disponible en:
 - **OpenAPI JSON**: http://localhost:8080/v3/api-docs
 - **OpenAPI YAML**: http://localhost:8080/v3/api-docs.yaml
 
-## Nuevas Funcionalidades v1.0.0
-
-### 🚀 Facturación de Exportación
-- Soporte completo para comprobantes de exportación
-- Integración con AFIP para validación de datos
-- Manejo de monedas extranjeras y cotizaciones
-
-### 🔧 Ajuste Automático
-- Corrección automática de netos e ivas en comprobantes de compras
-- Validación de consistencia contable
-- Logging detallado de ajustes realizados
-
-### 🏗️ Arquitectura Hexagonal
-- Migración completa a arquitectura hexagonal
-- Separación clara de responsabilidades
-- Mayor testabilidad y mantenibilidad
-
-### ⚡ Mejoras de Rendimiento
-- Pool de conexiones optimizado (20 conexiones)
-- Consultas mejoradas con nombres de métodos corregidos
-- Caché de Caffeine para operaciones frecuentes
-
 ## Documentación Adicional
 
 - [Documentación del Proyecto](https://eterea-services.github.io/ETEREA.core-service/)
@@ -183,15 +163,22 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 
 ### Arquitectura
 - ✅ **Arquitectura Hexagonal** completa con puertos y adaptadores
-- ✅ **Proyecto mixto Java/Kotlin** optimizado
+- ✅ **Proyecto Java con migración progresiva desde Kotlin**
 - ✅ **Clean Architecture** con separación clara de responsabilidades
 
 ### Funcionalidades Core
 - ✅ **Facturación Nacional y Exportación** con integración AFIP
 - ✅ **Ajuste Automático** de comprobantes
+- ✅ **Gestión de Artículos** con arquitectura hexagonal (Java)
+- ✅ **Gestión de Movimientos de Artículos** con arquitectura hexagonal (Java)
+- ✅ **Gestión de Comprobantes** con arquitectura hexagonal (Java)
+- ✅ **Gestión de Cuentas Contables** con arquitectura hexagonal (Java)
+- ✅ **Gestión de Transferencias** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Empresas** con arquitectura hexagonal
+- ✅ **Gestión de Legajos** con arquitectura hexagonal
+- ✅ **Consulta de Datos de Facturación (InvoiceData)** con arquitectura hexagonal
+- ✅ **Gestión de Proveedores** con arquitectura hexagonal
 - ✅ **Control de Movimientos** contables y valores
-- ✅ **Sistema de Transferencias** entre negocios
 
 ### Infraestructura
 - ✅ **Documentación API** con OpenAPI 3.0
@@ -211,7 +198,7 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 ## Notas Importantes
 
 - El proyecto utiliza arquitectura hexagonal desde la versión 1.0.0
-- Las entidades JPA están definidas en Kotlin para mejor type safety
+- Los modelos de dominio y entidades JPA están progresivamente migrados a Java
 - Los casos de uso y controladores siguen principios de Clean Architecture
 - Se requiere configuración de Consul para el registro de servicios
 - La documentación de la API se genera automáticamente en tiempo de ejecución

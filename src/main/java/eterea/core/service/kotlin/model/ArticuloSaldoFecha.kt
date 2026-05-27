@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -40,7 +41,7 @@ data class ArticuloSaldoFecha(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "asf_art_id", insertable = false, updatable = false)
-    var articulo: Articulo? = null
+    var articulo: ArticuloEntity? = null
 
 ) : Auditable() {
 
@@ -51,7 +52,7 @@ data class ArticuloSaldoFecha(
         private var fecha: OffsetDateTime? = null
         private var saldo: BigDecimal = BigDecimal.ZERO
         private var centroStock: CentroStock? = null
-        private var articulo: Articulo? = null
+        private var articulo: ArticuloEntity? = null
 
         fun articuloSaldoFechaId(articuloSaldoFechaId: Long?) = apply { this.articuloSaldoFechaId = articuloSaldoFechaId }
         fun centroStockId(centroStockId: Int?) = apply { this.centroStockId = centroStockId }
@@ -59,7 +60,7 @@ data class ArticuloSaldoFecha(
         fun fecha(fecha: OffsetDateTime?) = apply { this.fecha = fecha }
         fun saldo(saldo: BigDecimal) = apply { this.saldo = saldo }
         fun centroStock(centroStock: CentroStock?) = apply { this.centroStock = centroStock }
-        fun articulo(articulo: Articulo?) = apply { this.articulo = articulo }
+        fun articulo(articulo: ArticuloEntity?) = apply { this.articulo = articulo }
 
         fun build() = ArticuloSaldoFecha(
             articuloSaldoFechaId = articuloSaldoFechaId,

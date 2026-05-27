@@ -1,7 +1,7 @@
 package eterea.core.service.controller.facade;
 
 import eterea.core.service.kotlin.model.StockMovimiento;
-import eterea.core.service.kotlin.model.dto.StockAndArticulosDto;
+import eterea.core.service.model.dto.StockAndArticulosDto;
 import eterea.core.service.service.facade.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

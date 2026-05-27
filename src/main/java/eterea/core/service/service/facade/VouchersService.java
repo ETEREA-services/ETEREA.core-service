@@ -6,7 +6,7 @@ import eterea.core.service.hexagonal.negocio.domain.model.Negocio;
 import eterea.core.service.kotlin.exception.VoucherException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
-import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
+import eterea.core.service.model.dto.ProgramaDiaDto;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
 import eterea.core.service.service.extern.OrderNoteService;
@@ -83,7 +83,9 @@ public class VouchersService {
 
     private ProgramaDiaDto createErrorResponse(String message) {
         log.debug("Processing createErrorResponse");
-        return new ProgramaDiaDto.Builder().errorMessage(message).build();
+        return ProgramaDiaDto.builder()
+                .errorMessage(message)
+                .build();
     }
 
     private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio, Track track) {

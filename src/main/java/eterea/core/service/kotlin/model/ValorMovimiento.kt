@@ -1,8 +1,7 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.json.JsonMapper
+import eterea.core.service.hexagonal.cuenta.infrastructure.persistence.entity.CuentaEntity
 import eterea.core.service.model.Auditable
 import eterea.core.service.tool.Jsonifier
 import jakarta.persistence.*
@@ -97,7 +96,7 @@ data class ValorMovimiento(
     @OneToOne(optional = true)
     @JoinColumn(name = "cgocontable", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    var cuenta: Cuenta? = null
+    var cuenta: CuentaEntity? = null
 
 ) : Auditable() {
 
@@ -133,7 +132,7 @@ data class ValorMovimiento(
         var observaciones: String? = null,
         var trackUuid: String? = null,
         var valor: Valor? = null,
-        var cuenta: Cuenta? = null
+        var cuenta: CuentaEntity? = null
     ) {
         fun valorMovimientoId(valorMovimientoId: Long?) = apply { this.valorMovimientoId = valorMovimientoId }
         fun negocioId(negocioId: Int?) = apply { this.negocioId = negocioId }
@@ -165,7 +164,7 @@ data class ValorMovimiento(
         fun trackUuid(trackUuid: String?) = apply { this.trackUuid = trackUuid }
 
         fun valor(valor: Valor?) = apply { this.valor = valor }
-        fun cuenta(cuenta: Cuenta?) = apply { this.cuenta = cuenta }
+        fun cuenta(cuenta: CuentaEntity?) = apply { this.cuenta = cuenta }
 
         fun build() = ValorMovimiento(
             valorMovimientoId, negocioId, valorId, proveedorId, clienteId,

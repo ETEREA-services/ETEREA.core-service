@@ -3,7 +3,7 @@ package eterea.core.service.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import eterea.core.service.hexagonal.empresa.infrastructure.persistence.entity.EmpresaEntity;
 import eterea.core.service.kotlin.model.Cliente;
-import eterea.core.service.kotlin.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.kotlin.model.Moneda;
 import eterea.core.service.tool.Jsonifier;
 import jakarta.persistence.*;
@@ -175,7 +175,7 @@ public class ClienteMovimiento extends Auditable {
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cgocomprob", insertable = false, updatable = false)
-    private Comprobante comprobante;
+    private ComprobanteEntity comprobante;
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cgoclie", insertable = false, updatable = false)

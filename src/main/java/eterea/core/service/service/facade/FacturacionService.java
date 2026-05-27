@@ -1,6 +1,12 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.client.arca.FacturacionAfipClient;
+import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.articulomovimiento.infrastructure.persistence.entity.ArticuloMovimientoEntity;
+import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.application.service.FacturacionElectronicaService;
 import eterea.core.service.kotlin.extern.OrderNote;
@@ -337,10 +343,10 @@ public class FacturacionService {
             log.debug("ValorMovimientoNC -> {}", valorMovimientosNC.getLast().jsonify());
         }
 
-        List<ArticuloMovimiento> articuloMovimientosNC = new ArrayList<>();
+        List<ArticuloMovimientoEntity> articuloMovimientosNC = new ArrayList<>();
         for (var articuloMovimiento : articuloMovimientos) {
             log.debug("ArticuloMovimiento -> {}", articuloMovimiento.jsonify());
-            articuloMovimientosNC.add(ArticuloMovimiento.builder()
+            articuloMovimientosNC.add(ArticuloMovimientoEntity.builder()
                     .centroStockId(articuloMovimiento.getCentroStockId())
                     .comprobanteId(comprobanteNC.getComprobanteId())
                     .item(articuloMovimiento.getItem())

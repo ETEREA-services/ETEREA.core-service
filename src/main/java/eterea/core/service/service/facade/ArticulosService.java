@@ -8,13 +8,13 @@ import eterea.core.service.client.core.builder.ArticuloBarraClientBuilder;
 import eterea.core.service.client.core.builder.ArticuloClientBuilder;
 import eterea.core.service.client.core.builder.CuentaClientBuilder;
 import eterea.core.service.client.core.builder.ParametroClientBuilder;
+import eterea.core.service.hexagonal.articulo.domain.model.Articulo;
 import eterea.core.service.hexagonal.negocio.domain.model.Negocio;
-import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.ArticuloBarra;
-import eterea.core.service.kotlin.model.dto.ArticuloDto;
-import eterea.core.service.kotlin.model.dto.ParametroDto;
+import eterea.core.service.model.dto.ArticuloDto;
+import eterea.core.service.model.dto.ParametroDto;
 import eterea.core.service.service.ArticuloBarraService;
-import eterea.core.service.service.ArticuloService;
+import eterea.core.service.hexagonal.articulo.application.service.ArticuloService;
 import eterea.core.service.hexagonal.negocio.application.service.NegocioService;
 import eterea.core.service.tool.Jsonifier;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -124,9 +123,9 @@ public class ArticulosService {
         var parametro = clients.parametroClient.findTop();
         log.debug("Parametro -> {}", parametro.jsonify());
 
-        var cuentaVentas = verifyCuenta(clients.cuentaClient, articulo.getCuentaVentas(), "ventas");
-        var cuentaCompras = verifyCuenta(clients.cuentaClient, articulo.getCuentaCompras(), "compras");
-        var cuentaGastos = verifyCuenta(clients.cuentaClient, articulo.getCuentaGastos(), "gastos");
+        var cuentaVentas = verifyCuenta(clients.cuentaClient, articulo.getNumeroCuentaVentas(), "ventas");
+        var cuentaCompras = verifyCuenta(clients.cuentaClient, articulo.getNumeroCuentaCompras(), "compras");
+        var cuentaGastos = verifyCuenta(clients.cuentaClient, articulo.getNumeroCuentaGastos(), "gastos");
 
         var articuloDto = convertArticulo(articulo, parametro, cuentaVentas, cuentaCompras, cuentaGastos);
         log.debug("ArticuloDto -> {}", articuloDto.jsonify());
@@ -230,7 +229,7 @@ public class ArticulosService {
 
     private ArticuloDto convertArticulo(Articulo articulo, ParametroDto parametro, Long cuentaVentas, Long cuentaCompras, Long cuentaGastos) {
         log.debug("Processing ArticulosService.convertArticulo");
-        return new ArticuloDto.Builder()
+        return ArticuloDto.builder()
                 .articuloId(articulo.getArticuloId())
                 .negocioId(articulo.getNegocioId())
                 .descripcion(articulo.getDescripcion())

@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.*
 
@@ -27,6 +28,6 @@ data class ProductoArticulo(
 
     @OneToOne(optional = true)
     @JoinColumn(name = "par_art_id", insertable = false, updatable = false)
-    var articulo: Articulo? = null
+    var articulo: ArticuloEntity? = null
 
 ) : Auditable()

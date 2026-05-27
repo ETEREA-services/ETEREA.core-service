@@ -1,15 +1,31 @@
-
 graph TD
-    subgraph "Eterea Core Service"
-        A[API REST] --> S[Security Layer];
-        S --> B{Controladores};
-        B --> C{Servicios};
-        C --> D{Repositorios};
-        D --> E[Base de Datos];
-        A --> CONSUL[(Consul Service Discovery)];
+    subgraph "Eterea Core Service - Arquitectura Hexagonal"
+        API[API REST Layer] --> HEX{Controladores Hexagonales};
+        HEX --> APP{Servicios de Aplicación};
+        APP --> DOM[Modelos de Dominio];
+        APP --> PORTS[Puertos de Salida];
+        PORTS --> ADAPT[Adaptadores de Persistencia];
+        ADAPT --> JPA[JPA Repositories];
+        JPA --> DB[(MySQL Database)];
+        API --> CONSUL[(Consul Service Discovery)];
+        F[Clientes Feign] --> API;
+    end
+
+    subgraph "Módulos Hexagonales"
+        ART[articulo]
+        AM[articulomovimiento]
+        COMP[comprobante]
+        CTA[cuenta]
+        TRF[transferencia]
+        EMP[empresa]
+        LEG[legajo]
+        INV[invoicedata]
+        FN[facturacion nacional]
+        FE[facturacion exportacion]
+        PM[proveedormovimiento]
     end
 
     subgraph "Clientes Externos"
-        F[Frontend Web] --> A;
-        G[Aplicación Móvil] --> A;
+        WEB[Frontend Web] --> API;
+        MOB[Aplicación Móvil] --> API;
     end

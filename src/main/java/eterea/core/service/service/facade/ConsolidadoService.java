@@ -1,6 +1,6 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.kotlin.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.kotlin.model.ComprobanteFaltante;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.service.ClienteMovimientoService;
@@ -56,7 +56,7 @@ public class ConsolidadoService {
         var comprobantesFacturadosByFecha = clienteMovimientoService.findAllFacturadosByFecha(fecha);
 
         // Obtiene lista única de Comprobantes
-        List<Comprobante> comprobantesUnicos = comprobantesFacturadosByFecha.stream()
+        List<ComprobanteEntity> comprobantesUnicos = comprobantesFacturadosByFecha.stream()
                 .map(ClienteMovimiento::getComprobante)
                 .filter(Objects::nonNull)
                 .distinct()

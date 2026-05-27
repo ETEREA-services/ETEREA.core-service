@@ -1,8 +1,11 @@
 package eterea.core.service.service.facade;
 
+import eterea.core.service.hexagonal.cuenta.application.service.CuentaService;
+import eterea.core.service.hexagonal.transferencia.application.service.TransferenciaService;
+import eterea.core.service.hexagonal.transferencia.infrastructure.web.mapper.TransferenciaDtoMapper;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.model.dto.TransferenciaDto;
-import eterea.core.service.kotlin.model.dto.TransferenciaWrapperDto;
+import eterea.core.service.model.dto.TransferenciaDto;
+import eterea.core.service.model.dto.TransferenciaWrapperDto;
 import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.service.*;
 import jakarta.transaction.Transactional;
@@ -27,11 +30,12 @@ public class TransferenciasService {
     private final CuentaService cuentaService;
     private final ValorService valorService;
     private final CuentaMovimientoFirmaService cuentaMovimientoFirmaService;
+    private final TransferenciaDtoMapper transferenciaDtoMapper;
 
     public TransferenciaWrapperDto findByUnique(Integer negocioIdDesde, Integer negocioIdHasta, Long numeroTransferencia) {
         log.debug("Processing TransferenciasService.findByUnique");
-        var transferenciaDto = TransferenciaDto.Companion.fromEntity(transferenciaService.findByUnique(negocioIdDesde, negocioIdHasta, numeroTransferencia));
-        var transferenciaWrapper = new TransferenciaWrapperDto.Builder()
+        TransferenciaDto transferenciaDto = transferenciaDtoMapper.toTransferenciaDto(transferenciaService.findByUnique(negocioIdDesde, negocioIdHasta, numeroTransferencia));
+        TransferenciaWrapperDto transferenciaWrapper = TransferenciaWrapperDto.builder()
                 .transferencia(transferenciaDto)
                 .valorMovimientos(valorMovimientoService.findAllByContable(transferenciaDto.getFecha(), transferenciaDto.getOrdenContable()))
                 .cuentaMovimientos(cuentaMovimientoService.findAllByContable(transferenciaDto.getFecha(), transferenciaDto.getOrdenContable()))
@@ -45,7 +49,7 @@ public class TransferenciasService {
         log.debug("Processing TransferenciasService.regenerate");
         var transferenciaExterna = transferenciaWrapper.getTransferencia();
         assert transferenciaExterna != null;
-        log.debug("Transferencia Externa -> {}", transferenciaExterna.toEntity().jsonify());
+        log.debug("Transferencia Externa -> {}", transferenciaExterna.jsonify());
         var transferenciaLocal = transferenciaService.findByUnique(Objects.requireNonNull(transferenciaWrapper.getTransferencia()).getNegocioIdDesde(), transferenciaWrapper.getTransferencia().getNegocioIdHasta(), transferenciaWrapper.getTransferencia().getNumeroTransferencia());
         log.debug("Transferencia Local -> {}", transferenciaLocal.jsonify());
         var fechaContableLocal = transferenciaLocal.getFecha();

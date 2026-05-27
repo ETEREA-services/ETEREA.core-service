@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eterea.core.service.exception.ClienteMovimientoException;
-import eterea.core.service.kotlin.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.repository.ClienteMovimientoRepository;
 import jakarta.transaction.Transactional;

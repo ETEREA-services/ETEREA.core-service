@@ -1,13 +1,13 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.exception.StockMovimientoException;
+import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
 import eterea.core.service.kotlin.model.ArticuloCentro;
-import eterea.core.service.model.ArticuloMovimiento;
 import eterea.core.service.kotlin.model.ArticuloSaldoFecha;
 import eterea.core.service.kotlin.model.StockMovimiento;
-import eterea.core.service.kotlin.model.dto.StockAndArticulosDto;
+import eterea.core.service.model.dto.StockAndArticulosDto;
 import eterea.core.service.service.ArticuloCentroService;
-import eterea.core.service.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
 import eterea.core.service.service.ArticuloSaldoFechaService;
 import eterea.core.service.service.StockMovimientoService;
 import eterea.core.service.service.view.SaldoArticuloService;

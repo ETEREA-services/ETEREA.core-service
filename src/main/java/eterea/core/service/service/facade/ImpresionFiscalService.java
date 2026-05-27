@@ -3,9 +3,12 @@
  */
 package eterea.core.service.service.facade;
 
-import eterea.core.service.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.kotlin.model.ClienteMovimientoPrevio;
-import eterea.core.service.kotlin.model.Comprobante;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.kotlin.model.StockMovimiento;
 import eterea.core.service.model.ClienteMovimiento;
 import eterea.core.service.service.*;

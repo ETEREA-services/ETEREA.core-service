@@ -10,19 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import eterea.core.service.exception.ArticuloException;
+import eterea.core.service.hexagonal.articulo.application.exception.ArticuloException;
 import eterea.core.service.exception.ArticuloFechaException;
+import eterea.core.service.hexagonal.articulo.domain.model.Articulo;
 import eterea.core.service.kotlin.exception.FeriadoException;
-import eterea.core.service.kotlin.model.Articulo;
 import eterea.core.service.kotlin.model.ArticuloFecha;
 import eterea.core.service.kotlin.model.ProductoArticulo;
-import eterea.core.service.kotlin.model.dto.PriceDto;
+import eterea.core.service.model.dto.PriceDto;
 import eterea.core.service.service.FeriadoService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import eterea.core.service.service.ArticuloFechaService;
-import eterea.core.service.service.ArticuloService;
+import eterea.core.service.hexagonal.articulo.application.service.ArticuloService;
 import eterea.core.service.service.ProductoArticuloService;
 import lombok.extern.slf4j.Slf4j;
 

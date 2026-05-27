@@ -2,8 +2,8 @@ package eterea.core.service.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import eterea.core.service.hexagonal.negocio.infrastructure.persistence.entity.NegocioEntity;
-import eterea.core.service.kotlin.model.Comprobante;
-import eterea.core.service.kotlin.model.Cuenta;
+import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
+import eterea.core.service.hexagonal.cuenta.infrastructure.persistence.entity.CuentaEntity;
 import eterea.core.service.tool.Jsonifier;
 import jakarta.persistence.*;
 import lombok.*;
@@ -101,12 +101,12 @@ public class CuentaMovimiento extends Auditable {
     @OneToOne(optional = true)
     @JoinColumn(name = "cuenta", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    private Cuenta cuenta;
+    private CuentaEntity cuenta;
 
     @OneToOne(optional = true)
     @JoinColumn(name = "cgotcomp", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    private Comprobante comprobante;
+    private ComprobanteEntity comprobante;
 
     @OneToOne(optional = true)
     @JoinColumn(name = "mco_neg_id", insertable = false, updatable = false)

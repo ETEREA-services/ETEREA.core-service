@@ -8,7 +8,7 @@ import eterea.core.service.kotlin.exception.ProductoSkuException;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.extern.Product;
 import eterea.core.service.kotlin.model.*;
-import eterea.core.service.kotlin.model.dto.ProgramaDiaDto;
+import eterea.core.service.model.dto.ProgramaDiaDto;
 import eterea.core.service.model.ReservaContext;
 import eterea.core.service.model.Track;
 import eterea.core.service.service.*;
@@ -123,7 +123,7 @@ public class ProductsService {
         voucher = registrarVoucher(voucher, voucherProductos, track);
         log.debug("Voucher -> {}", voucher.jsonify());
 
-        return new ProgramaDiaDto.Builder()
+        return ProgramaDiaDto.builder()
                 .vouchers(Collections.singletonList(voucher))
                 .errorMessage("")
                 .build();
@@ -277,7 +277,9 @@ public class ProductsService {
 
     private ProgramaDiaDto createErrorResponse() {
         log.debug("Processing createErrorResponse");
-        return new ProgramaDiaDto.Builder().errorMessage("Error: SKU sin asociación de Productos").build();
+        return ProgramaDiaDto.builder()
+                .errorMessage("Error: SKU sin asociación de Productos")
+                .build();
     }
 
 }

@@ -1,5 +1,6 @@
 package eterea.core.service.kotlin.model
 
+import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -23,7 +24,7 @@ data class ArticuloListaPrecio (
 
     @OneToOne(optional = true)
     @JoinColumn(name = "articuloId", insertable = false, updatable = false)
-    var articulo: Articulo? = null
+    var articulo: ArticuloEntity? = null
 
 ) : Auditable() {
 
@@ -31,12 +32,12 @@ data class ArticuloListaPrecio (
         private var articuloListaPrecioId: UUID? = null
         private var articuloId: String? = null
         private var publicar: Byte = 0
-        private var articulo: Articulo? = null
+        private var articulo: ArticuloEntity? = null
 
         fun articuloListaPrecioId(articuloListaPrecioId: UUID?) = apply { this.articuloListaPrecioId = articuloListaPrecioId }
         fun articuloId(articuloId: String?) = apply { this.articuloId = articuloId }
         fun publicar(publicar: Byte) = apply { this.publicar = publicar }
-        fun articulo(articulo: Articulo?) = apply { this.articulo = articulo }
+        fun articulo(articulo: ArticuloEntity?) = apply { this.articulo = articulo }
 
         fun build() = ArticuloListaPrecio(
             articuloListaPrecioId = articuloListaPrecioId,
