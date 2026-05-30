@@ -6,6 +6,7 @@ classDiagram
         +findByClienteId(Long): ResponseEntity
         +findByNumeroDocumento(String): ResponseEntity
         +findLast(): ResponseEntity
+        +findAllByIds(List~Long~): ResponseEntity~List~Cliente~~
         +add(Cliente): ResponseEntity
     }
 
@@ -14,26 +15,35 @@ classDiagram
         +findByClienteId(Long): Cliente
         +findByNumeroDocumento(String): Cliente
         +findLast(): Cliente
+        +findAllByIds(List~Long~): List~Cliente~
         +add(Cliente): Cliente
+    }
+
+    class ClienteMovimientoController {
+        +findAllByRegimenInformacionVentas(OffsetDateTime, OffsetDateTime): ResponseEntity~List~ClienteMovimiento~~
+        +findAllByIds(List~Long~): ResponseEntity~List~ClienteMovimiento~~
+        +create(ClienteMovimiento): ResponseEntity~ClienteMovimiento~
     }
 
     class ClienteMovimientoService {
         +findAllByRegimenInformacionVentas(OffsetDateTime, OffsetDateTime): List~ClienteMovimiento~
+        +findAllByIds(List~Long~): List~ClienteMovimiento~
     }
 
     class ClienteRepository {
         +findByClienteId(Long): Optional~Cliente~
         +findTopByNumeroDocumento(String): Optional~Cliente~
         +findTopByOrderByClienteIdDesc(): Optional~Cliente~
+        +findAllByClienteIdIn(List~Long~): List~Cliente~
         +save(Cliente): Cliente
     }
 
     class ClienteMovimientoRepository {
         +findAllByFechaComprobanteBetweenAndComprobanteLibroIva(OffsetDateTime, OffsetDateTime, Byte, Sort): List~ClienteMovimiento~
+        +findAllByClienteMovimientoIdIn(List~Long~): List~ClienteMovimiento~
     }
 
     class Cliente {
-        <<Kotlin Data Class>>
         +clienteId: Long
         +nombre: String
         +cuit: String
@@ -48,6 +58,21 @@ classDiagram
     class PosicionIva {
         +posicionId: Integer
         +nombre: String
+    }
+
+    class ValorMovimientoDto {
+        <<record>>
+        +valorMovimientoId: Long
+        +cierreCajaId: Long
+        +negocioId: Integer
+        +concepto: String
+        +fechaContable: OffsetDateTime
+        +importe: BigDecimal
+        +movClieId: Long
+        +clienteId: Long
+        +nroPlanCta: Long
+        +created: LocalDateTime
+        +updated: LocalDateTime
     }
 
     ClienteController --> ClienteService

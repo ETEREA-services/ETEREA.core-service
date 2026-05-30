@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface EmpresaJpaRepository extends JpaRepository<EmpresaEntity, Integer> {
+public interface JpaEmpresaRepository extends JpaRepository<EmpresaEntity, Integer> {
 
     Optional<EmpresaEntity> findTopByOrderByEmpresaIdDesc();
 

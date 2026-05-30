@@ -1,22 +1,21 @@
-<<<<<<< Updated upstream
-## [2.3.1] - 2026-04-28
-
-### Features
-- **feat(clienteMovimiento)**: Nuevo endpoint `POST /byIds` para buscar movimientos de cliente por lista de IDs
-- **feat(cliente)**: Nuevo endpoint `POST /byIds` para buscar clientes por lista de IDs
+## [2.3.1] - 2026-05-30
 
 ### Changed
-- **refactor(dto)**: Ampliación de `ValorMovimientoDto` con los campos `movClieId`, `clienteId`, `nroPlanCta`, `created` y `updated`
-- **refactor(mapper)**: Actualización de `ValorMovimientoDtoMapper` para incluir los nuevos campos con null-guard en `valor.getConcepto()`
+- **refactor(empresa)**: Refactorización completa del módulo `Empresa` para separar correctamente los casos de uso de la capa de servicio en arquitectura hexagonal
+- **refactor(empresa)**: Extracción de `GetLastEmpresaUseCaseImpl` con la lógica de generación de UUID y persistencia desde `EmpresaService`
+- **refactor(empresa)**: Renombrado de `EmpresaJpaRepository` → `JpaEmpresaRepository` y `EmpresaJpaRepositoryAdapter` → `JpaEmpresaRepositoryAdapter` para consistencia con el resto de módulos hexagonales
+- **refactor(empresa)**: Simplificación de `EmpresaService` para que actúe como orquestador delegando en `GetLastEmpresaUseCase`
+- **refactor(empresa)**: `EmpresaController` ahora inyecta `EmpresaService` en lugar de `GetLastEmpresaUseCase` directamente
+- **test(empresa)**: Nuevos tests unitarios completos para `GetLastEmpresaUseCaseImpl` (3 casos: con businessId, sin businessId genera UUID, empresa no encontrada)
+- **test(empresa)**: Simplificación de `EmpresaServiceTest` para verificar únicamente la delegación al caso de uso
 
 ## [2.3.0] - 2026-03-30
-=======
-## [2.3.0] - 2026-05-27
->>>>>>> Stashed changes
 
 ### 🚀 Migración Masiva a Arquitectura Hexagonal
 
 #### Features
+- **feat(clienteMovimiento)**: Nuevo endpoint `POST /byIds` para buscar movimientos de cliente por lista de IDs
+- **feat(cliente)**: Nuevo endpoint `POST /byIds` para buscar clientes por lista de IDs
 - **feat(hexagonal)**: Nuevos módulos hexagonales completos (puertos, casos de uso, JPA, controladores REST):
   - **`articulo`**: Migración completa del modelo `Articulo` de Kotlin a Java con arquitectura hexagonal. Casos de uso: creación, búsqueda (por ID, autoNumerico, máscara balanza, texto, voucher), cálculo de totales y actualización. Nuevo controlador REST con endpoints CRUD y DTOs (`ArticuloRequest`, `ArticuloResponse`, `ArticuloResponseForInvoiceData`, `TotalArticuloResponse`)
   - **`articulomovimiento`**: Migración completa del modelo `ArticuloMovimiento` de Kotlin a Java con arquitectura hexagonal. Casos de uso: creación, consulta por ID, por clienteMovimientoId, por stockMovimientoId, autocompletado de totales y guardado masivo
@@ -28,6 +27,8 @@
 - **feat(clients)**: Actualización de `ArticuloClient`, `CuentaClient`, `ParametroClient` con nuevos builders compatibles con Spring Boot 4.0.6
 
 ### Changed
+- **refactor(dto)**: Ampliación de `ValorMovimientoDto` con los campos `movClieId`, `clienteId`, `nroPlanCta`, `created` y `updated`
+- **refactor(mapper)**: Actualización de `ValorMovimientoDtoMapper` para incluir los nuevos campos con null-guard en `valor.getConcepto()`
 - **refactor(clients)**: Mejora en `ArticuloBarraClientBuilder`, `ArticuloClientBuilder`, `CuentaClientBuilder`, `ParametroClientBuilder` añadiendo `JacksonDecoder` con `KotlinModule` para mejor compatibilidad con modelos Kotlin
 - **refactor(clients)**: Adición de `SpringMvcContract` y `JacksonEncoder` en `ArticuloClientBuilder` para soportar solicitudes y respuestas JSON
 - **refactor(controller)**: Mejora en `ArticuloController.add()` especificando `consumes` y `produces` como "application/json"
