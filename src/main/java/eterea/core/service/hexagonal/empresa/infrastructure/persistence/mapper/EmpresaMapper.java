@@ -60,6 +60,10 @@ public class EmpresaMapper {
                 .build();
     }
 
+    /*
+     * TODO: This method belongs to invoicedata slice or should use a shared DTO.
+     * It is kept here for compatibility with ClienteMovimientoMapper.
+     */
     public EmpresaResponse toResponse(EmpresaEntity empresaEntity) {
         if (empresaEntity == null) {
             return null;

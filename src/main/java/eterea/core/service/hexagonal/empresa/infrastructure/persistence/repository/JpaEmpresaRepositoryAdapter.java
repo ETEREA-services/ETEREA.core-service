@@ -10,20 +10,20 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmpresaJpaRepositoryAdapter implements EmpresaRepository {
+public class JpaEmpresaRepositoryAdapter implements EmpresaRepository {
 
-    private final EmpresaJpaRepository empresaJpaRepository;
+    private final JpaEmpresaRepository jpaEmpresaRepository;
     private final EmpresaMapper empresaMapper;
 
     @Override
     public Optional<Empresa> findLast() {
-        return empresaJpaRepository.findTopByOrderByEmpresaIdDesc()
+        return jpaEmpresaRepository.findTopByOrderByEmpresaIdDesc()
                 .map(empresaMapper::toDomainModel);
     }
 
     @Override
     public void save(Empresa empresa) {
-        empresaJpaRepository.save(empresaMapper.toEntity(empresa));
+        jpaEmpresaRepository.save(empresaMapper.toEntity(empresa));
     }
 
 }
