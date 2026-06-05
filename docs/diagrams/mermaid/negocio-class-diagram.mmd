@@ -1,0 +1,76 @@
+classDiagram
+    direction LR
+
+    class Negocio {
+        <<Domain Model>>
+        +negocioId: Integer
+        +nombre: String
+        +negocioIdReal: Integer
+        +databaseIpVpn: String
+        +databaseIpLan: String
+        +databasePort: String
+        +database: String
+        +user: String
+        +transferenciaStock: Byte
+        +transferenciaValor: Byte
+        +backendIpVpn: String
+        +backendIpLan: String
+        +backendPort: String
+        +hasGateway: Byte
+        +copyArticulo: Byte
+        +ipAddress: String
+        +backendServer: String
+    }
+
+    class NegocioEntity {
+        <<JPA Entity>>
+        +negocioId: Integer
+        +nombre: String
+        +negocioIdReal: Integer
+        +databaseIpVpn: String
+        +databaseIpLan: String
+        +databasePort: String
+        +database: String
+        +user: String
+        +transferenciaStock: Byte
+        +transferenciaValor: Byte
+        +backendIpVpn: String
+        +backendIpLan: String
+        +backendPort: String
+        +hasGateway: Byte
+        +copyArticulo: Byte
+    }
+
+    class NegocioMapper {
+        +toDomain(NegocioEntity): Negocio
+    }
+
+    class NegocioResponse {
+        <<Response DTO>>
+        +negocioId: Integer
+        +nombre: String
+        +negocioIdReal: Integer
+        +databaseIpVpn: String
+        +databaseIpLan: String
+        +databasePort: String
+        +database: String
+        +user: String
+        +transferenciaStock: Byte
+        +transferenciaValor: Byte
+        +backendIpVpn: String
+        +backendIpLan: String
+        +backendServer: String
+        +backendPort: String
+        +hasGateway: Byte
+        +copyArticulo: Byte
+        +ipAddress: String
+    }
+
+    class NegocioDtoMapper {
+        +toResponse(Negocio): NegocioResponse
+    }
+
+    NegocioMapper --> NegocioEntity
+    NegocioMapper --> Negocio
+    NegocioDtoMapper --> Negocio
+    NegocioDtoMapper --> NegocioResponse

@@ -17,17 +17,18 @@ public class NegocioDtoMapper {
                 .negocioIdReal(domain.getNegocioIdReal())
                 .databaseIpVpn(domain.getDatabaseIpVpn())
                 .databaseIpLan(domain.getDatabaseIpLan())
+                .databasePort(domain.getDatabasePort())
                 .database(domain.getDatabase())
                 .user(domain.getUser())
                 .transferenciaStock(domain.getTransferenciaStock())
                 .transferenciaValor(domain.getTransferenciaValor())
                 .backendIpVpn(domain.getBackendIpVpn())
                 .backendIpLan(domain.getBackendIpLan())
+                .backendServer(domain.getBackendServer())
                 .backendPort(domain.getBackendPort())
                 .hasGateway(domain.getHasGateway())
                 .copyArticulo(domain.getCopyArticulo())
                 .ipAddress(domain.getIpAddress())
-                .backendServer(domain.getBackendServer())
                 .build();
     }
 

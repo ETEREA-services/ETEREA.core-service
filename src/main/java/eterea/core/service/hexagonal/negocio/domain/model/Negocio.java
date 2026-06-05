@@ -16,6 +16,7 @@ public class Negocio {
     private Integer negocioIdReal;
     private String databaseIpVpn;
     private String databaseIpLan;
+    private String databasePort;
     private String database;
     private String user;
     private Byte transferenciaStock;
@@ -23,8 +24,6 @@ public class Negocio {
     private String backendIpVpn;
     private String backendIpLan;
     private String backendPort;
-    private String facturaServer;
-    private String facturaPort;
     private Byte hasGateway;
     private Byte copyArticulo;
     private String ipAddress;

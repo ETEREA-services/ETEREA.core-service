@@ -33,6 +33,7 @@ public class NegocioEntity extends Auditable {
     private String databaseIpVpn;
 
     private String databaseIpLan;
+    private String databasePort;
 
     @Column(name = "neg_db")
     private String database;
@@ -52,10 +53,6 @@ public class NegocioEntity extends Auditable {
     private String backendIpLan;
 
     private String backendPort;
-
-    private String facturaServer;
-
-    private String facturaPort;
 
     private Byte hasGateway;
 
