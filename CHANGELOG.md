@@ -1,3 +1,14 @@
+## [2.4.0] - 2026-06-05
+
+### Changed
+- **refactor(negocio)**: Refactorización del modelo `Negocio` en el módulo `empresa`:
+  - Nuevo campo `databasePort` añadido al modelo de dominio, entidad JPA, mapper, DTO de respuesta y DTO mapper
+  - Eliminación de los campos `facturaServer` y `facturaPort` del modelo de dominio, entidad JPA y mapper
+  - Reordenación del campo `backendServer` en `NegocioResponse` y `NegocioDtoMapper` para consistencia
+
+### Docs
+- **docs**: Nuevo diagrama de clases `negocio-class-diagram.mmd` para documentar el modelo `Negocio` y su infraestructura asociada
+
 ## [2.3.1] - 2026-05-30
 
 ### Changed

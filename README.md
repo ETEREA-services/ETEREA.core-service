@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.6.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.3.1-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-2.4.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -61,6 +61,7 @@ El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 - **`hexagonal/cuenta/`**: Gestión de cuentas contables (migrado a Java)
 - **`hexagonal/transferencia/`**: Gestión de transferencias entre negocios (migrado a Java)
 - **`hexagonal/empresa/`**: Gestión de empresas con puertos de entrada y salida
+- **`hexagonal/negocio/`**: Gestión de negocios (sucursales) con puertos de entrada y salida
 - **`hexagonal/legajo/`**: Gestión de legajos con arquitectura hexagonal
 - **`hexagonal/invoicedata/`**: Consulta de datos completos de facturación con arquitectura hexagonal
 - **`hexagonal/proveedormovimiento/`**: Gestión de movimientos de proveedores
@@ -175,6 +176,7 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - ✅ **Gestión de Cuentas Contables** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Transferencias** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Empresas** con arquitectura hexagonal
+- ✅ **Gestión de Negocios (sucursales)** con arquitectura hexagonal
 - ✅ **Gestión de Legajos** con arquitectura hexagonal
 - ✅ **Consulta de Datos de Facturación (InvoiceData)** con arquitectura hexagonal
 - ✅ **Gestión de Proveedores** con arquitectura hexagonal
