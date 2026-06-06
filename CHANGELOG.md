@@ -1,3 +1,20 @@
+## [2.4.1] - 2026-06-06
+
+### Fixed
+- **fix(mapper)**: Null-safety improvements en `ArticuloMovimientoMapper` para campos `stockMovimientoId`, `tenenciaMovimientoId`, `nivel`, `cierreCajaId`, `cierreRestaurantId`, `mozoId`, `precioValuacion`, `comision`, `totalConIva` y `totalSinIva` — prevención de NPEs con valores nulos del dominio
+- **fix(error-handling)**: Mejora en manejo de excepciones en `MakeFacturaProgramaDiaService` añadiendo captura genérica de `Exception` para errores imprevistos en envío de email
+
+### Changed
+- **refactor(controller)**: Sustitución de constructor manual por `@RequiredArgsConstructor` en `ConceptoFacturadoController`
+- **refactor(mapper)**: Sustitución de constructor manual por `@RequiredArgsConstructor` en `ArticuloMovimientoMapper`
+- **refactor(service)**: Sustitución de constructor manual por `@RequiredArgsConstructor` en `ConceptoFacturadoService`
+- **refactor(service)**: Adición de `@Slf4j` en `GetInvoiceDataByClienteMovimientoIdImpl`
+- **refactor(dto)**: Adición del método `jsonify()` en `RegistroCaeResponse` para serialización JSON consistente
+- **refactor(logging)**: Mejora de mensajes de depuración con formato estructurado (`\n\n`) en `ArticuloMovimientoService`, `AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl`, `GetInvoiceDataByClienteMovimientoIdImpl`, `InvoiceDataMapper`, `FacturacionService`, `MakeFacturaProgramaDiaService`, `VouchersService` y `ProductsService`
+
+### Dependencies
+- **chore(deps)**: Actualización de Kotlin 2.3.21 → 2.4.0 en `pom.xml`
+
 ## [2.4.0] - 2026-06-05
 
 ### Changed

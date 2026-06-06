@@ -45,7 +45,7 @@ public class ProductsService {
 
     @Transactional
     public ProgramaDiaDto processOneProduct(OrderNote orderNote, Integer proveedorId, Integer hotelId, Product product, Negocio negocio, Track track) {
-        log.debug("Processing facturaUnProducto");
+        log.debug("\n\nProcessing facturaUnProducto\n\n");
         if (track == null) {
             track = trackService.startTracking("factura-un-producto");
         }
@@ -185,7 +185,7 @@ public class ProductsService {
 
     @Transactional
     public Voucher registrarVoucher(Voucher voucher, List<VoucherProducto> voucherProductos, Track track) {
-        log.debug("Processing registrarVoucher");
+        log.debug("\n\nProcessing registrarVoucher\n\n");
         if (track == null) {
             track = trackService.startTracking("registro-voucher");
         }

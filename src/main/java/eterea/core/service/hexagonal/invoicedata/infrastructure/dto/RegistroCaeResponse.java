@@ -1,5 +1,6 @@
 package eterea.core.service.hexagonal.invoicedata.infrastructure.dto;
 
+import eterea.core.service.tool.Jsonifier;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,5 +20,9 @@ public class RegistroCaeResponse {
     private String caeVencimiento;
     private String fecha;
     private ComprobanteResponse comprobante;
+
+    public String jsonify() {
+        return Jsonifier.builder(this).build();
+    }
 
 }

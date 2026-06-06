@@ -29,12 +29,12 @@ public class VouchersService {
     private final EmpresaService empresaService;
 
     public ProgramaDiaDto importOneFromWeb(Long orderNumberId, Track track) {
-        log.debug("Processing importOneFromWeb");
+        log.debug("\n\nProcessing importOneFromWeb\n\n");
         OrderNote orderNote = getOrderNoteById(orderNumberId);
         if (orderNote == null || !isOrderCompleted(orderNote)) {
             return createErrorResponse("Error: Order Note pendiente de PAGO");
         }
-        log.debug("OrderNote -> {}", orderNote.jsonify());
+        log.debug("\n\nOrderNote -> {}\n\n", orderNote.jsonify());
 
         if (isVoucherAlreadyRegistered(orderNumberId)) {
             return createErrorResponse("Error: Programa por el Día YA registrado");
@@ -89,7 +89,7 @@ public class VouchersService {
     }
 
     private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio, Track track) {
-        log.debug("Processing VouchersService.processProduct");
+        log.debug("\n\nProcessing VouchersService.processProduct\n\n");
         switch (product.getSku()) {
             case "parque_termal":
             case "tarde_termaspa":
