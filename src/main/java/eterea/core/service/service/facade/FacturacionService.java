@@ -67,11 +67,11 @@ public class FacturacionService {
                                                                    ReservaContext reservaContext,
                                                                    Track track,
                                                                    Boolean soloFactura) {
-        log.debug("Processing FacturacionService.registraTransaccionFacturaProgramaDia");
+        log.debug("\n\nProcessing FacturacionService.registraTransaccionFacturaProgramaDia\n\n");
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-        log.debug("Voucher -> {}", voucher.jsonify());
+        log.debug("\n\nVoucher -> {}\n\n", voucher.jsonify());
         OrderNote orderNote = orderNoteService.findByOrderNumberId(Long.valueOf(Objects.requireNonNull(voucher.getNumeroVoucher())));
-        log.debug("OrderNote -> {}", orderNote.jsonify());
+        log.debug("\n\nOrderNote -> {}\n\n", orderNote.jsonify());
 
         // Mapea las formas de pago
         int valorId = 0;
@@ -126,7 +126,7 @@ public class FacturacionService {
         }
 
         var reservaArticulos = reservaArticuloService.findAllByReservaId(reserva.getReservaId());
-        log.debug("Reserva Articulos cargados");
+        log.debug("\n\nReserva Articulos cargados\n\n");
 
         var clienteMovimiento = registraFacturaService.registraFacturaCompleta(
                 empresa,
@@ -141,7 +141,7 @@ public class FacturacionService {
                 reservaArticulos,
                 parametro
         );
-        log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
+        log.debug("\n\nClienteMovimiento -> {}\n\n", clienteMovimiento.jsonify());
 
         if (soloFactura == true) {
             return clienteMovimiento;
@@ -150,19 +150,19 @@ public class FacturacionService {
         // Registra reservaContext
         reservaContext.setClienteMovimientoId(clienteMovimiento.getClienteMovimientoId());
         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-        log.debug("ReservaContext -> {}", reservaContext.jsonify());
+        log.debug("\n\nReservaContext -> {}\n\n", reservaContext.jsonify());
 
         reserva.setFacturada((byte) 1);
         reserva.setVerificada((byte) 1);
         reserva = reservaService.update(reserva, reserva.getReservaId());
-        log.debug("Reserva -> {}", reserva.jsonify());
+        log.debug("\n\nReserva -> {}\n\n", reserva.jsonify());
 
         voucher.setConfirmado((byte) 1);
         voucher = voucherService.update(voucher, voucher.getVoucherId());
-        log.debug("Voucher -> {}", voucher.jsonify());
+        log.debug("\n\nVoucher -> {}\n\n", voucher.jsonify());
 
         track = trackService.endTracking(track);
-        log.debug("Track -> {}", track.jsonify());
+        log.debug("\n\nTrack -> {}\n\n", track.jsonify());
 
         return clienteMovimiento;
 

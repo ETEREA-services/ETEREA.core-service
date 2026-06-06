@@ -21,9 +21,9 @@ public class AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl implements Auto
 
     @Override
     public List<ArticuloMovimiento> calculateTotalesByClienteMovimientoId(Long clienteMovimientoId) {
-        log.debug("Processing AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl.calculateTotalesByClienteMovimientoId");
+        log.debug("\n\nProcessing AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl.calculateTotalesByClienteMovimientoId\n\n");
         List<ArticuloMovimiento> movimientos = repository.findAllByClienteMovimientoId(clienteMovimientoId);
-        log.debug("ArticuloMovimientos -> {}", Jsonifier.builder(movimientos).build());
+        log.debug("\n\nArticuloMovimientos -> {}\n\n", Jsonifier.builder(movimientos).build());
         movimientos.forEach(movimiento -> {
             var tasaImpuesto = movimiento.getPrecioUnitarioConIva().divide(movimiento.getPrecioUnitarioSinIva(), 3, RoundingMode.HALF_UP);
             if (movimiento.getTotalConIva().compareTo(BigDecimal.ZERO) == 0) {
@@ -32,9 +32,9 @@ public class AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl implements Auto
             if (movimiento.getTotalSinIva().compareTo(BigDecimal.ZERO) == 0) {
                 movimiento.setTotalSinIva(movimiento.getTotalConIva().divide(tasaImpuesto, 4, RoundingMode.HALF_UP));
             }
-            log.debug("ArticuloMovimiento -> {}", movimiento.jsonify());
+            log.debug("\n\nArticuloMovimiento -> {}\n\n", movimiento.jsonify());
         });
-        log.debug("ArticuloMovimientos updated -> {}", Jsonifier.builder(movimientos).build());
+        log.debug("\n\nArticuloMovimientos updated -> {}\n\n", Jsonifier.builder(movimientos).build());
         movimientos = repository.saveAll(movimientos);
         return movimientos;
     }

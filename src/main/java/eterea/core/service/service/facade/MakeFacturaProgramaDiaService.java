@@ -57,6 +57,7 @@ public class MakeFacturaProgramaDiaService {
     private final ArticuloMapper articuloMapper;
 
     public boolean facturaReserva(Long reservaId, Integer comprobanteId, Track track) {
+        log.debug("\n\nProcessing MakeFacturaProgramaDiaService.facturaReserva\n\n");
         if (track == null) {
             track = trackService.startTracking("factura-reserva");
         }
@@ -64,13 +65,13 @@ public class MakeFacturaProgramaDiaService {
         if (comprobante.getFacturaElectronica() == 0) {
             return false;
         }
-        log.debug("Comprobante -> {}", comprobante.jsonify());
+        log.debug("\n\nComprobante -> {}\n\n", comprobante.jsonify());
         Empresa empresa = empresaService.findLast()
                 .orElseThrow(EmpresaException::new);
         Parametro parametro = parametroService.findTop();
         String moneda = "PES";
         Reserva reserva = reservaService.findByReservaId(reservaId);
-        log.debug("Reserva -> {}", reserva.jsonify());
+        log.debug("\n\nReserva -> {}\n\n", reserva.jsonify());
         if (reserva.getFacturada() == (byte) 1) {
             log.debug("reserva facturada={}", reserva.getReservaId());
             try {
@@ -79,14 +80,14 @@ public class MakeFacturaProgramaDiaService {
                 reservaContext.setFacturaPendiente((byte) 0);
                 reservaContext.setEnvioPendiente((byte) 0);
                 reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-                log.debug("ReservaContext -> {}", reservaContext.jsonify());
+                log.debug("\n\nReservaContext -> {}\n\n", reservaContext.jsonify());
             } catch (ReservaContextException e) {
                 log.debug("No hay reserva_context para esta reserva");
             }
             return false;
         }
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
-        log.debug("Voucher -> {}", voucher.jsonify());
+        log.debug("\n\nVoucher -> {}\n\n", voucher.jsonify());
         Cliente cliente = clienteService.findByClienteId(reserva.getClienteId());
         PosicionIva posicionIva = cliente.getPosicion();
         var idPosicionIvaArca = 5;
@@ -131,7 +132,7 @@ public class MakeFacturaProgramaDiaService {
         BigDecimal exento = BigDecimal.ZERO;
         for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reservaId)) {
             reservaArticulo.setArticulo(articuloMapper.toEntity(articuloService.findByArticuloId(reservaArticulo.getArticuloId())));
-            log.debug("ReservaArticulo -> {}", reservaArticulo.jsonify());
+            log.debug("\n\nReservaArticulo -> {}\n\n", reservaArticulo.jsonify());
             BigDecimal subtotal = reservaArticulo.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad()));
             total = total.add(subtotal);
             if (Objects.requireNonNull(reservaArticulo.getArticulo()).getExento() == (byte) 1) {
@@ -159,11 +160,11 @@ public class MakeFacturaProgramaDiaService {
                     .build();
             reservaContext = reservaContextService.add(reservaContext);
         }
-        log.debug("ReservaContext -> {}", reservaContext.jsonify());
+        log.debug("\n\nReservaContext -> {}\n\n", reservaContext.jsonify());
 
         // Chequeo si la reserva ya pasó por ARCA
         if (reservaContext.getFacturaArca() == (byte) 1) {
-            log.info("Reserva {} Order Number {} facturada en ARCA sin registro", reservaId, reservaContext.getOrderNumberId());
+            log.info("\n\nReserva {} Order Number {} facturada en ARCA sin registro\n\n", reservaId, reservaContext.getOrderNumberId());
             return false;
         }
 
@@ -190,26 +191,26 @@ public class MakeFacturaProgramaDiaService {
                 .iva105(iva105.setScale(2, RoundingMode.HALF_UP))
                 .idCondicionIva(idPosicionIvaArca)
                 .build();
-        log.debug("FacturacionDto -> {}", facturacionDto.jsonify());
+        log.debug("\n\nFacturacionDto -> {}\n\n", facturacionDto.jsonify());
 
         try {
             facturacionDto = facturacionElectronicaService.makeFactura(facturacionDto);
-            log.debug("After makeFactura -> {}", facturacionDto.jsonify());
+            log.debug("\n\nAfter makeFactura -> {}\n\n", facturacionDto.jsonify());
         } catch (WebClientResponseException e) {
-            log.debug("Servicio de Facturación NO disponible");
+            log.debug("\n\nServicio de Facturación NO disponible\n\n");
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-            log.debug("ReservaContext -> {}", reservaContext.jsonify());
+            log.debug("\n\nReservaContext -> {}\n\n", reservaContext.jsonify());
             return false;
         }
 
         if (!facturacionDto.getResultado().equals("A")) {
             reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
-            log.debug("Facturación NO Aprobada por ARCA -> {}", reservaContext.jsonify());
+            log.debug("\n\nFacturación NO Aprobada por ARCA -> {}\n\n", reservaContext.jsonify());
             return false;
         }
 
         var orderNote = orderNoteService.findByOrderNumberId(reservaContext.getOrderNumberId());
-        log.debug("Recuperando order_note -> {}", orderNote.jsonify());
+        log.debug("\n\nRecuperando order_note -> {}\n\n", orderNote.jsonify());
 
         reservaContext = registraFacturaService.markReservaContextFacturada(reservaContext, orderNote, facturacionDto);
 
@@ -254,7 +255,7 @@ public class MakeFacturaProgramaDiaService {
                 .trackUuid(track.getUuid())
                 .build();
         registroCae = registroCaeService.add(registroCae);
-        log.debug("RegistroCae -> {}", registroCae.jsonify());
+        log.debug("\n\nRegistroCae -> {}\n\n", registroCae.jsonify());
 
         ClienteMovimiento clienteMovimiento = null;
         try {
@@ -278,9 +279,12 @@ public class MakeFacturaProgramaDiaService {
 
         if (clienteMovimiento != null) {
             var enableSendEmail = Boolean.parseBoolean(environment.getProperty("app.enable-send-email", "true"));
+            log.debug("\n\nenableSendMail -> {}\n\n", enableSendEmail);
             if (enableSendEmail) {
                 if (clienteMovimiento.getClienteMovimientoId() != null) {
+                    log.debug("\n\nTratando de enviar clienteMovimientoId -> {}\n\n", clienteMovimiento.getClienteMovimientoId());
                     try {
+                        log.debug("\n\nIncrementando tries\n\n");
                         reservaContext.setEnvioTries(1 + reservaContext.getEnvioTries());
                         log.debug("envío correo={}", makeFacturaReportClient.send(clienteMovimiento.getClienteMovimientoId(), "daniel.quinterospinto@gmail.com"));
                         reservaContext.setEnvioPendiente((byte) 0);
@@ -290,6 +294,8 @@ public class MakeFacturaProgramaDiaService {
                     } catch (MessagingException e) {
                         reservaContext = reservaContextService.update(reservaContext, reservaContext.getReservaContextId());
                         log.debug("Error send ReservaContext -> {}", reservaContext.jsonify());
+                    } catch (Exception e) {
+                        log.debug("Error desconocido -> {}", e.getMessage());
                     }
                 }
             }

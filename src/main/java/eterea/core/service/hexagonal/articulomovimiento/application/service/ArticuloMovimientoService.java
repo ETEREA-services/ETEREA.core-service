@@ -22,7 +22,7 @@ public class ArticuloMovimientoService {
     private final AutoCompleteTotalesByClienteMovimientoIdUseCase autoComplete;
 
     public List<ArticuloMovimiento> findAllByClienteMovimientoId(Long clienteMovimientoId) {
-        log.debug("Processing ArticuloMovimientoService.findAllByClienteMovimientoId: {}", clienteMovimientoId);
+        log.debug("\n\nProcessing ArticuloMovimientoService.findAllByClienteMovimientoId: {}\n\n", clienteMovimientoId);
         autoCompleteTotalesByClienteMovimientoId(clienteMovimientoId);
         return getByClienteMovimientoId.findAllByClienteMovimientoId(clienteMovimientoId);
     }
@@ -44,6 +44,7 @@ public class ArticuloMovimientoService {
     }
 
     public List<ArticuloMovimiento> autoCompleteTotalesByClienteMovimientoId(Long clienteMovimientoId) {
+        log.debug("\n\nProcessing ArticuloMovimientoService.autoCompleteTotalesByClienteMovimientoId\n\n");
         return autoComplete.calculateTotalesByClienteMovimientoId(clienteMovimientoId);
     }
 

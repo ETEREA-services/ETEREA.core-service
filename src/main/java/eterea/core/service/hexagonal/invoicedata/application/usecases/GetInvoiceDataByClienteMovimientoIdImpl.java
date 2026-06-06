@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class GetInvoiceDataByClienteMovimientoIdImpl implements GetInvoiceDataByClienteMovimientoId {
 
@@ -18,21 +19,27 @@ public class GetInvoiceDataByClienteMovimientoIdImpl implements GetInvoiceDataBy
 
     @Override
     public InvoiceData getInvoiceDataByClienteMovimientoId(Long clienteMovimientoId) {
+        log.debug("\n\nProcessing GetInvoiceDataByClienteMovimientoIdImpl\n\n");
         var clienteMovimiento = clienteMovimientoService.findByClienteMovimientoId(clienteMovimientoId);
+        log.debug("\n\nClienteMovimiento -> {}\n\n", clienteMovimiento.jsonify());
         var registroCae = registroCaeService.findByUnique(
                 clienteMovimiento.getComprobanteId(),
                 clienteMovimiento.getPuntoVenta(),
                 clienteMovimiento.getNumeroComprobante());
+        log.debug("\n\nRegistroCae -> {}\n\n", registroCae.jsonify());
         ClienteMovimiento clienteMovimientoAsociado = null;
         if (registroCae.getClienteMovimientoIdAsociado() != null) {
             clienteMovimientoAsociado = clienteMovimientoService.findByClienteMovimientoId(registroCae.getClienteMovimientoIdAsociado());
+            log.debug("\n\nClienteMovimientoAsociado -> {}\n\n", clienteMovimientoAsociado.jsonify());
         }
 
-        return InvoiceData.builder()
+        var invoiceData = InvoiceData.builder()
                 .clienteMovimiento(clienteMovimiento)
                 .registroCae(registroCae)
                 .clienteMovimientoAsociado(clienteMovimientoAsociado)
                 .build();
+        log.debug("\n\nInvoiceData -> {}\n\n", invoiceData.jsonify());
+        return invoiceData;
     }
 
 }

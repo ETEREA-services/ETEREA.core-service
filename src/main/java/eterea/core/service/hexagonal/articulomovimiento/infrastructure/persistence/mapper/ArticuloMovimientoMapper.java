@@ -3,16 +3,16 @@ package eterea.core.service.hexagonal.articulomovimiento.infrastructure.persiste
 import eterea.core.service.hexagonal.articulo.infrastructure.persistence.mapper.ArticuloMapper;
 import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
 import eterea.core.service.hexagonal.articulomovimiento.infrastructure.persistence.entity.ArticuloMovimientoEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
+@RequiredArgsConstructor
 public class ArticuloMovimientoMapper {
 
     private final ArticuloMapper articuloMapper;
-
-    public ArticuloMovimientoMapper(ArticuloMapper articuloMapper) {
-        this.articuloMapper = articuloMapper;
-    }
 
     public ArticuloMovimiento toDomain(ArticuloMovimientoEntity entity) {
         if (entity == null) return null;
@@ -54,8 +54,8 @@ public class ArticuloMovimientoMapper {
         return ArticuloMovimientoEntity.builder()
                 .articuloMovimientoId(domain.getArticuloMovimientoId())
                 .clienteMovimientoId(domain.getClienteMovimientoId())
-                .stockMovimientoId(domain.getStockMovimientoId())
-                .tenenciaMovimientoId(domain.getTenenciaMovimientoId())
+                .stockMovimientoId(domain.getStockMovimientoId() == null ? 0 : domain.getStockMovimientoId())
+                .tenenciaMovimientoId(domain.getTenenciaMovimientoId() == null ? 0 : domain.getTenenciaMovimientoId())
                 .centroStockId(domain.getCentroStockId())
                 .comprobanteId(domain.getComprobanteId())
                 .item(domain.getItem())
@@ -70,16 +70,16 @@ public class ArticuloMovimientoMapper {
                 .exento(domain.getExento())
                 .fechaMovimiento(domain.getFechaMovimiento())
                 .fechaFactura(domain.getFechaFactura())
-                .nivel(domain.getNivel())
-                .cierreCajaId(domain.getCierreCajaId())
-                .cierreRestaurantId(domain.getCierreRestaurantId())
+                .nivel(domain.getNivel() == null ? 0 : domain.getNivel())
+                .cierreCajaId(domain.getCierreCajaId() == null ? 0 : domain.getCierreCajaId())
+                .cierreRestaurantId(domain.getCierreRestaurantId()  == null ? 0 : domain.getCierreRestaurantId())
                 .precioCompra(domain.getPrecioCompra())
-                .precioValuacion(domain.getPrecioValuacion())
-                .mozoId(domain.getMozoId())
-                .comision(domain.getComision())
+                .precioValuacion(domain.getPrecioValuacion() == null ? BigDecimal.ZERO : domain.getPrecioValuacion())
+                .mozoId(domain.getMozoId() == null ? 0 : domain.getMozoId())
+                .comision(domain.getComision() == null ? BigDecimal.ZERO : domain.getComision())
                 .trackUuid(domain.getTrackUuid())
-                .totalConIva(domain.getTotalConIva())
-                .totalSinIva(domain.getTotalSinIva())
+                .totalConIva(domain.getTotalConIva() == null ? BigDecimal.ZERO : domain.getTotalConIva())
+                .totalSinIva(domain.getTotalSinIva() == null ? BigDecimal.ZERO : domain.getTotalSinIva())
                 .articulo(articuloMapper.toEntity(domain.getArticulo()))
                 .build();
     }
