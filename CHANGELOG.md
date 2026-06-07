@@ -1,3 +1,11 @@
+## [2.4.2] - 2026-06-07
+
+### Fixed
+- **fix(articulomovimiento)**: Corrección en `AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl` para prevenir `totalConIva` negativo al usar el valor absoluto de `cantidad` (`movimiento.getCantidad().abs()`) en el cálculo de totales
+
+### Docs
+- **docs**: Nuevo diagrama de clases `articulomovimiento-class-diagram.mmd` para documentar el módulo `ArticuloMovimiento` y su infraestructura hexagonal
+
 ## [2.4.1] - 2026-06-06
 
 ### Fixed

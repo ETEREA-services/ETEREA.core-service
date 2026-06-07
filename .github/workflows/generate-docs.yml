@@ -97,6 +97,7 @@ jobs:
               <div class="section">
                   <h2>Dominio: Gestión de Artículos y Stock</h2>
                   <div id="articulo-class-diagram"></div>
+                  <div id="articulomovimiento-class-diagram" style="margin-top: 2rem;"></div>
                   <div id="inventario-sequence-diagram" style="margin-top: 2rem;"></div>
               </div>
 
@@ -192,6 +193,7 @@ jobs:
                       { id: 'cliente-sequence-diagram', path: 'diagrams/mermaid/cliente-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Creación de Cliente' },
                       // Stock Domain
                       { id: 'articulo-class-diagram', path: 'diagrams/mermaid/articulo-class-diagram.mmd', title: 'UML Diagrama de Clases de Artículos' },
+                      { id: 'articulomovimiento-class-diagram', path: 'diagrams/mermaid/articulomovimiento-class-diagram.mmd', title: 'UML Diagrama de Clases de Movimientos de Artículos' },
                       { id: 'inventario-sequence-diagram', path: 'diagrams/mermaid/inventario-sequence-diagram.mmd', title: '🔄 Diagrama de Secuencia: Registro de Inventario' },
                       // Hotel Booking Domain
                       { id: 'reserva-class-diagram', path: 'diagrams/mermaid/reserva-class-diagram.mmd', title: 'UML Diagrama de Clases de Reservas' },
