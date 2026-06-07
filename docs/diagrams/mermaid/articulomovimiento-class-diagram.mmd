@@ -1,0 +1,146 @@
+classDiagram
+    direction LR
+
+    class ArticuloMovimientoController {
+        +findAllByClienteMovimientoId(Long): ResponseEntity~List~ArticuloMovimientoResponse~~
+        +findByArticuloMovimientoId(Long): ResponseEntity~ArticuloMovimientoResponse~
+    }
+
+    class ArticuloMovimientoService {
+        <<application>>
+        +findAllByClienteMovimientoId(Long): List~ArticuloMovimiento~
+        +findAllByStockMovimientoId(Long): List~ArticuloMovimiento~
+        +findByArticuloMovimientoId(Long): ArticuloMovimiento
+        +add(ArticuloMovimiento): ArticuloMovimiento
+        +saveAll(List~ArticuloMovimiento~): List~ArticuloMovimiento~
+        +autoCompleteTotalesByClienteMovimientoId(Long): List~ArticuloMovimiento~
+    }
+
+    class ArticuloMovimiento {
+        <<domain model>>
+        +articuloMovimientoId: Long
+        +clienteMovimientoId: Long
+        +stockMovimientoId: Long
+        +tenenciaMovimientoId: Long
+        +centroStockId: Integer
+        +comprobanteId: Integer
+        +articuloId: String
+        +negocioId: Integer
+        +cantidad: BigDecimal
+        +precioUnitario: BigDecimal
+        +precioUnitarioSinIva: BigDecimal
+        +precioUnitarioConIva: BigDecimal
+        +totalConIva: BigDecimal
+        +totalSinIva: BigDecimal
+        +numeroCuenta: Long
+        +iva105: Byte
+        +exento: Byte
+        +fechaMovimiento: OffsetDateTime
+        +nivel: Integer
+        +cierreCajaId: Long
+        +cierreRestaurantId: Long
+        +precioCompra: BigDecimal
+        +precioValuacion: BigDecimal
+        +mozoId: Long
+        +comision: BigDecimal
+        +articulo: Articulo
+    }
+
+    class ArticuloMovimientoRepository {
+        <<port out>>
+        +findAllByClienteMovimientoId(Long): List~ArticuloMovimiento~
+        +findAllByStockMovimientoId(Long): List~ArticuloMovimiento~
+        +findByArticuloMovimientoId(Long): Optional~ArticuloMovimiento~
+        +save(ArticuloMovimiento): ArticuloMovimiento
+        +saveAll(List~ArticuloMovimiento~): List~ArticuloMovimiento~
+    }
+
+    class AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl {
+        <<use case>>
+        +calculateTotalesByClienteMovimientoId(Long): List~ArticuloMovimiento~
+    }
+
+    class CreateArticuloMovimientoUseCaseImpl {
+        <<use case>>
+        +add(ArticuloMovimiento): ArticuloMovimiento
+    }
+
+    class GetArticuloMovimientoByIdUseCaseImpl {
+        <<use case>>
+        +findByArticuloMovimientoId(Long): ArticuloMovimiento
+    }
+
+    class GetArticuloMovimientosByClienteMovimientoIdUseCaseImpl {
+        <<use case>>
+        +findAllByClienteMovimientoId(Long): List~ArticuloMovimiento~
+    }
+
+    class GetArticuloMovimientosByStockMovimientoIdUseCaseImpl {
+        <<use case>>
+        +findAllByStockMovimientoId(Long): List~ArticuloMovimiento~
+    }
+
+    class SaveAllArticuloMovimientosUseCaseImpl {
+        <<use case>>
+        +saveAll(List~ArticuloMovimiento~): List~ArticuloMovimiento~
+    }
+
+    class JpaArticuloMovimientoRepositoryAdapter {
+        <<infrastructure>>
+    }
+
+    class ArticuloMovimientoEntity {
+        <<JPA entity>>
+        +articuloMovimientoId: Long
+        +clienteMovimientoId: Long
+        +stockMovimientoId: Long
+        +cantidad: BigDecimal
+        +precioUnitario: BigDecimal
+        +precioUnitarioSinIva: BigDecimal
+        +precioUnitarioConIva: BigDecimal
+        +totalConIva: BigDecimal
+        +totalSinIva: BigDecimal
+    }
+
+    class JpaArticuloMovimientoRepository {
+        <<Spring Data JPA>>
+    }
+
+    class ArticuloMovimientoMapper {
+        +toDomain(ArticuloMovimientoEntity): ArticuloMovimiento
+        +toEntity(ArticuloMovimiento): ArticuloMovimientoEntity
+    }
+
+    class ArticuloMovimientoDtoMapper {
+        +toResponse(ArticuloMovimiento): ArticuloMovimientoResponse
+    }
+
+    class ArticuloMovimientoResponse {
+        <<Response DTO>>
+        +articuloMovimientoId: Long
+        +clienteMovimientoId: Long
+        +stockMovimientoId: Long
+        +cantidad: BigDecimal
+        +precioUnitario: BigDecimal
+        +totalConIva: BigDecimal
+        +totalSinIva: BigDecimal
+    }
+
+    ArticuloMovimientoController --> ArticuloMovimientoService
+    ArticuloMovimientoController --> ArticuloMovimientoDtoMapper
+    ArticuloMovimientoService --> ArticuloMovimiento
+    ArticuloMovimientoService --> ArticuloMovimientoRepository
+    ArticuloMovimientoService --> AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl
+    ArticuloMovimientoService --> CreateArticuloMovimientoUseCaseImpl
+    ArticuloMovimientoService --> GetArticuloMovimientoByIdUseCaseImpl
+    ArticuloMovimientoService --> GetArticuloMovimientosByClienteMovimientoIdUseCaseImpl
+    ArticuloMovimientoService --> GetArticuloMovimientosByStockMovimientoIdUseCaseImpl
+    ArticuloMovimientoService --> SaveAllArticuloMovimientosUseCaseImpl
+    JpaArticuloMovimientoRepositoryAdapter ..|> ArticuloMovimientoRepository
+    JpaArticuloMovimientoRepositoryAdapter --> ArticuloMovimientoMapper
+    JpaArticuloMovimientoRepositoryAdapter --> JpaArticuloMovimientoRepository
+    JpaArticuloMovimientoRepository --> ArticuloMovimientoEntity
+    ArticuloMovimientoMapper --> ArticuloMovimientoEntity
+    ArticuloMovimientoMapper --> ArticuloMovimiento
+    ArticuloMovimientoDtoMapper --> ArticuloMovimientoResponse
+    ArticuloMovimientoDtoMapper --> ArticuloMovimiento

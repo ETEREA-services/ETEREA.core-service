@@ -27,7 +27,7 @@ public class AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl implements Auto
         movimientos.forEach(movimiento -> {
             var tasaImpuesto = movimiento.getPrecioUnitarioConIva().divide(movimiento.getPrecioUnitarioSinIva(), 3, RoundingMode.HALF_UP);
             if (movimiento.getTotalConIva().compareTo(BigDecimal.ZERO) == 0) {
-                movimiento.setTotalConIva(movimiento.getPrecioUnitarioConIva().multiply(movimiento.getCantidad()));
+                movimiento.setTotalConIva(movimiento.getPrecioUnitarioConIva().multiply(movimiento.getCantidad().abs()));
             }
             if (movimiento.getTotalSinIva().compareTo(BigDecimal.ZERO) == 0) {
                 movimiento.setTotalSinIva(movimiento.getTotalConIva().divide(tasaImpuesto, 4, RoundingMode.HALF_UP));
