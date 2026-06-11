@@ -6,6 +6,7 @@ import eterea.core.service.kotlin.exception.ArticuloBarraException;
 import eterea.core.service.kotlin.model.ArticuloBarra;
 import eterea.core.service.kotlin.repository.ArticuloBarraRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,20 +15,20 @@ import java.util.Objects;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ArticuloBarraService {
 
     private final ArticuloBarraRepository repository;
-
-    public ArticuloBarraService(ArticuloBarraRepository repository) {
-        this.repository = repository;
-    }
 
     public List<ArticuloBarra> findAllByArticuloId(String articuloId) {
         return repository.findAllByArticuloId(articuloId);
     }
 
     public ArticuloBarra findByCodigoBarras(String codigoBarras) {
-        return Objects.requireNonNull(repository.findByCodigoBarras(codigoBarras)).orElseThrow(() -> new ArticuloBarraException(codigoBarras));
+        log.debug("\n\nProcessing ArticuloBarraService.findByCodigoBarras\n\n");
+        ArticuloBarra articuloBarra = repository.findByCodigoBarras(codigoBarras).orElseThrow(() -> new ArticuloBarraException(codigoBarras));
+        log.debug("\n\nArticuloBarra -> {}\n\n", articuloBarra.jsonify());
+        return articuloBarra;
     }
 
     @Transactional
@@ -36,18 +37,10 @@ public class ArticuloBarraService {
     }
 
     public ArticuloBarra add(ArticuloBarra articuloBarra) {
-        logArticuloBarra(articuloBarra);
+        log.debug("\n\nProcessing ArticuloBarraService.add\n\n");
         articuloBarra = repository.save(articuloBarra);
-        logArticuloBarra(articuloBarra);
+        log.debug("\n\nArticuloBarra -> {}\n\n", articuloBarra.jsonify());
         return articuloBarra;
-    }
-
-    private void logArticuloBarra(ArticuloBarra articuloBarra) {
-        try {
-            log.debug("ArticuloBarra -> {}", JsonMapper.builder().findAndAddModules().build().writerWithDefaultPrettyPrinter().writeValueAsString(articuloBarra));
-        } catch (JsonProcessingException e) {
-            log.debug("ArticuloBarra jsonify error -> {}", e.getMessage());
-        }
     }
 
 }

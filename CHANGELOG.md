@@ -1,3 +1,10 @@
+## [2.4.3] - 2026-06-10
+
+### Changed
+- **refactor(controller)**: Sustitución de constructor manual por `@RequiredArgsConstructor` en `ArticuloBarraController`
+- **refactor(service)**: Sustitución de constructor manual por `@RequiredArgsConstructor` en `ArticuloBarraService`
+- **refactor(logging)**: Refactor de logging en `ArticuloBarraService` — reemplazo del método privado `logArticuloBarra()` (basado en `JsonMapper`) por `log.debug` con `jsonify()` inline, eliminando dependencias no utilizadas (`Objects`, `JsonMapper`, `JsonProcessingException`)
+
 ## [2.4.2] - 2026-06-07
 
 ### Fixed

@@ -3,6 +3,7 @@ package eterea.core.service.controller;
 import eterea.core.service.kotlin.exception.ArticuloBarraException;
 import eterea.core.service.kotlin.model.ArticuloBarra;
 import eterea.core.service.service.ArticuloBarraService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping({"/api/core/articulobarra", "/articulobarra"})
 @Slf4j
+@RequiredArgsConstructor
 public class ArticuloBarraController {
 
     private final ArticuloBarraService service;
-
-    public ArticuloBarraController(ArticuloBarraService service) {
-        this.service = service;
-    }
 
     @GetMapping("/articulo/{articuloId}")
     public ResponseEntity<List<ArticuloBarra>> findAllByArticuloId(@PathVariable String articuloId) {
