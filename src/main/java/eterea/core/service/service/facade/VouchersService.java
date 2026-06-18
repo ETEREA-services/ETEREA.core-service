@@ -91,7 +91,7 @@ public class VouchersService {
     private ProgramaDiaDto processProduct(OrderNote orderNote, Product product, Negocio negocio, Track track) {
         log.debug("\n\nProcessing VouchersService.processProduct\n\n");
         switch (product.getSku()) {
-            case "parque_termal":
+            case "parque_termal_cacheuta":
             case "tarde_termaspa":
                 return productsService.processOneProduct(orderNote, 130, 475, product, negocio, track);
             case "termaspa_fullday":
