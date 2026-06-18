@@ -1,3 +1,8 @@
+## [2.4.4] - 2026-06-18
+
+### Changed
+- **fix(vouchers)**: Renombrado del SKU `parque_termal` → `parque_termal_cacheuta` en `VouchersService.processProduct()` para alinear el código con el nuevo SKU del producto web y de la tabla `producto_sku`.
+
 ## [2.4.3] - 2026-06-10
 
 ### Changed
