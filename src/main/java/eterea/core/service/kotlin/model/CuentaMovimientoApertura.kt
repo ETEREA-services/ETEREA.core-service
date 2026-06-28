@@ -16,7 +16,7 @@ data class CuentaMovimientoApertura(
     @Column(name = "mca_fecha")
     @JsonFormat(
         shape = JsonFormat.Shape.STRING,
-        pattern = "yyyy-MM-dd'T'HH:mm:ssZ",
+        pattern = "yyyy-MM-dd'T'HH:mm:ssXX",
         timezone = "UTC"
     )
     var fecha: OffsetDateTime? = null,

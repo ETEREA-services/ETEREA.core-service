@@ -17,7 +17,7 @@ data class Asiento(
     var asientoId: BigDecimal? = null,
 
     @Column(name = "asi_fecha")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fecha: OffsetDateTime? = null,
 
     @Column(name = "asi_usuario")

@@ -36,7 +36,7 @@ public class TransferenciaEntity extends Auditable {
     private Long numeroTransferencia;
 
     @Column(name = "tra_fecha")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fecha;
 
     @Column(name = "tra_total")
@@ -54,7 +54,7 @@ public class TransferenciaEntity extends Auditable {
     private Integer comprobanteId;
 
     @Column(name = "tra_fechaotro")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaOtro;
 
     @OneToOne(optional = true)

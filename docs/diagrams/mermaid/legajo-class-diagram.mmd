@@ -2,9 +2,9 @@ classDiagram
     direction LR
 
     class LegajoController {
-        +findAll(): ResponseEntity~List<LegajoResponse>~
+        +findAll(): ResponseEntity~List~LegajoResponse~~
         +findByLegajoId(Integer): ResponseEntity~LegajoResponse~
-        +findAllContainingSubstrings(List~String~): ResponseEntity~List<LegajoResponse>~
+        +findAllContainingSubstrings(List~String~): ResponseEntity~List~LegajoResponse~~
         +createLegajo(LegajoRequest): ResponseEntity~LegajoResponse~
     }
 

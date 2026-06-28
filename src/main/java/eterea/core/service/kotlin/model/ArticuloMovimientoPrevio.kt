@@ -32,7 +32,7 @@ data class ArticuloMovimientoPrevio(
 
     var exento: Byte = 0,
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaMovimiento: OffsetDateTime? = null,
 
     @Column(name = "articulomovimiento_id")

@@ -4,10 +4,10 @@
 [![Java](https://img.shields.io/badge/Java-25-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk25-archive-downloads.html)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4.0-blueviolet.svg)](https://kotlinlang.org/)
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-green.svg)](https://spring.io/projects/spring-boot)
-[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.0-green.svg)](https://spring.io/projects/spring-cloud)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-green.svg)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.2-green.svg)](https://spring.io/projects/spring-cloud)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-blue.svg)](https://springdoc.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-9.6.0-orange.svg)](https://www.mysql.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-9.7.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-2.4.4-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
@@ -26,7 +26,7 @@ Servicio Core para la gestión financiera y contable, implementado con **arquite
 ## Stack Tecnológico
 
 - **Java 25** y **Kotlin 2.4.0**
-- **Spring Boot 4.0.6** con Spring Cloud 2025.1.0
+- **Spring Boot 4.1.0** con Spring Cloud 2025.1.2
 - **Arquitectura Hexagonal** para modularidad y testabilidad
 - **Consul Discovery** y **OpenFeign**
   - Consul Discovery
@@ -35,15 +35,14 @@ Servicio Core para la gestión financiera y contable, implementado con **arquite
 - Spring HATEOAS
 - Spring WebFlux
 - Spring Validation
-- Log4j2
 
 ### Utilidades
-- OpenPDF 3.0.3 (Generación de PDFs)
+- OpenPDF 3.0.5 (Generación de PDFs)
 - ZXing 3.5.4 (Códigos de Barras y QR)
 - Lombok
 - ModelMapper 3.2.6
 - Caffeine Cache
-- MySQL Connector 9.6.0
+- MySQL Connector 9.7.0
 - Jacoco 0.8.13 (Cobertura de tests)
 - Apache Commons Lang3 3.20.0
 

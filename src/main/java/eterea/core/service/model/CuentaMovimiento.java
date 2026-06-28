@@ -26,7 +26,7 @@ public class CuentaMovimiento extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cuentaMovimientoId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fecha;
 
     @Column(name = "nrocomp")

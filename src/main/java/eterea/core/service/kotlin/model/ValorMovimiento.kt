@@ -32,11 +32,11 @@ data class ValorMovimiento(
     var clienteId: Long? = null,
 
     @Column(name = "fechaemi")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaEmision: OffsetDateTime? = null,
 
     @Column(name = "fechavto")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaVencimiento: OffsetDateTime? = null,
 
     @Column(name = "val_tco_id")
@@ -51,7 +51,7 @@ data class ValorMovimiento(
     var numeroCuenta: Long? = null,
 
     @Column(name = "fechareg")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaContable: OffsetDateTime? = null,
 
     @Column(name = "nrocompcontable")
@@ -71,7 +71,7 @@ data class ValorMovimiento(
     var estadoId: Int? = null,
 
     @Column(name = "fechaentrega")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaEntrega: OffsetDateTime? = null,
 
     var tanda: Long = 0,

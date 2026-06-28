@@ -38,11 +38,11 @@ public class ProveedorMovimientoEntity extends Auditable {
     private Integer comprobanteId;
 
     @Column(name = "fechacomprob")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaComprobante;
 
     @Column(name = "mpr_fechavenc")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaVencimiento;
 
     @Builder.Default
@@ -93,7 +93,7 @@ public class ProveedorMovimientoEntity extends Auditable {
     private BigDecimal ajustes = BigDecimal.ZERO;
 
     @Column(name = "fechareg")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaContable;
 
     @Column(name = "nrocompconta")
@@ -138,7 +138,7 @@ public class ProveedorMovimientoEntity extends Auditable {
     private BigDecimal importeConcursado = BigDecimal.ZERO;
 
     @Column(name = "mpr_fechaconcurso")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaContableConcurso;
 
     @Column(name = "mpr_nrocompconcurso")
