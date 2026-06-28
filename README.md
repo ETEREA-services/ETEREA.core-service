@@ -35,15 +35,14 @@ Servicio Core para la gestión financiera y contable, implementado con **arquite
 - Spring HATEOAS
 - Spring WebFlux
 - Spring Validation
-- Log4j2
 
 ### Utilidades
-- OpenPDF 3.0.3 (Generación de PDFs)
+- OpenPDF 3.0.5 (Generación de PDFs)
 - ZXing 3.5.4 (Códigos de Barras y QR)
 - Lombok
 - ModelMapper 3.2.6
 - Caffeine Cache
-- MySQL Connector 9.6.0
+- MySQL Connector 9.7.0
 - Jacoco 0.8.13 (Cobertura de tests)
 - Apache Commons Lang3 3.20.0
 
