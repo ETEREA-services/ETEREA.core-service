@@ -40,7 +40,7 @@ data class FacturaRendicionDetalle(
     var nombreComprobante: String = "",
 
     @Column(name = "frd_fecha")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaComprobante: OffsetDateTime? = null,
 
     @Column(name = "frd_importe")

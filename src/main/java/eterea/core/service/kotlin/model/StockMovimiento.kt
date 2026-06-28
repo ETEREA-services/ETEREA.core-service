@@ -47,7 +47,7 @@ data class StockMovimiento(
     var centroStockIdHastaNombre: String = "",
 
     @Column(name = "fechareg")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaRegistro: OffsetDateTime? = null,
 
     @Column(name = "cgoprov")
@@ -59,7 +59,7 @@ data class StockMovimiento(
     var legajo: Long? = null,
 
     @Column(name = "fechacomprob")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaComprobante: OffsetDateTime? = null,
 
     @Column(name = "cgocomprob2")
@@ -89,7 +89,7 @@ data class StockMovimiento(
     var nivel: Int = 0,
 
     @Column(name = "mst_fechacontable")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaContable: OffsetDateTime? = null,
 
     @Column(name = "mst_nrocompcontable")

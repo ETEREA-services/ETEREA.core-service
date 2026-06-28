@@ -34,7 +34,7 @@ data class ClienteSearch(
     var nombreFantasia: String? = null,
 
     @Column(name = "cli_fecharestaurant")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fechaRestaurant: OffsetDateTime? = null,
 
     @Column(name = "cli_cantpaxs")

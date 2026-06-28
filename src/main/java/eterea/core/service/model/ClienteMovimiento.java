@@ -39,7 +39,7 @@ public class ClienteMovimiento extends Auditable {
     private Long numeroComprobante = 0L;
 
     @Column(name = "fechacomprob")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaComprobante;
 
     @Column(name = "cgoclie")
@@ -49,7 +49,7 @@ public class ClienteMovimiento extends Auditable {
     private Integer legajoId;
 
     @Column(name = "mcl_fechavenc")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaVencimiento;
 
     @Column(name = "mcl_neg_id")
@@ -84,7 +84,7 @@ public class ClienteMovimiento extends Auditable {
     private BigDecimal reintegroTurista = BigDecimal.ZERO;
 
     @Column(name = "fechareg")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaContable;
 
     @Column(name = "nrocompconta")

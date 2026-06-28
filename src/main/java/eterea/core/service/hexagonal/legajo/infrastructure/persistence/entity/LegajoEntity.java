@@ -48,7 +48,7 @@ public class LegajoEntity extends Auditable {
     private String email = "";
 
     @Column(name = "leg_nacimiento")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaNacimiento;
 
     @Column(name = "leg_nrodoc")
@@ -83,7 +83,7 @@ public class LegajoEntity extends Auditable {
     private String provincia = "";
 
     @Column(name = "leg_ingreso")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     private OffsetDateTime fechaIngreso;
 
     @Column(name = "leg_neg_id")

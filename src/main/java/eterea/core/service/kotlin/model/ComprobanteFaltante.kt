@@ -32,7 +32,7 @@ data class ComprobanteFaltante(
     var comprobanteId: Int? = null,
 
     @Column(name = "cfa_fecha")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXX", timezone = "UTC")
     var fecha: OffsetDateTime? = null,
 
     @Column(name = "cfa_prefijo")
