@@ -1,7 +1,14 @@
-## [2.4.4] - 2026-06-18
+## [2.4.4] - 2026-06-28
+
+### Fixed
+- **fix(json-serialization)**: Corregido patrón `@JsonFormat` de `yyyy-MM-dd'T'HH:mm:ssZ` a `yyyy-MM-dd'T'HH:mm:ssXX` en todas las entidades y modelos con `OffsetDateTime` para serialización ISO 8601 correcta con colon en el offset horario (afecta ~40 clases Java y Kotlin en los módulos: `articulomovimiento`, `cierrecaja`, `legajo`, `proveedormovimiento`, `transferencia`, `clienteweb`, `voucher`, `reserva`, `stock`, `valor`, `asiento`, `cliente`, `cuenta`, `inventario`, `feriado`, `moneda`, `comprobante`, `habitacion`, `producto`, `usuario`)
 
 ### Changed
-- **fix(vouchers)**: Renombrado del SKU `parque_termal` → `parque_termal_cacheuta` en `VouchersService.processProduct()` para alinear el código con el nuevo SKU del producto web y de la tabla `producto_sku`.
+- **refactor(logging)**: Eliminación de Log4j2 — removido `spring-boot-starter-logging` exclusion y dependencia `spring-boot-starter-log4j2` de `spring-boot-starter`, revirtiendo al logging default de Spring Boot (Logback)
+- **refactor(deps)**: Actualización de Spring Boot 4.0.6 → 4.1.0 (`pom.xml`)
+- **refactor(deps)**: Actualización de Spring Cloud 2025.1.0 → 2025.1.2 (`pom.xml`)
+- **refactor(deps)**: Actualización de OpenPDF 3.0.3 → 3.0.5 (`pom.xml`)
+- **refactor(deps)**: Actualización de MySQL Connector 9.6.0 → 9.7.0 (`pom.xml`)
 
 ## [2.4.3] - 2026-06-10
 
