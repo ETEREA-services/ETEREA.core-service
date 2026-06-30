@@ -244,7 +244,7 @@ public class ReservaService {
         // Para eliminar parto de todos los que ya están guardados y sacaré los que hay que guardar que ya estaban, los que queden serán eliminados
         Map<String, ReservaArticulo> collectionEliminar = reservaArticuloService.findAllByVoucherId(reserva.getReservaId(), reserva.getVoucherId()).stream().collect(Collectors.toMap(ReservaArticulo::getArticuloId, reservaArticulo -> reservaArticulo));
         // Para agregar parto de todos los artículos que corresponden al voucher y elimino los que ya están guardados, los que queden seran agregados
-        Map<String, Articulo> collectionAgregar = articuloService.findAllByVoucher(voucherProductos).stream().collect(Collectors.toMap(Articulo::toString, Function.identity(), ((articulo, otherArticulo) -> articulo)));
+        Map<String, Articulo> collectionAgregar = articuloService.findAllByVoucher(voucherProductos).stream().collect(Collectors.toMap(Articulo::getArticuloId, Function.identity(), ((articulo, otherArticulo) -> articulo)));
 
         // Busco las claves a eliminar en ambas colecciones
         var claves = new ArrayList<String>();

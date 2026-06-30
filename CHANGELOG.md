@@ -1,3 +1,8 @@
+## [2.4.5] - 2026-06-29
+
+### Fixed
+- **fix(reserva)**: Corregida la duplicación del artículo compartido en `ReservaService.generarReservaArticulo`. La colección `collectionAgregar` se construía con la clave `Articulo::toString`, que al no existir un `@ToString` en `Articulo` devuelve el hash de identidad del objeto (único por instancia)
+
 ## [2.4.4] - 2026-06-28
 
 ### Fixed
