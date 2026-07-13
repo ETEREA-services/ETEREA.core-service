@@ -1,17 +1,20 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.CuentaMovimiento;
+import eterea.core.service.hexagonal.stock.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.model.ValorMovimiento;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.persistence.entity.ValorMovimientoEntity;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
-import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.kotlin.extern.OrderNote;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.*;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
-import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
-import eterea.core.service.service.ClienteMovimientoService;
+import eterea.core.service.hexagonal.stock.articulomovimiento.application.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.application.service.ClienteMovimientoService;
 import eterea.core.service.service.ReservaContextService;
-import eterea.core.service.service.ValorMovimientoService;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.application.service.ValorMovimientoService;
 import eterea.core.service.tool.ToolService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -78,7 +81,7 @@ public class RegistraFacturaService {
                 .build();
         log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
 
-        ValorMovimiento valorMovimiento = new ValorMovimiento.Builder()
+        ValorMovimiento valorMovimiento = ValorMovimiento.builder()
                 .negocioId(empresa.getNegocioId())
                 .clienteId(cliente.getClienteId())
                 .proveedorId(0L)

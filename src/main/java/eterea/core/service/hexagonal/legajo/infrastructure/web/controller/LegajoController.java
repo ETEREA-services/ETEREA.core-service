@@ -3,15 +3,12 @@
  */
 package eterea.core.service.hexagonal.legajo.infrastructure.web.controller;
 
-import eterea.core.service.exception.LegajoException;
+import eterea.core.service.hexagonal.legajo.application.exception.LegajoException;
 
 import java.net.URI;
 import java.util.List;
 
 import eterea.core.service.hexagonal.legajo.application.service.LegajoService;
-import eterea.core.service.hexagonal.legajo.domain.ports.in.CreateLegajoUseCase;
-import eterea.core.service.hexagonal.legajo.domain.ports.in.GetAllLegajosUseCase;
-import eterea.core.service.hexagonal.legajo.domain.ports.in.GetLegajoByIdUseCase;
 import eterea.core.service.hexagonal.legajo.domain.model.Legajo;
 import eterea.core.service.hexagonal.legajo.infrastructure.web.dto.LegajoRequest;
 import eterea.core.service.hexagonal.legajo.infrastructure.web.dto.LegajoResponse;

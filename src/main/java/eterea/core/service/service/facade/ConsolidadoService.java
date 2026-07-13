@@ -1,9 +1,9 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.kotlin.model.ComprobanteFaltante;
-import eterea.core.service.model.ClienteMovimiento;
-import eterea.core.service.service.ClienteMovimientoService;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.application.service.ClienteMovimientoService;
 import eterea.core.service.service.ComprobanteFaltanteService;
 import eterea.core.service.tool.Jsonifier;
 import jakarta.transaction.Transactional;
@@ -56,7 +56,7 @@ public class ConsolidadoService {
         var comprobantesFacturadosByFecha = clienteMovimientoService.findAllFacturadosByFecha(fecha);
 
         // Obtiene lista única de Comprobantes
-        List<ComprobanteEntity> comprobantesUnicos = comprobantesFacturadosByFecha.stream()
+        List<Comprobante> comprobantesUnicos = comprobantesFacturadosByFecha.stream()
                 .map(ClienteMovimiento::getComprobante)
                 .filter(Objects::nonNull)
                 .distinct()

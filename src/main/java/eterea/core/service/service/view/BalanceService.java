@@ -1,10 +1,11 @@
 package eterea.core.service.service.view;
 
+import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.CuentaMovimiento;
 import eterea.core.service.kotlin.model.view.AsientoView;
-import eterea.core.service.model.CuentaMovimiento;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.infrastructure.persistence.entity.CuentaMovimientoEntity;
 import eterea.core.service.service.CuentaMovimientoAperturaMonedaService;
 import eterea.core.service.service.CuentaMovimientoMonedaService;
-import eterea.core.service.service.CuentaMovimientoService;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.application.service.CuentaMovimientoService;
 import eterea.core.service.service.MonedaCotizacionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

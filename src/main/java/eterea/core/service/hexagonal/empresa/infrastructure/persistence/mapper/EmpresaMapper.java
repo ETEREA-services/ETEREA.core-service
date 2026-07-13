@@ -2,7 +2,7 @@ package eterea.core.service.hexagonal.empresa.infrastructure.persistence.mapper;
 
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.hexagonal.empresa.infrastructure.persistence.entity.EmpresaEntity;
-import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.EmpresaResponse;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.EmpresaInvoiceDataResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -64,11 +64,11 @@ public class EmpresaMapper {
      * TODO: This method belongs to invoicedata slice or should use a shared DTO.
      * It is kept here for compatibility with ClienteMovimientoMapper.
      */
-    public EmpresaResponse toResponse(EmpresaEntity empresaEntity) {
+    public EmpresaInvoiceDataResponse toResponse(Empresa empresaEntity) {
         if (empresaEntity == null) {
             return null;
         }
-        return EmpresaResponse.builder()
+        return EmpresaInvoiceDataResponse.builder()
                 .nombreFantasia(empresaEntity.getNombreFantasia())
                 .razonSocial(empresaEntity.getRazonSocial())
                 .domicilio(empresaEntity.getDomicilio())

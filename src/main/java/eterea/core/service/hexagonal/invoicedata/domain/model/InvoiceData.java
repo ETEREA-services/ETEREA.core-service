@@ -1,6 +1,6 @@
 package eterea.core.service.hexagonal.invoicedata.domain.model;
 
-import eterea.core.service.model.ClienteMovimiento;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.model.RegistroCae;
 import eterea.core.service.tool.Jsonifier;
 import lombok.*;

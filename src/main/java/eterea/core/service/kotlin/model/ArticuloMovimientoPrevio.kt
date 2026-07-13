@@ -1,8 +1,8 @@
 package eterea.core.service.kotlin.model
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
-import eterea.core.service.hexagonal.cuenta.infrastructure.persistence.entity.CuentaEntity
+import eterea.core.service.hexagonal.stock.articulo.infrastructure.persistence.entity.ArticuloEntity
+import eterea.core.service.hexagonal.contable.cuenta.infrastructure.persistence.entity.CuentaEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.*
 import java.math.BigDecimal

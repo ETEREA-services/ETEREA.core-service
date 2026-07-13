@@ -1,10 +1,10 @@
 package eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import eterea.core.service.hexagonal.cuenta.infrastructure.persistence.entity.CuentaEntity;
+import eterea.core.service.hexagonal.contable.cuenta.infrastructure.persistence.entity.CuentaEntity;
 import eterea.core.service.kotlin.model.ComprobanteAfip;
 import eterea.core.service.model.Auditable;
-import eterea.core.service.tool.Jsonifier;
+import eterea.core.service.tool.Jsonifyable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -27,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ComprobanteEntity extends Auditable {
+public class ComprobanteEntity extends Auditable implements Jsonifyable {
 
     @Id
     @Column(name = "codigo")
@@ -155,9 +155,5 @@ public class ComprobanteEntity extends Auditable {
     @OneToOne(optional = true)
     @JoinColumn(name = "tco_tipoafip", insertable = false, updatable = false)
     private ComprobanteAfip comprobanteAfip;
-
-    public String jsonify() {
-        return Jsonifier.builder(this).build();
-    }
 
 }

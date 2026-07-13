@@ -1,5 +1,7 @@
 package eterea.core.service.hexagonal.comprobante.infrastructure.web.dto;
 
+import eterea.core.service.hexagonal.contable.cuenta.infrastructure.web.dto.CuentaResponse;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ComprobanteAfipInvoiceDataResponse;
 import lombok.*;
 
 @Getter
@@ -45,5 +47,8 @@ public class ComprobanteResponse {
     private Integer comprobanteAfipId;
     private Byte facturaElectronica;
     private Byte asociado;
+
+    private CuentaResponse cuenta;
+    private ComprobanteAfipInvoiceDataResponse comprobanteAfip;
 
 }

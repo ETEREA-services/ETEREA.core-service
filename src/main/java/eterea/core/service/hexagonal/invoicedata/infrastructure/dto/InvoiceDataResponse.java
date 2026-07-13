@@ -7,9 +7,9 @@ import lombok.*;
 @Builder
 public class InvoiceDataResponse {
 
-    ClienteMovimientoResponse clienteMovimiento;
-    RegistroCaeResponse registroCae;
-    ClienteMovimientoResponse clienteMovimientoAsociado;
+    ClienteMovimientoInvoiceDataResponse clienteMovimiento;
+    RegistroCaeInvoiceDataResponse registroCae;
+    ClienteMovimientoInvoiceDataResponse clienteMovimientoAsociado;
 
     public String jsonify() {
         return Jsonifier.builder(this).build();

@@ -1,5 +1,6 @@
 package eterea.core.service.hexagonal.invoicedata.infrastructure.mapper;
 
+import eterea.core.service.hexagonal.ventas.clientemovimiento.infrastructure.persistence.mapper.ClienteMovimientoMapper;
 import eterea.core.service.hexagonal.invoicedata.domain.model.InvoiceData;
 import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.InvoiceDataResponse;
 import lombok.RequiredArgsConstructor;

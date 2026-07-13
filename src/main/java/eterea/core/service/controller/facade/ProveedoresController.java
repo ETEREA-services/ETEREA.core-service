@@ -1,6 +1,6 @@
 package eterea.core.service.controller.facade;
 
-import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
+import eterea.core.service.hexagonal.compras.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.service.facade.ProveedoresService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

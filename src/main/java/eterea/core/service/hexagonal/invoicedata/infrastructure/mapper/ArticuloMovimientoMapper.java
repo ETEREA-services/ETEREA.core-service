@@ -1,8 +1,8 @@
 package eterea.core.service.hexagonal.invoicedata.infrastructure.mapper;
 
-import eterea.core.service.hexagonal.articulo.infrastructure.web.mapper.ArticuloDtoMapper;
-import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
-import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ArticuloMovimientoResponse;
+import eterea.core.service.hexagonal.stock.articulo.infrastructure.web.mapper.ArticuloDtoMapper;
+import eterea.core.service.hexagonal.stock.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ArticuloMovimientoInvoiceDataResponse;
 import eterea.core.service.kotlin.exception.ConceptoFacturadoException;
 import eterea.core.service.kotlin.model.ConceptoFacturado;
 import eterea.core.service.service.ConceptoFacturadoService;
@@ -19,7 +19,7 @@ public class ArticuloMovimientoMapper {
     private final ConceptoFacturadoMapper conceptoFacturadoMapper;
     private final ArticuloDtoMapper articuloDtoMapper;
 
-    public ArticuloMovimientoResponse toResponse(ArticuloMovimiento articuloMovimiento) {
+    public ArticuloMovimientoInvoiceDataResponse toResponse(ArticuloMovimiento articuloMovimiento) {
         if (articuloMovimiento == null) {
             return null;
         }
@@ -29,7 +29,7 @@ public class ArticuloMovimientoMapper {
         } catch (ConceptoFacturadoException e) {
             log.error(e.getMessage());
         }
-        return ArticuloMovimientoResponse.builder()
+        return ArticuloMovimientoInvoiceDataResponse.builder()
                 .cantidad(articuloMovimiento.getCantidad())
                 .precioUnitarioSinIva(articuloMovimiento.getPrecioUnitarioSinIva())
                 .precioUnitarioConIva(articuloMovimiento.getPrecioUnitarioConIva())

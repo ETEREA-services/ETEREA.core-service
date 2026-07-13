@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.7.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.4.4-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-2.5.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -54,16 +54,21 @@ Servicio Core para la gestión financiera y contable, implementado con **arquite
 El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 
 ### Módulos Hexagonales
-- **`hexagonal/articulo/`**: Gestión de artículos con puertos de entrada y salida (migrado a Java)
-- **`hexagonal/articulomovimiento/`**: Gestión de movimientos de artículos (migrado a Java)
+- **`hexagonal/stock/articulo/`**: Gestión de artículos con puertos de entrada y salida (migrado a Java)
+- **`hexagonal/stock/articulomovimiento/`**: Gestión de movimientos de artículos (migrado a Java)
+- **`hexagonal/stock/stockmovimiento/`**: Gestión de movimientos de stock (migrado a Java)
+- **`hexagonal/contable/cuenta/`**: Gestión de cuentas contables (migrado a Java)
+- **`hexagonal/contable/cuentamovimiento/`**: Gestión de movimientos contables (migrado a Java)
+- **`hexagonal/compras/proveedormovimiento/`**: Gestión de movimientos de proveedores
 - **`hexagonal/comprobante/`**: Gestión de comprobantes (migrado a Java)
-- **`hexagonal/cuenta/`**: Gestión de cuentas contables (migrado a Java)
 - **`hexagonal/transferencia/`**: Gestión de transferencias entre negocios (migrado a Java)
 - **`hexagonal/empresa/`**: Gestión de empresas con puertos de entrada y salida
 - **`hexagonal/negocio/`**: Gestión de negocios (sucursales) con puertos de entrada y salida
 - **`hexagonal/legajo/`**: Gestión de legajos con arquitectura hexagonal
 - **`hexagonal/invoicedata/`**: Consulta de datos completos de facturación con arquitectura hexagonal
-- **`hexagonal/proveedormovimiento/`**: Gestión de movimientos de proveedores
+- **`hexagonal/valormovimiento/`**: Gestión de movimientos de valores (migrado a Java)
+- **`hexagonal/cierrecaja/anticipohaberes/`**: Gestión de anticipos de haberes en cierre de caja
+- **`hexagonal/cierrecaja/processCierre/`**: Procesamiento de cierre de caja con conteos pendientes
 - **`hexagonal/facturacion/arca/nacional/`**: Facturación electrónica nacional
 - **`hexagonal/facturacion/arca/exportacion/`**: Facturación de exportación
 
@@ -171,8 +176,11 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - ✅ **Ajuste Automático** de comprobantes
 - ✅ **Gestión de Artículos** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Movimientos de Artículos** con arquitectura hexagonal (Java)
+- ✅ **Gestión de Movimientos de Stock** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Comprobantes** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Cuentas Contables** con arquitectura hexagonal (Java)
+- ✅ **Gestión de Movimientos Contables** con arquitectura hexagonal (Java)
+- ✅ **Gestión de Movimientos de Valores** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Transferencias** con arquitectura hexagonal (Java)
 - ✅ **Gestión de Empresas** con arquitectura hexagonal
 - ✅ **Gestión de Negocios (sucursales)** con arquitectura hexagonal
@@ -180,6 +188,8 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - ✅ **Consulta de Datos de Facturación (InvoiceData)** con arquitectura hexagonal
 - ✅ **Gestión de Proveedores** con arquitectura hexagonal
 - ✅ **Control de Movimientos** contables y valores
+- ✅ **Procesamiento de Cierre de Caja** con conteos pendientes
+- ✅ **Gestión de Anticipos de Haberes** en cierre de caja
 
 ### Infraestructura
 - ✅ **Documentación API** con OpenAPI 3.0

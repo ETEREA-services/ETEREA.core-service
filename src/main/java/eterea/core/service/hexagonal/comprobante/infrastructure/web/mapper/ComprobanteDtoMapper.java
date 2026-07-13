@@ -2,8 +2,8 @@ package eterea.core.service.hexagonal.comprobante.infrastructure.web.mapper;
 
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.infrastructure.web.dto.ComprobanteResponse;
-import eterea.core.service.hexagonal.cuenta.application.service.CuentaService;
-import eterea.core.service.hexagonal.cuenta.infrastructure.web.mapper.CuentaDtoMapper;
+import eterea.core.service.hexagonal.contable.cuenta.infrastructure.web.mapper.CuentaDtoMapper;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ComprobanteAfipInvoiceDataResponse;
 import eterea.core.service.model.dto.ComprobanteDto;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +11,9 @@ import org.springframework.stereotype.Component;
 public class ComprobanteDtoMapper {
 
     private final CuentaDtoMapper cuentaDtoMapper;
-    private final CuentaService cuentaService;
 
-    public ComprobanteDtoMapper(CuentaDtoMapper cuentaDtoMapper, CuentaService cuentaService) {
+    public ComprobanteDtoMapper(CuentaDtoMapper cuentaDtoMapper) {
         this.cuentaDtoMapper = cuentaDtoMapper;
-        this.cuentaService = cuentaService;
     }
 
     public ComprobanteResponse toResponse(Comprobante domain) {
@@ -59,6 +57,8 @@ public class ComprobanteDtoMapper {
                 .comprobanteAfipId(domain.getComprobanteAfipId())
                 .facturaElectronica(domain.getFacturaElectronica())
                 .asociado(domain.getAsociado())
+                .cuenta(cuentaDtoMapper.toResponse(domain.getCuenta()))
+                .comprobanteAfip(toComprobanteAfipResponse(domain.getComprobanteAfip()))
                 .build();
     }
 
@@ -103,7 +103,17 @@ public class ComprobanteDtoMapper {
                 .comprobanteAfipId(domain.getComprobanteAfipId())
                 .facturaElectronica(domain.getFacturaElectronica())
                 .asociado(domain.getAsociado())
-                .cuenta(cuentaDtoMapper.toCuentaDto(cuentaService.findByNumeroCuenta(domain.getNumeroCuenta())))
+                .cuenta(cuentaDtoMapper.toCuentaDto(domain.getCuenta()))
+                .build();
+    }
+
+    private ComprobanteAfipInvoiceDataResponse toComprobanteAfipResponse(eterea.core.service.kotlin.model.ComprobanteAfip comprobanteAfip) {
+        if (comprobanteAfip == null) {
+            return null;
+        }
+        return ComprobanteAfipInvoiceDataResponse.builder()
+                .comprobanteAfipId(comprobanteAfip.getComprobanteAfipId())
+                .label(comprobanteAfip.getLabel())
                 .build();
     }
 }

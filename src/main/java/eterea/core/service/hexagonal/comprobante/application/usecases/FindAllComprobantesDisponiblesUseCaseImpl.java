@@ -1,6 +1,6 @@
 package eterea.core.service.hexagonal.comprobante.application.usecases;
 
-import eterea.core.service.exception.ComprobanteException;
+import eterea.core.service.hexagonal.comprobante.application.exception.ComprobanteException;
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.domain.ports.in.FindAllComprobantesDisponiblesUseCase;
 import eterea.core.service.hexagonal.comprobante.domain.ports.out.ComprobanteRepository;

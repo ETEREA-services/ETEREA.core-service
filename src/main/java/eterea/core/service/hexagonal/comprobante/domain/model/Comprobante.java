@@ -1,6 +1,8 @@
 package eterea.core.service.hexagonal.comprobante.domain.model;
 
-import eterea.core.service.tool.Jsonifier;
+import eterea.core.service.hexagonal.contable.cuenta.domain.model.Cuenta;
+import eterea.core.service.kotlin.model.ComprobanteAfip;
+import eterea.core.service.tool.Jsonifyable;
 import lombok.*;
 
 @Getter
@@ -8,7 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comprobante {
+public class Comprobante implements Jsonifyable {
 
     private Integer comprobanteId;
     private String descripcion;
@@ -47,8 +49,7 @@ public class Comprobante {
     private Byte facturaElectronica;
     private Byte asociado;
 
-    public String jsonify() {
-        return Jsonifier.builder(this).build();
-    }
+    private Cuenta cuenta;
+    private ComprobanteAfip comprobanteAfip;
 
 }

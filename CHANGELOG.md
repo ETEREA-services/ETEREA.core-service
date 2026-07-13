@@ -1,3 +1,45 @@
+## [2.5.0] - 2026-07-12
+
+### 🚀 Migración Masiva de Módulos a Arquitectura Hexagonal y Reorganización de Paquetes
+
+#### Features
+- **feat(cliente-movimiento)**: Nuevo módulo hexagonal completo `clienteMovimiento` con arquitectura hexagonal — dominio, puertos de entrada/salida, casos de uso (`Create`, `Delete`, `FindById`, `FindByComprobante`, `FindAsociables`, `FindByIds`, `FindByReserva`, `FindFacturados`, `FindNextNumeroComprobante`, `Update`), adaptador JPA, controlador REST, DTOs de respuesta/request y mappers
+- **feat(cuenta-movimiento)**: Nuevo módulo hexagonal completo `cuentamovimiento` bajo `contable/` — dominio, puertos de entrada/salida, casos de uso (`Delete`, `FindById`, `FindByContable`, `FindByFechaRange`, `FindLastByAsiento`, `FindLastByFecha`, `Save`), adaptador JPA, controlador REST, DTOs y mappers
+- **feat(valor-movimiento)**: Nuevo módulo hexagonal completo `valormovimiento` — dominio, puertos de entrada/salida, casos de uso (`Create`, `Delete`, `FindAll`, `FindByContable`, `SaveAll`, `Update`), adaptador JPA, controlador REST, DTOs y mappers
+- **feat(stock-movimiento)**: Nuevo módulo hexagonal completo `stockmovimiento` bajo `stock/` — dominio, puertos de entrada/salida, casos de uso (`Create`, `FindById`, `FindLastByComprobanteId`), adaptador JPA, controlador REST, DTOs y mappers
+- **feat(process-cierre)**: Nuevo módulo hexagonal `processCierre` bajo `cierrecaja/` — endpoint `GET` para obtener conteos pendientes (`PendingCounts`), adaptador JPA, controlador REST, DTO y mapper
+- **feat(anticipo-haberes)**: Nuevo caso de uso `SaveAllAnticipoHaberesUseCase` y excepción `CierreCajaAnticipoHaberesException` en módulo `cierrecaja/anticipohaberes`
+- **feat(compras)**: Nuevos puertos de entrada en `proveedormovimiento`: `GetProveedorMovimientosByProveedorIdUseCase`, `GetResumenIvaComprasMensualUseCase`, `UpdateProveedorMovimientoNetoAjusteUseCase`
+- **feat(contable)**: Nuevos puertos de entrada para `cuenta`: `FindAllCuentasUseCase`, `FindAllCuentasWithCuentaMaestroUseCase`, `FindCuentaByCuentaMaestroUseCase`, `FindCuentaByNumeroCuentaUseCase`
+- **feat(json)**: Nueva interfaz `Jsonifyable` para serialización JSON centralizada
+
+### Changed
+- **refactor(articulomovimiento)**: Migración de puertos de entrada de `hexagonal/articulomovimiento/` a `hexagonal/stock/articulomovimiento/` — `CreateArticuloMovimientoUseCase`, `GetArticuloMovimientoByIdUseCase`, `SaveAllArticuloMovimientosUseCase`
+- **refactor(articulo)**: Migración completa del módulo `articulo` de `hexagonal/articulo/` a `hexagonal/stock/articulo/` — casos de uso, puertos, adaptador JPA, controlador, servicio, mapper y excepción
+- **refactor(cuenta)**: Migración completa del módulo `cuenta` de `hexagonal/cuenta/` a `hexagonal/contable/cuenta/` — casos de uso, puertos, adaptador JPA, controlador, servicio, mapper y entidad
+- **refactor(proveedormovimiento)**: Migración completa del módulo `proveedormovimiento` de `hexagonal/proveedormovimiento/` a `hexagonal/compras/proveedormovimiento/` — todos los componentes de infraestructura
+- **refactor(comprobante)**: Relocalización de `ComprobanteException` a `hexagonal/comprobante/application/exception/` y renombrado de `JpaComprobanteRepositoryAdapter` a `hexagonal/comprobante/infrastructure/persistence/adapter/`
+- **refactor(legajo)**: Relocalización de `LegajoException` a `hexagonal/legajo/application/exception/` y renombrado de `JpaLegajoRepositoryAdapter` a `hexagonal/legajo/infrastructure/persistence/adapter/`
+- **refactor(invoicedata)**: Renombrado de todos los DTOs de respuesta con sufijo `InvoiceData` — `ArticuloMovimientoResponse` → `ArticuloMovimientoInvoiceDataResponse`, `ClienteResponse` → `ClienteInvoiceDataResponse`, `ClienteMovimientoResponse` → `ClienteMovimientoInvoiceDataResponse`, `ComprobanteAfipResponse` → `ComprobanteAfipInvoiceDataResponse`, `ComprobanteResponse` → `ComprobanteInvoiceDataResponse`, `ConceptoFacturadoResponse` → `ConceptoFacturadoInvoiceDataResponse`, `EmpresaResponse` → `EmpresaInvoiceDataResponse`, `MonedaResponse` → `MonedaInvoiceDataResponse`, `RegistroCaeResponse` → `RegistroCaeInvoiceDataResponse`
+- **refactor(cierrecaja)**: Renombrado de `AnticipoHaberesMapper` a `CierreCajaAnticipoHaberesMapper` y renombrado de adaptador de `repository` a `adapter` en `anticipohaberes`
+- **refactor(proveedor-movimiento)**: Movimiento de `ProveedorMovimientoService`, modelos, puertos, adaptador JPA, DTOs, mappers y controlador a paquete `compras/proveedormovimiento`
+- **refactor(transferencia)**: Relocalización de `FindTransferenciaByUniqueUseCase` a `hexagonal/transferencia/domain/ports/in/`
+- **refactor(cuenta-service)**: Relocalización de `CuentaMovimientoService` a `hexagonal/contable/cuentamovimiento/application/service/`
+- **refactor(excepciones)**: Relocalización de `ClienteMovimientoException`, `CuentaMovimientoException` y `StockMovimientoException` a módulos hexagonales correspondientes
+
+### Removed
+- **chore(cleanup)**: Eliminación de controladores legacy: `ClienteMovimientoController.java`, `CuentaMovimientoController.java`, `ValorMovimientoController.java` en `controller/`
+- **chore(cleanup)**: Eliminación de excepciones legacy: `ClienteMovimientoException.java`, `CuentaMovimientoException.java`, `StockMovimientoException.java` en `exception/`
+- **chore(cleanup)**: Eliminación de repositorios y modelos Kotlin: `CuentaMovimientoRepository.kt`, `StockMovimientoRepository.kt`, `ValorMovimientoRepository.kt`, `StockMovimiento.kt`, `ValorMovimiento.kt`, `TransferenciaException.kt`
+- **chore(cleanup)**: Eliminación de puertos de entrada Kotlin: `CreateArticuloUseCase`, `FindAllArticulosUseCase`, `FindArticuloByArticuloIdUseCase`, `FindArticuloByAutoNumericoUseCase`, `FindArticuloByMascaraBalanzaUseCase`, `FindArticulosBySearchUseCase`, `UpdateArticuloUseCase` en `hexagonal/articulo/domain/ports/in/`
+- **chore(cleanup)**: Eliminación de `ClienteMovimientoMapper` en `invoicedata/infrastructure/mapper/`
+- **chore(cleanup)**: Eliminación de `ValorMovimientoDtoMapper` en `model/dto/`
+- **chore(cleanup)**: Eliminación de `ClienteMovimientoRepository` legacy en `repository/`
+- **chore(cleanup)**: Eliminación de servicios legacy: `ClienteMovimientoService`, `StockMovimientoService`, `ValorMovimientoService` en `service/`
+- **chore(cleanup)**: Eliminación de puertos de entrada legacy: `FindAllCuentasUseCase`, `FindAllCuentasWithCuentaMaestroUseCase`, `FindCuentaByCuentaMaestroUseCase`, `FindCuentaByNumeroCuentaUseCase` en `hexagonal/cuenta/domain/ports/in/`
+- **chore(cleanup)**: Eliminación de puertos de entrada legacy en `hexagonal/proveedormovimiento/domain/ports/in/`: `GetProveedorMovimientosByProveedorIdUseCase`, `GetResumenIvaComprasMensualUseCase`, `UpdateProveedorMovimientoNetoAjusteUseCase`
+- **chore(cleanup)**: Eliminación de `FindTransferenciaByUniqueUseCase` en `hexagonal/transferencia/domain/ports/in/`
+
 ## [2.4.5] - 2026-06-29
 
 ### Fixed
