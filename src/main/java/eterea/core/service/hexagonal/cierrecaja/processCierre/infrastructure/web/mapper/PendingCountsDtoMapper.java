@@ -3,13 +3,19 @@ package eterea.core.service.hexagonal.cierrecaja.processCierre.infrastructure.we
 import eterea.core.service.hexagonal.cierrecaja.processCierre.domain.model.PendingCounts;
 import eterea.core.service.hexagonal.cierrecaja.processCierre.infrastructure.web.dto.PendingCountsResponse;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.infrastructure.web.mapper.ClienteMovimientoDtoMapper;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.infrastructure.web.dto.ClienteMovimientoResponse;
 import eterea.core.service.hexagonal.contable.cuentamovimiento.infrastructure.web.mapper.CuentaMovimientoDtoMapper;
 import eterea.core.service.hexagonal.stock.stockmovimiento.infrastructure.web.mapper.StockMovimientoDtoMapper;
+import eterea.core.service.hexagonal.stock.stockmovimiento.infrastructure.web.dto.StockMovimientoResponse;
+import eterea.core.service.hexagonal.stock.articulomovimiento.application.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.stock.articulomovimiento.infrastructure.web.mapper.ArticuloMovimientoDtoMapper;
+import eterea.core.service.hexagonal.stock.articulomovimiento.infrastructure.web.dto.ArticuloMovimientoResponse;
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.web.mapper.ValorMovimientoDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +25,8 @@ public class PendingCountsDtoMapper {
     private final CuentaMovimientoDtoMapper cuentaMovimientoDtoMapper;
     private final ValorMovimientoDtoMapper valorMovimientoDtoMapper;
     private final StockMovimientoDtoMapper stockMovimientoDtoMapper;
+    private final ArticuloMovimientoService articuloMovimientoService;
+    private final ArticuloMovimientoDtoMapper articuloMovimientoDtoMapper;
 
     public PendingCountsResponse toResponse(PendingCounts domain) {
         if (domain == null) {
@@ -31,7 +39,16 @@ public class PendingCountsDtoMapper {
                 .countValorMovimiento(domain.getCountValorMovimiento())
                 .countStockMovimiento(domain.getCountStockMovimiento())
                 .clienteMovimientos(domain.getClienteMovimientos() != null
-                        ? domain.getClienteMovimientos().stream().map(clienteMovimientoDtoMapper::toResponse).toList()
+                        ? domain.getClienteMovimientos().stream().map(cm -> {
+                            ClienteMovimientoResponse response = clienteMovimientoDtoMapper.toResponse(cm);
+                            if (response != null) {
+                                response.setArticuloMovimientos(articuloMovimientoService.findAllByClienteMovimientoId(cm.getClienteMovimientoId())
+                                        .stream()
+                                        .map(articuloMovimientoDtoMapper::toResponse)
+                                        .toList());
+                            }
+                            return response;
+                        }).toList()
                         : Collections.emptyList())
                 .cuentaMovimientos(domain.getCuentaMovimientos() != null
                         ? domain.getCuentaMovimientos().stream().map(cuentaMovimientoDtoMapper::toResponse).toList()
@@ -40,7 +57,16 @@ public class PendingCountsDtoMapper {
                         ? domain.getValorMovimientos().stream().map(valorMovimientoDtoMapper::toResponse).toList()
                         : Collections.emptyList())
                 .stockMovimientos(domain.getStockMovimientos() != null
-                        ? domain.getStockMovimientos().stream().map(stockMovimientoDtoMapper::toResponse).toList()
+                        ? domain.getStockMovimientos().stream().map(sm -> {
+                            StockMovimientoResponse response = stockMovimientoDtoMapper.toResponse(sm);
+                            if (response != null) {
+                                response.setArticuloMovimientos(articuloMovimientoService.findAllByStockMovimientoId(sm.getStockMovimientoId())
+                                        .stream()
+                                        .map(articuloMovimientoDtoMapper::toResponse)
+                                        .toList());
+                            }
+                            return response;
+                        }).toList()
                         : Collections.emptyList())
                 .build();
     }

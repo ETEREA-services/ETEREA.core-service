@@ -4,6 +4,9 @@ import eterea.core.service.hexagonal.comprobante.infrastructure.web.dto.Comproba
 import eterea.core.service.hexagonal.empresa.infrastructure.web.dto.EmpresaResponse;
 import lombok.*;
 
+import eterea.core.service.hexagonal.stock.articulomovimiento.infrastructure.web.dto.ArticuloMovimientoResponse;
+import java.util.List;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -61,4 +64,5 @@ public class ClienteMovimientoResponse {
     private ClienteResponse cliente;
     private MonedaResponse moneda;
     private EmpresaResponse empresa;
+    private List<ArticuloMovimientoResponse> articuloMovimientos;
 }

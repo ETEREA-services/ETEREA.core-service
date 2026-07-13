@@ -2,6 +2,7 @@ package eterea.core.service.hexagonal.stock.articulomovimiento.domain.model;
 
 import eterea.core.service.hexagonal.stock.articulo.domain.model.Articulo;
 import eterea.core.service.tool.Jsonifier;
+import eterea.core.service.tool.Jsonifyable;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import java.time.OffsetDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticuloMovimiento {
+public class ArticuloMovimiento implements Jsonifyable {
 
     private Long articuloMovimientoId;
     private Long clienteMovimientoId;
@@ -42,9 +43,7 @@ public class ArticuloMovimiento {
     private String trackUuid;
     private BigDecimal totalConIva;
     private BigDecimal totalSinIva;
+
     private Articulo articulo;
 
-    public String jsonify() {
-        return Jsonifier.builder(this).build();
-    }
 }

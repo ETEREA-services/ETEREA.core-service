@@ -1,5 +1,6 @@
 package eterea.core.service.hexagonal.stock.articulomovimiento.infrastructure.web.dto;
 
+import eterea.core.service.hexagonal.stock.articulo.infrastructure.web.dto.ArticuloResponse;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ public class ArticuloMovimientoResponse {
     private Long articuloMovimientoId;
     private Long clienteMovimientoId;
     private Long stockMovimientoId;
+    private Long tenenciaMovimientoId;
     private Integer centroStockId;
     private Integer comprobanteId;
     private Integer item;
@@ -23,7 +25,20 @@ public class ArticuloMovimientoResponse {
     private BigDecimal precioUnitario;
     private BigDecimal precioUnitarioSinIva;
     private BigDecimal precioUnitarioConIva;
+    private Long numeroCuenta;
+    private Byte iva105;
+    private Byte exento;
     private OffsetDateTime fechaMovimiento;
+    private OffsetDateTime fechaFactura;
+    private Integer nivel;
+    private Long cierreCajaId;
+    private Long cierreRestaurantId;
+    private BigDecimal precioCompra;
+    private BigDecimal precioValuacion;
+    private Long mozoId;
+    private BigDecimal comision;
+    private String trackUuid;
     private BigDecimal totalConIva;
     private BigDecimal totalSinIva;
+    private ArticuloResponse articulo;
 }

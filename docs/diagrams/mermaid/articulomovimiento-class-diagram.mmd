@@ -43,6 +43,7 @@ classDiagram
         +precioValuacion: BigDecimal
         +mozoId: Long
         +comision: BigDecimal
+        +trackUuid: String
         +articulo: Articulo
     }
 
@@ -112,7 +113,13 @@ classDiagram
     }
 
     class ArticuloMovimientoDtoMapper {
+        -ArticuloDtoMapper articuloDtoMapper
         +toResponse(ArticuloMovimiento): ArticuloMovimientoResponse
+    }
+
+    class ArticuloDtoMapper {
+        <<infrastructure>>
+        +toResponse(Articulo): ArticuloResponse
     }
 
     class ArticuloMovimientoResponse {
@@ -120,10 +127,30 @@ classDiagram
         +articuloMovimientoId: Long
         +clienteMovimientoId: Long
         +stockMovimientoId: Long
+        +tenenciaMovimientoId: Long
+        +centroStockId: Integer
+        +comprobanteId: Integer
+        +item: Integer
         +cantidad: BigDecimal
         +precioUnitario: BigDecimal
+        +precioUnitarioSinIva: BigDecimal
+        +precioUnitarioConIva: BigDecimal
+        +numeroCuenta: Long
+        +iva105: Byte
+        +exento: Byte
+        +fechaMovimiento: OffsetDateTime
+        +fechaFactura: OffsetDateTime
+        +nivel: Integer
+        +cierreCajaId: Long
+        +cierreRestaurantId: Long
+        +precioCompra: BigDecimal
+        +precioValuacion: BigDecimal
+        +mozoId: Long
+        +comision: BigDecimal
+        +trackUuid: String
         +totalConIva: BigDecimal
         +totalSinIva: BigDecimal
+        +articulo: ArticuloResponse
     }
 
     ArticuloMovimientoController --> ArticuloMovimientoService
@@ -144,3 +171,4 @@ classDiagram
     ArticuloMovimientoMapper --> ArticuloMovimiento
     ArticuloMovimientoDtoMapper --> ArticuloMovimientoResponse
     ArticuloMovimientoDtoMapper --> ArticuloMovimiento
+    ArticuloMovimientoDtoMapper --> ArticuloDtoMapper
