@@ -1,7 +1,7 @@
 package eterea.core.service.hexagonal.invoicedata.infrastructure.mapper;
 
-import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ComprobanteResponse;
-import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
+import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ComprobanteInvoiceDataResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +11,11 @@ public class ComprobanteResponseMapper {
 
     private final ComprobanteAfipMapper comprobanteAfipMapper;
 
-    public ComprobanteResponse toResponse(ComprobanteEntity comprobante) {
+    public ComprobanteInvoiceDataResponse toResponse(Comprobante comprobante) {
         if (comprobante == null) {
             return null;
         }
-        return ComprobanteResponse.builder()
+        return ComprobanteInvoiceDataResponse.builder()
                 .letraComprobante(comprobante.getLetraComprobante())
                 .contado(comprobante.getContado())
                 .comprobanteAfip(comprobanteAfipMapper.toResponse(comprobante.getComprobanteAfip()))

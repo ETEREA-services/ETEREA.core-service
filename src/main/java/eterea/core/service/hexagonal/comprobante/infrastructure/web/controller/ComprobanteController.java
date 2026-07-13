@@ -3,7 +3,7 @@ package eterea.core.service.hexagonal.comprobante.infrastructure.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import eterea.core.service.exception.ComprobanteException;
+import eterea.core.service.hexagonal.comprobante.application.exception.ComprobanteException;
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.infrastructure.web.dto.ComprobanteResponse;
 import eterea.core.service.hexagonal.comprobante.infrastructure.web.mapper.ComprobanteDtoMapper;

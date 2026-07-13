@@ -1,8 +1,8 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.hexagonal.proveedormovimiento.domain.model.ProveedorMovimiento;
+import eterea.core.service.hexagonal.compras.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.service.FacturaRendicionDetalleService;
-import eterea.core.service.hexagonal.proveedormovimiento.application.service.ProveedorMovimientoService;
+import eterea.core.service.hexagonal.compras.proveedormovimiento.application.service.ProveedorMovimientoService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

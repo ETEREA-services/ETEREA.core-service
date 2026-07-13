@@ -1,6 +1,6 @@
 package eterea.core.service.kotlin.model
 
-import eterea.core.service.hexagonal.articulo.infrastructure.persistence.entity.ArticuloEntity
+import eterea.core.service.hexagonal.stock.articulo.infrastructure.persistence.entity.ArticuloEntity
 import eterea.core.service.model.Auditable
 import jakarta.persistence.*
 

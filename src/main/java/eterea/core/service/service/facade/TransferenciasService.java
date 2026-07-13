@@ -1,12 +1,16 @@
 package eterea.core.service.service.facade;
 
-import eterea.core.service.hexagonal.cuenta.application.service.CuentaService;
-import eterea.core.service.hexagonal.transferencia.application.service.TransferenciaService;
-import eterea.core.service.hexagonal.transferencia.infrastructure.web.mapper.TransferenciaDtoMapper;
+import eterea.core.service.hexagonal.contable.cuenta.application.service.CuentaService;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.application.service.CuentaMovimientoService;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.CuentaMovimiento;
+import eterea.core.service.hexagonal.tesoreria.transferencia.application.service.TransferenciaService;
+import eterea.core.service.hexagonal.tesoreria.transferencia.infrastructure.web.mapper.TransferenciaDtoMapper;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.application.service.ValorMovimientoService;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.model.ValorMovimiento;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.persistence.entity.ValorMovimientoEntity;
 import eterea.core.service.kotlin.model.*;
 import eterea.core.service.model.dto.TransferenciaDto;
 import eterea.core.service.model.dto.TransferenciaWrapperDto;
-import eterea.core.service.model.CuentaMovimiento;
 import eterea.core.service.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +77,7 @@ public class TransferenciasService {
         for (var valorMovimientoExterno : Objects.requireNonNull(transferenciaWrapper.getValorMovimientos())) {
             assert valorMovimientoExterno != null;
             var valorLocal = valorLocals.get(valorMovimientoExterno.getValorId());
-            var valorMovimientoLocal = new ValorMovimiento.Builder()
+            var valorMovimientoLocal = ValorMovimiento.builder()
                     .valorMovimientoId(null)
                     .negocioId(transferenciaExterna.getNegocioIdHasta())
                     .valorId(valorMovimientoExterno.getValorId())

@@ -1,7 +1,7 @@
 package eterea.core.service.model.dto;
 
-import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
-import eterea.core.service.kotlin.model.StockMovimiento;
+import eterea.core.service.hexagonal.stock.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.stock.stockmovimiento.domain.model.StockMovimiento;
 import lombok.*;
 
 import java.util.List;

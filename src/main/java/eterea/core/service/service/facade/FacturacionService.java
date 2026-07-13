@@ -1,12 +1,18 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.client.arca.FacturacionAfipClient;
-import eterea.core.service.hexagonal.articulomovimiento.application.service.ArticuloMovimientoService;
-import eterea.core.service.hexagonal.articulomovimiento.domain.model.ArticuloMovimiento;
-import eterea.core.service.hexagonal.articulomovimiento.infrastructure.persistence.entity.ArticuloMovimientoEntity;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.application.service.CuentaMovimientoService;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.CuentaMovimiento;
+import eterea.core.service.hexagonal.stock.articulomovimiento.application.service.ArticuloMovimientoService;
+import eterea.core.service.hexagonal.stock.articulomovimiento.domain.model.ArticuloMovimiento;
+import eterea.core.service.hexagonal.stock.articulomovimiento.infrastructure.persistence.entity.ArticuloMovimientoEntity;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.application.service.ValorMovimientoService;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.model.ValorMovimiento;
+import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.persistence.entity.ValorMovimientoEntity;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.application.service.ClienteMovimientoService;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
-import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.application.service.FacturacionElectronicaService;
 import eterea.core.service.kotlin.extern.OrderNote;
@@ -59,14 +65,14 @@ public class FacturacionService {
     private final RegistroCaeService registroCaeService;
 
     public ClienteMovimiento registraTransaccionFacturaProgramaDia(Reserva reserva,
-                                                                   FacturacionDto facturacionDto,
-                                                                   Comprobante comprobante,
-                                                                   Empresa empresa,
-                                                                   Cliente cliente,
-                                                                   Parametro parametro,
-                                                                   ReservaContext reservaContext,
-                                                                   Track track,
-                                                                   Boolean soloFactura) {
+                                                                         FacturacionDto facturacionDto,
+                                                                         Comprobante comprobante,
+                                                                         Empresa empresa,
+                                                                         Cliente cliente,
+                                                                         Parametro parametro,
+                                                                         ReservaContext reservaContext,
+                                                                         Track track,
+                                                                         Boolean soloFactura) {
         log.debug("\n\nProcessing FacturacionService.registraTransaccionFacturaProgramaDia\n\n");
         Voucher voucher = voucherService.findByVoucherId(reserva.getVoucherId());
         log.debug("\n\nVoucher -> {}\n\n", voucher.jsonify());
@@ -170,7 +176,7 @@ public class FacturacionService {
 
     @Transactional
     public ClienteMovimiento registraTransaccionFacturaFaltante(ClienteMovimiento clienteMovimiento,
-                                                                ArticuloMovimiento articuloMovimiento) {
+                                                                      ArticuloMovimiento articuloMovimiento) {
         log.debug("Processing FacturacionService.registraTransaccionFacturaFaltante");
         clienteMovimiento = clienteMovimientoService.add(clienteMovimiento);
         log.debug("ClienteMovimiento -> {}", clienteMovimiento.jsonify());
@@ -319,7 +325,7 @@ public class FacturacionService {
         List<ValorMovimiento> valorMovimientosNC = new ArrayList<>();
         for (var valorMovimiento : valorMovimientos) {
             log.debug("ValorMovimiento -> {}", valorMovimiento.jsonify());
-            valorMovimientosNC.add(new ValorMovimiento.Builder()
+            valorMovimientosNC.add(ValorMovimiento.builder()
                     .negocioId(valorMovimiento.getNegocioId())
                     .clienteId(valorMovimiento.getClienteId())
                     .proveedorId(0L)

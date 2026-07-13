@@ -1,6 +1,6 @@
 package eterea.core.service.controller.facade;
 
-import eterea.core.service.kotlin.model.StockMovimiento;
+import eterea.core.service.hexagonal.stock.stockmovimiento.domain.model.StockMovimiento;
 import eterea.core.service.model.dto.StockAndArticulosDto;
 import eterea.core.service.service.facade.StockService;
 import lombok.RequiredArgsConstructor;

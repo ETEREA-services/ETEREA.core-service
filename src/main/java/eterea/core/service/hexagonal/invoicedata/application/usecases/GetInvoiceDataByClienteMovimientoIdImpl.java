@@ -1,9 +1,9 @@
 package eterea.core.service.hexagonal.invoicedata.application.usecases;
 
+import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.invoicedata.domain.model.InvoiceData;
 import eterea.core.service.hexagonal.invoicedata.domain.ports.in.GetInvoiceDataByClienteMovimientoId;
-import eterea.core.service.model.ClienteMovimiento;
-import eterea.core.service.service.ClienteMovimientoService;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.application.service.ClienteMovimientoService;
 import eterea.core.service.service.RegistroCaeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

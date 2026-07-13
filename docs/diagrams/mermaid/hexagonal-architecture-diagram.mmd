@@ -1,18 +1,46 @@
 graph TB
     subgraph "Hexagonal Architecture - ETEREA Core Service"
         
-        subgraph "Gestión Artículos"
-            ART_API[Articulo Controller<br/>hexagonal.articulo.infrastructure.web.controller]
-            ART_APP[Articulo Service<br/>hexagonal.articulo.application.service]
-            ART_DOMAIN[Articulo Model<br/>hexagonal.articulo.domain.model]
-            ART_PORTS[Ports In/Out<br/>hexagonal.articulo.domain.ports]
+        subgraph "Stock: Gestión Artículos"
+            ART_API[Articulo Controller<br/>hexagonal.stock.articulo.infrastructure.web.controller]
+            ART_APP[Articulo Service<br/>hexagonal.stock.articulo.application.service]
+            ART_DOMAIN[Articulo Model<br/>hexagonal.stock.articulo.domain.model]
+            ART_PORTS[Ports In/Out<br/>hexagonal.stock.articulo.domain.ports]
         end
         
-        subgraph "Gestión Movimientos Artículos"
-            AM_API[ArticuloMovimiento Controller<br/>hexagonal.articulomovimiento.infrastructure.web.controller]
-            AM_APP[ArticuloMovimiento Service<br/>hexagonal.articulomovimiento.application.service]
-            AM_DOMAIN[ArticuloMovimiento Model<br/>hexagonal.articulomovimiento.domain.model]
-            AM_PORTS[Ports In/Out<br/>hexagonal.articulomovimiento.domain.ports]
+        subgraph "Stock: Movimientos Artículos"
+            AM_API[ArticuloMovimiento Controller<br/>hexagonal.stock.articulomovimiento.infrastructure.web.controller]
+            AM_APP[ArticuloMovimiento Service<br/>hexagonal.stock.articulomovimiento.application.service]
+            AM_DOMAIN[ArticuloMovimiento Model<br/>hexagonal.stock.articulomovimiento.domain.model]
+            AM_PORTS[Ports In/Out<br/>hexagonal.stock.articulomovimiento.domain.ports]
+        end
+
+        subgraph "Stock: Movimientos Stock"
+            SM_API[StockMovimiento Controller<br/>hexagonal.stock.stockmovimiento.infrastructure.web.controller]
+            SM_APP[StockMovimiento Service<br/>hexagonal.stock.stockmovimiento.application.service]
+            SM_DOMAIN[StockMovimiento Model<br/>hexagonal.stock.stockmovimiento.domain.model]
+            SM_PORTS[Ports In/Out<br/>hexagonal.stock.stockmovimiento.domain.ports]
+        end
+
+        subgraph "Contable: Cuentas"
+            CTA_API[Cuenta Controller<br/>hexagonal.contable.cuenta.infrastructure.web.controller]
+            CTA_APP[Cuenta Service<br/>hexagonal.contable.cuenta.application.service]
+            CTA_DOMAIN[Cuenta Model<br/>hexagonal.contable.cuenta.domain.model]
+            CTA_PORTS[Ports In/Out<br/>hexagonal.contable.cuenta.domain.ports]
+        end
+
+        subgraph "Contable: Movimientos Cuenta"
+            CM_API[CuentaMovimiento Controller<br/>hexagonal.contable.cuentamovimiento.infrastructure.web.controller]
+            CM_APP[CuentaMovimiento Service<br/>hexagonal.contable.cuentamovimiento.application.service]
+            CM_DOMAIN[CuentaMovimiento Model<br/>hexagonal.contable.cuentamovimiento.domain.model]
+            CM_PORTS[Ports In/Out<br/>hexagonal.contable.cuentamovimiento.domain.ports]
+        end
+
+        subgraph "Compras: Proveedores"
+            PM_API[ProveedorMovimiento Controller<br/>hexagonal.compras.proveedormovimiento.infrastructure.web.controller]
+            PM_APP[ProveedorMovimiento Service<br/>hexagonal.compras.proveedormovimiento.application.service]
+            PM_DOMAIN[ProveedorMovimiento Model<br/>hexagonal.compras.proveedormovimiento.domain.model]
+            PM_PORTS[Ports In/Out<br/>hexagonal.compras.proveedormovimiento.domain.ports]
         end
 
         subgraph "Gestión Comprobantes"
@@ -22,18 +50,18 @@ graph TB
             COMP_PORTS[Ports In/Out<br/>hexagonal.comprobante.domain.ports]
         end
 
-        subgraph "Gestión Cuentas"
-            CTA_API[Cuenta Controller<br/>hexagonal.cuenta.infrastructure.web.controller]
-            CTA_APP[Cuenta Service<br/>hexagonal.cuenta.application.service]
-            CTA_DOMAIN[Cuenta Model<br/>hexagonal.cuenta.domain.model]
-            CTA_PORTS[Ports In/Out<br/>hexagonal.cuenta.domain.ports]
-        end
-
         subgraph "Gestión Transferencias"
             TRF_API[Transferencia Controller<br/>hexagonal.transferencia.infrastructure.web.controller]
             TRF_APP[Transferencia Service<br/>hexagonal.transferencia.application.service]
             TRF_DOMAIN[Transferencia Model<br/>hexagonal.transferencia.domain.model]
             TRF_PORTS[Ports In/Out<br/>hexagonal.transferencia.domain.ports]
+        end
+
+        subgraph "Gestión Valores"
+            VM_API[ValorMovimiento Controller<br/>hexagonal.valormovimiento.infrastructure.web.controller]
+            VM_APP[ValorMovimiento Service<br/>hexagonal.valormovimiento.application.service]
+            VM_DOMAIN[ValorMovimiento Model<br/>hexagonal.valormovimiento.domain.model]
+            VM_PORTS[Ports In/Out<br/>hexagonal.valormovimiento.domain.ports]
         end
 
         subgraph "Facturación Nacional"
@@ -62,33 +90,46 @@ graph TB
             L_PORTS[Ports In/Out<br/>hexagonal.legajo.domain.ports]
         end
 
-        subgraph "Gestión Proveedores"
-            PM_DOMAIN[ProveedorMovimiento Model<br/>hexagonal.proveedormovimiento.domain.model]
-            PM_ENTITY[ProveedorMovimiento Entity<br/>hexagonal.proveedormovimiento.infrastructure.persistence.entity]
-        end
-
-        subgraph "Consulta de Datos de Facturación"
+        subgraph "Consulta Datos Facturación"
             ID_API[InvoiceData Controller<br/>hexagonal.invoicedata.infrastructure.web]
             ID_APP[InvoiceData Service<br/>hexagonal.invoicedata.application.service]
             ID_DOMAIN[InvoiceData Model<br/>hexagonal.invoicedata.domain.model]
             ID_PORTS[Ports In<br/>hexagonal.invoicedata.domain.ports.in]
         end
+
+        subgraph "Cierre de Caja"
+            CC_API[ProcessCierre Controller<br/>hexagonal.cierrecaja.processCierre.infrastructure.web.controller]
+            CC_APP[ProcessCierre Service<br/>hexagonal.cierrecaja.processCierre.application.service]
+            CC_DOMAIN[PendingCounts Model<br/>hexagonal.cierrecaja.processCierre.domain.model]
+            CC_PORTS[Ports In/Out<br/>hexagonal.cierrecaja.processCierre.domain.ports]
+            AH_API[AnticipoHaberes Controller<br/>hexagonal.cierrecaja.anticipohaberes.infrastructure.web.controller]
+            AH_APP[AnticipoHaberes Service<br/>hexagonal.cierrecaja.anticipohaberes.application.service]
+        end
         
         subgraph "Persistence Layer"
-            ART_REPO[Articulo Repository Adapter<br/>hexagonal.articulo.infrastructure.persistence.repository]
-            ART_ENTITY[Articulo Entity<br/>hexagonal.articulo.infrastructure.persistence.entity]
-            AM_REPO[ArticuloMovimiento Repository Adapter<br/>hexagonal.articulomovimiento.infrastructure.persistence.repository]
-            AM_ENTITY[ArticuloMovimiento Entity<br/>hexagonal.articulomovimiento.infrastructure.persistence.entity]
-            COMP_REPO[Comprobante Repository Adapter<br/>hexagonal.comprobante.infrastructure.persistence.repository]
+            ART_REPO[Articulo Repository Adapter<br/>hexagonal.stock.articulo.infrastructure.persistence.adapter]
+            ART_ENTITY[Articulo Entity<br/>hexagonal.stock.articulo.infrastructure.persistence.entity]
+            AM_REPO[ArticuloMovimiento Repository Adapter<br/>hexagonal.stock.articulomovimiento.infrastructure.persistence.adapter]
+            AM_ENTITY[ArticuloMovimiento Entity<br/>hexagonal.stock.articulomovimiento.infrastructure.persistence.entity]
+            SM_REPO[StockMovimiento Repository Adapter<br/>hexagonal.stock.stockmovimiento.infrastructure.persistence.adapter]
+            SM_ENTITY[StockMovimiento Entity<br/>hexagonal.stock.stockmovimiento.infrastructure.persistence.entity]
+            COMP_REPO[Comprobante Repository Adapter<br/>hexagonal.comprobante.infrastructure.persistence.adapter]
             COMP_ENTITY[Comprobante Entity<br/>hexagonal.comprobante.infrastructure.persistence.entity]
-            CTA_REPO[Cuenta Repository Adapter<br/>hexagonal.cuenta.infrastructure.persistence.repository]
-            CTA_ENTITY[Cuenta Entity<br/>hexagonal.cuenta.infrastructure.persistence.entity]
-            TRF_REPO[Transferencia Repository Adapter<br/>hexagonal.transferencia.infrastructure.persistence.repository]
+            CTA_REPO[Cuenta Repository Adapter<br/>hexagonal.contable.cuenta.infrastructure.persistence.adapter]
+            CTA_ENTITY[Cuenta Entity<br/>hexagonal.contable.cuenta.infrastructure.persistence.entity]
+            CM_REPO[CuentaMovimiento Repository Adapter<br/>hexagonal.contable.cuentamovimiento.infrastructure.persistence.adapter]
+            CM_ENTITY[CuentaMovimiento Entity<br/>hexagonal.contable.cuentamovimiento.infrastructure.persistence.entity]
+            PM_REPO[ProveedorMovimiento Repository Adapter<br/>hexagonal.compras.proveedormovimiento.infrastructure.persistence.adapter]
+            PM_ENTITY[ProveedorMovimiento Entity<br/>hexagonal.compras.proveedormovimiento.infrastructure.persistence.entity]
+            TRF_REPO[Transferencia Repository Adapter<br/>hexagonal.transferencia.infrastructure.persistence.adapter]
             TRF_ENTITY[Transferencia Entity<br/>hexagonal.transferencia.infrastructure.persistence.entity]
-            E_REPO[Empresa Repository Adapter<br/>hexagonal.empresa.infrastructure.persistence.repository]
+            VM_REPO[ValorMovimiento Repository Adapter<br/>hexagonal.valormovimiento.infrastructure.persistence.adapter]
+            VM_ENTITY[ValorMovimiento Entity<br/>hexagonal.valormovimiento.infrastructure.persistence.entity]
+            E_REPO[Empresa Repository Adapter<br/>hexagonal.empresa.infrastructure.persistence.adapter]
             E_ENTITY[Empresa Entity<br/>hexagonal.empresa.infrastructure.persistence.entity]
-            L_REPO[Legajo Repository Adapter<br/>hexagonal.legajo.infrastructure.persistence.repository]
+            L_REPO[Legajo Repository Adapter<br/>hexagonal.legajo.infrastructure.persistence.adapter]
             L_ENTITY[Legajo Entity<br/>hexagonal.legajo.infrastructure.persistence.entity]
+            CC_REPO[ProcessCierre Repository Adapter<br/>hexagonal.cierrecaja.processCierre.infrastructure.persistence.adapter]
         end
         
         subgraph "External Clients"
@@ -100,26 +141,40 @@ graph TB
         %% API Layer to Application Layer
         ART_API --> ART_APP
         AM_API --> AM_APP
+        SM_API --> SM_APP
         COMP_API --> COMP_APP
         CTA_API --> CTA_APP
+        CM_API --> CM_APP
+        PM_API --> PM_APP
         TRF_API --> TRF_APP
+        VM_API --> VM_APP
         FN_API --> FN_APP
         FE_API --> FE_APP
         E_API --> E_APP
         L_API --> L_APP
         ID_API --> ID_APP
+        CC_API --> CC_APP
+        AH_API --> AH_APP
         
         %% Application to Domain
         ART_APP --> ART_DOMAIN
         ART_APP --> ART_PORTS
         AM_APP --> AM_DOMAIN
         AM_APP --> AM_PORTS
+        SM_APP --> SM_DOMAIN
+        SM_APP --> SM_PORTS
         COMP_APP --> COMP_DOMAIN
         COMP_APP --> COMP_PORTS
         CTA_APP --> CTA_DOMAIN
         CTA_APP --> CTA_PORTS
+        CM_APP --> CM_DOMAIN
+        CM_APP --> CM_PORTS
+        PM_APP --> PM_DOMAIN
+        PM_APP --> PM_PORTS
         TRF_APP --> TRF_DOMAIN
         TRF_APP --> TRF_PORTS
+        VM_APP --> VM_DOMAIN
+        VM_APP --> VM_PORTS
         FN_APP --> FN_DOMAIN
         FE_APP --> FE_DOMAIN
         E_APP --> E_DOMAIN
@@ -128,6 +183,8 @@ graph TB
         L_APP --> L_PORTS
         ID_APP --> ID_DOMAIN
         ID_APP --> ID_PORTS
+        CC_APP --> CC_DOMAIN
+        CC_APP --> CC_PORTS
         
         %% Domain to Infrastructure
         ART_PORTS --> ART_REPO
@@ -136,15 +193,27 @@ graph TB
         AM_PORTS --> AM_REPO
         AM_REPO --> AM_ENTITY
         AM_ENTITY --> DB
+        SM_PORTS --> SM_REPO
+        SM_REPO --> SM_ENTITY
+        SM_ENTITY --> DB
         COMP_PORTS --> COMP_REPO
         COMP_REPO --> COMP_ENTITY
         COMP_ENTITY --> DB
         CTA_PORTS --> CTA_REPO
         CTA_REPO --> CTA_ENTITY
         CTA_ENTITY --> DB
+        CM_PORTS --> CM_REPO
+        CM_REPO --> CM_ENTITY
+        CM_ENTITY --> DB
+        PM_PORTS --> PM_REPO
+        PM_REPO --> PM_ENTITY
+        PM_ENTITY --> DB
         TRF_PORTS --> TRF_REPO
         TRF_REPO --> TRF_ENTITY
         TRF_ENTITY --> DB
+        VM_PORTS --> VM_REPO
+        VM_REPO --> VM_ENTITY
+        VM_ENTITY --> DB
         E_PORTS --> E_REPO
         E_REPO --> E_ENTITY
         E_ENTITY --> DB
@@ -152,7 +221,7 @@ graph TB
         L_REPO --> L_ENTITY
         L_ENTITY --> DB
         ID_PORTS --> DB
-        PM_ENTITY --> DB
+        CC_PORTS --> CC_REPO
         
         %% External Dependencies
         FN_APP --> AFIP
@@ -161,23 +230,35 @@ graph TB
         
         style ART_API fill:#e1f5fe
         style AM_API fill:#e1f5fe
+        style SM_API fill:#e1f5fe
         style COMP_API fill:#e1f5fe
         style CTA_API fill:#e1f5fe
+        style CM_API fill:#e1f5fe
+        style PM_API fill:#e1f5fe
         style TRF_API fill:#e1f5fe
+        style VM_API fill:#e1f5fe
         style FN_API fill:#e1f5fe
         style FE_API fill:#e1f5fe
         style E_API fill:#e1f5fe
         style L_API fill:#e1f5fe
         style ID_API fill:#e1f5fe
+        style CC_API fill:#e1f5fe
+        style AH_API fill:#e1f5fe
         style ART_APP fill:#f3e5f5
         style AM_APP fill:#f3e5f5
+        style SM_APP fill:#f3e5f5
         style COMP_APP fill:#f3e5f5
         style CTA_APP fill:#f3e5f5
+        style CM_APP fill:#f3e5f5
+        style PM_APP fill:#f3e5f5
         style TRF_APP fill:#f3e5f5
+        style VM_APP fill:#f3e5f5
         style FN_APP fill:#f3e5f5
         style FE_APP fill:#f3e5f5
         style E_APP fill:#f3e5f5
         style L_APP fill:#f3e5f5
         style ID_APP fill:#f3e5f5
+        style CC_APP fill:#f3e5f5
+        style AH_APP fill:#f3e5f5
         style DB fill:#ffebee
     end

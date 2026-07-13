@@ -2,10 +2,18 @@ package eterea.core.service.hexagonal.comprobante.infrastructure.persistence.map
 
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
+import eterea.core.service.hexagonal.contable.cuenta.infrastructure.persistence.mapper.CuentaMapper;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ComprobanteInvoiceDataResponse;
+import eterea.core.service.hexagonal.invoicedata.infrastructure.mapper.ComprobanteAfipMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ComprobanteMapper {
+
+    private final CuentaMapper cuentaMapper;
+    private final ComprobanteAfipMapper comprobanteAfipMapper;
 
     public Comprobante toDomain(ComprobanteEntity entity) {
         if (entity == null) {
@@ -48,6 +56,8 @@ public class ComprobanteMapper {
                 .comprobanteAfipId(entity.getComprobanteAfipId())
                 .facturaElectronica(entity.getFacturaElectronica())
                 .asociado(entity.getAsociado())
+                .cuenta(cuentaMapper.toDomain(entity.getCuenta()))
+                .comprobanteAfip(entity.getComprobanteAfip())
                 .build();
     }
 
@@ -93,5 +103,16 @@ public class ComprobanteMapper {
         entity.setFacturaElectronica(domain.getFacturaElectronica());
         entity.setAsociado(domain.getAsociado());
         return entity;
+    }
+
+    public ComprobanteInvoiceDataResponse toInvoiceDataResponse(Comprobante comprobante) {
+        if (comprobante == null) {
+            return null;
+        }
+        return ComprobanteInvoiceDataResponse.builder()
+                .letraComprobante(comprobante.getLetraComprobante())
+                .contado(comprobante.getContado())
+                .comprobanteAfip(comprobanteAfipMapper.toResponse(comprobante.getComprobanteAfip()))
+                .build();
     }
 }

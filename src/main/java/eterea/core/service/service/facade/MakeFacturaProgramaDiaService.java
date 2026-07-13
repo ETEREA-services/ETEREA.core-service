@@ -2,11 +2,11 @@ package eterea.core.service.service.facade;
 
 import eterea.core.service.client.report.MakeFacturaReportClient;
 import eterea.core.service.exception.EmpresaException;
-import eterea.core.service.hexagonal.articulo.application.service.ArticuloService;
-import eterea.core.service.hexagonal.articulo.infrastructure.persistence.mapper.ArticuloMapper;
+import eterea.core.service.hexagonal.stock.articulo.application.service.ArticuloService;
+import eterea.core.service.hexagonal.stock.articulo.infrastructure.persistence.mapper.ArticuloMapper;
+import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
-import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.application.service.FacturacionElectronicaService;

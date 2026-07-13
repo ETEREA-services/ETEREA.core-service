@@ -1,7 +1,7 @@
 package eterea.core.service.controller.facade;
 
 import eterea.core.service.kotlin.model.view.AsientoView;
-import eterea.core.service.service.CuentaMovimientoService;
+import eterea.core.service.hexagonal.contable.cuentamovimiento.application.service.CuentaMovimientoService;
 import eterea.core.service.service.view.BalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
