@@ -1,3 +1,15 @@
+## [2.5.1] - 2026-07-13
+
+### Features
+- **feat(articulomovimiento-dto)**: Ampliación de `ArticuloMovimientoResponse` con 14 campos nuevos: `tenenciaMovimientoId`, `numeroCuenta`, `iva105`, `exento`, `fechaFactura`, `nivel`, `cierreCajaId`, `cierreRestaurantId`, `precioCompra`, `precioValuacion`, `mozoId`, `comision`, `trackUuid` y `articulo` (objeto `ArticuloResponse`)
+- **feat(cierrecaja)**: Enriquecimiento de `PendingCountsDtoMapper` para poblar `articuloMovimientos` en `ClienteMovimientoResponse` y `StockMovimientoResponse` al construir `PendingCountsResponse` — los conteos pendientes de cierre de caja ahora incluyen los movimientos de artículos asociados
+- **feat(stockmovimiento-dto)**: Nuevo campo `articuloMovimientos: List<ArticuloMovimientoResponse>` en `StockMovimientoResponse`
+- **feat(clientemovimiento-dto)**: Nuevo campo `articuloMovimientos: List<ArticuloMovimientoResponse>` en `ClienteMovimientoResponse`
+
+### Changed
+- **refactor(articulomovimiento)**: `ArticuloMovimiento` implementa interfaz `Jsonifyable` en lugar de declarar método propio `jsonify()` — uso de serialización JSON centralizada
+- **refactor(articulomovimiento-mapper)**: `ArticuloMovimientoDtoMapper` migrado a `@RequiredArgsConstructor` con inyección de `ArticuloDtoMapper` para mapeo completo de nuevos campos
+
 ## [2.5.0] - 2026-07-12
 
 ### 🚀 Migración Masiva de Módulos a Arquitectura Hexagonal y Reorganización de Paquetes

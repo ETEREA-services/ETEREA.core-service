@@ -2,6 +2,9 @@ package eterea.core.service.hexagonal.stock.stockmovimiento.infrastructure.web.d
 
 import lombok.*;
 
+import eterea.core.service.hexagonal.stock.articulomovimiento.infrastructure.web.dto.ArticuloMovimientoResponse;
+import java.util.List;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -44,5 +47,6 @@ public class StockMovimientoResponse {
     private Byte facturaProveedor;
     private BigDecimal netoFactura;
     private BigDecimal netoRegistrado;
+    private List<ArticuloMovimientoResponse> articuloMovimientos;
 
 }
