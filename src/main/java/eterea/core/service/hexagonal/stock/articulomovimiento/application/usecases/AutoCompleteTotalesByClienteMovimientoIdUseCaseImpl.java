@@ -25,7 +25,14 @@ public class AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl implements Auto
         List<ArticuloMovimiento> movimientos = repository.findAllByClienteMovimientoId(clienteMovimientoId);
         log.debug("\n\nArticuloMovimientos -> {}\n\n", Jsonifier.builder(movimientos).build());
         movimientos.forEach(movimiento -> {
-            var tasaImpuesto = movimiento.getPrecioUnitarioConIva().divide(movimiento.getPrecioUnitarioSinIva(), 3, RoundingMode.HALF_UP);
+            BigDecimal tasaImpuesto;
+            if (movimiento.getPrecioUnitarioSinIva() != null
+                    && movimiento.getPrecioUnitarioSinIva().compareTo(BigDecimal.ZERO) != 0) {
+                tasaImpuesto = movimiento.getPrecioUnitarioConIva().divide(
+                        movimiento.getPrecioUnitarioSinIva(), 3, RoundingMode.HALF_UP);
+            } else {
+                tasaImpuesto = BigDecimal.ONE;
+            }
             if (movimiento.getTotalConIva().compareTo(BigDecimal.ZERO) == 0) {
                 movimiento.setTotalConIva(movimiento.getPrecioUnitarioConIva().multiply(movimiento.getCantidad().abs()));
             }
