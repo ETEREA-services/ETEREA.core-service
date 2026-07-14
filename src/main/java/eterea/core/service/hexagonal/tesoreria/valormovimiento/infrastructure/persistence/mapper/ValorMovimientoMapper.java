@@ -6,6 +6,8 @@ import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.pe
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 @RequiredArgsConstructor
 public class ValorMovimientoMapper {
@@ -62,10 +64,10 @@ public class ValorMovimientoMapper {
                 .fechaVencimiento(domain.getFechaVencimiento())
                 .comprobanteId(domain.getComprobanteId())
                 .numeroComprobante(domain.getNumeroComprobante())
-                .importe(domain.getImporte())
+                .importe(domain.getImporte() != null ? domain.getImporte() : BigDecimal.ZERO)
                 .numeroCuenta(domain.getNumeroCuenta())
                 .fechaContable(domain.getFechaContable())
-                .ordenContable(domain.getOrdenContable())
+                .ordenContable(domain.getOrdenContable() != null ? domain.getOrdenContable() : 0)
                 .proveedorMovimientoId(domain.getProveedorMovimientoId())
                 .clienteMovimientoId(domain.getClienteMovimientoId())
                 .titular(domain.getTitular())
@@ -73,10 +75,10 @@ public class ValorMovimientoMapper {
                 .receptor(domain.getReceptor())
                 .estadoId(domain.getEstadoId())
                 .fechaEntrega(domain.getFechaEntrega())
-                .tanda(domain.getTanda())
-                .tandaIndex(domain.getTandaIndex())
+                .tanda(domain.getTanda() != null ? domain.getTanda() : 0L)
+                .tandaIndex(domain.getTandaIndex() != null ? domain.getTandaIndex() : 0L)
                 .cierreCajaId(domain.getCierreCajaId())
-                .nivel(domain.getNivel())
+                .nivel(domain.getNivel() != null ? domain.getNivel() : 0)
                 .observaciones(domain.getObservaciones())
                 .trackUuid(domain.getTrackUuid())
                 .build();

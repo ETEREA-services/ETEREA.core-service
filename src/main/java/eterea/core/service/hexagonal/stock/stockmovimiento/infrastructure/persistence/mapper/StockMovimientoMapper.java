@@ -4,6 +4,8 @@ import eterea.core.service.hexagonal.stock.stockmovimiento.domain.model.StockMov
 import eterea.core.service.hexagonal.stock.stockmovimiento.infrastructure.persistence.entity.StockMovimientoEntity;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class StockMovimientoMapper {
 
@@ -54,13 +56,13 @@ public class StockMovimientoMapper {
         return StockMovimientoEntity.builder()
                 .stockMovimientoId(domain.getStockMovimientoId())
                 .comprobanteId(domain.getComprobanteId())
-                .numeroComprobanteInterno(domain.getNumeroComprobanteInterno())
+                .numeroComprobanteInterno(domain.getNumeroComprobanteInterno() != null ? domain.getNumeroComprobanteInterno() : 0L)
                 .negocioId(domain.getNegocioId())
                 .negocioIdDesde(domain.getNegocioIdDesde())
                 .centroStockIdDesde(domain.getCentroStockIdDesde())
                 .negocioIdHasta(domain.getNegocioIdHasta())
                 .centroStockIdHasta(domain.getCentroStockIdHasta())
-                .centroStockIdHastaNombre(domain.getCentroStockIdHastaNombre())
+                .centroStockIdHastaNombre(domain.getCentroStockIdHastaNombre() != null ? domain.getCentroStockIdHastaNombre() : "")
                 .fechaRegistro(domain.getFechaRegistro())
                 .proveedorId(domain.getProveedorId())
                 .clienteId(domain.getClienteId())
@@ -69,21 +71,21 @@ public class StockMovimientoMapper {
                 .comprobanteIdFactura(domain.getComprobanteIdFactura())
                 .prefijoFactura(domain.getPrefijoFactura())
                 .numeroComprobanteFactura(domain.getNumeroComprobanteFactura())
-                .importe(domain.getImporte())
+                .importe(domain.getImporte() != null ? domain.getImporte() : BigDecimal.ZERO)
                 .letraComanda(domain.getLetraComanda())
                 .observaciones(domain.getObservaciones())
                 .cierreCajaId(domain.getCierreCajaId())
                 .cierreRestaurantId(domain.getCierreRestaurantId())
-                .nivel(domain.getNivel())
+                .nivel(domain.getNivel() != null ? domain.getNivel() : 0)
                 .fechaContable(domain.getFechaContable())
                 .ordenContable(domain.getOrdenContable())
                 .negocioIdOtro(domain.getNegocioIdOtro())
-                .generacionAutomatica(domain.getGeneracionAutomatica())
-                .pendiente(domain.getPendiente())
-                .rechazada(domain.getRechazada())
-                .facturaProveedor(domain.getFacturaProveedor())
-                .netoFactura(domain.getNetoFactura())
-                .netoRegistrado(domain.getNetoRegistrado())
+                .generacionAutomatica(domain.getGeneracionAutomatica() != null ? domain.getGeneracionAutomatica() : 0)
+                .pendiente(domain.getPendiente() != null ? domain.getPendiente() : 0)
+                .rechazada(domain.getRechazada() != null ? domain.getRechazada() : 0)
+                .facturaProveedor(domain.getFacturaProveedor() != null ? domain.getFacturaProveedor() : 0)
+                .netoFactura(domain.getNetoFactura() != null ? domain.getNetoFactura() : BigDecimal.ZERO)
+                .netoRegistrado(domain.getNetoRegistrado() != null ? domain.getNetoRegistrado() : BigDecimal.ZERO)
                 .build();
     }
 

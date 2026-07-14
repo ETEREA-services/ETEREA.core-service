@@ -1,3 +1,11 @@
+## [2.5.2] - 2026-07-14
+
+### Fixed
+- **fix(cuentamovimiento-mapper)**: Null-safety en `CuentaMovimientoMapper.toEntity()` — 16 campos con null-checks y valores por defecto para prevenir NPEs (`orden`, `item`, `debita`, `negocioId`, `numeroCuenta`, `comprobanteId`, `concepto`, `importe`, `subrubroId`, `proveedorId`, `clienteId`, `cierreCajaId`, `nivel`, `firma`, `tipoAsientoId`, `articuloMovimientoId`, `inflacion`)
+- **fix(stockmovimiento-mapper)**: Null-safety en `StockMovimientoMapper.toEntity()` — 10 campos con null-checks y valores por defecto (`numeroComprobanteInterno`, `centroStockIdHastaNombre`, `importe`, `nivel`, `generacionAutomatica`, `pendiente`, `rechazada`, `facturaProveedor`, `netoFactura`, `netoRegistrado`)
+- **fix(valormovimiento-mapper)**: Null-safety en `ValorMovimientoMapper.toEntity()` — 5 campos con null-checks y valores por defecto (`importe`, `ordenContable`, `tanda`, `tandaIndex`, `nivel`)
+- **fix(clientemovimiento-mapper)**: Null-safety en `ClienteMovimientoMapper.toEntity()` — 25 campos con null-checks y valores por defecto para prevenir NPEs en mapeo domain→entity
+
 ## [2.5.1] - 2026-07-13
 
 ### Features
