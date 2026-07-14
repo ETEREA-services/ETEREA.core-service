@@ -1,3 +1,8 @@
+## [2.5.3] - 2026-07-14
+
+### Fixed
+- **fix(articulomovimiento)**: Null-safety en `AutoCompleteTotalesByClienteMovimientoIdUseCaseImpl` — se verifica que `precioUnitarioSinIva` no sea null ni cero antes de calcular `tasaImpuesto`, previniendo `ArithmeticException` (división por cero) y `NullPointerException`. Si el precio unitario sin IVA es null o cero, `tasaImpuesto` se establece en `BigDecimal.ONE` (1.000)
+
 ## [2.5.2] - 2026-07-14
 
 ### Fixed
