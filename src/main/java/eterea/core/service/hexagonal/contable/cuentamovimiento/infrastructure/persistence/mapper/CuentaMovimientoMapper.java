@@ -8,6 +8,8 @@ import eterea.core.service.hexagonal.negocio.infrastructure.persistence.mapper.N
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 @RequiredArgsConstructor
 public class CuentaMovimientoMapper {
@@ -56,25 +58,25 @@ public class CuentaMovimientoMapper {
         CuentaMovimientoEntity entity = new CuentaMovimientoEntity();
         entity.setCuentaMovimientoId(domain.getCuentaMovimientoId());
         entity.setFecha(domain.getFecha());
-        entity.setOrden(domain.getOrden());
-        entity.setItem(domain.getItem());
-        entity.setDebita(domain.getDebita());
-        entity.setNegocioId(domain.getNegocioId());
-        entity.setNumeroCuenta(domain.getNumeroCuenta());
-        entity.setComprobanteId(domain.getComprobanteId());
-        entity.setConcepto(domain.getConcepto());
-        entity.setImporte(domain.getImporte());
-        entity.setSubrubroId(domain.getSubrubroId());
-        entity.setProveedorId(domain.getProveedorId());
-        entity.setClienteId(domain.getClienteId());
+        entity.setOrden(domain.getOrden() != null ? domain.getOrden() : 0);
+        entity.setItem(domain.getItem() != null ? domain.getItem() : 0);
+        entity.setDebita(domain.getDebita() != null ? domain.getDebita() : 0);
+        entity.setNegocioId(domain.getNegocioId() != null ? domain.getNegocioId() : 0);
+        entity.setNumeroCuenta(domain.getNumeroCuenta() != null ? domain.getNumeroCuenta() : 0L);
+        entity.setComprobanteId(domain.getComprobanteId() != null ? domain.getComprobanteId() : 0);
+        entity.setConcepto(domain.getConcepto() != null ? domain.getConcepto() : "");
+        entity.setImporte(domain.getImporte() != null ? domain.getImporte() : BigDecimal.ZERO);
+        entity.setSubrubroId(domain.getSubrubroId() != null ? domain.getSubrubroId() : 0L);
+        entity.setProveedorId(domain.getProveedorId() != null ? domain.getProveedorId() : 0L);
+        entity.setClienteId(domain.getClienteId() != null ? domain.getClienteId() : 0L);
         entity.setLegajoId(domain.getLegajoId());
-        entity.setCierreCajaId(domain.getCierreCajaId());
-        entity.setNivel(domain.getNivel());
-        entity.setFirma(domain.getFirma());
-        entity.setTipoAsientoId(domain.getTipoAsientoId());
-        entity.setArticuloMovimientoId(domain.getArticuloMovimientoId());
+        entity.setCierreCajaId(domain.getCierreCajaId() != null ? domain.getCierreCajaId() : 0L);
+        entity.setNivel(domain.getNivel() != null ? domain.getNivel() : 0);
+        entity.setFirma(domain.getFirma() != null ? domain.getFirma() : 0L);
+        entity.setTipoAsientoId(domain.getTipoAsientoId() != null ? domain.getTipoAsientoId() : 0);
+        entity.setArticuloMovimientoId(domain.getArticuloMovimientoId() != null ? domain.getArticuloMovimientoId() : 0L);
         entity.setEjercicioId(domain.getEjercicioId());
-        entity.setInflacion(domain.getInflacion());
+        entity.setInflacion(domain.getInflacion() != null ? domain.getInflacion() : 0);
         entity.setTrackUuid(domain.getTrackUuid());
         return entity;
     }
