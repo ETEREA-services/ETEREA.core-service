@@ -76,8 +76,17 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 60000
+        connectTimeout: 5000   # 1 segundo para conectar
+        readTimeout: 10000      # 2 segundos para leer
+        # Retryer: 3 intentos máximo, backoff de 100ms a 1000ms
+        retryer: feign.Retryer.Default(100, 1000, 3)
+  httpclient:
+    enabled: true
+    max-connections: 50
+    max-connections-per-route: 10
+    connection-timeout: 1000
+    time-to-live: 30
+    time-unit: SECONDS
 
 management:
   endpoints:
