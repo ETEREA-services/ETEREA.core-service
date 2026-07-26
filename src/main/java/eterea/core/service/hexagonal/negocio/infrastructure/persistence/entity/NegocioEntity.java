@@ -51,11 +51,8 @@ public class NegocioEntity extends Auditable {
     private String backendIpVpn;
 
     private String backendIpLan;
-
     private String backendPort;
-
     private Byte hasGateway;
-
     private Byte copyArticulo;
 
 }

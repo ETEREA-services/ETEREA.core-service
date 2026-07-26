@@ -24,11 +24,11 @@ public class NegocioDtoMapper {
                 .transferenciaValor(domain.getTransferenciaValor())
                 .backendIpVpn(domain.getBackendIpVpn())
                 .backendIpLan(domain.getBackendIpLan())
-                .backendServer(domain.getBackendServer())
                 .backendPort(domain.getBackendPort())
                 .hasGateway(domain.getHasGateway())
                 .copyArticulo(domain.getCopyArticulo())
                 .ipAddress(domain.getIpAddress())
+                .backendServer(domain.getBackendServer())
                 .build();
     }
 

@@ -28,6 +28,8 @@ public class ArticuloMovimiento implements Jsonifyable {
     private BigDecimal precioUnitario;
     private BigDecimal precioUnitarioSinIva;
     private BigDecimal precioUnitarioConIva;
+    private BigDecimal precioUnitarioSinDescuentoSinIva;
+    private BigDecimal precioUnitarioSinDescuentoConIva;
     private Long numeroCuenta;
     private Byte iva105;
     private Byte exento;

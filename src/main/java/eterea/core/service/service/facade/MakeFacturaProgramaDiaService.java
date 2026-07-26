@@ -2,6 +2,9 @@ package eterea.core.service.service.facade;
 
 import eterea.core.service.client.report.MakeFacturaReportClient;
 import eterea.core.service.exception.EmpresaException;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.application.service.ReservaArticuloService;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.model.ReservaArticulo;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.infrastructure.persistence.entity.ReservaArticuloEntity;
 import eterea.core.service.hexagonal.stock.articulo.application.service.ArticuloService;
 import eterea.core.service.hexagonal.stock.articulo.infrastructure.persistence.mapper.ArticuloMapper;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
@@ -131,7 +134,7 @@ public class MakeFacturaProgramaDiaService {
         BigDecimal total105 = BigDecimal.ZERO;
         BigDecimal exento = BigDecimal.ZERO;
         for (ReservaArticulo reservaArticulo : reservaArticuloService.findAllByReservaId(reservaId)) {
-            reservaArticulo.setArticulo(articuloMapper.toEntity(articuloService.findByArticuloId(reservaArticulo.getArticuloId())));
+            reservaArticulo.setArticulo(articuloService.findByArticuloId(reservaArticulo.getArticuloId()));
             log.debug("\n\nReservaArticulo -> {}\n\n", reservaArticulo.jsonify());
             BigDecimal subtotal = reservaArticulo.getPrecioUnitario().multiply(new BigDecimal(reservaArticulo.getCantidad()));
             total = total.add(subtotal);

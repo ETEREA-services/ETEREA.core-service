@@ -27,8 +27,8 @@ public class NegocioMapper {
                 entity.getBackendPort(),
                 entity.getHasGateway(),
                 entity.getCopyArticulo(),
-                null,
-                null
+                entity.getDatabaseIpVpn(),
+                entity.getBackendIpLan()
         );
     }
 

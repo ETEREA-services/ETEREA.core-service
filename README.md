@@ -9,7 +9,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-blue.svg)](https://springdoc.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-9.7.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.5.3-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-2.6.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -68,7 +68,9 @@ El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 - **`hexagonal/invoicedata/`**: Consulta de datos completos de facturación con arquitectura hexagonal
 - **`hexagonal/valormovimiento/`**: Gestión de movimientos de valores (migrado a Java)
 - **`hexagonal/cierrecaja/anticipohaberes/`**: Gestión de anticipos de haberes en cierre de caja
+- **`hexagonal/cierrecaja/cierrecajamovimiento/`**: Gestión de movimientos de cierre de caja con arquitectura hexagonal
 - **`hexagonal/cierrecaja/processCierre/`**: Procesamiento de cierre de caja con conteos pendientes
+- **`hexagonal/reservas/reservaarticulo/`**: Gestión de artículos de reserva con arquitectura hexagonal (migrado de Kotlin a Java)
 - **`hexagonal/facturacion/arca/nacional/`**: Facturación electrónica nacional
 - **`hexagonal/facturacion/arca/exportacion/`**: Facturación de exportación
 
@@ -190,6 +192,8 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - ✅ **Control de Movimientos** contables y valores
 - ✅ **Procesamiento de Cierre de Caja** con conteos pendientes
 - ✅ **Gestión de Anticipos de Haberes** en cierre de caja
+- ✅ **Gestión de Movimientos de Cierre de Caja** con arquitectura hexagonal
+- ✅ **Gestión de Artículos de Reserva** con arquitectura hexagonal (migrado de Kotlin a Java)
 
 ### Infraestructura
 - ✅ **Documentación API** con OpenAPI 3.0

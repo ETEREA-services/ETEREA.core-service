@@ -65,44 +65,44 @@ public class ComprobanteMapper {
         if (domain == null) {
             return null;
         }
-        ComprobanteEntity entity = new ComprobanteEntity();
-        entity.setComprobanteId(domain.getComprobanteId());
-        entity.setDescripcion(domain.getDescripcion());
-        entity.setNegocioId(domain.getNegocioId());
-        entity.setModulo(domain.getModulo());
-        entity.setStock(domain.getStock());
-        entity.setRendicion(domain.getRendicion());
-        entity.setOrdenPago(domain.getOrdenPago());
-        entity.setAplicaPendiente(domain.getAplicaPendiente());
-        entity.setCuentaCorriente(domain.getCuentaCorriente());
-        entity.setDebita(domain.getDebita());
-        entity.setIva(domain.getIva());
-        entity.setGanancias(domain.getGanancias());
-        entity.setAplicable(domain.getAplicable());
-        entity.setLibroIva(domain.getLibroIva());
-        entity.setLetraComprobante(domain.getLetraComprobante());
-        entity.setRecibo(domain.getRecibo());
-        entity.setContado(domain.getContado());
-        entity.setTransferencia(domain.getTransferencia());
-        entity.setImprime(domain.getImprime());
-        entity.setComprobanteIdAnulacion(domain.getComprobanteIdAnulacion());
-        entity.setCentroStockIdEntrega(domain.getCentroStockIdEntrega());
-        entity.setCentroStockIdRecibe(domain.getCentroStockIdRecibe());
-        entity.setDiasVigencia(domain.getDiasVigencia());
-        entity.setConcepto(domain.getConcepto());
-        entity.setPersonal(domain.getPersonal());
-        entity.setComanda(domain.getComanda());
-        entity.setPuntoVenta(domain.getPuntoVenta());
-        entity.setCodigoMozo(domain.getCodigoMozo());
-        entity.setTransferir(domain.getTransferir());
-        entity.setNumeroCuenta(domain.getNumeroCuenta());
-        entity.setNivel(domain.getNivel());
-        entity.setFiscalizadora(domain.getFiscalizadora());
-        entity.setInvisible(domain.getInvisible());
-        entity.setComprobanteAfipId(domain.getComprobanteAfipId());
-        entity.setFacturaElectronica(domain.getFacturaElectronica());
-        entity.setAsociado(domain.getAsociado());
-        return entity;
+        return ComprobanteEntity.builder()
+                .comprobanteId(domain.getComprobanteId())
+                .descripcion(domain.getDescripcion())
+                .negocioId(domain.getNegocioId())
+                .modulo(domain.getModulo())
+                .stock(domain.getStock())
+                .rendicion(domain.getRendicion())
+                .ordenPago(domain.getOrdenPago())
+                .aplicaPendiente(domain.getAplicaPendiente())
+                .cuentaCorriente(domain.getCuentaCorriente())
+                .debita(domain.getDebita())
+                .iva(domain.getIva())
+                .ganancias(domain.getGanancias())
+                .aplicable(domain.getAplicable())
+                .libroIva(domain.getLibroIva())
+                .letraComprobante(domain.getLetraComprobante())
+                .recibo(domain.getRecibo())
+                .contado(domain.getContado())
+                .transferencia(domain.getTransferencia())
+                .imprime(domain.getImprime())
+                .comprobanteIdAnulacion(domain.getComprobanteIdAnulacion())
+                .centroStockIdEntrega(domain.getCentroStockIdEntrega())
+                .centroStockIdRecibe(domain.getCentroStockIdRecibe())
+                .diasVigencia(domain.getDiasVigencia())
+                .concepto(domain.getConcepto())
+                .personal(domain.getPersonal())
+                .comanda(domain.getComanda())
+                .puntoVenta(domain.getPuntoVenta())
+                .codigoMozo(domain.getCodigoMozo())
+                .transferir(domain.getTransferir())
+                .numeroCuenta(domain.getNumeroCuenta())
+                .nivel(domain.getNivel())
+                .fiscalizadora(domain.getFiscalizadora())
+                .invisible(domain.getInvisible())
+                .comprobanteAfipId(domain.getComprobanteAfipId())
+                .facturaElectronica(domain.getFacturaElectronica())
+                .asociado(domain.getAsociado())
+                .build();
     }
 
     public ComprobanteInvoiceDataResponse toInvoiceDataResponse(Comprobante comprobante) {

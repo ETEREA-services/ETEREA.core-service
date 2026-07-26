@@ -4,18 +4,16 @@ import eterea.core.service.hexagonal.comprobante.application.exception.Comproban
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.domain.ports.in.FindComprobanteByIdUseCase;
 import eterea.core.service.hexagonal.comprobante.domain.ports.out.ComprobanteRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FindComprobanteByIdUseCaseImpl implements FindComprobanteByIdUseCase {
 
     private final ComprobanteRepository repository;
-
-    public FindComprobanteByIdUseCaseImpl(ComprobanteRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Comprobante findByComprobanteId(Integer comprobanteId) {
