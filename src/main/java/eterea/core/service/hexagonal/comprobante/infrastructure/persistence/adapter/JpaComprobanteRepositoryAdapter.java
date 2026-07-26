@@ -4,6 +4,7 @@ import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.domain.ports.out.ComprobanteRepository;
 import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.mapper.ComprobanteMapper;
 import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.repository.JpaComprobanteRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,15 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class JpaComprobanteRepositoryAdapter implements ComprobanteRepository {
 
     private final JpaComprobanteRepository jpaRepository;
     private final ComprobanteMapper mapper;
-
-    public JpaComprobanteRepositoryAdapter(JpaComprobanteRepository jpaRepository, ComprobanteMapper mapper) {
-        this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     public List<Comprobante> findAll() {

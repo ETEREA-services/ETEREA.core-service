@@ -1,0 +1,125 @@
+classDiagram
+    direction TB
+
+    namespace cierrecaja {
+        class CierreCaja {
+            <<Domain Model>>
+            +Long cierreCajaId
+            +Integer puntoVenta
+            +Integer negocioId
+            +OffsetDateTime fechaTope
+            +OffsetDateTime fechaCierre
+            +String usuario
+            +Integer nivel
+            +Integer negocioIdDesde
+            +Integer negocioIdHasta
+            +Integer transferenciaId
+            +Byte enviado
+            +Long id
+            +Negocio negocio
+        }
+
+        class CierreCajaService {
+            <<Service>>
+            +findByCierreCajaId(Long) CierreCaja
+            +findLast() CierreCaja
+        }
+
+        class FindCierreCajaByIdUseCase {
+            <<interface>>
+            +findByCierreCajaId(Long) CierreCaja
+        }
+
+        class FindLastCierreCajaUseCase {
+            <<interface>>
+            +findLast() CierreCaja
+        }
+
+        class CierreCajaRepository {
+            <<interface>>
+            +findByCierreCajaId(Long) Optional~CierreCaja~
+            +findTopByFechaTope() Optional~CierreCaja~
+        }
+    }
+
+    namespace infrastructure {
+        class CierreCajaEntity {
+            <<JPA Entity>>
+            +Long cierreCajaId
+            +Integer puntoVenta
+            +Integer negocioId
+            +OffsetDateTime fechaTope
+            +OffsetDateTime fechaCierre
+            +String usuario
+            +Integer nivel
+            +Integer negocioIdDesde
+            +Integer negocioIdHasta
+            +Integer transferenciaId
+            +Byte enviado
+            +Long id
+        }
+
+        class JpaCierreCajaRepositoryAdapter {
+            <<Adapter>>
+            +findByCierreCajaId(Long) Optional~CierreCaja~
+            +findTopByFechaTope() Optional~CierreCaja~
+        }
+
+        class CierreCajaMapper {
+            <<Mapper>>
+            +toDomain(CierreCajaEntity) CierreCaja
+            +toEntity(CierreCaja) CierreCajaEntity
+        }
+
+        class CierreCajaDtoMapper {
+            <<Mapper>>
+            +toResponse(CierreCaja) CierreCajaResponse
+        }
+
+        class CierreCajaResponse {
+            <<Response DTO>>
+            +Long cierreCajaId
+            +Integer puntoVenta
+            +Integer negocioId
+            +OffsetDateTime fechaTope
+            +OffsetDateTime fechaCierre
+            +String usuario
+            +Integer nivel
+            +Integer negocioIdDesde
+            +Integer negocioIdHasta
+            +Integer transferenciaId
+            +Byte enviado
+            +Long id
+            +NegocioResponse negocio
+        }
+
+        class JpaCierreCajaRepository {
+            <<JpaRepository>>
+            +findByCierreCajaId(Long) Optional~CierreCajaEntity~
+            +findTopByOrderByFechaTopeDesc() Optional~CierreCajaEntity~
+        }
+
+        class CierreCajaController {
+            <<REST Controller>>
+            +findByCierreCajaId(Long) ResponseEntity
+            +findLast() ResponseEntity
+        }
+    }
+
+    CierreCajaService --> FindCierreCajaByIdUseCase
+    CierreCajaService --> FindLastCierreCajaUseCase
+
+    FindCierreCajaByIdUseCase ..> CierreCajaRepository
+    FindLastCierreCajaUseCase ..> CierreCajaRepository
+
+    CierreCajaRepository <|.. JpaCierreCajaRepositoryAdapter
+    JpaCierreCajaRepositoryAdapter --> CierreCajaMapper
+    JpaCierreCajaRepositoryAdapter --> JpaCierreCajaRepository
+
+    CierreCajaController --> CierreCajaService
+    CierreCajaController --> CierreCajaDtoMapper
+    CierreCajaDtoMapper --> CierreCaja
+    CierreCajaMapper --> CierreCajaEntity
+    CierreCajaMapper --> CierreCaja
+
+    CierreCajaEntity --> NegocioEntity : "negocio"

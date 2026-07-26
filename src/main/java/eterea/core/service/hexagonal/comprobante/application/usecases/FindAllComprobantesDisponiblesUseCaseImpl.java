@@ -4,23 +4,21 @@ import eterea.core.service.hexagonal.comprobante.application.exception.Comproban
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.domain.ports.in.FindAllComprobantesDisponiblesUseCase;
 import eterea.core.service.hexagonal.comprobante.domain.ports.out.ComprobanteRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FindAllComprobantesDisponiblesUseCaseImpl implements FindAllComprobantesDisponiblesUseCase {
 
     private final ComprobanteRepository repository;
-
-    public FindAllComprobantesDisponiblesUseCaseImpl(ComprobanteRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public List<Integer> findAllDisponibles() {
@@ -29,16 +27,13 @@ public class FindAllComprobantesDisponiblesUseCaseImpl implements FindAllComprob
         Comprobante lastComprobante = repository.findFirstByOrderByComprobanteIdDesc()
                 .orElseThrow(ComprobanteException::new);
 
-        Map<Integer, Comprobante> usados = repository.findAll().stream()
-                .collect(Collectors.toMap(Comprobante::getComprobanteId, comprobante -> comprobante));
-        
-        List<Integer> disponibles = new ArrayList<>();
-        
-        for (Integer comprobanteId = firstComprobante.getComprobanteId(); comprobanteId <= lastComprobante.getComprobanteId(); comprobanteId++) {
-            if (!usados.containsKey(comprobanteId)) {
-                disponibles.add(comprobanteId);
-            }
-        }
-        return disponibles;
+        Set<Integer> usados = repository.findAll().stream()
+                .map(Comprobante::getComprobanteId)
+                .collect(Collectors.toSet());
+
+        return IntStream.rangeClosed(firstComprobante.getComprobanteId(), lastComprobante.getComprobanteId())
+                .boxed()
+                .filter(id -> !usados.contains(id))
+                .collect(Collectors.toList());
     }
 }

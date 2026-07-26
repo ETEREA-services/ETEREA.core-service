@@ -1,9 +1,10 @@
 package eterea.core.service.service.facade;
 
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.CuentaMovimiento;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.model.ReservaArticulo;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.infrastructure.persistence.entity.ReservaArticuloEntity;
 import eterea.core.service.hexagonal.stock.articulomovimiento.domain.model.ArticuloMovimiento;
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.model.ValorMovimiento;
-import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.persistence.entity.ValorMovimientoEntity;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.empresa.domain.model.Empresa;

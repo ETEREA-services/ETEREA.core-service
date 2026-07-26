@@ -7,6 +7,7 @@ import eterea.core.service.hexagonal.comprobante.application.exception.Comproban
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
 import eterea.core.service.hexagonal.comprobante.infrastructure.web.dto.ComprobanteResponse;
 import eterea.core.service.hexagonal.comprobante.infrastructure.web.mapper.ComprobanteDtoMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,15 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping({"/api/core/comprobante", "/comprobante"})
+@RequiredArgsConstructor
 public class ComprobanteController {
 
     private final ComprobanteService service;
     private final ComprobanteDtoMapper mapper;
-
-    public ComprobanteController(ComprobanteService service, ComprobanteDtoMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     @GetMapping("/modulo/{modulo}/{debita}/{comprobanteId}")
     public ResponseEntity<List<ComprobanteResponse>> findAllByModulo(@PathVariable Integer modulo,
@@ -36,19 +33,18 @@ public class ComprobanteController {
         List<ComprobanteResponse> responses = service.findAllByModulo(modulo, debita, comprobanteId).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(responses, HttpStatus.OK);
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/disponibles")
     public ResponseEntity<List<Integer>> findAllDisponibles() {
-        return new ResponseEntity<>(service.findAllDisponibles(), HttpStatus.OK);
+        return ResponseEntity.ok(service.findAllDisponibles());
     }
 
     @GetMapping("/{comprobanteId}")
     public ResponseEntity<ComprobanteResponse> findByComprobanteId(@PathVariable Integer comprobanteId) {
         try {
-            Comprobante domain = service.findByComprobanteId(comprobanteId);
-            return new ResponseEntity<>(mapper.toResponse(domain), HttpStatus.OK);
+            return ResponseEntity.ok(mapper.toResponse(service.findByComprobanteId(comprobanteId)));
         } catch (ComprobanteException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

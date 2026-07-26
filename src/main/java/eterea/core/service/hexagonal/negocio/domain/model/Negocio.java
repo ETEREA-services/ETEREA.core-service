@@ -26,6 +26,7 @@ public class Negocio {
     private String backendPort;
     private Byte hasGateway;
     private Byte copyArticulo;
+
     private String ipAddress;
     private String backendServer;
 

@@ -28,6 +28,8 @@ public class ArticuloMovimientoDtoMapper {
                 .precioUnitario(domain.getPrecioUnitario())
                 .precioUnitarioSinIva(domain.getPrecioUnitarioSinIva())
                 .precioUnitarioConIva(domain.getPrecioUnitarioConIva())
+                .precioUnitarioSinDescuentoSinIva(domain.getPrecioUnitarioSinDescuentoSinIva())
+                .precioUnitarioSinDescuentoConIva(domain.getPrecioUnitarioSinDescuentoConIva())
                 .numeroCuenta(domain.getNumeroCuenta())
                 .iva105(domain.getIva105())
                 .exento(domain.getExento())

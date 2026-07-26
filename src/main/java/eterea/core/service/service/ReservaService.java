@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.application.service.ReservaArticuloService;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.model.ReservaArticulo;
+import eterea.core.service.hexagonal.reservas.reservaarticulo.infrastructure.persistence.entity.ReservaArticuloEntity;
 import eterea.core.service.hexagonal.stock.articulo.application.service.ArticuloService;
 import eterea.core.service.hexagonal.stock.articulo.domain.model.Articulo;
 import eterea.core.service.hexagonal.stock.articulo.infrastructure.persistence.mapper.ArticuloMapper;
@@ -269,13 +272,13 @@ public class ReservaService {
         List<ReservaArticulo> reservaArticulos = new ArrayList<>();
         for (Articulo articulo : collectionAgregar.values()) {
             var precioArticulo = precioService.getUnitPriceByArticuloIdAndFecha(articulo.getArticuloId(), reserva.getFechaInServicio());
-            reservaArticulos.add(new ReservaArticulo.Builder()
+            reservaArticulos.add(ReservaArticulo.builder()
                     .negocioId(empresa.getNegocioId())
                     .reservaId(reserva.getReservaId())
                     .voucherId(reserva.getVoucherId())
                     .articuloId(articulo.getArticuloId())
                     .precioUnitarioSinComision(precioArticulo)
-                    .articulo(articuloMapper.toEntity(articulo))
+                    .articulo(articulo)
                     .build());
             if (track != null) {
                 reservaArticulos.getLast().setTrackUuid(track.getUuid());

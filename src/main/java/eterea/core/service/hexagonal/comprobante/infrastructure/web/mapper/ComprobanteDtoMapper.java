@@ -5,16 +5,14 @@ import eterea.core.service.hexagonal.comprobante.infrastructure.web.dto.Comproba
 import eterea.core.service.hexagonal.contable.cuenta.infrastructure.web.mapper.CuentaDtoMapper;
 import eterea.core.service.hexagonal.invoicedata.infrastructure.dto.ComprobanteAfipInvoiceDataResponse;
 import eterea.core.service.model.dto.ComprobanteDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ComprobanteDtoMapper {
 
     private final CuentaDtoMapper cuentaDtoMapper;
-
-    public ComprobanteDtoMapper(CuentaDtoMapper cuentaDtoMapper) {
-        this.cuentaDtoMapper = cuentaDtoMapper;
-    }
 
     public ComprobanteResponse toResponse(Comprobante domain) {
         if (domain == null) {

@@ -1,3 +1,24 @@
+## [2.6.0] - 2026-07-26
+
+### Features
+- **feat(reservaarticulo)**: Nuevo módulo hexagonal completo `reservaarticulo` bajo `reservas/` — migración de Kotlin a Java con arquitectura hexagonal completa: dominio (`ReservaArticulo`), puertos de entrada (`Create`, `Delete`, `FindById`, `FindByReservaId`, `FindByVoucherId`, `SaveAll`, `Update`), puerto de salida (`ReservaArticuloRepository`), adaptador JPA (`JpaReservaArticuloRepositoryAdapter`), controlador REST, DTO de respuesta, mappers y excepción
+- **feat(cierrecajamovimiento)**: Nuevo módulo hexagonal completo `cierrecajamovimiento` bajo `cierrecaja/` — dominio (`CierreCaja`), puertos de entrada (`FindCierreCajaById`, `FindLastCierreCaja`), puerto de salida (`CierreCajaRepository`), adaptador JPA, controlador REST con endpoints `GET /{cierreCajaId}` y `GET /last`, DTO de respuesta y mappers
+- **feat(articulomovimiento-dto)**: Nuevos campos `precioUnitarioSinDescuentoSinIva` y `precioUnitarioSinDescuentoConIva` en `ArticuloMovimiento`, `ArticuloMovimientoEntity`, `ArticuloMovimientoResponse` y mappers asociados — soporte para precios sin descuento con/sin IVA
+
+### Changed
+- **refactor(comprobante)**: Sustitución de constructores manuales por `@RequiredArgsConstructor` en `ComprobanteService`, `ComprobanteController`, `ComprobanteDtoMapper`, `JpaComprobanteRepositoryAdapter` y todos los casos de uso (`FindAllComprobantesAsociables`, `FindAllComprobantesByModulo`, `FindAllComprobantesDisponibles`, `FindComprobanteById`). Refactorización de `ComprobanteMapper.toEntity()` a builder pattern. Optimización de `FindAllComprobantesDisponiblesUseCaseImpl` con `IntStream` y `Set`. Null-safety en `findAllAsociables(Byte debita)` y `findAllByModulo()`. Uso de `ResponseEntity.ok()` en lugar de `new ResponseEntity<>()`
+- **refactor(negocio)**: Corrección de `NegocioMapper.toDomainModel()` — mapeo correcto de `databaseIpVpn` y `backendIpLan` desde la entidad (antes retornaba `null`). Reordenamiento de campos en `NegocioResponse` y `NegocioDtoMapper` para consistencia
+- **refactor(articulomovimiento)**: `ArticuloMovimientoEntity` ahora implementa `Jsonifyable` en lugar de declarar método propio `jsonify()`. Null-safety en `ArticuloMovimientoMapper.toEntity()` para nuevos campos
+- **refactor(reservas)**: `ReservaService` y servicios facade (`FacturacionService`, `MakeFacturaProgramaDiaService`, `RegistraFacturaService`) actualizados para usar el nuevo módulo hexagonal `ReservaArticulo` en lugar del modelo Kotlin legacy
+- **chore(feign)**: Configuración de timeouts (connect: 5000ms, read: 10000ms), retryer con backoff progresivo (100ms-1000ms, 3 intentos) y HTTP client con connection pooling (50 conexiones máx, 10 por ruta, TTL 30s) en `bootstrap.yml`
+- **chore(deps)**: Adición de `kotlin-maven-lombok` plugin en `pom.xml`. Eliminación de compiler arg `-Xannotation-default-target=param-property`
+
+### Removed
+- **chore(cleanup)**: Eliminación de modelo Kotlin legacy `ReservaArticulo.kt` — reemplazado por dominio hexagonal Java
+- **chore(cleanup)**: Eliminación de repositorio Kotlin legacy `ReservaArticuloRepository.kt` — reemplazado por puerto de salida hexagonal Java
+- **chore(cleanup)**: Eliminación de excepción Kotlin legacy `ReservaArticuloException.kt` — reemplazada por excepción hexagonal Java
+- **chore(cleanup)**: Eliminación de servicio legacy `ReservaArticuloService.java` en `service/` — reemplazado por servicio hexagonal Java
+
 ## [2.5.3] - 2026-07-14
 
 ### Fixed

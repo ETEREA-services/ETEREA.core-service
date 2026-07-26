@@ -1,0 +1,146 @@
+classDiagram
+    direction TB
+
+    namespace reservas {
+        class ReservaArticulo {
+            <<Domain Model>>
+            +Long reservaArticuloId
+            +Integer negocioId
+            +Long reservaId
+            +Long voucherId
+            +String articuloId
+            +Integer cantidad
+            +BigDecimal comision
+            +BigDecimal precioUnitarioSinComision
+            +BigDecimal precioUnitario
+            +BigDecimal precioUnitarioSinDescuento
+            +BigDecimal precioCompra
+            +String observaciones
+            +String trackUuid
+            +Articulo articulo
+        }
+
+        class ReservaArticuloService {
+            <<Service>>
+            +findAllByReservaId(Long) List~ReservaArticulo~
+            +findAllByVoucherId(Long,Long) List~ReservaArticulo~
+            +findByReservaArticuloId(Long) ReservaArticulo
+            +add(ReservaArticulo) ReservaArticulo
+            +update(ReservaArticulo,Long) ReservaArticulo
+            +deleteByReservaArticuloId(Long) void
+            +saveAll(List~ReservaArticulo~) List~ReservaArticulo~
+        }
+
+        class CreateReservaArticuloUseCase {
+            <<interface>>
+            +create(ReservaArticulo) ReservaArticulo
+        }
+
+        class DeleteReservaArticuloUseCase {
+            <<interface>>
+            +deleteByReservaArticuloId(Long) void
+        }
+
+        class FindReservaArticuloByIdUseCase {
+            <<interface>>
+            +findByReservaArticuloId(Long) ReservaArticulo
+        }
+
+        class FindReservaArticulosByReservaIdUseCase {
+            <<interface>>
+            +findAllByReservaId(Long) List~ReservaArticulo~
+        }
+
+        class FindReservaArticulosByVoucherIdUseCase {
+            <<interface>>
+            +findAllByReservaIdAndVoucherId(Long,Long) List~ReservaArticulo~
+        }
+
+        class SaveAllReservaArticulosUseCase {
+            <<interface>>
+            +saveAll(List~ReservaArticulo~) List~ReservaArticulo~
+        }
+
+        class UpdateReservaArticuloUseCase {
+            <<interface>>
+            +update(ReservaArticulo, Long) ReservaArticulo
+        }
+
+        class ReservaArticuloRepository {
+            <<interface>>
+            +findAllByReservaId(Long) List~ReservaArticulo~
+            +findAllByReservaIdAndVoucherId(Long,Long) List~ReservaArticulo~
+            +findByReservaArticuloId(Long) Optional~ReservaArticulo~
+            +deleteByReservaArticuloId(Long) void
+            +saveAll(List~ReservaArticulo~) List~ReservaArticulo~
+            +save(ReservaArticulo) ReservaArticulo
+        }
+    }
+
+    namespace infrastructure {
+        class ReservaArticuloEntity {
+            <<JPA Entity>>
+            +Long reservaArticuloId
+            +Integer negocioId
+            +Long reservaId
+            +Long voucherId
+            +String articuloId
+            +Integer cantidad
+            +BigDecimal comision
+            +BigDecimal precioUnitarioSinComision
+            +BigDecimal precioUnitario
+            +BigDecimal precioUnitarioSinDescuento
+            +BigDecimal precioCompra
+            +String observaciones
+            +String trackUuid
+        }
+
+        class JpaReservaArticuloRepositoryAdapter {
+            <<Adapter>>
+            +findAllByReservaId(Long) List~ReservaArticulo~
+            +findAllByReservaIdAndVoucherId(Long,Long) List~ReservaArticulo~
+            +findByReservaArticuloId(Long) Optional~ReservaArticulo~
+            +deleteByReservaArticuloId(Long) void
+            +saveAll(List~ReservaArticulo~) List~ReservaArticulo~
+            +save(ReservaArticulo) ReservaArticulo
+        }
+
+        class ReservaArticuloMapper {
+            <<Mapper>>
+            +toDomain(ReservaArticuloEntity) ReservaArticulo
+            +toEntity(ReservaArticulo) ReservaArticuloEntity
+        }
+
+        class JpaReservaArticuloRepository {
+            <<JpaRepository>>
+            +findAllByReservaId(Long) List~ReservaArticuloEntity~
+            +findAllByReservaIdAndVoucherId(Long,Long) List~ReservaArticuloEntity~
+            +findByReservaArticuloId(Long) Optional~ReservaArticuloEntity~
+            +deleteByReservaArticuloId(Long) void
+        }
+    }
+
+    ReservaArticuloService --> CreateReservaArticuloUseCase
+    ReservaArticuloService --> DeleteReservaArticuloUseCase
+    ReservaArticuloService --> FindReservaArticuloByIdUseCase
+    ReservaArticuloService --> FindReservaArticulosByReservaIdUseCase
+    ReservaArticuloService --> FindReservaArticulosByVoucherIdUseCase
+    ReservaArticuloService --> SaveAllReservaArticulosUseCase
+    ReservaArticuloService --> UpdateReservaArticuloUseCase
+
+    CreateReservaArticuloUseCase ..> ReservaArticuloRepository
+    DeleteReservaArticuloUseCase ..> ReservaArticuloRepository
+    FindReservaArticuloByIdUseCase ..> ReservaArticuloRepository
+    FindReservaArticulosByReservaIdUseCase ..> ReservaArticuloRepository
+    FindReservaArticulosByVoucherIdUseCase ..> ReservaArticuloRepository
+    SaveAllReservaArticulosUseCase ..> ReservaArticuloRepository
+    UpdateReservaArticuloUseCase ..> ReservaArticuloRepository
+
+    ReservaArticuloRepository <|.. JpaReservaArticuloRepositoryAdapter
+    JpaReservaArticuloRepositoryAdapter --> ReservaArticuloMapper
+    JpaReservaArticuloRepositoryAdapter --> JpaReservaArticuloRepository
+
+    ReservaArticuloMapper --> ReservaArticuloEntity
+    ReservaArticuloMapper --> ReservaArticulo
+
+    ReservaArticuloEntity --> ArticuloEntity : "articulo"
