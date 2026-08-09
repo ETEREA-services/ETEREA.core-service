@@ -4,16 +4,14 @@ import eterea.core.service.hexagonal.reservas.reservaarticulo.application.except
 import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.model.ReservaArticulo;
 import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.ports.in.FindReservaArticuloByIdUseCase;
 import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.ports.out.ReservaArticuloRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FindReservaArticuloByIdUseCaseImpl implements FindReservaArticuloByIdUseCase {
 
     private final ReservaArticuloRepository repository;
-
-    public FindReservaArticuloByIdUseCaseImpl(ReservaArticuloRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public ReservaArticulo findByReservaArticuloId(Long reservaArticuloId) {

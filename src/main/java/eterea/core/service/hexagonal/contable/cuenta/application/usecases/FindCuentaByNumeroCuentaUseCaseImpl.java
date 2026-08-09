@@ -4,16 +4,14 @@ import eterea.core.service.hexagonal.contable.cuenta.domain.model.Cuenta;
 import eterea.core.service.hexagonal.contable.cuenta.domain.ports.in.FindCuentaByNumeroCuentaUseCase;
 import eterea.core.service.hexagonal.contable.cuenta.domain.ports.out.CuentaRepository;
 import eterea.core.service.kotlin.exception.CuentaException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FindCuentaByNumeroCuentaUseCaseImpl implements FindCuentaByNumeroCuentaUseCase {
 
     private final CuentaRepository repository;
-
-    public FindCuentaByNumeroCuentaUseCaseImpl(CuentaRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Cuenta findByNumeroCuenta(Long numeroCuenta) {

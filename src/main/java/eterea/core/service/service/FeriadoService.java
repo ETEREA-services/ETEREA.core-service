@@ -3,6 +3,7 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.FeriadoException;
 import eterea.core.service.kotlin.model.Feriado;
 import eterea.core.service.kotlin.repository.FeriadoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -10,13 +11,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class FeriadoService {
 
     private final FeriadoRepository repository;
-
-    public FeriadoService(FeriadoRepository repository) {
-        this.repository = repository;
-    }
 
     public List<Feriado> findAll() {
         return repository.findAll();

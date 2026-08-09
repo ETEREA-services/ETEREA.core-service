@@ -6,6 +6,7 @@ package eterea.core.service.controller;
 import java.util.List;
 
 import eterea.core.service.kotlin.model.ClienteGrupoCupo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,13 +26,10 @@ import eterea.core.service.service.ClienteGrupoCupoService;
  */
 @RestController
 @RequestMapping({"/api/core/clientegrupocupo", "/clientegrupocupo"})
+@RequiredArgsConstructor
 public class ClienteGrupoCupoController {
 
 	private final ClienteGrupoCupoService service;
-
-	public ClienteGrupoCupoController(ClienteGrupoCupoService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/clientegrupo/{clienteId}/{grupoId}")
 	public ResponseEntity<List<ClienteGrupoCupo>> findByClienteIdAndGrupoId(@PathVariable Long clienteId,

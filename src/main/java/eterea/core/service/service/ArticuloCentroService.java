@@ -3,19 +3,17 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.ArticuloCentroException;
 import eterea.core.service.kotlin.model.ArticuloCentro;
 import eterea.core.service.kotlin.repository.ArticuloCentroRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ArticuloCentroService {
 
     private final ArticuloCentroRepository repository;
-
-    public ArticuloCentroService(ArticuloCentroRepository repository) {
-        this.repository = repository;
-    }
 
     public List<ArticuloCentro> findAllByArticulos(Integer centroStockId, List<String> articuloIds) {
         return repository.findAllByCentroStockIdAndArticuloIdIn(centroStockId, articuloIds);

@@ -1,5 +1,6 @@
 package eterea.core.service.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,13 +13,10 @@ import eterea.core.service.service.AuthService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
    private final AuthService authService;
-
-   public AuthController(AuthService authService) {
-      this.authService = authService;
-   }
 
    @PostMapping("/login")
    public ResponseEntity<Void> login(@RequestBody LoginDto loginDto) {

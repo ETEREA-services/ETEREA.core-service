@@ -6,6 +6,7 @@ package eterea.core.service.service;
 import eterea.core.service.exception.MonedaException;
 import eterea.core.service.kotlin.model.Moneda;
 import eterea.core.service.repository.MonedaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +16,10 @@ import java.util.List;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class MonedaService {
 
 	private final MonedaRepository repository;
-
-	public MonedaService(MonedaRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<Moneda> findAll() {
 		return repository.findAll();

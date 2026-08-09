@@ -37,6 +37,10 @@ graph TB
         end
 
         subgraph "Compras: Proveedores"
+            PRV_API[Proveedor Controller<br/>hexagonal.compras.proveedor.infrastructure.web.controller]
+            PRV_APP[Proveedor Service<br/>hexagonal.compras.proveedor.application.service]
+            PRV_DOMAIN[Proveedor Model<br/>hexagonal.compras.proveedor.domain.model]
+            PRV_PORTS[Ports In/Out<br/>hexagonal.compras.proveedor.domain.ports]
             PM_API[ProveedorMovimiento Controller<br/>hexagonal.compras.proveedormovimiento.infrastructure.web.controller]
             PM_APP[ProveedorMovimiento Service<br/>hexagonal.compras.proveedormovimiento.application.service]
             PM_DOMAIN[ProveedorMovimiento Model<br/>hexagonal.compras.proveedormovimiento.domain.model]
@@ -105,6 +109,20 @@ graph TB
             AH_API[AnticipoHaberes Controller<br/>hexagonal.cierrecaja.anticipohaberes.infrastructure.web.controller]
             AH_APP[AnticipoHaberes Service<br/>hexagonal.cierrecaja.anticipohaberes.application.service]
         end
+
+        subgraph "Reservas: Vouchers"
+            VCH_API[Voucher Controller<br/>hexagonal.reservas.voucher.infrastructure.web.controller]
+            VCH_APP[Voucher Service<br/>hexagonal.reservas.voucher.application.service]
+            VCH_DOMAIN[Voucher Model<br/>hexagonal.reservas.voucher.domain.model]
+            VCH_PORTS[Ports In/Out<br/>hexagonal.reservas.voucher.domain.ports]
+        end
+
+        subgraph "Ventas: Productos Artículos"
+            PA_API[ProductoArticulo Controller<br/>hexagonal.ventas.productoarticulo.infrastructure.web.controller]
+            PA_APP[ProductoArticulo Service<br/>hexagonal.ventas.productoarticulo.application.service]
+            PA_DOMAIN[ProductoArticulo Model<br/>hexagonal.ventas.productoarticulo.domain.model]
+            PA_PORTS[Ports In/Out<br/>hexagonal.ventas.productoarticulo.domain.ports]
+        end
         
         subgraph "Persistence Layer"
             ART_REPO[Articulo Repository Adapter<br/>hexagonal.stock.articulo.infrastructure.persistence.adapter]
@@ -119,6 +137,8 @@ graph TB
             CTA_ENTITY[Cuenta Entity<br/>hexagonal.contable.cuenta.infrastructure.persistence.entity]
             CM_REPO[CuentaMovimiento Repository Adapter<br/>hexagonal.contable.cuentamovimiento.infrastructure.persistence.adapter]
             CM_ENTITY[CuentaMovimiento Entity<br/>hexagonal.contable.cuentamovimiento.infrastructure.persistence.entity]
+            PRV_REPO[Proveedor Repository Adapter<br/>hexagonal.compras.proveedor.infrastructure.persistence.adapter]
+            PRV_ENTITY[Proveedor Entity<br/>hexagonal.compras.proveedor.infrastructure.persistence.entity]
             PM_REPO[ProveedorMovimiento Repository Adapter<br/>hexagonal.compras.proveedormovimiento.infrastructure.persistence.adapter]
             PM_ENTITY[ProveedorMovimiento Entity<br/>hexagonal.compras.proveedormovimiento.infrastructure.persistence.entity]
             TRF_REPO[Transferencia Repository Adapter<br/>hexagonal.transferencia.infrastructure.persistence.adapter]
@@ -130,6 +150,10 @@ graph TB
             L_REPO[Legajo Repository Adapter<br/>hexagonal.legajo.infrastructure.persistence.adapter]
             L_ENTITY[Legajo Entity<br/>hexagonal.legajo.infrastructure.persistence.entity]
             CC_REPO[ProcessCierre Repository Adapter<br/>hexagonal.cierrecaja.processCierre.infrastructure.persistence.adapter]
+            VCH_REPO[Voucher Repository Adapter<br/>hexagonal.reservas.voucher.infrastructure.persistence.adapter]
+            VCH_ENTITY[Voucher Entity<br/>hexagonal.reservas.voucher.infrastructure.persistence.entity]
+            PA_REPO[ProductoArticulo Repository Adapter<br/>hexagonal.ventas.productoarticulo.infrastructure.persistence.adapter]
+            PA_ENTITY[ProductoArticulo Entity<br/>hexagonal.ventas.productoarticulo.infrastructure.persistence.entity]
         end
         
         subgraph "External Clients"
@@ -145,6 +169,7 @@ graph TB
         COMP_API --> COMP_APP
         CTA_API --> CTA_APP
         CM_API --> CM_APP
+        PRV_API --> PRV_APP
         PM_API --> PM_APP
         TRF_API --> TRF_APP
         VM_API --> VM_APP
@@ -155,7 +180,9 @@ graph TB
         ID_API --> ID_APP
         CC_API --> CC_APP
         AH_API --> AH_APP
-        
+        VCH_API --> VCH_APP
+        PA_API --> PA_APP
+
         %% Application to Domain
         ART_APP --> ART_DOMAIN
         ART_APP --> ART_PORTS
@@ -169,6 +196,8 @@ graph TB
         CTA_APP --> CTA_PORTS
         CM_APP --> CM_DOMAIN
         CM_APP --> CM_PORTS
+        PRV_APP --> PRV_DOMAIN
+        PRV_APP --> PRV_PORTS
         PM_APP --> PM_DOMAIN
         PM_APP --> PM_PORTS
         TRF_APP --> TRF_DOMAIN
@@ -185,6 +214,10 @@ graph TB
         ID_APP --> ID_PORTS
         CC_APP --> CC_DOMAIN
         CC_APP --> CC_PORTS
+        VCH_APP --> VCH_DOMAIN
+        VCH_APP --> VCH_PORTS
+        PA_APP --> PA_DOMAIN
+        PA_APP --> PA_PORTS
         
         %% Domain to Infrastructure
         ART_PORTS --> ART_REPO
@@ -205,6 +238,9 @@ graph TB
         CM_PORTS --> CM_REPO
         CM_REPO --> CM_ENTITY
         CM_ENTITY --> DB
+        PRV_PORTS --> PRV_REPO
+        PRV_REPO --> PRV_ENTITY
+        PRV_ENTITY --> DB
         PM_PORTS --> PM_REPO
         PM_REPO --> PM_ENTITY
         PM_ENTITY --> DB
@@ -222,18 +258,25 @@ graph TB
         L_ENTITY --> DB
         ID_PORTS --> DB
         CC_PORTS --> CC_REPO
-        
+        VCH_PORTS --> VCH_REPO
+        VCH_REPO --> VCH_ENTITY
+        VCH_ENTITY --> DB
+        PA_PORTS --> PA_REPO
+        PA_REPO --> PA_ENTITY
+        PA_ENTITY --> DB
+
         %% External Dependencies
         FN_APP --> AFIP
         FE_APP --> AFIP
         ID_APP --> E_API
-        
+
         style ART_API fill:#e1f5fe
         style AM_API fill:#e1f5fe
         style SM_API fill:#e1f5fe
         style COMP_API fill:#e1f5fe
         style CTA_API fill:#e1f5fe
         style CM_API fill:#e1f5fe
+        style PRV_API fill:#e1f5fe
         style PM_API fill:#e1f5fe
         style TRF_API fill:#e1f5fe
         style VM_API fill:#e1f5fe
@@ -244,12 +287,15 @@ graph TB
         style ID_API fill:#e1f5fe
         style CC_API fill:#e1f5fe
         style AH_API fill:#e1f5fe
+        style VCH_API fill:#e1f5fe
+        style PA_API fill:#e1f5fe
         style ART_APP fill:#f3e5f5
         style AM_APP fill:#f3e5f5
         style SM_APP fill:#f3e5f5
         style COMP_APP fill:#f3e5f5
         style CTA_APP fill:#f3e5f5
         style CM_APP fill:#f3e5f5
+        style PRV_APP fill:#f3e5f5
         style PM_APP fill:#f3e5f5
         style TRF_APP fill:#f3e5f5
         style VM_APP fill:#f3e5f5
@@ -260,5 +306,7 @@ graph TB
         style ID_APP fill:#f3e5f5
         style CC_APP fill:#f3e5f5
         style AH_APP fill:#f3e5f5
+        style VCH_APP fill:#f3e5f5
+        style PA_APP fill:#f3e5f5
         style DB fill:#ffebee
     end

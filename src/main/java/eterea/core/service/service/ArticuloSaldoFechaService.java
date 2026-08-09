@@ -3,6 +3,7 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.ArticuloSaldoFechaException;
 import eterea.core.service.kotlin.model.ArticuloSaldoFecha;
 import eterea.core.service.kotlin.repository.ArticuloSaldoFechaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -10,13 +11,10 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ArticuloSaldoFechaService {
 
     private final ArticuloSaldoFechaRepository repository;
-
-    public ArticuloSaldoFechaService(ArticuloSaldoFechaRepository repository) {
-        this.repository = repository;
-    }
 
     public List<ArticuloSaldoFecha> findAllByArticulos(Integer centroStockId, OffsetDateTime fechaMovimiento, List<String> articuloIds) {
         return repository.findAllByCentroStockIdAndFechaAndArticuloIdIn(centroStockId, fechaMovimiento, articuloIds);

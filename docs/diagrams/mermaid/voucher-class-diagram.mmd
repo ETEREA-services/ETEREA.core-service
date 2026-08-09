@@ -1,0 +1,275 @@
+classDiagram
+    direction TB
+
+    namespace reservas.voucher {
+        class Voucher {
+            <<Domain Model>>
+            +Long voucherId
+            +OffsetDateTime fechaToma
+            +OffsetDateTime fechaServicio
+            +OffsetDateTime fechaVencimiento
+            +LocalTime horaVencimiento
+            +String nombrePax
+            +Integer paxs
+            +String subeEn
+            +String productos
+            +Byte tieneVoucher
+            +Long clienteId
+            +String observaciones
+            +Byte confirmado
+            +Byte pagaCacheuta
+            +Integer hotelId
+            +String contacto
+            +Integer paxsReales
+            +Integer proveedorId
+            +String planilla
+            +Long reservaId
+            +String numeroVoucher
+            +String usuario
+            +OffsetDateTime fechaRecepcion
+            +OffsetDateTime fechaEmision
+            +String numero
+            +Integer cantidadPax
+            +String nombre
+            +Byte conTraslado
+            +Integer paxsNoShow
+            +Integer reservaOrigenId
+            +Byte fechaAbierta
+            +Byte ventaInternet
+            +String trackUuid
+            +Usuario user
+            +Cliente cliente
+            +Hotel hotel
+            +Proveedor proveedor
+            +Reserva reserva
+        }
+
+        class VoucherService {
+            <<Service>>
+            +findAllByUserToday(String) List~Voucher~
+            +findAllByFechaServicio(OffsetDateTime,Boolean,Boolean) List~Voucher~
+            +findByReservaId(Long) Voucher
+            +findByVoucherId(Long) Voucher
+            +findByNumeroVoucher(String) Voucher
+            +findByNumeroVoucherAlreadyRegistered(String) Voucher
+            +save(Voucher,Track) Voucher
+            +add(Voucher) Voucher
+            +update(Voucher,Long) Voucher
+        }
+
+        class AddVoucherUseCase {
+            <<interface>>
+            +add(Voucher) Voucher
+        }
+
+        class FindAllVoucherByFechaServicioUseCase {
+            <<interface>>
+            +findAllByFechaServicio(OffsetDateTime,Boolean,Boolean) List~Voucher~
+        }
+
+        class FindAllVoucherByUserTodayUseCase {
+            <<interface>>
+            +findAllByUserToday(OffsetDateTime,String) List~Voucher~
+        }
+
+        class FindVoucherByNumeroVoucherUseCase {
+            <<interface>>
+            +findByNumeroVoucher(String) Optional~Voucher~
+        }
+
+        class FindVoucherByNumeroVoucherAlreadyRegisteredUseCase {
+            <<interface>>
+            +findByNumeroVoucherAlreadyRegistered(String) Optional~Voucher~
+        }
+
+        class FindVoucherByReservaIdUseCase {
+            <<interface>>
+            +findByReservaId(Long) Optional~Voucher~
+        }
+
+        class FindVoucherByVoucherIdUseCase {
+            <<interface>>
+            +findByVoucherId(Long) Optional~Voucher~
+        }
+
+        class SaveVoucherUseCase {
+            <<interface>>
+            +save(Voucher,String) Voucher
+        }
+
+        class UpdateVoucherUseCase {
+            <<interface>>
+            +update(Voucher,Long) Voucher
+        }
+
+        class VoucherRepository {
+            <<interface>>
+            +findAllByFechaVencimientoAndUsuario(OffsetDateTime,String) List~Voucher~
+            +findAllByFechaServicio(OffsetDateTime,boolean) List~Voucher~
+            +findByReservaId(Long) Optional~Voucher~
+            +findByVoucherId(Long) Optional~Voucher~
+            +findTopByNumeroVoucherContains(String) Optional~Voucher~
+            +findTopByNumeroVoucherContainsAndFechaTomaAfter(String,OffsetDateTime) Optional~Voucher~
+            +save(Voucher) Voucher
+        }
+    }
+
+    namespace infrastructure {
+        class VoucherEntity {
+            <<JPA Entity>>
+            +Long voucherId
+            +OffsetDateTime fechaToma
+            +OffsetDateTime fechaServicio
+            +OffsetDateTime fechaVencimiento
+            +LocalTime horaVencimiento
+            +String nombrePax
+            +Integer paxs
+            +String subeEn
+            +String productos
+            +Byte tieneVoucher
+            +Long clienteId
+            +String observaciones
+            +Byte confirmado
+            +Byte pagaCacheuta
+            +Integer hotelId
+            +String contacto
+            +Integer paxsReales
+            +Integer proveedorId
+            +String planilla
+            +Long reservaId
+            +String numeroVoucher
+            +String usuario
+            +OffsetDateTime fechaRecepcion
+            +OffsetDateTime fechaEmision
+            +String numero
+            +Integer cantidadPax
+            +String nombre
+            +Byte conTraslado
+            +Integer paxsNoShow
+            +Integer reservaOrigenId
+            +Byte fechaAbierta
+            +Byte ventaInternet
+            +String trackUuid
+        }
+
+        class JpaVoucherRepositoryAdapter {
+            <<Adapter>>
+            +findAllByFechaVencimientoAndUsuario(OffsetDateTime,String) List~Voucher~
+            +findAllByFechaServicio(OffsetDateTime,boolean) List~Voucher~
+            +findByReservaId(Long) Optional~Voucher~
+            +findByVoucherId(Long) Optional~Voucher~
+            +findTopByNumeroVoucherContains(String) Optional~Voucher~
+            +findTopByNumeroVoucherContainsAndFechaTomaAfter(String,OffsetDateTime) Optional~Voucher~
+            +save(Voucher) Voucher
+        }
+
+        class VoucherMapper {
+            <<Mapper>>
+            +toDomain(VoucherEntity) Voucher
+            +toEntity(Voucher) VoucherEntity
+        }
+
+        class JpaVoucherRepository {
+            <<JpaRepository>>
+            +findAllByFechaVencimientoAndUsuario(OffsetDateTime,String) List~VoucherEntity~
+            +findAllByFechaServicio(OffsetDateTime,Sort) List~VoucherEntity~
+            +findByReservaId(Long) Optional~VoucherEntity~
+            +findByVoucherId(Long) Optional~VoucherEntity~
+            +findTopByNumeroVoucherContains(String) Optional~VoucherEntity~
+            +findTopByNumeroVoucherContainsAndFechaTomaAfter(String,OffsetDateTime) Optional~VoucherEntity~
+        }
+    }
+
+    namespace infrastructure.web {
+        class VoucherController {
+            <<REST Controller>>
+            +findAllByUserToday(String) ResponseEntity
+            +findAllByFechaServicio(OffsetDateTime,Boolean,Boolean) ResponseEntity
+            +findByNumeroVoucher(String) ResponseEntity
+            +findByVoucherId(Long) ResponseEntity
+        }
+
+        class VoucherResponse {
+            <<Response DTO>>
+            +Long voucherId
+            +OffsetDateTime fechaToma
+            +OffsetDateTime fechaServicio
+            +OffsetDateTime fechaVencimiento
+            +LocalTime horaVencimiento
+            +String nombrePax
+            +Integer paxs
+            +String subeEn
+            +String productos
+            +Byte tieneVoucher
+            +Long clienteId
+            +String observaciones
+            +Byte confirmado
+            +Byte pagaCacheuta
+            +Integer hotelId
+            +String contacto
+            +Integer paxsReales
+            +Integer proveedorId
+            +String planilla
+            +Long reservaId
+            +String numeroVoucher
+            +String usuario
+            +OffsetDateTime fechaRecepcion
+            +OffsetDateTime fechaEmision
+            +String numero
+            +Integer cantidadPax
+            +String nombre
+            +Byte conTraslado
+            +Integer paxsNoShow
+            +Integer reservaOrigenId
+            +Byte fechaAbierta
+            +Byte ventaInternet
+            +String trackUuid
+            +Usuario user
+            +Cliente cliente
+            +Hotel hotel
+            +Proveedor proveedor
+            +Reserva reserva
+        }
+
+        class VoucherDtoMapper {
+            <<Mapper>>
+            +toResponse(Voucher) VoucherResponse
+        }
+    }
+
+    VoucherService --> AddVoucherUseCase
+    VoucherService --> FindAllVoucherByFechaServicioUseCase
+    VoucherService --> FindAllVoucherByUserTodayUseCase
+    VoucherService --> FindVoucherByNumeroVoucherUseCase
+    VoucherService --> FindVoucherByNumeroVoucherAlreadyRegisteredUseCase
+    VoucherService --> FindVoucherByReservaIdUseCase
+    VoucherService --> FindVoucherByVoucherIdUseCase
+    VoucherService --> SaveVoucherUseCase
+    VoucherService --> UpdateVoucherUseCase
+
+    AddVoucherUseCase ..> VoucherRepository
+    FindAllVoucherByFechaServicioUseCase ..> VoucherRepository
+    FindAllVoucherByUserTodayUseCase ..> VoucherRepository
+    FindVoucherByNumeroVoucherUseCase ..> VoucherRepository
+    FindVoucherByNumeroVoucherAlreadyRegisteredUseCase ..> VoucherRepository
+    FindVoucherByReservaIdUseCase ..> VoucherRepository
+    FindVoucherByVoucherIdUseCase ..> VoucherRepository
+    SaveVoucherUseCase ..> VoucherRepository
+    UpdateVoucherUseCase ..> VoucherRepository
+
+    VoucherRepository <|.. JpaVoucherRepositoryAdapter
+    JpaVoucherRepositoryAdapter --> VoucherMapper
+    JpaVoucherRepositoryAdapter --> JpaVoucherRepository
+
+    VoucherMapper --> VoucherEntity
+    VoucherMapper --> Voucher
+
+    VoucherController --> VoucherService
+    VoucherController --> VoucherDtoMapper
+    VoucherDtoMapper --> Voucher
+
+    Voucher "1" -- "1" Reserva : "reserva"
+    Voucher "1" -- "1" Proveedor : "proveedor"
+    Voucher "1" -- "1" Cliente : "cliente"
+    Voucher "1" -- "1" Hotel : "hotel"
+    Voucher "1" -- "1" Usuario : "user"

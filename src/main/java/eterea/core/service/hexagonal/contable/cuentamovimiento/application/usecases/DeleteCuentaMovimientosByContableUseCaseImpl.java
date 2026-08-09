@@ -2,6 +2,7 @@ package eterea.core.service.hexagonal.contable.cuentamovimiento.application.usec
 
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.ports.in.DeleteCuentaMovimientosByContableUseCase;
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.ports.out.CuentaMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -9,13 +10,10 @@ import java.time.OffsetDateTime;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class DeleteCuentaMovimientosByContableUseCaseImpl implements DeleteCuentaMovimientosByContableUseCase {
 
     private final CuentaMovimientoRepository repository;
-
-    public DeleteCuentaMovimientosByContableUseCaseImpl(CuentaMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public void deleteAllByContable(OffsetDateTime fechaContable, Integer ordenContable) {

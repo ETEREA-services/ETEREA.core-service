@@ -3,16 +3,14 @@ package eterea.core.service.hexagonal.stock.articulo.infrastructure.persistence.
 import eterea.core.service.hexagonal.stock.articulo.domain.model.Articulo;
 import eterea.core.service.hexagonal.stock.articulo.infrastructure.persistence.entity.ArticuloEntity;
 import eterea.core.service.hexagonal.contable.cuenta.infrastructure.persistence.mapper.CuentaMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ArticuloMapper {
 
     private final CuentaMapper cuentaMapper;
-
-    public ArticuloMapper(CuentaMapper cuentaMapper) {
-        this.cuentaMapper = cuentaMapper;
-    }
 
     public Articulo toDomain(ArticuloEntity entity) {
         if (entity == null) return null;

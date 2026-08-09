@@ -8,6 +8,7 @@ import eterea.core.service.kotlin.model.Authorities;
 import eterea.core.service.kotlin.model.ClienteInternet;
 import eterea.core.service.repository.AuthoritiesRepository;
 import eterea.core.service.repository.ClienteInternetRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,15 +18,11 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class ClienteInternetService {
 
 	private final ClienteInternetRepository repository;
 	private final AuthoritiesRepository authoritiesrepository;
-
-	public ClienteInternetService(ClienteInternetRepository repository, AuthoritiesRepository authoritiesrepository) {
-		this.repository = repository;
-		this.authoritiesrepository = authoritiesrepository;
-	}
 
 	public ClienteInternet findById(Long clienteId) {
 		return repository.findById(clienteId).orElseThrow(() -> new ClienteInternetException(clienteId));

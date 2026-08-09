@@ -3,18 +3,16 @@ package eterea.core.service.service;
 import eterea.core.service.exception.InventarioTurnoException;
 import eterea.core.service.kotlin.model.InventarioTurno;
 import eterea.core.service.repository.InventarioTurnoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class InventarioTurnoService {
 
     private final InventarioTurnoRepository repository;
-
-    public InventarioTurnoService(InventarioTurnoRepository repository) {
-        this.repository = repository;
-    }
 
     public List<InventarioTurno> findAll() {
         return repository.findAll();

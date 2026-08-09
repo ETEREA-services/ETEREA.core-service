@@ -6,6 +6,7 @@ package eterea.core.service.service;
 import eterea.core.service.exception.HabitacionTarifaException;
 import eterea.core.service.kotlin.model.HabitacionTarifa;
 import eterea.core.service.repository.HabitacionTarifaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,13 +14,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class HabitacionTarifaService {
 
 	private final HabitacionTarifaRepository repository;
-
-	public HabitacionTarifaService(HabitacionTarifaRepository repository) {
-		this.repository = repository;
-	}
 
 	public HabitacionTarifa findByUnique(Integer numero, Integer paxs) {
 		return repository.findByNumeroAndPaxs(numero, paxs)

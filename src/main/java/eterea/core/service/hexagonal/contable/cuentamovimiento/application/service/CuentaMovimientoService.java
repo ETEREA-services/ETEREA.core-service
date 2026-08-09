@@ -6,6 +6,7 @@ import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.ports.in.*
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.ports.out.CuentaMovimientoRepository;
 import eterea.core.service.service.CuentaMovimientoAperturaService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CuentaMovimientoService {
 
     private final FindCuentaMovimientoByIdUseCase findCuentaMovimientoByIdUseCase;
@@ -27,26 +29,6 @@ public class CuentaMovimientoService {
     private final DeleteCuentaMovimientosByContableUseCase deleteCuentaMovimientosByContableUseCase;
     private final CuentaMovimientoRepository repository;
     private final CuentaMovimientoAperturaService cuentaMovimientoAperturaService;
-
-    public CuentaMovimientoService(FindCuentaMovimientoByIdUseCase findCuentaMovimientoByIdUseCase,
-                                   FindCuentaMovimientosByContableUseCase findCuentaMovimientosByContableUseCase,
-                                   FindCuentaMovimientosByFechaRangeUseCase findCuentaMovimientosByFechaRangeUseCase,
-                                   FindLastCuentaMovimientoByAsientoUseCase findLastCuentaMovimientoByAsientoUseCase,
-                                   FindLastCuentaMovimientoByFechaUseCase findLastCuentaMovimientoByFechaUseCase,
-                                   SaveCuentaMovimientosUseCase saveCuentaMovimientosUseCase,
-                                   DeleteCuentaMovimientosByContableUseCase deleteCuentaMovimientosByContableUseCase,
-                                   CuentaMovimientoRepository repository,
-                                   CuentaMovimientoAperturaService cuentaMovimientoAperturaService) {
-        this.findCuentaMovimientoByIdUseCase = findCuentaMovimientoByIdUseCase;
-        this.findCuentaMovimientosByContableUseCase = findCuentaMovimientosByContableUseCase;
-        this.findCuentaMovimientosByFechaRangeUseCase = findCuentaMovimientosByFechaRangeUseCase;
-        this.findLastCuentaMovimientoByAsientoUseCase = findLastCuentaMovimientoByAsientoUseCase;
-        this.findLastCuentaMovimientoByFechaUseCase = findLastCuentaMovimientoByFechaUseCase;
-        this.saveCuentaMovimientosUseCase = saveCuentaMovimientosUseCase;
-        this.deleteCuentaMovimientosByContableUseCase = deleteCuentaMovimientosByContableUseCase;
-        this.repository = repository;
-        this.cuentaMovimientoAperturaService = cuentaMovimientoAperturaService;
-    }
 
     public List<CuentaMovimiento> findAllByFechaBetween(OffsetDateTime fechaDesde, OffsetDateTime fechaHasta) {
         return findCuentaMovimientosByFechaRangeUseCase.findAllByFechaBetween(fechaDesde, fechaHasta);

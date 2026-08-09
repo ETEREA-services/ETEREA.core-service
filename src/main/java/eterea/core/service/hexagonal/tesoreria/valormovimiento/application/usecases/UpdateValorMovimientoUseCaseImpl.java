@@ -4,16 +4,14 @@ import eterea.core.service.hexagonal.tesoreria.valormovimiento.application.excep
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.model.ValorMovimiento;
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.ports.in.UpdateValorMovimientoUseCase;
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.ports.out.ValorMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UpdateValorMovimientoUseCaseImpl implements UpdateValorMovimientoUseCase {
 
     private final ValorMovimientoRepository repository;
-
-    public UpdateValorMovimientoUseCaseImpl(ValorMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public ValorMovimiento update(ValorMovimiento newValorMovimiento, Long valorMovimientoId) {

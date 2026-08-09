@@ -1,3 +1,26 @@
+## [2.7.0] - 2026-08-08
+
+### Features
+- **feat(proveedor)**: Nuevo módulo hexagonal completo `proveedor` bajo `compras/` — migración de Kotlin a Java con arquitectura hexagonal completa: dominio (`Proveedor`), puertos de entrada (`FindProveedorByIdUseCase`), puerto de salida (`ProveedorRepository`), adaptador JPA (`JpaProveedorRepositoryAdapter`), entidad JPA, mappers, controlador REST con endpoints `GET /{proveedorId}`, DTO de respuesta y excepción
+- **feat(voucher)**: Nuevo módulo hexagonal completo `voucher` bajo `reservas/` — migración de Kotlin a Java con arquitectura hexagonal completa: dominio (`Voucher`), puertos de entrada (`Add`, `FindAllByFechaServicio`, `FindAllByUserToday`, `FindByNumeroVoucher`, `FindByNumeroVoucherAlreadyRegistered`, `FindByReservaId`, `FindByVoucherId`, `Save`, `Update`), puerto de salida (`VoucherRepository`), adaptador JPA (`JpaVoucherRepositoryAdapter`), entidad JPA, mappers, controlador REST con endpoints `GET /today/{user}`, `GET /fechaServicio/{fechaServicio}/{soloConfirmados}/{porNombrePax}`, `GET /byNumeroVoucher/{numeroVoucher}` y `GET /{voucherId}`, DTO de respuesta y excepción
+- **feat(productoarticulo)**: Nuevo módulo hexagonal completo `productoarticulo` bajo `ventas/` — migración de Kotlin a Java con arquitectura hexagonal completa: dominio (`ProductoArticulo`), puertos de entrada (`Create`, `Delete`, `FindByProductoIdAndArticuloId`, `FindByProductoId`), puerto de salida (`ProductoArticuloRepository`), adaptador JPA (`JpaProductoArticuloRepositoryAdapter`), entidad JPA, mappers, controlador REST con endpoints `GET /producto/{productoId}`, `POST /`, `DELETE /{id}`, DTOs de request/response y excepción
+
+### Changed
+- **refactor(requiredargsconstructor)**: Sustitución masiva de constructores manuales por `@RequiredArgsConstructor` en servicios, casos de uso, adaptadores JPA, controladores y mappers de todos los bounded contexts: `clientemovimiento`, `cuentamovimiento`, `stockmovimiento`, `valormovimiento`, `transferencia`, `cuenta`, `proveedormovimiento`, `reservaarticulo`, `processCierre` y controladores legacy (`AuthController`, `ArticuloFechaController`, `CentroStockController`, `ClienteGrupoCupoController`, `ClienteInternetController`, `ComprobanteAfipController`, `FacturaRendicionDetalleController`, `FeriadoController`) — simplificación de inyección de dependencias
+- **refactor(productoarticulo-integracion)**: Actualización de servicios dependientes (`PrecioService`, `VouchersService`, `VoucherProductoService`, `ProductsService`, `TransaccionFacturaProgramaDiaService`) para usar el nuevo módulo hexagonal `ProductoArticulo` en lugar del modelo Kotlin legacy
+- **refactor(voucher-integracion)**: Actualización de `FindArticulosByVoucherUseCaseImpl` y `ArticuloMapper` para usar los nuevos módulos hexagonales `Voucher` y `Articulo`
+- **chore(deps)**: Actualización de `springdoc-openapi-starter-webmvc-ui` de 3.0.3 a 3.1.0 en `pom.xml`
+- **chore(deps)**: Actualización de `mysql-connector-j` a 26.7.0 en `pom.xml`
+- **chore(config)**: Actualización de `bootstrap.yml` test resource con configuración de mail
+
+### Removed
+- **chore(cleanup)**: Eliminación de modelos Kotlin legacy: `Proveedor.kt`, `Voucher.kt`, `ProductoArticulo.kt`
+- **chore(cleanup)**: Eliminación de repositorios Kotlin legacy: `VoucherRepository.kt`, `ProductoArticuloRepository.kt`
+- **chore(cleanup)**: Eliminación de excepciones Kotlin legacy: `VoucherException.kt`, `ProductoArticuloException.kt`
+- **chore(cleanup)**: Eliminación de controladores legacy: `ProveedorController.java`, `ProductoArticuloController.java` (en `controller/`)
+- **chore(cleanup)**: Eliminación de servicios legacy: `ProveedorService.java`, `VoucherService.java`, `ProductoArticuloService.java` (en `service/`)
+- **chore(cleanup)**: Eliminación de repositorio legacy `ProveedorRepository.java` (en `repository/`)
+
 ## [2.6.0] - 2026-07-26
 
 ### Features

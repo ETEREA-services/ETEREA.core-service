@@ -10,6 +10,7 @@ import eterea.core.service.kotlin.model.ClienteGrupoCupo;
 import eterea.core.service.repository.ClienteGrupoCupoRepository;
 import jakarta.transaction.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,13 +18,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class ClienteGrupoCupoService {
 
 	private final ClienteGrupoCupoRepository repository;
-
-	public ClienteGrupoCupoService(ClienteGrupoCupoRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<ClienteGrupoCupo> findByClienteIdAndGrupoId(Long clienteId, Integer grupoId) {
 		return repository.findByClienteIdAndGrupoId(clienteId, grupoId);

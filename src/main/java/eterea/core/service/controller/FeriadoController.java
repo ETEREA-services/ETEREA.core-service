@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,13 +22,10 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping({ "/api/core/feriado", "/feriado" })
+@RequiredArgsConstructor
 public class FeriadoController {
 
    private final FeriadoService service;
-
-   public FeriadoController(FeriadoService service) {
-      this.service = service;
-   }
 
    @GetMapping()
    public ResponseEntity<List<Feriado>> findAll() {

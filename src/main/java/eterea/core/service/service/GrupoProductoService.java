@@ -8,6 +8,7 @@ import java.util.List;
 import eterea.core.service.exception.GrupoProductoException;
 import eterea.core.service.kotlin.model.GrupoProducto;
 import eterea.core.service.repository.GrupoProductoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,13 +16,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class GrupoProductoService {
 
 	private final GrupoProductoRepository repository;
-
-	public GrupoProductoService(GrupoProductoRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<GrupoProducto> findAll() {
 		return repository.findAll();

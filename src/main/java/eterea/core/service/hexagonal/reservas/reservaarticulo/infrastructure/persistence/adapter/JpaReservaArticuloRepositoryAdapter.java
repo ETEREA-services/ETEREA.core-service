@@ -4,6 +4,7 @@ import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.model.Reser
 import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.ports.out.ReservaArticuloRepository;
 import eterea.core.service.hexagonal.reservas.reservaarticulo.infrastructure.persistence.mapper.ReservaArticuloMapper;
 import eterea.core.service.hexagonal.reservas.reservaarticulo.infrastructure.persistence.repository.JpaReservaArticuloRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,15 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class JpaReservaArticuloRepositoryAdapter implements ReservaArticuloRepository {
 
     private final JpaReservaArticuloRepository jpaRepository;
     private final ReservaArticuloMapper mapper;
-
-    public JpaReservaArticuloRepositoryAdapter(JpaReservaArticuloRepository jpaRepository, ReservaArticuloMapper mapper) {
-        this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     public List<ReservaArticulo> findAllByReservaId(Long reservaId) {

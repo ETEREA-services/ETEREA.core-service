@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import eterea.core.service.kotlin.exception.ArticuloListaPrecioException;
 import eterea.core.service.kotlin.model.ArticuloListaPrecio;
 import eterea.core.service.kotlin.repository.ArticuloListaPrecioRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,13 +19,10 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ArticuloListaPrecioService {
 
     private final ArticuloListaPrecioRepository repository;
-
-    public ArticuloListaPrecioService(ArticuloListaPrecioRepository repository) {
-        this.repository = repository;
-    }
 
     public Page<ArticuloListaPrecio> findAllPublicadosPaginated(Pageable pageable) {
         Sort sort = Sort.by("articulo.rubroId").ascending()

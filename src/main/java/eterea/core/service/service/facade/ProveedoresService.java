@@ -3,21 +3,18 @@ package eterea.core.service.service.facade;
 import eterea.core.service.hexagonal.compras.proveedormovimiento.domain.model.ProveedorMovimiento;
 import eterea.core.service.service.FacturaRendicionDetalleService;
 import eterea.core.service.hexagonal.compras.proveedormovimiento.application.service.ProveedorMovimientoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProveedoresService {
 
     private final ProveedorMovimientoService proveedorMovimientoService;
     private final FacturaRendicionDetalleService facturaRendicionDetalleService;
-
-    public ProveedoresService(ProveedorMovimientoService proveedorMovimientoService, FacturaRendicionDetalleService facturaRendicionDetalleService) {
-        this.proveedorMovimientoService = proveedorMovimientoService;
-        this.facturaRendicionDetalleService = facturaRendicionDetalleService;
-    }
 
     public List<ProveedorMovimiento> findAllByProveedorIdSinRendicion(Long proveedorId) {
         Map<String, ProveedorMovimiento> proveedorMovimientos = new HashMap<>();

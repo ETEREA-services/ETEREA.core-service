@@ -3,9 +3,10 @@ package eterea.core.service.hexagonal.stock.articulo.application.usecases;
 import eterea.core.service.hexagonal.stock.articulo.domain.model.Articulo;
 import eterea.core.service.hexagonal.stock.articulo.domain.ports.in.FindArticulosByVoucherUseCase;
 import eterea.core.service.hexagonal.stock.articulo.domain.ports.out.ArticuloRepository;
-import eterea.core.service.kotlin.model.ProductoArticulo;
+import eterea.core.service.hexagonal.ventas.productoarticulo.domain.model.ProductoArticulo;
+import eterea.core.service.hexagonal.ventas.productoarticulo.infrastructure.persistence.entity.ProductoArticuloEntity;
 import eterea.core.service.kotlin.model.VoucherProducto;
-import eterea.core.service.service.ProductoArticuloService;
+import eterea.core.service.hexagonal.ventas.productoarticulo.application.service.ProductoArticuloService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

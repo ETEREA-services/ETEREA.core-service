@@ -5,23 +5,16 @@ import eterea.core.service.hexagonal.contable.cuenta.infrastructure.web.mapper.C
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.CuentaMovimiento;
 import eterea.core.service.hexagonal.contable.cuentamovimiento.infrastructure.web.dto.CuentaMovimientoResponse;
 import eterea.core.service.hexagonal.negocio.infrastructure.web.mapper.NegocioDtoMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class CuentaMovimientoDtoMapper {
 
     private final CuentaDtoMapper cuentaDtoMapper;
     private final ComprobanteDtoMapper comprobanteDtoMapper;
     private final NegocioDtoMapper negocioDtoMapper;
-
-    public CuentaMovimientoDtoMapper(
-            CuentaDtoMapper cuentaDtoMapper,
-            ComprobanteDtoMapper comprobanteDtoMapper,
-            NegocioDtoMapper negocioDtoMapper) {
-        this.cuentaDtoMapper = cuentaDtoMapper;
-        this.comprobanteDtoMapper = comprobanteDtoMapper;
-        this.negocioDtoMapper = negocioDtoMapper;
-    }
 
     public CuentaMovimientoResponse toResponse(CuentaMovimiento domain) {
         if (domain == null) {

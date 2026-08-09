@@ -7,6 +7,7 @@ import eterea.core.service.hexagonal.ventas.clientemovimiento.application.servic
 import eterea.core.service.service.ComprobanteFaltanteService;
 import eterea.core.service.tool.Jsonifier;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ConsolidadoService {
 
     private final ComprobanteFaltanteService comprobanteFaltanteService;
@@ -36,12 +38,6 @@ public class ConsolidadoService {
         public String jsonify() {
             return Jsonifier.builder(this).build();
         }
-    }
-
-    public ConsolidadoService(ComprobanteFaltanteService comprobanteFaltanteService,
-                              ClienteMovimientoService clienteMovimientoService) {
-        this.comprobanteFaltanteService = comprobanteFaltanteService;
-        this.clienteMovimientoService = clienteMovimientoService;
     }
 
     @Transactional

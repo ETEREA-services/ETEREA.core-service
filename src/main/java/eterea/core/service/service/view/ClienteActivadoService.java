@@ -7,7 +7,7 @@ import java.util.List;
 
 import eterea.core.service.kotlin.model.view.ClienteActivado;
 import eterea.core.service.repository.view.IClienteActivadoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class ClienteActivadoService {
-	@Autowired
-	private IClienteActivadoRepository repository;
+
+	private final IClienteActivadoRepository repository;
 
 	public List<ClienteActivado> findAll() {
 		return repository.findAll(Sort.by(Sort.Order.asc("nombrefantasia"), Sort.Order.asc("razonsocial")));

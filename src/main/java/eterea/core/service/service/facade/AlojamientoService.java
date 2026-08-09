@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import eterea.core.service.service.HabitacionService;
 import eterea.core.service.service.HabitacionTarifaService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -21,15 +22,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AlojamientoService {
 
 	private final HabitacionService habitacionService;
 	private final HabitacionTarifaService habitacionTarifaService;
-
-	public AlojamientoService(HabitacionService habitacionService, HabitacionTarifaService habitacionTarifaService) {
-		this.habitacionService = habitacionService;
-		this.habitacionTarifaService = habitacionTarifaService;
-	}
 
 	@Transactional
 	public Boolean saveHabitacion(Integer numero, Integer paxs, Integer habitacionTipoId, Boolean valorDefault) {

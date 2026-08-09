@@ -5,18 +5,15 @@ import eterea.core.service.hexagonal.comprobante.infrastructure.web.mapper.Compr
 import eterea.core.service.hexagonal.tesoreria.transferencia.domain.model.Transferencia;
 import eterea.core.service.hexagonal.tesoreria.transferencia.infrastructure.web.dto.TransferenciaResponse;
 import eterea.core.service.model.dto.TransferenciaDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class TransferenciaDtoMapper {
 
     private final ComprobanteService comprobanteService;
     private final ComprobanteDtoMapper comprobanteDtoMapper;
-
-    public TransferenciaDtoMapper(ComprobanteService comprobanteService, ComprobanteDtoMapper comprobanteDtoMapper) {
-        this.comprobanteService = comprobanteService;
-        this.comprobanteDtoMapper = comprobanteDtoMapper;
-    }
 
     public TransferenciaResponse toResponse(Transferencia domain) {
         if (domain == null) {

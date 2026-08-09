@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import eterea.core.service.repository.view.IProductoCantidadRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import eterea.core.service.model.view.ProductoCantidad;
@@ -17,10 +17,10 @@ import eterea.core.service.model.view.ProductoCantidad;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class ProductoCantidadService {
-	
-	@Autowired
-	private IProductoCantidadRepository repository;
+
+	private final IProductoCantidadRepository repository;
 
 	public List<ProductoCantidad> findAllByFechaServicio(OffsetDateTime fechaServicio) {
 		return repository.findAllByFechaServicio(fechaServicio);

@@ -5,6 +5,7 @@ import eterea.core.service.hexagonal.stock.stockmovimiento.application.service.S
 import eterea.core.service.hexagonal.stock.stockmovimiento.domain.model.StockMovimiento;
 import eterea.core.service.hexagonal.stock.stockmovimiento.infrastructure.web.dto.StockMovimientoResponse;
 import eterea.core.service.hexagonal.stock.stockmovimiento.infrastructure.web.mapper.StockMovimientoDtoMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +13,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/tenant/core/stockmovimiento")
+@RequiredArgsConstructor
 public class StockMovimientoController {
 
     private final StockMovimientoService service;
     private final StockMovimientoDtoMapper mapper;
-
-    public StockMovimientoController(StockMovimientoService service, StockMovimientoDtoMapper mapper) {
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     @GetMapping("/{stockMovimientoId}")
     public ResponseEntity<StockMovimientoResponse> findByStockMovimientoId(@PathVariable Long stockMovimientoId) {

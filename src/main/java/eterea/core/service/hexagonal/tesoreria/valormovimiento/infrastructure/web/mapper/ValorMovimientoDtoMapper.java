@@ -6,20 +6,17 @@ import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.pe
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.web.dto.ValorMovimientoResponse;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.infrastructure.web.mapper.ValorDtoMapper;
 import eterea.core.service.model.dto.ValorMovimientoDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
 @Component
+@RequiredArgsConstructor
 public class ValorMovimientoDtoMapper implements Function<ValorMovimientoEntity, ValorMovimientoDto> {
 
     private final CuentaDtoMapper cuentaDtoMapper;
     private final ValorDtoMapper valorDtoMapper;
-
-    public ValorMovimientoDtoMapper(CuentaDtoMapper cuentaDtoMapper, ValorDtoMapper valorDtoMapper) {
-        this.cuentaDtoMapper = cuentaDtoMapper;
-        this.valorDtoMapper = valorDtoMapper;
-    }
 
     @Override
     public ValorMovimientoDto apply(ValorMovimientoEntity valorMovimiento) {

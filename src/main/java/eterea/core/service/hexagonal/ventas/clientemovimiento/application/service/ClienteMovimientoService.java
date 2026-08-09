@@ -2,6 +2,7 @@ package eterea.core.service.hexagonal.ventas.clientemovimiento.application.servi
 
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.in.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ClienteMovimientoService {
 
     private final FindClienteMovimientosAsociablesUseCase findClienteMovimientosAsociablesUseCase;
@@ -22,29 +24,6 @@ public class ClienteMovimientoService {
     private final CreateClienteMovimientoUseCase createClienteMovimientoUseCase;
     private final UpdateClienteMovimientoUseCase updateClienteMovimientoUseCase;
     private final DeleteClienteMovimientoUseCase deleteClienteMovimientoUseCase;
-
-    public ClienteMovimientoService(
-            FindClienteMovimientosAsociablesUseCase findClienteMovimientosAsociablesUseCase,
-            FindClienteMovimientosByReservaUseCase findClienteMovimientosByReservaUseCase,
-            FindClienteMovimientosFacturadosUseCase findClienteMovimientosFacturadosUseCase,
-            FindClienteMovimientosByIdsUseCase findClienteMovimientosByIdsUseCase,
-            FindClienteMovimientoByIdUseCase findClienteMovimientoByIdUseCase,
-            FindClienteMovimientoByComprobanteUseCase findClienteMovimientoByComprobanteUseCase,
-            FindNextNumeroComprobanteUseCase findNextNumeroComprobanteUseCase,
-            CreateClienteMovimientoUseCase createClienteMovimientoUseCase,
-            UpdateClienteMovimientoUseCase updateClienteMovimientoUseCase,
-            DeleteClienteMovimientoUseCase deleteClienteMovimientoUseCase) {
-        this.findClienteMovimientosAsociablesUseCase = findClienteMovimientosAsociablesUseCase;
-        this.findClienteMovimientosByReservaUseCase = findClienteMovimientosByReservaUseCase;
-        this.findClienteMovimientosFacturadosUseCase = findClienteMovimientosFacturadosUseCase;
-        this.findClienteMovimientosByIdsUseCase = findClienteMovimientosByIdsUseCase;
-        this.findClienteMovimientoByIdUseCase = findClienteMovimientoByIdUseCase;
-        this.findClienteMovimientoByComprobanteUseCase = findClienteMovimientoByComprobanteUseCase;
-        this.findNextNumeroComprobanteUseCase = findNextNumeroComprobanteUseCase;
-        this.createClienteMovimientoUseCase = createClienteMovimientoUseCase;
-        this.updateClienteMovimientoUseCase = updateClienteMovimientoUseCase;
-        this.deleteClienteMovimientoUseCase = deleteClienteMovimientoUseCase;
-    }
 
     public List<ClienteMovimiento> findTop200Asociables(Long clienteId, Integer comprobanteId) {
         return findClienteMovimientosAsociablesUseCase.findTop200Asociables(clienteId, comprobanteId);

@@ -10,6 +10,7 @@ import eterea.core.service.exception.ArticuloFechaException;
 import eterea.core.service.kotlin.model.ArticuloFecha;
 import eterea.core.service.kotlin.repository.ArticuloFechaRepository;
 import org.jetbrains.annotations.Nullable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,13 +18,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class ArticuloFechaService {
 
     private final ArticuloFechaRepository repository;
-
-    public ArticuloFechaService(ArticuloFechaRepository repository) {
-        this.repository = repository;
-    }
 
     public ArticuloFecha findByUnique(String articuloId, OffsetDateTime fecha) {
         return repository.findByArticuloIdAndFecha(articuloId, fecha)

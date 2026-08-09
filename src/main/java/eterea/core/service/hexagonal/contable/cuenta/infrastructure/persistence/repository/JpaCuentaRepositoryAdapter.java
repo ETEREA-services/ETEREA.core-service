@@ -3,6 +3,7 @@ package eterea.core.service.hexagonal.contable.cuenta.infrastructure.persistence
 import eterea.core.service.hexagonal.contable.cuenta.domain.model.Cuenta;
 import eterea.core.service.hexagonal.contable.cuenta.domain.ports.out.CuentaRepository;
 import eterea.core.service.hexagonal.contable.cuenta.infrastructure.persistence.mapper.CuentaMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -11,15 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class JpaCuentaRepositoryAdapter implements CuentaRepository {
 
     private final JpaCuentaRepository jpaRepository;
     private final CuentaMapper mapper;
-
-    public JpaCuentaRepositoryAdapter(JpaCuentaRepository jpaRepository, CuentaMapper mapper) {
-        this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     public List<Cuenta> findAll() {
