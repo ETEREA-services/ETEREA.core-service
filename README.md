@@ -6,10 +6,10 @@
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-green.svg)](https://spring.io/projects/spring-boot)
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.2-green.svg)](https://spring.io/projects/spring-cloud)
-[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0.3-blue.svg)](https://springdoc.org/)
-[![MySQL](https://img.shields.io/badge/MySQL-9.7.0-orange.svg)](https://www.mysql.com/)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1.0-blue.svg)](https://springdoc.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-26.7.0-orange.svg)](https://www.mysql.com/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.6.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
+[![Version](https://img.shields.io/badge/Version-2.7.0-blue.svg)](https://github.com/ETEREA-services/ETEREA.core-service/releases)
 
 ## Descripción
 
@@ -42,12 +42,12 @@ Servicio Core para la gestión financiera y contable, implementado con **arquite
 - Lombok
 - ModelMapper 3.2.6
 - Caffeine Cache
-- MySQL Connector 9.7.0
+- MySQL Connector 26.7.0
 - Jacoco 0.8.13 (Cobertura de tests)
 - Apache Commons Lang3 3.20.0
 
 ### Documentación
-- SpringDoc OpenAPI UI 3.0.3
+- SpringDoc OpenAPI UI 3.1.0
 
 ## Arquitectura
 
@@ -59,6 +59,7 @@ El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 - **`hexagonal/stock/stockmovimiento/`**: Gestión de movimientos de stock (migrado a Java)
 - **`hexagonal/contable/cuenta/`**: Gestión de cuentas contables (migrado a Java)
 - **`hexagonal/contable/cuentamovimiento/`**: Gestión de movimientos contables (migrado a Java)
+- **`hexagonal/compras/proveedor/`**: Gestión de proveedores con arquitectura hexagonal (migrado de Kotlin a Java)
 - **`hexagonal/compras/proveedormovimiento/`**: Gestión de movimientos de proveedores
 - **`hexagonal/comprobante/`**: Gestión de comprobantes (migrado a Java)
 - **`hexagonal/transferencia/`**: Gestión de transferencias entre negocios (migrado a Java)
@@ -71,6 +72,8 @@ El proyecto utiliza una **arquitectura hexagonal** con implementación mixta:
 - **`hexagonal/cierrecaja/cierrecajamovimiento/`**: Gestión de movimientos de cierre de caja con arquitectura hexagonal
 - **`hexagonal/cierrecaja/processCierre/`**: Procesamiento de cierre de caja con conteos pendientes
 - **`hexagonal/reservas/reservaarticulo/`**: Gestión de artículos de reserva con arquitectura hexagonal (migrado de Kotlin a Java)
+- **`hexagonal/reservas/voucher/`**: Gestión de vouchers con arquitectura hexagonal (migrado de Kotlin a Java)
+- **`hexagonal/ventas/productoarticulo/`**: Gestión de productos-artículos con arquitectura hexagonal (migrado de Kotlin a Java)
 - **`hexagonal/facturacion/arca/nacional/`**: Facturación electrónica nacional
 - **`hexagonal/facturacion/arca/exportacion/`**: Facturación de exportación
 
@@ -189,6 +192,8 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - ✅ **Gestión de Legajos** con arquitectura hexagonal
 - ✅ **Consulta de Datos de Facturación (InvoiceData)** con arquitectura hexagonal
 - ✅ **Gestión de Proveedores** con arquitectura hexagonal
+- ✅ **Gestión de Vouchers** con arquitectura hexagonal (migrado de Kotlin a Java)
+- ✅ **Gestión de Productos-Artículos** con arquitectura hexagonal (migrado de Kotlin a Java)
 - ✅ **Control de Movimientos** contables y valores
 - ✅ **Procesamiento de Cierre de Caja** con conteos pendientes
 - ✅ **Gestión de Anticipos de Haberes** en cierre de caja
@@ -196,7 +201,7 @@ Este proyecto es privado y de uso exclusivo de Termalia S.A.
 - ✅ **Gestión de Artículos de Reserva** con arquitectura hexagonal (migrado de Kotlin a Java)
 
 ### Infraestructura
-- ✅ **Documentación API** con OpenAPI 3.0
+- ✅ **Documentación API** con OpenAPI 3.1
 - ✅ **Service Discovery** con Consul
 - ✅ **Cache distribuido** con Caffeine
 - ✅ **Transacciones distribuidas** con JPA

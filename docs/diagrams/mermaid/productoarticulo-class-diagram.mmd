@@ -1,0 +1,130 @@
+classDiagram
+    direction TB
+
+    namespace ventas.productoarticulo {
+        class ProductoArticulo {
+            <<Domain Model>>
+            +Long productoarticuloId
+            +Integer negocioId
+            +Integer productoId
+            +String articuloId
+        }
+
+        class ProductoArticuloService {
+            <<Service>>
+            +findAllByProductoId(Integer) List~ProductoArticulo~
+            +findByProductoIdAndArticuloId(Integer,String) ProductoArticulo
+            +add(ProductoArticulo) ProductoArticulo
+            +delete(Long) void
+        }
+
+        class CreateProductoArticuloUseCase {
+            <<interface>>
+            +add(ProductoArticulo) ProductoArticulo
+        }
+
+        class DeleteProductoArticuloUseCase {
+            <<interface>>
+            +delete(Long) void
+        }
+
+        class FindProductoArticuloByProductoIdAndArticuloIdUseCase {
+            <<interface>>
+            +findByProductoIdAndArticuloId(Integer,String) ProductoArticulo
+        }
+
+        class FindProductoArticulosByProductoIdUseCase {
+            <<interface>>
+            +findAllByProductoId(Integer) List~ProductoArticulo~
+        }
+
+        class ProductoArticuloRepository {
+            <<interface>>
+            +findAllByProductoId(Integer) List~ProductoArticulo~
+            +findByProductoIdAndArticuloId(Integer,String) Optional~ProductoArticulo~
+            +save(ProductoArticulo) ProductoArticulo
+            +deleteById(Long) void
+        }
+    }
+
+    namespace infrastructure {
+        class ProductoArticuloEntity {
+            <<JPA Entity>>
+            +Long productoarticuloId
+            +Integer negocioId
+            +Integer productoId
+            +String articuloId
+        }
+
+        class JpaProductoArticuloRepositoryAdapter {
+            <<Adapter>>
+            +findAllByProductoId(Integer) List~ProductoArticulo~
+            +findByProductoIdAndArticuloId(Integer,String) Optional~ProductoArticulo~
+            +save(ProductoArticulo) ProductoArticulo
+            +deleteById(Long) void
+        }
+
+        class ProductoArticuloMapper {
+            <<Mapper>>
+            +toDomain(ProductoArticuloEntity) ProductoArticulo
+            +toEntity(ProductoArticulo) ProductoArticuloEntity
+        }
+
+        class JpaProductoArticuloRepository {
+            <<JpaRepository>>
+            +findAllByProductoId(Integer) List~ProductoArticuloEntity~
+            +findByProductoIdAndArticuloId(Integer,String) Optional~ProductoArticuloEntity~
+            +deleteById(Long) void
+        }
+    }
+
+    namespace infrastructure.web {
+        class ProductoArticuloController {
+            <<REST Controller>>
+            +findAllByProductoId(Integer) ResponseEntity
+            +add(ProductoArticuloRequest) ResponseEntity
+            +delete(Long) ResponseEntity
+        }
+
+        class ProductoArticuloRequest {
+            <<Request DTO>>
+            +Integer negocioId
+            +Integer productoId
+            +String articuloId
+        }
+
+        class ProductoArticuloResponse {
+            <<Response DTO>>
+            +Long productoarticuloId
+            +Integer negocioId
+            +Integer productoId
+            +String articuloId
+        }
+
+        class ProductoArticuloDtoMapper {
+            <<Mapper>>
+            +toDomain(ProductoArticuloRequest) ProductoArticulo
+            +toResponse(ProductoArticulo) ProductoArticuloResponse
+        }
+    }
+
+    ProductoArticuloService --> CreateProductoArticuloUseCase
+    ProductoArticuloService --> DeleteProductoArticuloUseCase
+    ProductoArticuloService --> FindProductoArticuloByProductoIdAndArticuloIdUseCase
+    ProductoArticuloService --> FindProductoArticulosByProductoIdUseCase
+
+    CreateProductoArticuloUseCase ..> ProductoArticuloRepository
+    DeleteProductoArticuloUseCase ..> ProductoArticuloRepository
+    FindProductoArticuloByProductoIdAndArticuloIdUseCase ..> ProductoArticuloRepository
+    FindProductoArticulosByProductoIdUseCase ..> ProductoArticuloRepository
+
+    ProductoArticuloRepository <|.. JpaProductoArticuloRepositoryAdapter
+    JpaProductoArticuloRepositoryAdapter --> ProductoArticuloMapper
+    JpaProductoArticuloRepositoryAdapter --> JpaProductoArticuloRepository
+
+    ProductoArticuloMapper --> ProductoArticuloEntity
+    ProductoArticuloMapper --> ProductoArticulo
+
+    ProductoArticuloController --> ProductoArticuloService
+    ProductoArticuloController --> ProductoArticuloDtoMapper
+    ProductoArticuloDtoMapper --> ProductoArticulo

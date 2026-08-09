@@ -1,88 +1,124 @@
 classDiagram
-    direction LR
+    direction TB
 
-    class ProveedorController {
-        +findAllBySearch(String): ResponseEntity
-        +findByProveedorId(Long): ResponseEntity
-        +findByNumeroDocumento(String): ResponseEntity
-        +findLast(): ResponseEntity
-        +add(Proveedor): ResponseEntity
+    namespace compras.proveedor {
+        class Proveedor {
+            <<Domain Model>>
+            +Integer proveedorId
+            +String razonSocial
+            +Integer negocioId
+            +String cuit
+            +String domicilio
+            +String telefono
+            +String fax
+            +String email
+            +Integer posicion
+            +String celular
+            +String numeroInscripcionIngresosBrutos
+            +Integer ingresosBrutosContribuyenteId
+            +Integer proveedorCategoriaId
+            +Integer ingresosBrutosCategoriaId
+            +Integer reparticionId
+            +Byte transporte
+        }
+
+        class ProveedorService {
+            <<Service>>
+            +findByProveedorId(Integer) Proveedor
+        }
+
+        class FindProveedorByIdUseCase {
+            <<interface>>
+            +findByProveedorId(Integer) Optional~Proveedor~
+        }
+
+        class ProveedorRepository {
+            <<interface>>
+            +findByProveedorId(Integer) Optional~Proveedor~
+        }
     }
 
-    class ProveedorService {
-        +findAllBySearch(String): List~ProveedorSearch~
-        +findByProveedorId(Long): Proveedor
-        +findByNumeroDocumento(String): Proveedor
-        +findLast(): Proveedor
-        +add(Proveedor): Proveedor
+    namespace infrastructure {
+        class ProveedorEntity {
+            <<JPA Entity>>
+            +Integer proveedorId
+            +String razonSocial
+            +Integer negocioId
+            +String cuit
+            +String domicilio
+            +String telefono
+            +String fax
+            +String email
+            +Integer posicion
+            +String celular
+            +String numeroInscripcionIngresosBrutos
+            +Integer ingresosBrutosContribuyenteId
+            +Integer proveedorCategoriaId
+            +Integer ingresosBrutosCategoriaId
+            +Integer reparticionId
+            +Byte transporte
+        }
+
+        class JpaProveedorRepositoryAdapter {
+            <<Adapter>>
+            +findByProveedorId(Integer) Optional~Proveedor~
+        }
+
+        class ProveedorMapper {
+            <<Mapper>>
+            +toDomain(ProveedorEntity) Proveedor
+            +toEntity(Proveedor) ProveedorEntity
+        }
+
+        class JpaProveedorRepository {
+            <<JpaRepository>>
+            +findByProveedorId(Integer) Optional~ProveedorEntity~
+        }
     }
 
-    class ProveedorMovimientoController {
-        +findAllByRegimenInformacionCompras(OffsetDateTime, OffsetDateTime): ResponseEntity
-        +resumenIvaComprasMensual(Integer, Integer): ResponseEntity
-        +resumenIvaComprasPosicionMensual(Integer, Integer): ResponseEntity
-        +updateNetoAjuste(ProveedorMovimientoNetoAjusteRequest): ResponseEntity
+    namespace infrastructure.web {
+        class ProveedorController {
+            <<REST Controller>>
+            +findByProveedorId(Integer) ResponseEntity
+        }
+
+        class ProveedorResponse {
+            <<Response DTO>>
+            +Integer proveedorId
+            +String razonSocial
+            +Integer negocioId
+            +String cuit
+            +String domicilio
+            +String telefono
+            +String fax
+            +String email
+            +Integer posicion
+            +String celular
+            +String numeroInscripcionIngresosBrutos
+            +Integer ingresosBrutosContribuyenteId
+            +Integer proveedorCategoriaId
+            +Integer ingresosBrutosCategoriaId
+            +Integer reparticionId
+            +Byte transporte
+        }
+
+        class ProveedorDtoMapper {
+            <<Mapper>>
+            +toResponse(Proveedor) ProveedorResponse
+        }
     }
 
-    class ProveedorMovimientoService {
-        +findAllByRegimenInformacionCompras(OffsetDateTime, OffsetDateTime): List~ProveedorMovimiento~
-        +getResumenIvaComprasMensual(Integer, Integer): ResumenIvaComprasMensual
-        +getAllResumenIvaComprasMensualPosicion(Integer, Integer): List~ResumenIvaComprasMensualPosicion~
-        +updateProveedorMovimientoNetoAjuste(ProveedorMovimientoNetoAjusteRequest): void
-    }
+    ProveedorService --> FindProveedorByIdUseCase
 
-    class ProveedorRepository {
-        +findByProveedorId(Long): Optional~Proveedor~
-        +findTopByNumeroDocumento(String): Optional~Proveedor~
-        +findTopByOrderByProveedorIdDesc(): Optional~Proveedor~
-        +save(Proveedor): Proveedor
-    }
+    FindProveedorByIdUseCase ..> ProveedorRepository
 
-    class ProveedorMovimientoRepository {
-        +findAllByFechaContableBetweenAndComprobanteLibroIva(OffsetDateTime, OffsetDateTime, Byte, Sort): List~ProveedorMovimiento~
-        +findResumenByYearAndMonth(Integer, Integer): ResumenIvaComprasMensual
-        +findAllResumenPosicionByYearAndMonth(Integer, Integer): List~ResumenIvaComprasMensualPosicion~
-    }
+    ProveedorRepository <|.. JpaProveedorRepositoryAdapter
+    JpaProveedorRepositoryAdapter --> ProveedorMapper
+    JpaProveedorRepositoryAdapter --> JpaProveedorRepository
 
-    class ProveedorMovimiento {
-        <<Java Domain Model>>
-        +proveedorMovimientoId: Long
-        +proveedorId: Long
-        +comprobanteId: Int
-        +fechaComprobante: OffsetDateTime
-        +prefijo: Int
-        +numeroComprobante: Long
-        +importe: BigDecimal
-        +neto: BigDecimal
-        +montoIva: BigDecimal
-        +fechaContable: OffsetDateTime
-        +comprobante: Comprobante
-        +proveedor: Proveedor
-    }
-
-    class Proveedor {
-        <<Kotlin Data Class>>
-        +proveedorId: Long
-        +nombre: String
-        +cuit: String
-        +razonSocial: String
-        +email: String
-        +numeroMovil: String
-        +limiteCredito: BigDecimal
-        +posicionIva: Int
-        +posicion: PosicionIva
-    }
-
-    class PosicionIva {
-        +posicionId: Integer
-        +nombre: String
-    }
+    ProveedorMapper --> ProveedorEntity
+    ProveedorMapper --> Proveedor
 
     ProveedorController --> ProveedorService
-    ProveedorService --> ProveedorRepository
-    ProveedorRepository --> Proveedor
-    Proveedor "1" -- "1" PosicionIva
-
-    ProveedorMovimientoController --> ProveedorMovimientoService
-    ProveedorMovimientoService --> ProveedorMovimientoRepository
-    ProveedorMovimientoRepository --> ProveedorMovimiento
+    ProveedorController --> ProveedorDtoMapper
+    ProveedorDtoMapper --> Proveedor
