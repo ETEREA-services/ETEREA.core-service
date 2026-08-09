@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 
 import eterea.core.service.exception.ArticuloFechaException;
 import eterea.core.service.kotlin.model.ArticuloFecha;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -28,13 +29,10 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @RequestMapping({"/api/core/articulofecha", "/articulofecha"})
+@RequiredArgsConstructor
 public class ArticuloFechaController {
 
 	private final ArticuloFechaService service;
-
-	public ArticuloFechaController(ArticuloFechaService service) {
-		this.service = service;
-	}
 
 	@GetMapping("/unique/{articuloId}/{fecha}")
 	public ResponseEntity<ArticuloFecha> getByUnique(@PathVariable String articuloId,

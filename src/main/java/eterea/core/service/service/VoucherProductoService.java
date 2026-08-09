@@ -1,10 +1,12 @@
 package eterea.core.service.service;
 
-import eterea.core.service.exception.ProductoArticuloException;
+import eterea.core.service.hexagonal.ventas.productoarticulo.application.exception.ProductoArticuloException;
 import eterea.core.service.exception.VoucherProductoException;
+import eterea.core.service.hexagonal.ventas.productoarticulo.application.service.ProductoArticuloService;
 import eterea.core.service.kotlin.model.VoucherProducto;
 import eterea.core.service.kotlin.repository.VoucherProductoRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +15,11 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class VoucherProductoService {
 
     private final VoucherProductoRepository repository;
     private final ProductoArticuloService productoArticuloService;
-
-    public VoucherProductoService(VoucherProductoRepository repository, ProductoArticuloService productoArticuloService) {
-        this.repository = repository;
-        this.productoArticuloService = productoArticuloService;
-    }
 
     public List<VoucherProducto> findAllByVoucherId(Long voucherId) {
         return repository.findAllByVoucherId(voucherId);

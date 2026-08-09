@@ -2,7 +2,7 @@ package eterea.core.service.hexagonal.compras.proveedormovimiento.domain.model;
 
 import eterea.core.service.hexagonal.negocio.domain.model.Negocio;
 import eterea.core.service.hexagonal.comprobante.infrastructure.persistence.entity.ComprobanteEntity;
-import eterea.core.service.kotlin.model.Proveedor;
+import eterea.core.service.hexagonal.compras.proveedor.infrastructure.persistence.entity.ProveedorEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,7 +60,7 @@ public class ProveedorMovimiento {
     private Byte transferida;
 
     private ComprobanteEntity comprobante;
-    private Proveedor proveedor;
+    private ProveedorEntity proveedor;
     private Negocio negocio;
 
     public String comprobanteKey() {

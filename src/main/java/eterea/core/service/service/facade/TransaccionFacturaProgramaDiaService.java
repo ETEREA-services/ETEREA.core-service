@@ -3,6 +3,7 @@ package eterea.core.service.service.facade;
 import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.hexagonal.facturacion.arca.nacional.infrastructure.web.dto.FacturacionDto;
+import eterea.core.service.hexagonal.reservas.voucher.application.service.VoucherService;
 import eterea.core.service.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

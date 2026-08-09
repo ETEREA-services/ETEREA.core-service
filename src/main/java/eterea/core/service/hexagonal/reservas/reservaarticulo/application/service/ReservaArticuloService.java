@@ -2,6 +2,7 @@ package eterea.core.service.hexagonal.reservas.reservaarticulo.application.servi
 
 import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.model.ReservaArticulo;
 import eterea.core.service.hexagonal.reservas.reservaarticulo.domain.ports.in.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ReservaArticuloService {
 
     private final FindReservaArticulosByReservaIdUseCase findReservaArticulosByReservaIdUseCase;
@@ -18,22 +20,6 @@ public class ReservaArticuloService {
     private final UpdateReservaArticuloUseCase updateReservaArticuloUseCase;
     private final DeleteReservaArticuloUseCase deleteReservaArticuloUseCase;
     private final SaveAllReservaArticulosUseCase saveAllReservaArticulosUseCase;
-
-    public ReservaArticuloService(FindReservaArticulosByReservaIdUseCase findReservaArticulosByReservaIdUseCase,
-                                  FindReservaArticulosByVoucherIdUseCase findReservaArticulosByVoucherIdUseCase,
-                                  FindReservaArticuloByIdUseCase findReservaArticuloByIdUseCase,
-                                  CreateReservaArticuloUseCase createReservaArticuloUseCase,
-                                  UpdateReservaArticuloUseCase updateReservaArticuloUseCase,
-                                  DeleteReservaArticuloUseCase deleteReservaArticuloUseCase,
-                                  SaveAllReservaArticulosUseCase saveAllReservaArticulosUseCase) {
-        this.findReservaArticulosByReservaIdUseCase = findReservaArticulosByReservaIdUseCase;
-        this.findReservaArticulosByVoucherIdUseCase = findReservaArticulosByVoucherIdUseCase;
-        this.findReservaArticuloByIdUseCase = findReservaArticuloByIdUseCase;
-        this.createReservaArticuloUseCase = createReservaArticuloUseCase;
-        this.updateReservaArticuloUseCase = updateReservaArticuloUseCase;
-        this.deleteReservaArticuloUseCase = deleteReservaArticuloUseCase;
-        this.saveAllReservaArticulosUseCase = saveAllReservaArticulosUseCase;
-    }
 
     public List<ReservaArticulo> findAllByReservaId(Long reservaId) {
         return findReservaArticulosByReservaIdUseCase.findAllByReservaId(reservaId);

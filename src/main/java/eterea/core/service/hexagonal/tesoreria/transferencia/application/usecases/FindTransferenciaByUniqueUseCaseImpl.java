@@ -4,18 +4,16 @@ import eterea.core.service.hexagonal.tesoreria.transferencia.application.excepti
 import eterea.core.service.hexagonal.tesoreria.transferencia.domain.model.Transferencia;
 import eterea.core.service.hexagonal.tesoreria.transferencia.domain.ports.in.FindTransferenciaByUniqueUseCase;
 import eterea.core.service.hexagonal.tesoreria.transferencia.domain.ports.out.TransferenciaRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FindTransferenciaByUniqueUseCaseImpl implements FindTransferenciaByUniqueUseCase {
 
     private final TransferenciaRepository repository;
-
-    public FindTransferenciaByUniqueUseCaseImpl(TransferenciaRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Transferencia findByUnique(Integer negocioIdDesde, Integer negocioIdHasta, Long numeroTransferencia) {

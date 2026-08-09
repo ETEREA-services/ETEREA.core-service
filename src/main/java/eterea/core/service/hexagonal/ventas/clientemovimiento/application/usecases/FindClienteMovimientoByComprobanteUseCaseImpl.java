@@ -4,16 +4,14 @@ import eterea.core.service.hexagonal.ventas.clientemovimiento.application.except
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.in.FindClienteMovimientoByComprobanteUseCase;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.out.ClienteMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FindClienteMovimientoByComprobanteUseCaseImpl implements FindClienteMovimientoByComprobanteUseCase {
 
     private final ClienteMovimientoRepository repository;
-
-    public FindClienteMovimientoByComprobanteUseCaseImpl(ClienteMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public ClienteMovimiento findByComprobante(Integer comprobanteId, Integer puntoVenta, Long numeroComprobante) {

@@ -2,16 +2,14 @@ package eterea.core.service.hexagonal.ventas.clientemovimiento.application.useca
 
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.in.FindNextNumeroComprobanteUseCase;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.out.ClienteMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FindNextNumeroComprobanteUseCaseImpl implements FindNextNumeroComprobanteUseCase {
 
     private final ClienteMovimientoRepository repository;
-
-    public FindNextNumeroComprobanteUseCaseImpl(ClienteMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Long nextNumeroFactura(String letraComprobante, Integer puntoVenta, Integer comprobanteId) {

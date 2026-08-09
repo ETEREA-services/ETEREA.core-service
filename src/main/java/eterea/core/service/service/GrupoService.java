@@ -4,11 +4,14 @@
 package eterea.core.service.service;
 
 import eterea.core.service.exception.GrupoException;
+import eterea.core.service.hexagonal.reservas.voucher.application.service.VoucherService;
+import eterea.core.service.hexagonal.reservas.voucher.domain.model.Voucher;
 import eterea.core.service.kotlin.model.Grupo;
 import eterea.core.service.kotlin.model.GrupoProducto;
-import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.hexagonal.reservas.voucher.infrastructure.persistence.entity.VoucherEntity;
 import eterea.core.service.kotlin.model.VoucherProducto;
 import eterea.core.service.repository.GrupoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +25,13 @@ import java.util.Set;
  * @author daniel
  */
 @Service
+@RequiredArgsConstructor
 public class GrupoService {
 
 	private final GrupoRepository repository;
 	private final GrupoProductoService grupoProductoService;
 	private final VoucherService voucherService;
 	private final VoucherProductoService voucherProductoService;
-
-	public GrupoService(GrupoRepository repository, GrupoProductoService grupoProductoService, VoucherService voucherService, VoucherProductoService voucherProductoService) {
-		this.repository = repository;
-		this.grupoProductoService = grupoProductoService;
-		this.voucherService = voucherService;
-		this.voucherProductoService = voucherProductoService;
-	}
 
 	public List<Grupo> findAll() {
 		return repository.findAll(Sort.by("nombre").ascending());

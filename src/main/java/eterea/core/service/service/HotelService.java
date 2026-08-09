@@ -8,6 +8,7 @@ import java.util.List;
 import eterea.core.service.exception.HotelException;
 import eterea.core.service.kotlin.model.Hotel;
 import eterea.core.service.repository.HotelRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class HotelService {
 
 	private final HotelRepository repository;
-
-	public HotelService(HotelRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<Hotel> findAll() {
 		return repository.findAll();

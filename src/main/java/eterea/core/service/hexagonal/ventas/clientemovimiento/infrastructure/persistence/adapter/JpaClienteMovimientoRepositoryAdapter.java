@@ -4,6 +4,7 @@ import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.Clien
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.out.ClienteMovimientoRepository;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.infrastructure.persistence.mapper.ClienteMovimientoMapper;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.infrastructure.persistence.repository.JpaClienteMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
@@ -13,16 +14,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class JpaClienteMovimientoRepositoryAdapter implements ClienteMovimientoRepository {
 
     private final JpaClienteMovimientoRepository jpaRepository;
     private final ClienteMovimientoMapper mapper;
-
-    public JpaClienteMovimientoRepositoryAdapter(JpaClienteMovimientoRepository jpaRepository,
-                                                  ClienteMovimientoMapper mapper) {
-        this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     public List<ClienteMovimiento> findTop200ByClienteIdAndComprobanteIdInOrderByClienteMovimientoIdDesc(

@@ -3,6 +3,9 @@ package eterea.core.service.service.facade.reserva;
 import eterea.core.service.exception.ClienteException;
 import eterea.core.service.hexagonal.empresa.application.service.EmpresaService;
 import eterea.core.service.hexagonal.negocio.domain.model.Negocio;
+import eterea.core.service.hexagonal.reservas.voucher.application.service.VoucherService;
+import eterea.core.service.hexagonal.reservas.voucher.domain.model.Voucher;
+import eterea.core.service.hexagonal.reservas.voucher.infrastructure.persistence.entity.VoucherEntity;
 import eterea.core.service.kotlin.exception.FeriadoException;
 import eterea.core.service.kotlin.exception.ProductoSkuException;
 import eterea.core.service.kotlin.extern.OrderNote;
@@ -95,7 +98,7 @@ public class ProductsService {
         }
 
         var voucherProductos = determinaProductos(paxsMayor, paxsMenor, paxsInfante, productoPaxMayor, productoPaxMenor, productoPaxInfante);
-        Voucher voucher = new Voucher.Builder()
+        Voucher voucher = Voucher.builder()
                 .fechaToma(orderNote.getCompletedDate())
                 .fechaServicio(fechaServicio)
                 .fechaVencimiento(product.getBookingStart())

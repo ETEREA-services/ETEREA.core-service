@@ -7,6 +7,7 @@ import java.util.List;
 
 import eterea.core.service.kotlin.model.HabitacionTipo;
 import eterea.core.service.repository.HabitacionTipoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,13 +15,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class HabitacionTipoService {
 
 	private final HabitacionTipoRepository repository;
-
-	public HabitacionTipoService(HabitacionTipoRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<HabitacionTipo> findAll() {
 		return repository.findAll();

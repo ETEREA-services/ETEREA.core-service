@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import eterea.core.service.exception.view.HabitacionMovimientoExtendedException;
 import eterea.core.service.repository.view.IHabitacionMovimientoExtendedRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import eterea.core.service.model.view.HabitacionMovimientoExtended;
@@ -22,10 +22,10 @@ import eterea.core.service.model.view.HabitacionMovimientoExtended;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class HabitacionMovimientoExtendedService {
 
-	@Autowired
-	private IHabitacionMovimientoExtendedRepository repository;
+	private final IHabitacionMovimientoExtendedRepository repository;
 
 	public List<HabitacionMovimientoExtended> findAllByPeriodo(OffsetDateTime desde, OffsetDateTime hasta) {
 		Map<Long, HabitacionMovimientoExtended> ingresos = repository.findAllByFechaIngresoBetween(desde, hasta)

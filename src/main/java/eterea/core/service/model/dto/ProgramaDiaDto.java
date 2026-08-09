@@ -1,7 +1,8 @@
 package eterea.core.service.model.dto;
 
+import eterea.core.service.hexagonal.reservas.voucher.domain.model.Voucher;
 import eterea.core.service.kotlin.model.ReservaOrigen;
-import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.hexagonal.reservas.voucher.infrastructure.persistence.entity.VoucherEntity;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.infrastructure.persistence.entity.ClienteMovimientoEntity;
 import lombok.*;
 

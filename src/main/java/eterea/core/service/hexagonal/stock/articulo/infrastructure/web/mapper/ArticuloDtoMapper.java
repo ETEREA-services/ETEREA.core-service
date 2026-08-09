@@ -5,16 +5,14 @@ import eterea.core.service.hexagonal.stock.articulo.infrastructure.web.dto.Artic
 import eterea.core.service.hexagonal.stock.articulo.infrastructure.web.dto.ArticuloResponse;
 import eterea.core.service.hexagonal.stock.articulo.infrastructure.web.dto.ArticuloResponseForInvoiceData;
 import eterea.core.service.hexagonal.contable.cuenta.infrastructure.web.mapper.CuentaDtoMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ArticuloDtoMapper {
 
     private final CuentaDtoMapper cuentaDtoMapper;
-
-    public ArticuloDtoMapper(CuentaDtoMapper cuentaDtoMapper) {
-        this.cuentaDtoMapper = cuentaDtoMapper;
-    }
 
     public Articulo toDomain(ArticuloRequest request) {
         if (request == null) return null;

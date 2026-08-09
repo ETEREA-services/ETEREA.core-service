@@ -6,10 +6,12 @@ package eterea.core.service.service.facade;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-import eterea.core.service.kotlin.model.Voucher;
+import eterea.core.service.hexagonal.reservas.voucher.domain.model.Voucher;
+import eterea.core.service.hexagonal.reservas.voucher.infrastructure.persistence.entity.VoucherEntity;
 import eterea.core.service.service.view.UsuarioVencimientoService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,7 +19,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import eterea.core.service.model.view.UsuarioVencimiento;
-import eterea.core.service.service.VoucherService;
+import eterea.core.service.hexagonal.reservas.voucher.application.service.VoucherService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class VencimientoService {
 
 	private final VoucherService voucherService;
@@ -34,14 +37,6 @@ public class VencimientoService {
 
 	@Value("${app.enable-send-email:false}")
 	private boolean IS_EMAIL_ENABLED;
-
-	public VencimientoService(VoucherService voucherService,
-							  UsuarioVencimientoService usuarioVencimientoService,
-							  @Autowired(required = false) JavaMailSender sender) {
-		this.voucherService = voucherService;
-		this.usuarioVencimientoService = usuarioVencimientoService;
-		this.sender = sender;
-	}
 
 	public String notificaciondia() {
 
@@ -86,7 +81,7 @@ public class VencimientoService {
 				helper.setSubject("Aviso de Vencimiento de Programas por el Dia - usuario : "
 						+ usuarioVencimiento.getLogin().toUpperCase());
 			} catch (MessagingException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 				return "Error enviando correo ..";
 			}
 			sender.send(message);

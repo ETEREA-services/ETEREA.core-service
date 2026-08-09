@@ -10,6 +10,7 @@ import eterea.core.service.kotlin.model.Cliente;
 import eterea.core.service.kotlin.model.view.ClienteSearch;
 import eterea.core.service.repository.ClienteRepository;
 import eterea.core.service.service.view.ClienteSearchService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +20,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ClienteService {
 
 	private final ClienteRepository repository;
 	private final ClienteSearchService clienteSearchService;
-
-	public ClienteService(ClienteRepository repository, ClienteSearchService clienteSearchService) {
-		this.repository = repository;
-		this.clienteSearchService = clienteSearchService;
-	}
 
 	public List<ClienteSearch> findAllBySearch(String search) {
 		return clienteSearchService.findAllBySearch(search);

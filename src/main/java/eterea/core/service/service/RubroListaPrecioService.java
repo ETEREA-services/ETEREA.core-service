@@ -3,6 +3,7 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.RubroListaPrecioException;
 import eterea.core.service.kotlin.model.RubroListaPrecio;
 import eterea.core.service.kotlin.repository.RubroListaPrecioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,13 +11,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RubroListaPrecioService {
 
     private final RubroListaPrecioRepository repository;
-
-    public RubroListaPrecioService(RubroListaPrecioRepository repository) {
-        this.repository = repository;
-    }
 
     public List<RubroListaPrecio> findAll() {
         return repository.findAllByOrderByRubroDescripcion();

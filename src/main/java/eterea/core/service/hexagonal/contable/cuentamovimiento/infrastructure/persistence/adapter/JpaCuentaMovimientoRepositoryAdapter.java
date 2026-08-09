@@ -4,6 +4,7 @@ import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.Cuen
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.ports.out.CuentaMovimientoRepository;
 import eterea.core.service.hexagonal.contable.cuentamovimiento.infrastructure.persistence.mapper.CuentaMovimientoMapper;
 import eterea.core.service.hexagonal.contable.cuentamovimiento.infrastructure.persistence.repository.JpaCuentaMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,15 +14,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class JpaCuentaMovimientoRepositoryAdapter implements CuentaMovimientoRepository {
 
     private final JpaCuentaMovimientoRepository jpaRepository;
     private final CuentaMovimientoMapper mapper;
-
-    public JpaCuentaMovimientoRepositoryAdapter(JpaCuentaMovimientoRepository jpaRepository, CuentaMovimientoMapper mapper) {
-        this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     public List<CuentaMovimiento> findAllByFechaAndOrden(OffsetDateTime fechaContable, Integer ordenContable) {

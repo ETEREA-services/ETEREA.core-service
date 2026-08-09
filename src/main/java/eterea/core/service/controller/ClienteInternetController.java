@@ -4,6 +4,7 @@
 package eterea.core.service.controller;
 
 import eterea.core.service.kotlin.model.ClienteInternet;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,13 +25,11 @@ import eterea.core.service.service.ClienteInternetService;
  */
 @RestController
 @RequestMapping({"/api/core/clienteinternet", "/clienteinternet"})
+@RequiredArgsConstructor
 public class ClienteInternetController {
 
 	private final ClienteInternetService service;
 
-	public ClienteInternetController(ClienteInternetService service) {
-		this.service = service;
-	}
 	
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<ClienteInternet> findById(@PathVariable Long clienteId) {

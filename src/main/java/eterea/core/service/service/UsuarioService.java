@@ -3,18 +3,16 @@ package eterea.core.service.service;
 import eterea.core.service.exception.UsuarioException;
 import eterea.core.service.kotlin.model.Usuario;
 import eterea.core.service.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository repository;
-
-    public UsuarioService(UsuarioRepository repository) {
-        this.repository = repository;
-    }
 
     public List<Usuario> findAll() {
         return repository.findAll();

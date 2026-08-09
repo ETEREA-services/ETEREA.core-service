@@ -3,19 +3,17 @@ package eterea.core.service.service;
 import eterea.core.service.kotlin.exception.ReservaContextException;
 import eterea.core.service.kotlin.repository.ReservaContextRepository;
 import eterea.core.service.model.ReservaContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class ReservaContextService {
 
     private final ReservaContextRepository repository;
-
-    public ReservaContextService(ReservaContextRepository repository) {
-        this.repository = repository;
-    }
 
     public List<ReservaContext> findAllByFacturacionPendiente() {
         return repository.findAllByFacturaPendiente((byte) 1);

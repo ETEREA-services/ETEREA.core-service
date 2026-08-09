@@ -3,18 +3,16 @@ package eterea.core.service.hexagonal.ventas.clientemovimiento.application.useca
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.in.DeleteClienteMovimientoUseCase;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.out.ClienteMovimientoRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class DeleteClienteMovimientoUseCaseImpl implements DeleteClienteMovimientoUseCase {
 
     private final ClienteMovimientoRepository repository;
-
-    public DeleteClienteMovimientoUseCaseImpl(ClienteMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     @Transactional

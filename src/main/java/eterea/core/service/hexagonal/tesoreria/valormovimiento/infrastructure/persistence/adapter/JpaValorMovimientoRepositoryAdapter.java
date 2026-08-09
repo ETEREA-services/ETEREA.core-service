@@ -4,6 +4,7 @@ import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.model.Valo
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.domain.ports.out.ValorMovimientoRepository;
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.persistence.mapper.ValorMovimientoMapper;
 import eterea.core.service.hexagonal.tesoreria.valormovimiento.infrastructure.persistence.repository.JpaValorMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
@@ -12,16 +13,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class JpaValorMovimientoRepositoryAdapter implements ValorMovimientoRepository {
 
     private final JpaValorMovimientoRepository jpaRepository;
     private final ValorMovimientoMapper mapper;
-
-    public JpaValorMovimientoRepositoryAdapter(JpaValorMovimientoRepository jpaRepository,
-                                               ValorMovimientoMapper mapper) {
-        this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     public Optional<ValorMovimiento> findByValorMovimientoId(Long valorMovimientoId) {

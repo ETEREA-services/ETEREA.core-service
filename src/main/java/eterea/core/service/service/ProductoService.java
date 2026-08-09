@@ -8,6 +8,7 @@ import java.util.List;
 import eterea.core.service.exception.ProductoException;
 import eterea.core.service.kotlin.model.Producto;
 import eterea.core.service.repository.ProductoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class ProductoService {
 
 	private final ProductoRepository repository;
-
-	public ProductoService(ProductoRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<Producto> findAll() {
 		return repository.findAll(Sort.by("nombre").ascending());

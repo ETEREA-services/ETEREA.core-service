@@ -9,14 +9,12 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+@RequiredArgsConstructor
 
 public class CuentaMovimientoAperturaRepositoryCustomImpl implements CuentaMovimientoAperturaRepositoryCustom {
 
     private final EntityManager entityManager;
-
-    public CuentaMovimientoAperturaRepositoryCustomImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
 
     @Override
     public BigDecimal calculateTotalByNumeroCuentaAndDebitaAndFechaBetween(Long numeroCuenta, Integer debita, OffsetDateTime desde, OffsetDateTime hasta) {

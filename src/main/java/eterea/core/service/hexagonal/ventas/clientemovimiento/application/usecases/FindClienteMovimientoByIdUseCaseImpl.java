@@ -4,16 +4,14 @@ import eterea.core.service.hexagonal.ventas.clientemovimiento.application.except
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.model.ClienteMovimiento;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.in.FindClienteMovimientoByIdUseCase;
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.out.ClienteMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FindClienteMovimientoByIdUseCaseImpl implements FindClienteMovimientoByIdUseCase {
 
     private final ClienteMovimientoRepository repository;
-
-    public FindClienteMovimientoByIdUseCaseImpl(ClienteMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public ClienteMovimiento findByClienteMovimientoId(Long clienteMovimientoId) {

@@ -8,6 +8,7 @@ import java.util.List;
 
 import eterea.core.service.kotlin.model.TarifaHabitacion;
 import eterea.core.service.repository.TarifaHabitacionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,13 +16,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class TarifaHabitacionService {
 
 	private final TarifaHabitacionRepository repository;
-
-	public TarifaHabitacionService(TarifaHabitacionRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<TarifaHabitacion> findAllSinBloqueo(Boolean bloqueoEspecial) {
 		if (!bloqueoEspecial) {

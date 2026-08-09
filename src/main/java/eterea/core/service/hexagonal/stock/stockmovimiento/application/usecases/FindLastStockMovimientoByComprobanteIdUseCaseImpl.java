@@ -4,18 +4,16 @@ import eterea.core.service.hexagonal.stock.stockmovimiento.application.exception
 import eterea.core.service.hexagonal.stock.stockmovimiento.domain.model.StockMovimiento;
 import eterea.core.service.hexagonal.stock.stockmovimiento.domain.ports.in.FindLastStockMovimientoByComprobanteIdUseCase;
 import eterea.core.service.hexagonal.stock.stockmovimiento.domain.ports.out.StockMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FindLastStockMovimientoByComprobanteIdUseCaseImpl implements FindLastStockMovimientoByComprobanteIdUseCase {
 
     private final StockMovimientoRepository repository;
-
-    public FindLastStockMovimientoByComprobanteIdUseCaseImpl(StockMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public StockMovimiento findLastByComprobanteId(Integer comprobanteId) {

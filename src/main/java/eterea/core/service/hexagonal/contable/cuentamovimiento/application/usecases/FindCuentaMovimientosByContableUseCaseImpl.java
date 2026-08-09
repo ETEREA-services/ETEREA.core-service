@@ -3,19 +3,17 @@ package eterea.core.service.hexagonal.contable.cuentamovimiento.application.usec
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.model.CuentaMovimiento;
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.ports.in.FindCuentaMovimientosByContableUseCase;
 import eterea.core.service.hexagonal.contable.cuentamovimiento.domain.ports.out.CuentaMovimientoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class FindCuentaMovimientosByContableUseCaseImpl implements FindCuentaMovimientosByContableUseCase {
 
     private final CuentaMovimientoRepository repository;
-
-    public FindCuentaMovimientosByContableUseCaseImpl(CuentaMovimientoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public List<CuentaMovimiento> findAllByContable(OffsetDateTime fechaContable, Integer ordenContable) {

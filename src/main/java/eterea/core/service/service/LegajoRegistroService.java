@@ -10,6 +10,7 @@ import java.util.List;
 import eterea.core.service.exception.LegajoRegistroException;
 import eterea.core.service.kotlin.model.LegajoRegistro;
 import eterea.core.service.repository.LegajoRegistroRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,13 +18,10 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
+@RequiredArgsConstructor
 public class LegajoRegistroService {
 
 	private final LegajoRegistroRepository repository;
-
-	public LegajoRegistroService(LegajoRegistroRepository repository) {
-		this.repository = repository;
-	}
 
 	public List<LegajoRegistro> findAllByLegajoId(Integer legajoId) {
 		return repository.findAllByLegajoId(legajoId);

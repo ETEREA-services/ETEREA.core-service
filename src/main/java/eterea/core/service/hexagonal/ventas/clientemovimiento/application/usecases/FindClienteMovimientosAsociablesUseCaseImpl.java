@@ -5,22 +5,18 @@ import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.in.Fi
 import eterea.core.service.hexagonal.ventas.clientemovimiento.domain.ports.out.ClienteMovimientoRepository;
 import eterea.core.service.hexagonal.comprobante.application.service.ComprobanteService;
 import eterea.core.service.hexagonal.comprobante.domain.model.Comprobante;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class FindClienteMovimientosAsociablesUseCaseImpl implements FindClienteMovimientosAsociablesUseCase {
 
     private final ClienteMovimientoRepository repository;
     private final ComprobanteService comprobanteService;
-
-    public FindClienteMovimientosAsociablesUseCaseImpl(ClienteMovimientoRepository repository,
-                                                       ComprobanteService comprobanteService) {
-        this.repository = repository;
-        this.comprobanteService = comprobanteService;
-    }
 
     @Override
     public List<ClienteMovimiento> findTop200Asociables(Long clienteId, Integer comprobanteId) {
